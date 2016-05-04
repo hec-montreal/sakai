@@ -56,7 +56,11 @@ public class CourseOfferingEntityProvider extends AbstractContainerEntityProvide
       data.academicSession,
       data.canonicalCourse,
       DateUtils.stringToDate(data.startDate),
-      DateUtils.stringToDate(data.endDate)
+      DateUtils.stringToDate(data.endDate),
+      data.lang,
+      data.career,
+      data.credits,
+      data.requirements
     );
   }
 

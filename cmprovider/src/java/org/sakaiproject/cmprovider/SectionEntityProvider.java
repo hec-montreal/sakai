@@ -50,7 +50,10 @@ public class SectionEntityProvider extends AbstractContainerEntityProvider {
       data.category,
       data.parent,
       data.courseOffering, 
-      data.enrollmentSet
+      data.enrollmentSet,
+      data.lang,
+      data.typeEvaluation
+      
     );
   }
 

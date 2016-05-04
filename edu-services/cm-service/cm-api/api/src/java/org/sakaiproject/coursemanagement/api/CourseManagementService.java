@@ -143,6 +143,26 @@ public interface CourseManagementService {
 	public boolean isAcademicSessionDefined(String eid);
 
 	/**
+	 * Gets all the academic careers defined.
+	 * @return list of all the academic careers 
+	 */
+	public List<AcademicCareer> getAcademicCareers();
+	
+	/**
+	 * Gets the Academic Career associated with the eid.
+	 * @param eid
+	 * @return the academic career
+	 * @throws IdNotFoundException if the eid is not associated to a Academic Career
+	 */
+	public AcademicCareer getAcademicCareer (String eid)throws IdNotFoundException;
+	
+	/**
+	 * Checks whether an academic career is defined.
+	 * @param eid
+	 * @return true if an academic career with the given id is defined.
+	 */
+	public boolean isAcademicCareerDefined (String eid);
+	/**
 	 * Gets a CourseOffering by its eid.
 	 * 
 	 * @param courseOfferingEid
@@ -199,6 +219,23 @@ public interface CourseManagementService {
 	 */
 	public Set<CourseOffering> findCourseOfferings(String courseSetEid, String academicSessionEid) throws IdNotFoundException;
 	
+	/**
+	 * Finds all of the course offerings asociated to an academic career that are current for any given
+	 * academic session (regardless of the courseOffering's start and end dates).
+	 *
+	 * @param acadCareer
+	 * @param academicSessionEid
+	 * @return The set of course offerings
+	 * @throws IdNotFoundException
+	 */
+	public Set<CourseOffering> findCourseOfferingsByAcadCareerAndAcademicSession(String acadCareer, String academicSessionEid) throws IdNotFoundException;
+	/** Finds all of the course offerings asociated to an academic career
+	 *
+	 * @param acadCareer
+	 * @return The set of course offerings
+	 * @throws IdNotFoundException
+	 */
+	public Set<CourseOffering> findCourseOfferingsByAcadCareer(String acadCareer) throws IdNotFoundException;
 	/**
 	 * Finds all course offerings belonging to a canonical course.
 	 * 
@@ -436,6 +473,15 @@ public interface CourseManagementService {
 	 */
 	public Set<Section> findInstructingSections(String userEid, String academicSessionEid) throws IdNotFoundException;
 
+	/**
+	 * Finds all Sections that are linked to an a category in a given
+	 * AcademicSession.
+	 *
+	 * @param category
+	 * @param academicSessionEid
+	 * @return
+	 */
+	public Set<Section> findSectionsByCategory(String category) throws IdNotFoundException;
 	/**
 	 * Finds the Sections (and roles) for which a user is a member.
 	 * 

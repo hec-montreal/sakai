@@ -45,6 +45,10 @@ public class CourseOfferingData implements CmEntityData {
   public String status;
   public String startDate;
   public String endDate;
+  public String lang;
+  public String career;
+  public String credits;
+  public String requirements;
 
   public String getId() { return eid; }
   
@@ -59,5 +63,9 @@ public class CourseOfferingData implements CmEntityData {
     canonicalCourse = course.getCanonicalCourseEid();
     startDate = DateUtils.dateToString(course.getStartDate());
     endDate = DateUtils.dateToString(course.getEndDate());
+    lang = course.getLang();
+    career = course.getAcademicCareer();
+    credits = course.getCredits();
+    requirements = course.getRequirements();
   }
 }

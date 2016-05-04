@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+   "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping default-cascade="none" package="org.sakaiproject.coursemanagement.impl" default-lazy="true">
+
+    <class name="org.sakaiproject.coursemanagement.impl.AcademicCareerCmImpl"
+        table="CM_ACADEMIC_CAREER_T">
+
+		<cache usage="nonstrict-read-write" />
+		
+        <id name="eid" column="ACAD_CAREER" type="string">
+            <generator class="assigned"/>
+        </id>
+         <property name="description_fr_ca" column="DESCRIPTION_FR_CA" type="string" not-null="false" />
+        <property name="description" column="DESCRIPTION" type="string" not-null="false" />
+ 
+    </class>
+    
+    <query name="isAcademicCareerDefined">
+        <![CDATA[
+        select count(eid) from AcademicCareerCmImpl as career where career.eid=:eid
+        ]]>
+    </query>
+
+    <query name="findAcademicCareers">
+        <![CDATA[
+        from AcademicCareerCmImpl as career order by career.eid
+        ]]>
+    </query>
+
+
+</hibernate-mapping>

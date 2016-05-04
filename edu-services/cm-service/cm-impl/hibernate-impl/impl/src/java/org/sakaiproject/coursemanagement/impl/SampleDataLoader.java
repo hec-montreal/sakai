@@ -77,7 +77,19 @@ public class SampleDataLoader implements BeanFactoryAware {
 	protected static final String CO1_PREFIX = CC1 + " ";
 	protected static final String CO2_PREFIX = CC2 + " ";
 
+	protected static final String LANGA = "fr_CA";
+	protected final static String LANGB = "es";
+
+	protected static final String TYPE_EVALUATION_A = null;
+	protected final static String TYPE_EVALUATION_B = "En ligne";
+
+	protected static final String CAREER_A="MBA";
+	protected static final String CAREER_B="PHD";
+
 	protected static final String ENROLLMENT_SET_SUFFIX = "es";
+
+	protected static final String CREDITS_A="3";
+	protected static final String REQUIREMENTS_A="requirements";
 
 	protected static final int ENROLLMENT_SETS_PER_ACADEMIC_SESSION = 2;
 	protected static final int ENROLLMENTS_PER_SET = 180;
@@ -249,10 +261,10 @@ public class SampleDataLoader implements BeanFactoryAware {
 			AcademicSession as = iter.next();
 			CourseOffering co1 = cmAdmin.createCourseOffering(CO1_PREFIX + as.getEid(),
 					CC1, "Sample course offering #1, " + as.getEid(), "open", as.getEid(),
-					CC1, as.getStartDate(), as.getEndDate());
+					CC1, as.getStartDate(), as.getEndDate(), LANGA, CAREER_A, CREDITS_A, REQUIREMENTS_A);
 			CourseOffering co2 = cmAdmin.createCourseOffering(CO2_PREFIX + as.getEid(),
 					CC2, "Sample course offering #2, " + as.getEid(), "open", as.getEid(),
-					CC2, as.getStartDate(), as.getEndDate());
+					CC2, as.getStartDate(), as.getEndDate(), LANGB, CAREER_B, CREDITS_A, REQUIREMENTS_A);
 
 			courseOfferingsList.add(co1);
 			courseOfferingsList.add(co2);
@@ -332,7 +344,7 @@ public class SampleDataLoader implements BeanFactoryAware {
 			String co1Eid = CO1_PREFIX + as.getEid();
 			String lec1Eid = co1Eid;
 			Section lec1 = cmAdmin.createSection(lec1Eid, lec1Eid, lec1Eid + " Lecture",
-				lectureCategory.getCategoryCode(), null, co1Eid, co1Eid + ENROLLMENT_SET_SUFFIX);
+				lectureCategory.getCategoryCode(), null, co1Eid, co1Eid + ENROLLMENT_SET_SUFFIX, LANGA, TYPE_EVALUATION_A);
 			Set<Meeting> lec1Meetings = new HashSet<Meeting>();
 			Meeting mtg1 = cmAdmin.newSectionMeeting(lec1.getEid(), "A Building 11", getTime("10:30" + AMPM[0]), getTime("11:00" + AMPM[0]), null);
 			mtg1.setMonday(true);
@@ -346,7 +358,7 @@ public class SampleDataLoader implements BeanFactoryAware {
 			String co2Eid = CO2_PREFIX + as.getEid();
 			String lec2Eid = co2Eid;
 			Section lec2 = cmAdmin.createSection(lec2Eid, lec2Eid, lec2Eid + " Lecture",
-				lectureCategory.getCategoryCode(), null, co2Eid, co2Eid + ENROLLMENT_SET_SUFFIX);
+				lectureCategory.getCategoryCode(), null, co2Eid, co2Eid + ENROLLMENT_SET_SUFFIX, LANGB, TYPE_EVALUATION_B);
 			Set<Meeting> lec2Meetings = new HashSet<Meeting>();
 			Meeting mtg2 = cmAdmin.newSectionMeeting(lec2.getEid(), "A Building 11", getTime("10:30" + AMPM[0]), getTime("11:00" + AMPM[0]), null);
 			mtg2.setMonday(true);
@@ -438,7 +450,7 @@ public class SampleDataLoader implements BeanFactoryAware {
 			String location, Time startTime, Time endTime, boolean[] days, int studentStart, int studentEnd) {
 		String secEid = secEidPrefix + " " + asEid;
 		Section sec = cmAdmin.createSection(secEid, secEidPrefix, secEid,
-				categoryCode, null, coEid, null);
+				categoryCode, null, coEid, null, LANGA, TYPE_EVALUATION_A);
 		for(int studentCounter = studentStart; studentCounter < studentEnd ; studentCounter++) {
 			String zeroPaddedId = df.format(studentCounter);
 			cmAdmin.addOrUpdateSectionMembership("student" + zeroPaddedId, "S", secEid, "member");

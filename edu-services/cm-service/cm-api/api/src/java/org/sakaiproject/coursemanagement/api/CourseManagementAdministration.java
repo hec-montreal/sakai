@@ -38,6 +38,28 @@ import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
 public interface CourseManagementAdministration {
 
 	/**
+     * @param eid
+     * @param description
+     * @param description_fr_CA
+     * @return
+     * @throws IdExistsException
+     */
+    public AcademicCareer createAcademicCareer(String eid, String description,
+	    String description_fr_CA) throws IdExistsException;
+
+    /**
+     * Update an existing Academic Career.
+     * @param academicCareer to be updated.
+     */
+    public void updateAcademicCareer(AcademicCareer academicCareer);
+
+    /**
+     * Delete an existing academic career and all course offerings associated to it.
+     * @param eId
+     */
+    public void removeAcademicCareer (String eId);
+
+	/**
 	 * Creates a new AcademicSession.
 	 * 
 	 * @param eid
@@ -167,7 +189,7 @@ public interface CourseManagementAdministration {
 	 * @throws IdExistsException
 	 */
 	public CourseOffering createCourseOffering(String eid, String title, String description,
-			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate)
+			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate, String lang, String career, String credits, String requirements)
 			throws IdExistsException;
 
 	/**
@@ -299,7 +321,7 @@ public interface CourseManagementAdministration {
 	 */
 	public Section createSection(String eid, String title, String description,
 			String category, String parentSectionEid, String courseOfferingEid,
-			String enrollmentSetEid) throws IdExistsException;
+			String enrollmentSetEid, String lang, String typeEvaluation) throws IdExistsException;
 
 	
 	public SectionCategory addSectionCategory(String categoryCode, String categoryDescription);

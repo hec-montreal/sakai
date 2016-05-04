@@ -46,6 +46,9 @@ public class SectionData implements CmEntityData {
   
   public Integer maxSize;
   public String parent;
+  
+  public String lang;
+  public String typeEvaluation;
 
   public String getId() { return eid; }
   
@@ -59,6 +62,8 @@ public class SectionData implements CmEntityData {
     courseOffering = section.getCourseOfferingEid();
     enrollmentSet = section.getEnrollmentSet().getEid();
     maxSize = section.getMaxSize();
+    lang = section.getLang();
+    typeEvaluation = section.getTypeEvaluation();
 
     if (section.getParent() != null) parent = section.getParent().getEid();
   }

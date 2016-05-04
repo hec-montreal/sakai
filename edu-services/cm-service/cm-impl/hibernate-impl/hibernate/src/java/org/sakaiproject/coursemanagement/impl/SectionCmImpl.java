@@ -40,10 +40,12 @@ public class SectionCmImpl extends AbstractMembershipContainerCmImpl
 	private Section parent;
 	private EnrollmentSet enrollmentSet;
         private Integer maxSize;
+	private String lang;
+	private String typeEvaluation;
 	
 	public SectionCmImpl() {}
 	
-    public SectionCmImpl(String eid, String title, String description, String category, Section parent, CourseOffering courseOffering, EnrollmentSet enrollmentSet, Integer maxSize) {
+    public SectionCmImpl(String eid, String title, String description, String category, Section parent, CourseOffering courseOffering, EnrollmentSet enrollmentSet, Integer maxSize, String lang, String typeEvaluation) {
 		this.eid = eid;
 		this.title = title;
 		this.description = description;
@@ -55,6 +57,8 @@ public class SectionCmImpl extends AbstractMembershipContainerCmImpl
 		}
 		this.enrollmentSet = enrollmentSet;
                 this.maxSize = maxSize;
+                this.lang = lang;
+                this.typeEvaluation = typeEvaluation;
 	}
 
 	public String getCategory() {
@@ -119,4 +123,23 @@ public class SectionCmImpl extends AbstractMembershipContainerCmImpl
 
 		return description;
 	}
+
+	public String getLang() {
+	    return lang;
+	}
+
+	public void setLang(String lang) {
+	    this.lang = lang;
+	}
+
+	
+	public String getTypeEvaluation() {
+	    return typeEvaluation;
+	}
+
+	
+	public void setTypeEvaluation(String typeEvaluation) {
+	    this.typeEvaluation = typeEvaluation;
+	}
+
 }

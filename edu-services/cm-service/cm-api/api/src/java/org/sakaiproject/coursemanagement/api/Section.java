@@ -99,4 +99,20 @@ public interface Section {
 	 */
 	public Integer getMaxSize();
 	public void setMaxSize(Integer maxSize);
+	
+	/**
+	 * Language in witch the course will be presented.
+	 * 
+	 * @return
+	 */
+	public String getLang();
+	public void setLang(String lang);
+
+	
+	/**
+	 * Type of evaluation associated to the section
+	 * @return
+	 */
+	public String getTypeEvaluation();
+	public void setTypeEvaluation(String typeEvaluation);
 }
