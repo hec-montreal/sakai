@@ -377,6 +377,12 @@ public class BaseConfigurationService implements ConfigurationService, Observer
     return (value != null) ? value : getOpenUrlResolverAddress();
   }
 
+  // Migration Sakai11 TODO
+  // replace placeholder 
+  public synchronized String getSiteConfigOpenUrlResolverAddress() {
+	  return "";
+  }
+
   /**
    * Fetch the Google base-URL
    * @return the URL
