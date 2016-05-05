@@ -134,6 +134,10 @@ public interface ConfigurationService
    */
   public String getSiteConfigOpenUrlResolverAddress();
 
+  // SAKAI 11 migration TODO
+  // placeholder to make osyl-common compile, replace later
+  public String getSiteConfigOpenUrlResolverAddress();
+
   /**
    * Fetch the Google base-URL
    * @return the URL
