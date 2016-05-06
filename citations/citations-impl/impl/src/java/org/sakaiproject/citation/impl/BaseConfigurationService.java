@@ -379,7 +379,7 @@ public class BaseConfigurationService implements ConfigurationService, Observer
 
   // Migration Sakai11 TODO
   // replace placeholder 
-  public synchronized String getSiteConfigOpenUrlResolverAddress() {
+  public synchronized String getSiteConfigLibraryUrlResolverAddress() {
 	  return "";
   }
 
