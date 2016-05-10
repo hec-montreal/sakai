@@ -118,9 +118,9 @@
                 <module>web</module>
                 <module>webservices</module>
 		<module>hec-commons-utils</module>
+		<module>hec-catalog-description-manager</module>
 		<module>hec-course-archive</module>
 		<module>hec-public-portal-manager</module>
-		<module>hec-catalog-description-manager</module>
 		<module>opensyllabus</module>
             </modules>
         </profile>
