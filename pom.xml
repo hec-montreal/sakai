@@ -116,7 +116,8 @@
                 <module>usermembership</module>
                 <module>velocity</module>
                 <module>web</module>
-                <module>webservices</module>
+		<module>webservices</module>
+		<module>sdata</module>
 		<module>hec-commons-utils</module>
 		<module>hec-catalog-description-manager</module>
 		<module>hec-course-archive</module>
