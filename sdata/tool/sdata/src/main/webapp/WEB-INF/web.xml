@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<web-app id="SData" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+	<display-name>portal</display-name>
+	<description>Sakai SData</description>
+	
+	<filter>
+		<filter-name>sakai.request</filter-name>
+		<filter-class>org.sakaiproject.sdata.tool.StreamRequestFilter</filter-class>
+	</filter>
+	
+	
+	
+	<filter-mapping>
+		<filter-name>sakai.request</filter-name>
+		<servlet-name>ControllerServlet</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>INCLUDE</dispatcher>
+	</filter-mapping>
+	
+
+
+	
+	
+
+	<servlet>
+		<servlet-name>ControllerServlet</servlet-name>
+		<servlet-class>
+			 org.sakaiproject.sdata.tool.ControllerServlet
+		</servlet-class>
+	 <init-param>
+	 <!--
+	   classname is the name of the Handler
+	   baseurl is the first path element that maps to the handler
+	   function.x is the classname of a fucntion, the function being x
+	   locationbase is the location where a SecurityAssertion is applied, the locationbase is 
+	                removed from the location
+	   referencebase is prepended to the path, after locationbase has been removed from a
+	                 path in security assertion
+	   basename is the path pre-pended to request to generate the location in the internal store
+	   
+	 -->
+                <param-name>config</param-name>
+                <param-value> 
+			1.classname=org.sakaiproject.sdata.tool.JCRDumper;
+			1.baseurl=/d;
+			2.classname=org.sakaiproject.sdata.tool.json.JsonCHSHandler;
+			2.baseurl=/c;
+			2.function.m=org.sakaiproject.sdata.tool.functions.CHSNodeMetadata;
+			2.function.cf=org.sakaiproject.sdata.tool.functions.CHSCreateFolder;
+			2.function.pu=org.sakaiproject.sdata.tool.functions.CHSPropertiesUpdate;
+			2.locationbase=;
+			2.referencebase=/content;
+			2.basepath=/;
+			3.classname=org.sakaiproject.sdata.tool.json.JsonJcrHandler;
+			3.baseurl=/f;
+			3.function.m=org.sakaiproject.sdata.tool.functions.JCRNodeMetadata;
+			3.function.cf=org.sakaiproject.sdata.tool.functions.JCRCreateFolder;
+			3.locationbase=/sakai/sdata;
+			3.referencebase=/content;
+			3.basepath=/sakai/sdata;
+			4.classname=org.sakaiproject.sdata.tool.json.JsonJcrUserStorageHandler;
+			4.baseurl=/p;
+			5.classname=org.sakaiproject.sdata.tool.json.JsonCHSUserStorageHandler;
+			5.baseurl=/cp;
+			6.classname=org.sakaiproject.sdata.tool.xmlrpc.XmlRpcCHSHandler;
+			6.baseurl=/xc;
+			6.function.m=org.sakaiproject.sdata.tool.functions.CHSNodeMetadata;
+			6.locationbase=;
+			6.referencebase=/content;
+			6.basepath=/;
+			7.classname=org.sakaiproject.sdata.tool.xmlrpc.XmlRpcJcrHandler;
+			7.baseurl=/xf;
+			7.function.m=org.sakaiproject.sdata.tool.functions.JCRNodeMetadata;
+			7.locationbase=/sakai/sdata;
+			7.referencebase=/content;
+			7.basepath=/sakai/sdata;
+			8.classname=org.sakaiproject.sdata.tool.xmlrpc.XmlRpcJcrUserStorageHandler;
+			8.baseurl=/xp;
+			9.classname=org.sakaiproject.sdata.tool.xmlrpc.XmlRpcCHSUserStorageHandler;
+			9.baseurl=/xcp;
+			10.classname=org.sakaiproject.sdata.services.mcp.MyCoursesAndProjectsHandler;
+			10.baseurl=/mcp;
+			11.classname=org.sakaiproject.sdata.services.mra.MyRecentChangesHandler;
+			11.baseurl=/mra;
+			12.classname=org.sakaiproject.sdata.services.me.MeHandler;
+			12.baseurl=/me;
+			13.classname=org.sakaiproject.sdata.services.motd.MessageOfTheDayHandler;
+			13.baseurl=/motd;
+			14.classname=org.sakaiproject.sdata.services.mgs.MyGlobalSearchHandler;
+			14.baseurl=/mgs;
+			15.classname=org.sakaiproject.sdata.services.site.SiteHandler;
+			15.baseurl=/site;
+			16.classname=org.sakaiproject.sdata.tool.SnoopHandler;
+			16.baseurl=/snoop;
+			17.classname=org.sakaiproject.sdata.services.qa.QaHandler;
+			17.baseurl=/qa;
+			18.classname=org.sakaiproject.sdata.services.rss.RssHandler;
+			18.baseurl=/rss;
+			19.classname=org.sakaiproject.sdata.services.col.ColHandler;
+			19.baseurl=/col;
+			19.locationbase=/sakai/sdata;
+			19.referencebase=/content;
+			19.basepath=/sakai/sdata;
+			20.classname=org.sakaiproject.sdata.services.col.ColCHSHandler;
+			20.baseurl=/colchs;
+			20.locationbase=;
+			20.referencebase=/content;
+			20.basepath=/;
+			21.classname=org.sakaiproject.sdata.services.hl.HyperlinkJsonCHSHandler;
+			21.baseurl=/hl;
+			21.locationbase=;
+			21.referencebase=/content;
+			21.basepath=/;
+			22.classname=org.sakaiproject.sdata.services.ci.CiHandler;
+			22.baseurl=/ci;
+
+				</param-value>
+            </init-param>
+		<load-on-startup>100</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ControllerServlet</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	
+	
+	<listener>
+		<listener-class>org.sakaiproject.sdata.services.mra.MyRecentChangesDbBean</listener-class>
+	</listener>
+	
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	
+</web-app>
