@@ -51,6 +51,8 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.user.api.PreferencesService;
 
 import au.com.bytecode.opencsv.CSVParser;
 
@@ -311,6 +313,18 @@ public class BasicConfigurationService implements ServerConfigurationService, Ap
      */
     public String getHelpUrl(String helpContext)
     {
+    	//
+    	// Personnalisation pour rediriger vers l'aide de confluence en fr_CA
+    	//
+    	PreferencesService preferencesService = (PreferencesService) ComponentManager.get(PreferencesService.class);
+    	Locale locale = preferencesService.getLocale(sessionManager.getCurrentSessionUserId());
+    	if (Locale.CANADA_FRENCH.equals(locale) && helpContext == null) {
+    		return "https://confluence.hec.ca:8443/display/aidezc2/Aide+de+ZoneCours";
+    	}
+    	//
+    	// fin personnalisation
+    	//
+
         String rv = getPortalUrl() + getConfig("helpPath", "/help") + "/main"; //(String) properties.get("helpPath") + "/main";
         if (helpContext != null)
         {
