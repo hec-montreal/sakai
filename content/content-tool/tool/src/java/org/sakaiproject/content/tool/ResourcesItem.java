@@ -72,6 +72,7 @@ public class ResourcesItem
 	protected boolean useReleaseDate;
 	protected boolean useRetractDate;
 	protected String copyrightStatus;
+	protected String typeResource;
 	protected String copyrightInfo;
 	protected boolean copyrightAlert = false;
 	
@@ -157,6 +158,7 @@ public class ResourcesItem
 				ResourcesAction.logger.warn("ServerOverloadException ", e);
 			}
 			this.copyrightStatus = props.getProperty(ResourceProperties.PROP_COPYRIGHT_CHOICE);
+			this.typeResource = props.getProperty(ResourceProperties.PROP_TYPE_RESOURCE);			
 			this.copyrightInfo = props.getProperty(ResourceProperties.PROP_COPYRIGHT);
 			String crAlert = props.getProperty(ResourceProperties.PROP_COPYRIGHT_ALERT);
 			if(crAlert != null && Boolean.TRUE.toString().equalsIgnoreCase(crAlert))
@@ -798,6 +800,22 @@ public class ResourcesItem
     	this.copyrightStatus = copyrightStatus;
     }
 
+	/**
+     * @return the typeResource
+     */
+    public String getTypeResource()
+    {
+    	return typeResource;
+    }
+
+	/**
+     * @param typeResource the typeResource to set
+     */
+    public void setTypeResource(String typeResource)
+    {
+    	this.typeResource = typeResource;
+    }
+    
 	/**
      * @return the contentType
      */

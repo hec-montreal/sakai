@@ -55,6 +55,7 @@ public class ResourcesEditItem
 	protected String m_copyrightStatus;
 	protected String m_copyrightInfo;
 	// protected boolean m_copyrightAlert;
+	protected String m_typeResource;
 
 	protected String m_filename;
 	protected byte[] m_content;
@@ -108,6 +109,7 @@ public class ResourcesEditItem
 		super(id, name, type);
 
 		m_filename = "";
+		m_typeResource = "";
 		m_contentHasChanged = false;
 		m_contentTypeHasChanged = false;
 		m_metadata = new Hashtable();
@@ -497,6 +499,22 @@ public class ResourcesEditItem
 	 {
 		 m_copyrightInfo = copyrightInfo;
 	 }
+	 
+	 /**
+	  * @return Returns the typeResource.
+	  */
+	 public String getTypeResource() 
+	 {
+		 return m_typeResource;
+	 }
+	 /**
+	  * @param typeResource The typeResource to set.
+	  */
+	 public void setTypeResource(String typeResource) 
+	 {
+	     m_typeResource = typeResource;
+	 }
+	 
 	 /**
 	  * @return Returns the copyrightStatus.
 	  */
