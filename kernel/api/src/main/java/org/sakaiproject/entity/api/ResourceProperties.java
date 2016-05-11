@@ -61,6 +61,9 @@ public interface ResourceProperties extends Serializable
 	/** Property for the copyright choice attribution (user settable). [String] */
 	static final String PROP_COPYRIGHT_CHOICE = "CHEF:copyrightchoice";
 
+	/** Property for the type of resource attribution (user settable). [String] */
+	static final String PROP_TYPE_RESOURCE = "CHEF:typeresource";
+
 	/** Property for the copyright alert attribution (user settable). [String] */
 	static final String PROP_COPYRIGHT_ALERT = "CHEF:copyrightalert";
 
@@ -337,6 +340,13 @@ public interface ResourceProperties extends Serializable
 	 */
 	String getNamePropCopyrightChoice();
 
+	/**
+	 * Get the static String of PROP_TYPE_RESOURCE
+	 * 
+	 * @return The static String of PROP_TYPE_RESOURCE
+	 */
+	String getNamePropTypeResource();
+	
 	/**
 	 * Get the static String of PROP_COPYRIGHT_ALERT
 	 * 

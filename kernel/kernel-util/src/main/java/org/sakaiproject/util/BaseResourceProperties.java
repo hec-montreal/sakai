@@ -556,6 +556,16 @@ public class BaseResourceProperties implements ResourceProperties, SerializableP
 	}
 
 	/**
+	 * Get the static String of PROP_TYPE_RESOURCE
+	 * 
+	 * @return The static String of PROP_TYPE_RESOURCE
+	 */
+	public String getNamePropTypeResource()
+	{
+		return PROP_TYPE_RESOURCE;
+	}
+
+	/**
 	 * Get the static String of PROP_COPYRIGHT_ALERT
 	 * 
 	 * @return The static String of PROP_COPYRIGHT_ALERT
