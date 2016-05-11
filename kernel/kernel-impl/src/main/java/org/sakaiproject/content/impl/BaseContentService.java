@@ -1636,7 +1636,7 @@ SiteContentAdvisorProvider, SiteContentAdvisorTypeRegistry, EntityTransferrerRef
 	protected boolean availabilityCheck(String id) throws IdUnusedException
 	{
 		// item is available if avaialability checks are <b>NOT</b> enabled OR if it's in /attachment
-		boolean available = (! m_availabilityChecksEnabled) || isAttachmentResource(id);
+		boolean available = (! m_availabilityChecksEnabled);
 
 		GroupAwareEntity entity = null;
 		//boolean isCollection = id.endsWith(Entity.SEPARATOR);
