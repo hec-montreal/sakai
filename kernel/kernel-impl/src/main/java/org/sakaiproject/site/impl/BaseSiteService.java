@@ -486,7 +486,6 @@ public abstract class BaseSiteService implements SiteService, Observer
 			functionManager().registerFunction(SECURE_REMOVE_SITE);
 			functionManager().registerFunction(SECURE_UPDATE_SITE);
 			functionManager().registerFunction(SECURE_VIEW_ROSTER);
-			functionManager().registerFunction(SECURE_VIEW_ROSTER_DISPLAY_ID);
 			functionManager().registerFunction(SECURE_UPDATE_SITE_MEMBERSHIP);
 			functionManager().registerFunction(SECURE_UPDATE_GROUP_MEMBERSHIP);
 			functionManager().registerFunction(SECURE_ADD_COURSE_SITE);

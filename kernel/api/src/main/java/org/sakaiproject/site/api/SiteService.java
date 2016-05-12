@@ -111,9 +111,6 @@ public interface SiteService extends EntityProducer
 	/** Name for the event of viewing project site participants. */
 	static final String SECURE_VIEW_ROSTER = "site.viewRoster";
 
-	/** Name for the event of viewing project site participants id. */
-	static final String SECURE_VIEW_ROSTER_DISPLAY_ID = "site.viewRoster.displayId";
-
 	/** The name of the main container for a resource in a site (channel, calendar, etc.). */
 	static final String MAIN_CONTAINER = "main";
 
@@ -750,15 +747,6 @@ public interface SiteService extends EntityProducer
 	 * @return true if the site is allowed to addSite(id), false if not.
 	 */
 	boolean allowViewRoster(String id);
-
-	/**
-	 * check permissions for viewing project site participants
-	 *
-	 * @param id
-	 *        The site id.
-	 * @return true if the site is allowed to addSite(id), false if not.
-	 */
-	boolean allowViewRosterDisplayId(String id);
 
 	/**
 	 * Cause the current user to join the site as defined by the site's joinable flag and joiner role.

@@ -85,8 +85,6 @@ public class SiteService
 
 	public static java.lang.String SECURE_VIEW_ROSTER = org.sakaiproject.site.api.SiteService.SECURE_VIEW_ROSTER;
 
-	public static java.lang.String SECURE_VIEW_ROSTER_DISPLAY_ID = org.sakaiproject.site.api.SiteService.SECURE_VIEW_ROSTER_DISPLAY_ID;
-
 	public static java.lang.String MAIN_CONTAINER = org.sakaiproject.site.api.SiteService.MAIN_CONTAINER;
 
 	public static java.lang.String SITE_TEMPLATE = org.sakaiproject.site.api.SiteService.SITE_TEMPLATE;
@@ -401,14 +399,6 @@ public class SiteService
 		if (service == null) return false;
 
 		return service.allowViewRoster(param0);
-	}
-
-	public static boolean allowViewRosterDisplayId(java.lang.String param0)
-	{
-		org.sakaiproject.site.api.SiteService service = getInstance();
-		if (service == null) return false;
-
-		return service.allowViewRosterDisplayId(param0);
 	}
 
 	public static void unjoin(java.lang.String param0) throws org.sakaiproject.exception.IdUnusedException,
