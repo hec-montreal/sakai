@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<title>Welcome to Sakai</title>
+		<script language="JavaScript" type="text/JavaScript">
+		<!--
+			var i, a, href
+			for(i=0; (a = top.document.getElementsByTagName("link")[i]); i++)
+			{
+				if(a.getAttribute("rel").indexOf("style") != -1)
+				{
+					if(a.getAttribute("href").indexOf("portal.css") != -1)
+					{
+						//normal - top is portal
+						document.write ('<link href=\"');
+						document.write (a.getAttribute("href").substring(0,a.getAttribute("href").indexOf("portal")));
+						document.write ('tool.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />');
+						document.write ('<link href=\"');
+						document.write (a.getAttribute("href").substring(0,(a.getAttribute("href").indexOf("skin") + 5 )));
+						document.write ('tool_base.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />');
+					}
+					else
+					{
+						//not normal - top is something else - use it's stylesheets
+						document.write ('<link href=\"');
+						document.write (a.getAttribute("href"));
+						document.write ('" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />');
+					}
+				}
+			}
+		// -->
+		</script>
+	</head>
+	<body>
+		<div class="portletBody">
+
+			<h3> Plagiarism </h3>
+			<p>Please consult the acts and gestures that are considered plagiarism or another academic
+			violation, along with the applicable procedure and sanctions, which range up to suspension and
+			even expulsion from HEC Montréal. Violations are analyzed  based on the facts and circumstances,
+			and sanctions are applied accordingly. <a
+			href="http://www.hec.ca/en/programs_training/plagiarism.html" target="_blank">Learn more about plagiarism... </a>
+			</p>
+			<p>
+			Cases of plagiarism are often caused by documented sources and in-text citations not being referenced correctly. You are invited to consult the guide <a href="http://libguides.hec.ca/citing" target="_blank">"Citing your sources"</a>, from the reference helpdesk of the HEC library. 
+			</p>
+			<h3> Calculators </h3>
+			<p>Please consult the <a href="http://www.hec.ca/en/current_student/technologies/authorized_calculators/calculators.html" target="_blank">calculator
+			usage policy</a> during exams when applicable.
+			</p>
+
+		</div>
+	</body>
+</html>
