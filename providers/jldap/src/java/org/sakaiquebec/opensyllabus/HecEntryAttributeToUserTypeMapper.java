@@ -91,7 +91,9 @@ public class HecEntryAttributeToUserTypeMapper extends EntryAttributeToUserTypeM
 
 		if(cache != null && cache.containsKey("instructorList")){
 			instructors = (List<String>)cache.get("instructorList");
-		} else {
+		} 
+		
+		if (instructors == null) {
 
 			instructors = new ArrayList<String>();
 
