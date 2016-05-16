@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<title>Welcome to Sakai</title>
+		<script language="JavaScript" type="text/JavaScript">
+		<!--
+			var i, a, href
+			for(i=0; (a = top.document.getElementsByTagName("link")[i]); i++)
+			{
+				if(a.getAttribute("rel").indexOf("style") != -1)
+				{
+					if(a.getAttribute("href").indexOf("portal.css") != -1)
+					{
+						//normal - top is portal
+						document.write ('<link href=\"');
+						document.write (a.getAttribute("href").substring(0,a.getAttribute("href").indexOf("portal")));
+						document.write ('tool.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />');
+						document.write ('<link href=\"');
+						document.write (a.getAttribute("href").substring(0,(a.getAttribute("href").indexOf("skin") + 5 )));
+						document.write ('tool_base.css\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />');
+					}
+					else
+					{
+						//not normal - top is something else - use it's stylesheets
+						document.write ('<link href=\"');
+						document.write (a.getAttribute("href"));
+						document.write ('" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />');
+					}
+				}
+			}
+		// -->
+		</script>
+	</head>
+	<body>
+		<div class="portletBody">
+			<h3> Plagiat </h3>
+			<p>Les étudiants sont priés de prendre connaissance des actes et des gestes qui sont considérés comme étant du plagiat ou
+			une autre infraction de nature pédagogique, de la procédure et des sanctions, qui peuvent aller jusqu'à la suspension et
+			même l'expulsion de HEC Montréal. Toute infraction sera analysée en fonction des faits et des circonstances, et une
+			sanction sera appliquée en conséquence. <a
+			href="http://www.hec.ca/plagiat" target="_blank">En savoir plus sur le plagiat...</a>
+			</p>
+			<p>
+				Un grand nombre des cas de plagiat proviennent du fait que des
+				sources documentaires et des textes cités ne sont pas référencés
+				correctement. Vous êtes invités à consulter le guide <a
+					href="http://libguides.hec.ca/citer" target="_blank">"Citer ses
+					sources"</a>, du service de référence de la bibliothèque HEC.
+			</p>
+			<h3> Calculatrices </h3>
+			<p>Les étudiants sont priés de prendre connaissance de la politique d'utilisation de calculatrices lors d'examens lorsque
+			celles-ci sont autorisées. <a
+			href="http://www.hec.ca/etudiant_actuel/technologies/calculatrices/calculatrices.html" target="_blank">En
+			savoir plus sur la politique d'usage de calculatrices...</a>
+			</p>
+			<h3>L’entraide lors d’un travail individuel</h3>
+			<p>HEC Montréal considère qu’il est normal et souhaitable que, dans le cadre des travaux individuels 
+			qu’ils doivent réaliser dans un cours, les étudiants discutent et s’entraident. Cela participe à 
+			l’enrichissement du processus d’apprentissage.</p> 
+			<p>Toutefois, certains types de communication entre les étudiants lors de la réalisation de travaux 
+			individuels constituent des infractions au sens du Règlement pédagogique. Ainsi, la transmission de 
+			fichiers de même que les discussions poursuivies jusqu’à ce qu’il y ait consensus sur la démarche exacte
+			 et la réponse sont normalement considérées comme des infractions.</p>
+
+			
+	</div>
+	</body>
+</html>

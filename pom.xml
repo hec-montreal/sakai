@@ -117,7 +117,9 @@
                 <module>velocity</module>
                 <module>web</module>
 		<module>webservices</module>
+		<module>evaluation</module>
 		<module>sdata</module>
+		<module>via</module>
 		<module>hec-commons-utils</module>
 		<module>hec-catalog-description-manager</module>
 		<module>hec-course-archive</module>
