@@ -134,8 +134,10 @@ public interface ConfigurationService
    */
   public String getSiteConfigOpenUrlResolverAddress();
 
-  // SAKAI 11 migration TODO
-  // placeholder to make osyl-common compile, replace later
+  /**
+   * Fetch the URL to the library catalog resolver address
+   * @return the address (domain name or IP)
+   */
   public String getSiteConfigLibraryUrlResolverAddress();
 
   /**

@@ -3900,6 +3900,11 @@ public class CitationHelperAction extends VelocityPortletPaneledAction
 					logger.debug("adding citation " + citationId + " to " + citationCollectionId);
 				}
 				citation.setAdded( true );
+				
+				//ZCII-533: We add the parameter m_linkParameters (record 909) to the citations properties so we can build the citation url using this id instead of the isbn  
+				citation.addPropertyValue("m_linkParameters", citation.getM_linkParameters());
+				//End ZCII-533
+				
 				collection.add( citation );
 				getCitationService().save(collection);
 			}
