@@ -34,7 +34,7 @@ public class JournalConverter extends AbstractConverter {
 		conversion.put("creator", "au");
 		conversion.put("title", "atitle");
 		conversion.put("sourceTitle", "jtitle");
-		conversion.put("date", "date");
+		conversion.put("year", "date");
 		conversion.put("volume", "volume");
 		conversion.put("issue", "issue");
 		conversion.put("startPage", "spage");
@@ -59,7 +59,7 @@ public class JournalConverter extends AbstractConverter {
 	}
 	
 	public boolean canConvertCitation(String type) {
-		return "journal".equals(type);
+		return "journal".equals(type) || "article".equals(type);
 	}
 	
 
