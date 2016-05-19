@@ -5034,6 +5034,10 @@ public abstract class BaseCitationService implements CitationService
 
 	    unknown.addField("rights", Schema.SHORTTEXT, true, false, 0, Schema.UNLIMITED);
 
+	    unknown.addField(Schema.RESOURCE_TYPE, Schema.SHORTTEXT, false, false, 0, 1);
+
+		unknown.addField(Schema.BOOKSTORE, Schema.SHORTTEXT, false, false, 0, 1);
+
 	    /*
 	     * ARTICLE
 	     */
@@ -5093,6 +5097,9 @@ public abstract class BaseCitationService implements CitationService
 
 	    article.addField("rights", Schema.SHORTTEXT, true, false, 0, Schema.UNLIMITED);
 
+	    article.addField(Schema.RESOURCE_TYPE, Schema.SHORTTEXT, false, false, 0, 1);
+
+		article.addField(Schema.BOOKSTORE, Schema.SHORTTEXT, false, false, 0, 1);
 
 	    /*
 	     * BOOK
@@ -5152,7 +5159,11 @@ public abstract class BaseCitationService implements CitationService
 
 	    book.addAlternativeIdentifier(Schema.PAGES, RIS_FORMAT, "SP");
 
-	    /*
+	    book.addField(Schema.RESOURCE_TYPE, Schema.SHORTTEXT, false, false, 0, 1);
+
+		book.addField(Schema.BOOKSTORE, Schema.SHORTTEXT, false, false, 0, 1);
+
+		/*
 	     * CHAPTER
 	     */
 	    chapter.addField(Schema.CREATOR, Schema.SHORTTEXT, true, true, 1, Schema.UNLIMITED);
@@ -5217,6 +5228,9 @@ public abstract class BaseCitationService implements CitationService
 
 	    chapter.addField("rights", Schema.SHORTTEXT, true, false, 0, Schema.UNLIMITED);
 
+	    chapter.addField(Schema.RESOURCE_TYPE, Schema.SHORTTEXT, false, false, 0, 1);
+
+		chapter.addField(Schema.BOOKSTORE, Schema.SHORTTEXT, false, false, 0, 1);
 
 	    /*
 	     * REPORT
@@ -5277,6 +5291,9 @@ public abstract class BaseCitationService implements CitationService
 
 	    report.addField("rights", Schema.SHORTTEXT, true, false, 0, Schema.UNLIMITED);
 
+	    report.addField(Schema.RESOURCE_TYPE, Schema.SHORTTEXT, false, false, 0, 1);
+
+		report.addField(Schema.BOOKSTORE, Schema.SHORTTEXT, false, false, 0, 1);
 
 	    /* IGNORING 'Citation' field for now...
 	    unknown.addField("inlineCitation", Schema.SHORTTEXT, false, false, 0, Schema.UNLIMITED);

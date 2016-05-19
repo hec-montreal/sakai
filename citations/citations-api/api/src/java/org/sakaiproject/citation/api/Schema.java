@@ -47,6 +47,8 @@ public interface Schema
 	public static final String YEAR = "year";
 	public static final String ISN = "isnIdentifier";
 	public static final String SOURCE_TITLE = "sourceTitle";
+	public static final String BOOKSTORE ="bookstoreUrl";
+	public static final String RESOURCE_TYPE="asmResourceType";
 	
 	public interface Field
 	{
