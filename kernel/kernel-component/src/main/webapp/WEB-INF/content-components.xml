@@ -58,6 +58,7 @@
         <property name="locksInDb">                 <value>false</value>                        </property>
         <property name="bodyPath">                  <null/>                                     </property>
         <property name="bodyVolumes">               <null/>                                     </property>
+        <property name="bodyPathDeleted">           <value>${sakai.home}/doc</value>            </property>
         <property name="autoDdl">                   <value>${auto.ddl}</value>                  </property>
         <property name="siteQuota">                 <value>0</value>                            </property>
         <property name="availabilityChecksEnabled"> <value>true</value>                         </property>
