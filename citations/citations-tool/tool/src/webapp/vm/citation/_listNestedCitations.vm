@@ -27,12 +27,14 @@
 	#else
 		#set( $introduction = 'Reading List Introduction' )
 	#end
+<!--
 	<div id='sectionInlineEditorDescription' class='editor sectionEditorsectionInlineEditorDescription buttonsDescription'>
 		$introduction
 	</div>
     <div id="buttonsDescription" class="buttonsDescription">
         <input type="button" id="toggleDescription" class="active" value='$tlang.getString("nested.start.editing.button")'/>
     </div>
+-->
 #end
 
 #set( $num = 1 )
@@ -276,6 +278,8 @@
 #end  ## end of h1 sections
 
 ## add section button
+<!--
 <div class="act" id="addSectionDiv">
 	<input id="addSectionButton" type="button" name="AddSection" class="active" value="$tlang.getString("nested.add.section.button")"/>
 </div>
+-->
