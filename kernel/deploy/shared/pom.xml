@@ -203,12 +203,33 @@
             <artifactId>geronimo-spec-jms</artifactId>
             <scope>compile</scope>
         </dependency>
-        <dependency>
+         <dependency>
             <groupId>javax.jcr</groupId>
             <artifactId>jcr</artifactId>
             <scope>compile</scope>
         </dependency>
+		<!--  ZCII-2343 : temporary modif for opensyllabus
+			allow use of old jcr in code. -->
         <dependency>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi</artifactId>
+          <version>${sakai.poi.version}</version>
+          <scope>compile</scope>
+        </dependency>
+        <dependency>
+         <groupId>org.apache.poi</groupId>
+         <artifactId>poi-ooxml</artifactId>
+         <version>${sakai.poi.version}</version>
+         <scope>compile</scope>
+        </dependency>
+         <dependency>
+         <groupId>org.apache.poi</groupId>
+         <artifactId>poi-ooxml-schemas</artifactId>
+         <version>${sakai.poi.version}</version>
+         <scope>compile</scope>
+        </dependency>       
+		<!--  Fin ZCII-2343 :  -->
+       <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <scope>compile</scope>
