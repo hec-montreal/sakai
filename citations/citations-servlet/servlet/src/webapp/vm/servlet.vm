@@ -19,9 +19,9 @@
 		<meta http-equiv="Content-Style-Type" content="text/css" />
 		<title>$tlang.getString( "window.gscholar" )</title>
 		<link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all" />
-		<link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all" />
+		<link href="/library/skin/morpheus-default/tool.css" type="text/css" rel="stylesheet" media="all" />
 		<script type="text/javascript" src="/library/webjars/jquery/1.11.3/jquery.min.js"></script>
-		<script type="text/javascript" src="/savecite/js/savecite.js"></script>
+		<script type="text/javascript" src="/sakai-citations-servlet/js/savecite.js"></script>
 	</head>
   	<body>
 		<div class="portletBody">

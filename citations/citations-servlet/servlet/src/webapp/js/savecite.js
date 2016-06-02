@@ -6,7 +6,7 @@ savecite.init = function() {
 		var citationId = $(row).find('.citationId').text();
 		var resourceId = $('#resourceId').text();
 		$.ajax({
-			url: '/savecite/' + resourceId + '/' + citationId,
+			url: '/sakai-citations-servlet/' + resourceId + '/' + citationId,
 			type: 'DELETE',
 			success: function(data, textStatus, jqXHR) {
 				row.empty();
@@ -29,7 +29,7 @@ savecite.init = function() {
 				});
 			});
 			$.ajax({
-				url: '/savecite/' + resourceId + '/' + citationId,
+				url: '/sakai-citations-servlet/' + resourceId + '/' + citationId,
 				type: 'DELETE',
 				success: function(data, textStatus, jqXHR) {
 					row.empty();
