@@ -172,17 +172,6 @@ public abstract class BaseCitationService implements CitationService
 		protected boolean m_isAdded = false;
 		protected String m_preferredUrl;
 
-		//ZCII-533:The property m_linkParameters (record 909) is used to build the citation url using this id instead of the isbn
-		private String m_linkParameters = null;
-		public String getM_linkParameters() {
-			return m_linkParameters;
-		}
-
-		public void setM_linkParameters(String m_linkParameters) {
-			this.m_linkParameters = m_linkParameters;
-		}
-		//End ZCII-533
-
 		/**
 		 * Constructs a temporary citation.
 		 */
@@ -350,9 +339,9 @@ public abstract class BaseCitationService implements CitationService
 												}
 												values.add(part.getValue());
 											}
-											else if (type == "linkParameters")
+											else
 											{
-												  m_linkParameters = (String)part.getValue();
+
 											}
 
 										}
@@ -1244,11 +1233,7 @@ public abstract class BaseCitationService implements CitationService
 					return resolverUrl + firstDelimiter + openUrlParams;
 				}
 				else {
-					// if the citation didn't come from the library, use getLibraryUrlParameters
-					if (m_linkParameters == null || m_linkParameters.equals(""))
-						m_linkParameters = getLibraryUrlParameters();
-
-					return url + m_linkParameters;
+					return url + getLibraryUrlParameters();
 				}
 			}
 			else

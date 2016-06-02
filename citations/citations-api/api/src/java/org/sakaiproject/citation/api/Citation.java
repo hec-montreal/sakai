@@ -44,11 +44,6 @@ public interface Citation 	// extends Entity
     public static final String ADD_PREFIX_TEXT    = "y";
     public static final String OMIT_PREFIX_TEXT   = "n";
     
-    //ZCII-533:The property m_linkParameters (record 909) is used to build the citation url using this id instead of the isbn
-    public String getM_linkParameters();
-	public void setM_linkParameters(String m_linkParameters);
-	//End ZCII-533
-
 	/**
 	   * Add a new custom (direct) URL
      * @param label Link label
