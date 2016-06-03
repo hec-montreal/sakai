@@ -1824,8 +1824,11 @@ public class AssignmentAction extends PagedResourceActionII
 	        while (_it.hasNext()) {
 	            String _gRef = _it.next();
 	            Group _g = site.getGroup(_gRef);
-	            if (_g != null && _g.getMember(member) != null)// && _g.getProperties().get(GROUP_SECTION_PROPERTY) == null)
+	            if (_g != null && _g.getMember(member) != null){// && _g.getProperties().get(GROUP_SECTION_PROPERTY) == null)
 	                groups.add(_g);
+	            } else if(_g != null && m_securityService.isSuperUser()){// allow admin to submit on behalf of groups
+	                groups.add(_g);
+	            }
 	        }
 	    }
 	    return groups;
@@ -3046,7 +3049,7 @@ public class AssignmentAction extends PagedResourceActionII
 			}
 			Collections.sort(categoryList);
 			context.put("categoryKeys", categoryList);
-			context.put("categoryTable", categoryTable());
+			context.put("categoryTable", categoryTable);
 		}
 		else
 		{
@@ -15636,6 +15639,9 @@ public class AssignmentAction extends PagedResourceActionII
 	        SessionState state,
 	        String base_message) {
 	    Collection<String> retVal = new ArrayList<String>();
+	    if(m_securityService.isSuperUser()){//don't check this for admin users
+	        return retVal;
+	    }
 	    if (groups != null && groups.size() > 0) {
 	        ArrayList<String> check_users = new ArrayList<String>();
 	        Iterator<Group> it_groups = groups.iterator();

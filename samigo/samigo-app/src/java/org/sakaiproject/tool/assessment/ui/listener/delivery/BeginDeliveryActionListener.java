@@ -157,8 +157,7 @@ public class BeginDeliveryActionListener implements ActionListener
 	// set the outcome to isRetractedForEdit2 error page.
     if (DeliveryBean.REVIEW_ASSESSMENT == action && AssessmentIfc.RETRACT_FOR_EDIT_STATUS.equals(pub.getStatus())) {
     	delivery.setAssessmentTitle(pub.getTitle());
-    	delivery.setHonorPledge(pub.getAssessmentMetaDataByLabel("honorpledge_isInstructorEditable") != null &&
-    			pub.getAssessmentMetaDataByLabel("honorpledge_isInstructorEditable").toLowerCase().equals("true"));
+        delivery.setHonorPledge(control.getHonorPledge());
     	delivery.setOutcome("isRetractedForEdit2");
     	return;
     }
@@ -316,8 +315,6 @@ public class BeginDeliveryActionListener implements ActionListener
     // #0 - global information
     delivery.setAssessmentId((pubAssessment.getPublishedAssessmentId()).toString());
     delivery.setAssessmentTitle(pubAssessment.getTitle());
-    delivery.setHonorPledge(pubAssessment.getAssessmentMetaDataByLabel("honorpledge_isInstructorEditable") != null &&
-    						pubAssessment.getAssessmentMetaDataByLabel("honorpledge_isInstructorEditable").toLowerCase().equals("true"));
     String instructorMessage = pubAssessment.getDescription();
     delivery.setInstructorMessage(instructorMessage);
 
@@ -352,6 +349,7 @@ public class BeginDeliveryActionListener implements ActionListener
     else {
     	delivery.setDisplayMardForReview(false);
     }
+    if (control.getHonorPledge() != null) delivery.setHonorPledge(control.getHonorPledge());
 
     // #1 - set submission remains
     populateSubmissionsRemaining(service, pubAssessment, delivery);
@@ -376,8 +374,7 @@ public class BeginDeliveryActionListener implements ActionListener
     }
 
     // #3 - if this is a timed assessment, set the time limit in hr, min & sec.
-//    setTimedAssessment(delivery, pubAssessment, extTimeService);
-//    delivery.setDeadline();
+    delivery.setDeadline();
   }
 
   private void setTimedAssessment(DeliveryBean delivery, PublishedAssessmentIfc pubAssessment, ExtendedTimeService extTimeService, AssessmentGradingData unSubmittedAssessmentGrading){
@@ -385,7 +382,6 @@ public class BeginDeliveryActionListener implements ActionListener
     AssessmentAccessControlIfc control = pubAssessment.getAssessmentAccessControl();
     // check if we need to time the assessment, i.e.hasTimeassessment="true"
     String hasTimeLimit = pubAssessment.getAssessmentMetaDataByLabel("hasTimeAssessment");
-    hasTimeLimit="true"; //TODO: figure out why this isn't giving me the right value
     if (hasTimeLimit!=null && hasTimeLimit.equals("true") && control.getTimeLimit() != null){
 
     	delivery.setHasTimeLimit(true);

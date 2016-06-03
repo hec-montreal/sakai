@@ -29,6 +29,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -116,7 +117,7 @@ public class DeliveryBean
   
   private String assessmentId;
   private String assessmentTitle;
-  private Boolean honorPledge = Boolean.FALSE;
+  private boolean honorPledge;
   private ArrayList markedForReview;
   private ArrayList blankItems;
   private ArrayList markedForReviewIdents;
@@ -2367,53 +2368,19 @@ public class DeliveryBean
 
   private byte[] getMediaStream(String mediaLocation)
   {
-    FileInputStream mediaStream = null;
-    FileInputStream mediaStream2 = null;
     byte[] mediaByte = new byte[0];
     try
     {
-      int i;
-      int size = 0;
-      mediaStream = new FileInputStream(mediaLocation);
-      while ( (i = mediaStream.read()) != -1)
-      {
-        size++;
-      }
-      mediaStream2 = new FileInputStream(mediaLocation);
-      mediaByte = new byte[size];
-      mediaStream2.read(mediaByte, 0, size);
+      mediaByte = Files.readAllBytes(new File(mediaLocation).toPath());
     }
     catch (FileNotFoundException ex)
     {
-      log.error("file not found=" + ex.getMessage());
+      log.error("File not found in DeliveryBean.getMediaStream(): " + ex.getMessage());
     }
     catch (IOException ex)
     {
-      log.error("io exception=" + ex.getMessage());
+      log.error("IO Exception in DeliveryBean.getMediaStream(): " + ex.getMessage());
     }
-    finally
-    {
-      if (mediaStream != null) {
-    	  try
-    	  {
-    		  mediaStream.close();
-    	  }
-    	  catch (IOException ex1)
-    	  {
-    		  log.warn(ex1.getMessage());
-    	  }
-      }
-    if (mediaStream2 != null) {
-  	  try
-  	  {
-  		  mediaStream2.close();
-  	  }
-  	  catch (IOException ex1)
-  	  {
-  		  log.warn(ex1.getMessage());
-  	  }
-    }
-  }
     return mediaByte;
   }
 
@@ -3959,11 +3926,11 @@ public class DeliveryBean
 	    this.redrawAnchorName = redrawAnchorName;
 	  }
 
-	public Boolean getHonorPledge() {
+	public boolean isHonorPledge() {
 		return honorPledge;
 	}
 
-	public void setHonorPledge(Boolean honorPledge) {
+	public void setHonorPledge(boolean honorPledge) {
 		this.honorPledge = honorPledge;
 	}
 	 
