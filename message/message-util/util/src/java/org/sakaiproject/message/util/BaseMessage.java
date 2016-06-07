@@ -2740,8 +2740,8 @@ public abstract class BaseMessage implements MessageService, DoubleStorageUser
 
 			// clear out any thread local caching of this message, since it has just changed
 			m_threadLocalManager.set(edit.getReference(), null);
-			// clear out this messasge in the threadLocalManager findMessages cache
-			removeFromFindMessagesCache(edit);
+			// update this messasge in the threadLocalManager findMessages cache
+			updateInFindMessagesCache(edit);
 
 			// track event
 			Event event = m_eventTrackingService.newEvent(eventId(((BaseMessageEdit) edit).getEvent()), edit.getReference(), true,
@@ -2760,12 +2760,14 @@ public abstract class BaseMessage implements MessageService, DoubleStorageUser
 		} // commitMessage
 		
 
-		public void removeFromFindMessagesCache (MessageEdit messageReference) {
+		public void updateInFindMessagesCache (MessageEdit messageReference) {
 			List msgs = (List) m_threadLocalManager.get(getReference() + ".msgs");
 			if (msgs != null)
 			{
-				//Attempt to remove this message
-				msgs.remove(messageReference);
+				//Attempt to remove this message, if so replace it.
+				if (msgs.remove(messageReference)) {
+					msgs.add(messageReference);
+				}
 				m_threadLocalManager.set(getReference() + ".msgs", msgs);
 			}
 		}
