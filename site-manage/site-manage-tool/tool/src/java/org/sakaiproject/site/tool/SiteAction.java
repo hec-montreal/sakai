@@ -2139,14 +2139,16 @@ public class SiteAction extends PagedResourceActionII {
 						if (!isProvidedType) {
 							// hide site access for provided site types
 							// type of sites
-							b.add(new MenuEntry(
-									rb.getString("java.siteaccess"),
-									"doMenu_edit_site_access"));
-							
+							// and course sites.
+							if (SecurityService.isSuperUser()) {
+								b.add(new MenuEntry(
+										rb.getString("java.siteaccess"),
+										"doMenu_edit_site_access"));
+							}							
 							// hide site duplicate and import
-							if (SiteService.allowAddSite(null) && ServerConfigurationService.getBoolean("site.setup.allowDuplicateSite", true))
+							if (SecurityService.isSuperUser() && SiteService.allowAddSite(null) && ServerConfigurationService.getBoolean("site.setup.allowDuplicateSite", true))
 							{
-								b.add(new MenuEntry(rb.getString("java.duplicate"),
+										b.add(new MenuEntry(rb.getString("java.duplicate"),
 										"doMenu_siteInfo_duplicate"));
 							}
 

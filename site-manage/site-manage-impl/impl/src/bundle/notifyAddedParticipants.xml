@@ -103,6 +103,24 @@ Zodra u uw gastaccount heeft, kunt u inloggen voor ${localSakaiName} :
 &lt;/#if&gt;4. Ga naar de site en klik op de site tab. (U ziet twee of meer tabs naast elkaar over het bovenste deel van het scherm.)</message>
  <locale>nl</locale>
 </emailTemplate>
+<emailTemplate>
+	<subject>Message de ${localSakaiName}</subject>
+	<message>${currentUserDisplayName}:
+
+&lt;#if newNonOfficialAccount == "true" &gt;
+	
+	Une fois que vous aurez reçu l'information concernant votre compte, vous pourrez accéder à ${localSakaiName}:
+&lt;#else&gt;
+	Pour vous authentifier:
+&lt;/#if&gt;
+1. Ouvrir   ${localSakaiName} : ${localSakaiURL}
+2. Entrer votre nom d'utilisateur et votre mot de passe et appuyer sur le bouton Ouvrir une session.
+3. Pour aller sur un site, cliquer sur l'onglet du site. (Vous verrez au moins deux onglets dans la barre d'onglet située en haut de l'écran)
+
+
+	</message>
+	<locale>fr_CA</locale>
+</emailTemplate>
 
 <!-- <emailTemplate>
  <subject>${localSakaiName} \uc0ac\uc774\ud2b8 \uc54c\ub9bc\uc0ac\ud56d</subject>

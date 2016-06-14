@@ -196,4 +196,24 @@ Mais tarde voc\u00ea pode ir a ferramenta Conta em seu &quot;Meu site&quot; para
  <locale>mn_MN</locale>
 </emailTemplate>
  -->
+<emailTemplate>
+		<subject>Message de ${localSakaiName} </subject>
+		<message>${userName}:
+
+Un compte sur ${localSakaiName} (${localSakaiURL}) a été créé pour vous par ${currentUserDisplayName}. Pour accéder à votre compte:
+
+1) Allez à :
+		${localSakaiURL}
+
+2) Authentifiez-vous en utilisant:
+		ID de l'utilisateur: 	${userEid}
+		Mot de passe: 	${newPassword} 
+	Vous pouvez aller dans l'outil Compte dans le site Espace personnel pour le réinitialiser
+ 
+ (Ceci est un message automatique provenant de ${localSakaiName}.)
+
+		</message>
+		<locale>fr_CA</locale>
+</emailTemplate>
+
 </emailTemplates>

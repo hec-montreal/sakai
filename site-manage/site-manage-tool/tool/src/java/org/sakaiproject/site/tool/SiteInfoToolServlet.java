@@ -321,7 +321,7 @@ public class SiteInfoToolServlet extends HttpServlet
 				
 				// participant name
 				String participantName= participant.getName();
-				if (participant.getDisplayId() != null)
+				if (participant.getDisplayId() != null )
 				{
 					participantName +="( " +  participant.getDisplayId() + " )";
 				}
