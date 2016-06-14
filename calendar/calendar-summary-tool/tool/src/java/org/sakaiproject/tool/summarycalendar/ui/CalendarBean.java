@@ -769,7 +769,9 @@ public class CalendarBean {
 				selectedEvent.setDescription(event.getDescriptionFormatted());
 				selectedEvent.setLocation(event.getLocation());
 				Site site = M_ss.getSite(calendar.getContext());
-				selectedEvent.setSite(site.getTitle());
+				// ZCII-1501 : use title property rather than actual site title.
+				String siteTitle = site.getProperties().getPropertyFormatted("title");
+				selectedEvent.setSite(siteTitle!="" ? siteTitle : site.getTitle());
 				String eventUrl = buildEventUrl(site, event.getReference());
 				selectedEvent.setUrl(eventUrl);
 				selectedEvent.setAttachments(event.getAttachments());
