@@ -60,7 +60,7 @@
 						<p class="act">
 							<button type="button" onclick="history.back();">$tlang.getString( "back.gscholar" )</button>
 							<button type="button" onclick="window.close();">$tlang.getString( "close.gscholar" )</button>
-							<button type="button" id="removeAllCitations">$tlkang.getString("cancel.gscholar")</button>
+							<button type="button" id="removeAllCitations">$tlang.getString("cancel.gscholar")</button>
 						</p>
 					#end
 				#else
