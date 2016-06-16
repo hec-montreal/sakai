@@ -3390,14 +3390,7 @@ public class SiteAction extends PagedResourceActionII {
 			context.put("siteType", state.getAttribute(STATE_TYPE_SELECTED));
 			
 			// SAK-28990 remove continue with no roster
-			if( "true".equalsIgnoreCase( ServerConfigurationService.getString( SAK_PROP_CONT_NO_ROSTER_ENABLED, "true" ) ) )
-			{
-				context.put( VM_CONT_NO_ROSTER_ENABLED, Boolean.TRUE );
-			}
-			else
-			{
-				context.put( VM_CONT_NO_ROSTER_ENABLED, Boolean.FALSE);
-			}
+			context.put(VM_CONT_NO_ROSTER_ENABLED, ServerConfigurationService.getBoolean(SAK_PROP_CONT_NO_ROSTER_ENABLED, false));
 			
 			return (String) getContext(data).get("template") + TEMPLATE[36];
 		case 37:
@@ -3848,7 +3841,12 @@ public class SiteAction extends PagedResourceActionII {
 	 */
 	protected Map<String, AdditionalRole> loadAdditionalRoles() {
 		Map<String, AdditionalRole> additionalRoles = new HashMap<String, AdditionalRole>();
-		for (String roleId : authzGroupService.getAdditionalRoles()) {			
+		for (String roleId : authzGroupService.getAdditionalRoles()) {
+				// Check if the role is allowed to be granted in the realm
+				boolean allowedRoleId = ServerConfigurationService.getBoolean("sitemanage.grant"+roleId, false);
+				if(!allowedRoleId){
+					continue;
+				}
 				AdditionalRole role = new AdditionalRole();
 				role.id = roleId;
 				role.name = authzGroupService.getRoleName(role.id);
@@ -5820,6 +5818,8 @@ public class SiteAction extends PagedResourceActionII {
 		{
 			// remove selected section
 			removeAnyFlagedSection(state, params);
+		} else if (option.equalsIgnoreCase("norosters")) {
+			state.setAttribute(STATE_TEMPLATE_INDEX, "13");
 		}
 
 	} // doManual_add_course
@@ -14949,10 +14949,6 @@ private Map<String,List> getTools(SessionState state, String type, Site site) {
 			} else if ("manual".equals(option)) {
 				// TODO: send to case 37
 				state.setAttribute(STATE_TEMPLATE_INDEX, "37");
-
-				state.setAttribute(STATE_MANUAL_ADD_COURSE_NUMBER, Integer.valueOf(
-						1));
-
 				return;
 			} else if ("remove".equals(option))
 				removeAnyFlagedSection(state, params);
@@ -15411,6 +15407,8 @@ private Map<String,List> getTools(SessionState state, String type, Site site) {
 				state.setAttribute(STATE_TEMPLATE_INDEX, "37");
 			}
 		}
+
+		state.setAttribute(VM_CONT_NO_ROSTER_ENABLED, ServerConfigurationService.getBoolean(SAK_PROP_CONT_NO_ROSTER_ENABLED, false));
 	}
 	
 	public void doEdit_site_info(RunData data)
