@@ -1,0 +1,9 @@
+Bonjour,
+
+Vous avez été inscrit au Forum de ZoneCours. Veuillez suivre le lien suivant pour compléter votre inscription:
+${url}
+
+Rappel : Votre nom d’utilisateur est : ${user.username}
+
+Cordialement,
+L’équipe ZoneCours 

@@ -1,0 +1,24 @@
+<#setting number_format = "#"/>
+Bonjour,
+<br />
+Vous avec reçu ce courriel car il y a eu des messages ajoutés à la discussion "${topic.title}" dans le forum de discussion du site ${path} depuis votre dernière visite. Vous ne recevrez pas d’autres avis jusqu’à ce que vous consultiez cette discussion. 
+<br /><br />
+Vous pouvez consulter la discussion ci-dessous. Pour répondre à cette discussion, veuillez vous connecter au site :
+<br /><br />
+<a href="${serverurl}"><b>${path}</b></a> 
+<br /><br />
+-----------------------------
+<br />
+De: ${postfrom} 
+<br />
+Sujet: "${post.subject}"
+<br /><br />
+${post.text}
+<br /><br />
+----------------------------- 
+<br /><br />
+Si vous ne voulez plus recevoir des avis par courriel pour cette discussion, veuillez vous rendre sur la page où la discussion est affichée et cliquez sur «Cesser le suivi» dans le haut de la page.
+<br /><br />
+Cordialement,
+<br />
+L’équipe ZoneCours

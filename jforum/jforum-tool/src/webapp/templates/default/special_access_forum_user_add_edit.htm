@@ -1,0 +1,252 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/special_access_forum_user_add_edit.htm $
+ * $Id: special_access_forum_user_add_edit.htm 71144 2010-11-02 23:34:28Z murthy@etudes.org $
+ ***********************************************************************************
+ *
+ * Copyright (c) 2008, 2009, 2010 Etudes, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***********************************************************************************/
+ -->
+ <#include "header.htm"/>
+ 
+ <script language="javascript">
+<#include "js/calendar2.js"/>
+
+function validateForm()
+{
+	if (!validateDates())
+	{
+		return false;
+	}
+	
+	return true;	
+}
+
+function validateDates()
+{
+	if (document.form.start_date.value.replace(/^\s*|\s*$/g, "").length == 0) 
+ 	{
+   		return true;
+ 	}
+ 	if (document.form.end_date.value.replace(/^\s*|\s*$/g, "").length == 0) 
+ 	{
+   		return true;
+ 	}
+ 	if (Date.parse(document.form.start_date.value) > Date.parse(document.form.end_date.value)) 
+ 	{
+   		alert("${I18n.getMessage("Forums.Form.DateError")}");
+   		return false;
+ 	}
+
+ 	return true;
+}
+
+
+function showCal(id)
+{
+	var obj = document.getElementById(id);
+	
+
+  	var dt = new Date(obj.value);
+  	if (obj.value.replace(/^\s*|\s*$/g, "").length == 0) 
+  	{
+	    var cal2_enddate = new calendar2(obj);
+	    cal2_enddate.popup();
+	    obj.select(); 
+  	}
+  	else
+  	{
+	   	if (!isNaN(dt))
+	  	{
+		    var cal2_enddate = new calendar2(obj);
+		    cal2_enddate.popup();
+		    obj.select();
+	  	}
+		else
+		{
+		    alert("${I18n.getMessage("Forums.Form.DateError")}");
+		    obj.select();
+	  	}
+  	}
+} 
+
+</script>
+ 
+<form action="${contextPath}/jforum${extension}" method="post" name="form"  enctype="multipart/form-data" id="form" accept-charset="${encoding}" onSubmit="return validateForm(this)">
+<input type="hidden" name="action" value="${action}" />
+<input type="hidden" name="module" value="${moduleName}" />
+<#if specialAccess?exists>
+<input type="hidden" name="special_access_id" value="${specialAccess.id}" />
+</#if>
+<input type="hidden" name="forum_id" value="${forum.id}" />
+<input type="hidden" name="user_id" value="${user.id}" />
+<input type="hidden" name="securityHash" value="${securityHash}" />
+
+<table class="forumline" cellspacing="1" cellpadding="3" width="100%" border="0">
+	<table cellspacing="0" cellpadding="10" width="100%" align="center" border="0">
+	<tr>
+		<td class="bodyline" valign="top">
+			<table cellspacing="2" cellpadding="2" width="100%" align="center" border="0">
+				<tr>
+					<td valign="bottom" align="left" colspan="2">
+						<a class="maintitle" href="${JForumContext.encodeURL("/forums/show")}">${forum.name}</a>
+					</td> 
+				</tr>
+				<tr>
+					<td valign="center" align="left" width="50">
+						<a href="${JForumContext.encodeURL("/gradeForum/evalForumList/${forum.id}/name/a")}"><img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/grading_home.gif" alt="grades home icon"/></a>
+					</td>
+					<td valign="center" align="left" colspan="2">
+						<span class="nav">
+							<a class="nav" href="${JForumContext.encodeURL("/forums/list")}">${I18n.getMessage("ForumListing.forumIndex")}</a> -&gt;  <a class="nav" href="${JForumContext.encodeURL("/forums/show/${forum.id}")}" title="">${forum.name}</a>
+						</span>
+					</td>
+				</tr>
+			<table>
+			<br/>
+			<#if errorMessage?exists>
+				<table cellspacing="2" cellpadding="2" width="100%" align="center" border="0">
+					<tr>
+						<td colspan="2" align="center"><span class="redclass">${errorMessage}</span></td>
+					</tr>
+					<tr>
+						<td align="left" colspan="2"><span class="nav"></span></td>
+					</tr>
+				</table>
+			</#if>
+			<table class="forumline" cellspacing="1" cellpadding="4" width="100%" align="center" border="0">
+				<tr>
+					<th class="thHead" align="left" valign="center" colspan="35 height="25">
+						<img src="${contextPath}/templates/${templateName}/images/access.png" alt=""/> ${I18n.getMessage("SpecialAccess.List.Title")}
+					</th>
+				</tr>
+				<tr>
+					<td align="left">
+						<span class="genmed">
+							${I18n.getMessage("SpecialAccess.AddEditUser")}
+						</span>
+					</td>
+					<td>
+						<span class="genmed">
+							${user.lastName}, ${user.firstName}&nbsp;(${user.username})
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td align="left" colspan="2"><span class="nav"></span></td>
+				</tr>
+				
+				<#if specialAccess?exists>
+					<#if specialAccess.startDate?exists>
+						<#assign startDate = specialAccess.startDate>
+					</#if>
+				<#else>
+					<#if forum?exists>
+						<#if forum.startDate?exists>
+							<#assign startDate = forum.startDate>
+						<#else>
+							<#if category?exists>
+								<#if category.startDate?exists>
+									<#assign startDate = category.startDate>
+								</#if>
+							</#if>
+						</#if>
+					</#if>
+				</#if>
+				
+				<#if specialAccess?exists>
+					<#if specialAccess.endDate?exists>
+						<#assign endDate = specialAccess.endDate>
+					</#if>
+				<#else>
+					<#if forum?exists>
+						<#if forum.endDate?exists>
+							<#assign endDate = forum.endDate>
+						<#else>
+							<#if category?exists>
+								<#if category.endDate?exists>
+									<#assign endDate = category.endDate>
+								</#if>
+							</#if>
+						</#if>
+					</#if>
+				</#if>
+				
+				<#if specialAccess?exists>
+					<#if specialAccess.isLockOnEndDate()>
+						<#assign sachecked = true>
+					</#if>
+				<#else>
+					<#if forum?exists>
+						<#if (forum.endDate?exists)>
+							<#if (forum.isLockForum())>
+								<#assign sachecked = true>
+							</#if>
+						<#else>
+							<#if category?exists>
+								<#if (category.endDate?exists && category.isLockCategory())>
+									<#assign sachecked = true>
+								</#if>
+							</#if>
+						</#if>
+					</#if>
+				</#if>
+	
+				<tr>
+					<td width="25%">
+						<span class="genmed">${I18n.getMessage("SpecialAccess.Form.StartDate")}</span>
+					</td>
+					<td>
+						<input type="text" style="WIDTH: 200px" maxlength="150" size="25" name="start_date" id="start_date" value="<#if startDate?exists>${startDate?datetime?string("${calendarDateTimeFormat}")}</#if>" /><input type="image" id="sdateCal" onclick="showCal('start_date');return false;" width="20" height="20" src="${contextPath}/templates/${templateName}/images/date-time_preferences.gif" styleClass="ImgSpace"/>
+					</td>
+				</tr>
+			    <tr>
+					<td>
+						<span class="genmed">${I18n.getMessage("SpecialAccess.Form.EndDate")}</span>
+					</td>
+					<td>
+						<input type="text" style="WIDTH: 200px" maxlength="150" size="25" name="end_date" id="end_date" value="<#if endDate?exists>${endDate?datetime?string("${calendarDateTimeFormat}")}</#if>" /><input type="image" id="edateCal" onclick="showCal('end_date');return false;" width="20" height="20" src="${contextPath}/templates/${templateName}/images/date-time_preferences.gif" styleClass="ImgSpace"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						&nbsp;
+					</td>
+					<td>
+						<span class="genmed">
+							<input type="checkbox" name="lock_on_due" id="lock_on_due" title="lock on due" value="1" <#if sachecked?exists && sachecked>checked</#if> />
+							&nbsp;${I18n.getMessage("SpecialAccess.Form.LockOnEndDate")}
+						</span>
+					</td>
+				</tr>
+				
+				<tr align="center">
+					<td class="catBottom" colspan="2" height="28">
+						<input class="mainoption" type="submit" value="${I18n.getMessage("SpecialAccess.Form.ClickToUpdate")}" name="submit" accesskey="${I18n.getMessage("save-access")}" title="${I18n.getMessage("save-access-description")}" />
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	
+		
+	</table>
+	
+	
+</table>
+
+</form>
+
+<#include "bottom.htm"/>

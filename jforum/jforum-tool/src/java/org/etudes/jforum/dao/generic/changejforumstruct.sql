@@ -1,0 +1,15 @@
+alter table jforum_users add column user_fname varchar(255);
+alter table jforum_users add column user_lname varchar(255);
+create table jforum_sakai_course_categories (course_id varchar(99) not null,categories_id mediumint(8) not null);
+create table jforum_sakai_course_groups (course_id varchar(99) not null,group_id int(11) not null);
+create table jforum_sakai_course_initvalues (course_id varchar(99) not null,init_status tinyint(1) not null);
+create table jforum_sakai_course_privmsgs (course_id varchar(99) not null,privmsgs_id mediumint(8) not null);
+alter table jforum_users modify user_notify tinyint(1) default '0';
+alter table jforum_users modify user_notify_pm tinyint(1) default '0';
+CREATE TABLE jforum_sakai_sessions (course_id varchar(99) NOT NULL,user_id mediumint(8) NOT NULL,visit_time datetime NOT NULL);
+ALTER TABLE jforum_forums ADD start_date datetime;
+ALTER TABLE jforum_forums ADD end_date datetime;
+ALTER TABLE jforum_users ADD sakai_user_id varchar(99) NOT NULL;
+alter table jforum_topics drop column topic_views;
+alter table jforum_sakai_sessions add column markall_time datetime;
+CREATE TABLE jforum_topics_mark (topic_id mediumint(8) NOT NULL default '0',user_id mediumint(8) NOT NULL default '0',mark_time datetime NOT NULL default '0000-00-00 00:00:00',PRIMARY KEY  (topic_id,user_id),CONSTRAINT fk_jf_topics FOREIGN KEY (topic_id) REFERENCES jforum_topics(topic_id) ON DELETE CASCADE ON UPDATE CASCADE);

@@ -1,0 +1,146 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/search.htm $
+ * $Id: search.htm 55651 2008-12-03 23:28:08Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<#include "header.htm"/>
+<form accept-charset="${encoding}" action="${JForumContext.encodeURL("/jforum")}" method="get" id="formSearch" name="formSearch">
+	<input type="hidden" name="module" value="${moduleName}" />
+	<input type="hidden" name="action" value="search" />
+	<input type="hidden" name="clean" value="1" />
+	
+	<table cellspacing="2" cellpadding="2" width="100%" align="center" border="0">
+		<tr>
+			<td align="left">
+				<span class="nav"><a class="nav" href="${contextPath}/forums/list${extension}">${I18n.getMessage("ForumListing.forumIndex")}</a></span>
+			</td>
+	    </tr>
+	</table>
+
+	<table class="forumline" cellspacing="1" cellpadding="4" width="100%" border="0">
+		<tr>
+			<th class="thHead" colspan="4" height="25">${I18n.getMessage("Search.terms")}</th>
+		</tr>
+		
+		<tr>
+			<td class="row1" width="50%" colspan="2"><span class="gen">${I18n.getMessage("Search.typeKeywords")}</span></td>
+			<td class="row2" valign="top" colspan="2">
+				<p><span class="genmed">
+				<input class="post" style="WIDTH: 300px" size="30" name="search_keywords" />
+				<br /><br />
+				<input name="search_terms" type="radio" value="all" checked="checked" /> 
+				${I18n.getMessage("Search.allTerms")}
+				</span>
+				<br />
+				<span class="genmed"><input type="radio" value="any" name="search_terms" />${I18n.getMessage("Search.anyTerm")}</span>
+				</p>
+			</td>
+        </tr>
+        <tr>
+			<th class="thHead" colspan="4" height="25">${I18n.getMessage("Search.options")}</th>
+        </tr>
+		
+        <tr>
+			<td class="row1" align="right"><span class="gen">${I18n.getMessage("Search.forum")}:&nbsp;</span></td>
+			<td class="row2">
+				<span class="genmed">
+				<select class="post" name="search_forum">
+					<option value="" selected="selected">${I18n.getMessage("Search.allAvailable")}</option>
+					<#list categories as c>
+						<#list c.getForums() as f>
+		  					<option value="${f.id}">${f.name}</option>
+						</#list>
+					</#list>
+				</select>
+				</span>
+			</td>
+			<td class="row1" align="right" rowspan="2" valign="top"><span class="gen">${I18n.getMessage("Search.orderBy")}:&nbsp;</span></td>
+			<td class="row2" valign="center" nowrap="nowrap" rowspan="2">
+				<span class="genmed">
+				<select class="post" name="sort_by">
+					<option value="time" selected="selected">${I18n.getMessage("Search.postDate")}</option>
+					<option value="title">${I18n.getMessage("Search.subject")}</option>
+					<option value="username">${I18n.getMessage("Search.author")}</option>
+					<option value="forum">${I18n.getMessage("Search.forum")}</option>
+				</select>
+				<br />
+				<input type="radio" value="ASC" name="sort_dir" /> ${I18n.getMessage("Search.ascending")}<br />
+				<input type="radio" checked="checked" value="DESC" name="sort_dir" /> ${I18n.getMessage("Search.descending")}
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td class="row1" align="right"><span class="gen">${I18n.getMessage("Search.category")}:&nbsp;</span></td>
+			<td class="row2">
+				<span class="genmed">
+				<select class="post" name="search_cat">
+					<option value="" selected="selected">${I18n.getMessage("Search.allAvailable")}</option>
+					<#list categories as c>
+		  				<option value="${c.id}">${c.name}</option>
+					</#list>
+				</select>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td class="catBottom" align="middle" colspan="4" height="28"><input class="liteoption" type="submit" value="${I18n.getMessage("Search.search")}" /></td>
+		</tr>
+	</table>
+</form>
+<script language="javascript">
+document.formSearch.search_keywords.focus();
+</script>
+<#include "bottom.htm"/>

@@ -1,0 +1,98 @@
+<#--
+/***********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/admin/header.htm $
+ * $Id: header.htm 70688 2010-10-13 18:54:22Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2009, 2010 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ ***********************************************************************************/
+ -->
+<#setting number_format = "#"/>
+
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<style type="text/css">@import url( ${contextPath}/templates/${templateName}/admin/style.css );</style>
+${JForumContext.sakaiHeadJSScriptTag()}
+
+<title>${pageTitle?default("JForum")}</title>
+
+<script type="text/javascript"><#include "js/autosave.js"/></script>
+</head>
+<body onload="${JForumContext.sakaiWinHeightJSFunction()}" text="#000000" vlink="#5493b4" link="#006699" bgcolor="#e5e5e5">
+
+<table width="100%" border="0">
+	<tr>
+		<td align="middle">
+			<table class="forumline" cellspacing="1" cellpadding="4" width="100%" border="0">
+				<#--
+				<tr>
+					<td class="maintitle" height="25">${I18n.getMessage("Admin.administration")}</td>
+				</tr>
+				-->
+				<tr>
+					<td align="center" nowrap="nowrap">
+						<!--&nbsp;<img src="${contextPath}/templates/${templateName}/images/dicussion-home.gif"><a id="forumIndex" class="nav" href="${contextPath}/forums/list${extension}">${I18n.getMessage("Admin.forumIndex")}</a>-->
+						&nbsp;<img src="${contextPath}/templates/${templateName}/images/dicussion-home.gif"><a id="forumIndex" class="nav" href="#" onclick="javascript:savechanges('discussionlist');return false;">${I18n.getMessage("Admin.forumIndex")}</a>
+						<!--&nbsp;&nbsp;&nbsp;<img src="${contextPath}/templates/${templateName}/images/manage_categories.png"><a id="categories" class="nav" href="${contextPath}/adminCategories/list${extension}">${I18n.getMessage("Admin.categories")}</a>-->
+						&nbsp;&nbsp;&nbsp;<img src="${contextPath}/templates/${templateName}/images/manage_categories.png"><a id="categories" class="nav"  href="#" onclick="javascript:savechanges('categories');return false;">${I18n.getMessage("Admin.categories")}</a>
+						<!--&nbsp;&nbsp;&nbsp;<img src="${contextPath}/templates/${templateName}/images/manage_forums.png"><a id="forums" class="nav" href="${contextPath}/adminForums/list${extension}">${I18n.getMessage("Admin.forums")}</a>-->
+						&nbsp;&nbsp;&nbsp;<img src="${contextPath}/templates/${templateName}/images/manage_forums.png"><a id="forums" class="nav" href="#" onclick="javascript:savechanges('forums');return false;">${I18n.getMessage("Admin.forums")}</a>
+						<!--&nbsp;&nbsp;&nbsp;<img src="${contextPath}/templates/${templateName}/images/import.gif"><a id="importexport" class="nav" href="${contextPath}/adminImportExport/list${extension}">${I18n.getMessage("Admin.importexport")}</a>-->
+						&nbsp;&nbsp;&nbsp;<img src="${contextPath}/templates/${templateName}/images/import.gif"><a id="importexport" class="nav" href="#" onclick="javascript:savechanges('importexport');return false;">${I18n.getMessage("Admin.importexport")}</a>
+
+			
+					  	<#if  session.isSakaiAdmin()>
+					  		</br>
+					  		&nbsp;<img src="${contextPath}/templates/${templateName}/images/attachment-groups.png"><a id="attachments" class="nav" href="${contextPath}/adminAttachments/extensionGroups${extension}" >${I18n.getMessage("Admin.attachExtensionGroups")}</a>
+					  		&nbsp;&nbsp;&nbsp;<img src="${contextPath}/templates/${templateName}/images/attachment-extensions.png"><a id="attachments" class="nav" href="${contextPath}/adminAttachments/extensions${extension}" >${I18n.getMessage("Admin.attachExtensions")}</a>
+							<#--&nbsp;&nbsp;&nbsp;<a id="configurations" class="nav" href="${contextPath}/adminCache/list${extension}" >${I18n.getMessage("Admin.cache")}</a-->
+					 	</#if>
+				
+					
+					</td>
+				</tr>
+				<tr>
+					<td><img src="${contextPath}/templates/${templateName}/images/spacer.gif" alt="" width="1" height="6" /></td>  
+				</tr>
+				<tr>
+					<td>
+						<span class="maintitle">
+							<#if viewTitleManageCatg?exists && viewTitleManageCatg>
+								<img src="${contextPath}/templates/${templateName}/images/manage_categories.png">${I18n.getMessage("Admin.categories")}
+							<#elseif viewTitleManageForums?exists && viewTitleManageForums>
+								<img src="${contextPath}/templates/${templateName}/images/manage_forums.png">${I18n.getMessage("Admin.forums")}
+							<#elseif viewTitleImportExport?exists && viewTitleImportExport>
+								<img src="${contextPath}/templates/${templateName}/images/import.gif">${I18n.getMessage("Admin.importexport")}
+							<#elseif viewTitleManageAttachExtensions?exists && viewTitleManageAttachExtensions>
+								<img src="${contextPath}/templates/${templateName}/images/attachment-extensions.png">${I18n.getMessage("Admin.manageAttachExtensions")}
+							<#elseif viewTitleManageAttachExtensionGroups?exists && viewTitleManageAttachExtensionGroups>
+								<img src="${contextPath}/templates/${templateName}/images/attachment-groups.png">${I18n.getMessage("Admin.manageAttachExtensionGroups")}
+							<#elseif viewTitleManageCache?exists && viewTitleManageCache>
+								${I18n.getMessage("Admin.manageCache")}
+							</#if>
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td><img src="${contextPath}/templates/${templateName}/images/spacer.gif" alt="" width="1" height="6" /></td>  
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td>

@@ -1,0 +1,296 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/admin/category_form.htm $
+ * $Id: category_form.htm 70688 2010-10-13 18:54:22Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008, 2009, 2010 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<#include "header.htm"/>
+<#import "macros/group_macros.ftl" as lib>
+
+<form action="${contextPath}/jforum${extension}" method="post" name="form" id="form" accept-charset="${encoding}" onSubmit="return checkInput()">
+<input type="hidden" name="action" value="${action}" />
+<input type="hidden" name="module" value="${moduleName}" />
+<input type="hidden" name="securityHash" value="${securityHash}" />
+<input type="hidden" name="autosavenav" id="autosavenav" value="catgaddedit" />
+
+<script language="javascript">
+
+<#include "js/calendar2.js"/>
+
+function checkGroups() 
+{
+	if (document.form.groups != undefined && document.form.groups.selectedIndex == -1) {
+		alert("${I18n.getMessage("PermissionControl.atLeastOne")}");
+		return false;
+	}
+
+	return true;
+}
+/*9/14/05 - Mallika - adding function to check for forum name size*/
+function checkCategoryName()
+{
+  if (document.form.category_name.value.replace(/^\s*|\s*$/g, "").length == 0){
+     alert("${I18n.getMessage("Category.Form.CategoryNameSize")}");
+	 document.form.category_name.focus();
+		return false;
+  }
+  return true;
+}
+function checkInput()
+{
+    return checkCategoryName() && checkGroups() && compareDates() && checkPointsFormat();
+}
+
+/*
+validate points
+*/
+function checkPointsFormat() 
+{
+	var gradingCategory = document.getElementsByName("grade_category");
+	
+	if (document.form.grade_category == undefined)
+		return true;
+		
+	if(!gradingCategory[0].checked)
+		return true;
+	
+	var points = document.form.point_value;
+	if (points.value.replace(/^\s*|\s*$/g, "").length == 0)
+	{
+		alert("${I18n.getMessage("Category.Form.BlankPointsError")}");
+		return false;
+	} else {
+		if (points.value < 0) {
+			alert("${I18n.getMessage("Grade.Points.NegativeNumber")}");
+			points.focus();
+			return false;
+		}	
+	}
+
+	return true;
+}
+ 
+function toggleGradeOptions(show)
+{
+	var points = document.getElementById('point_value');
+	points.value = "";
+	points.disabled = show;
+
+	var sendtogradebook = document.getElementById('send_to_grade_book');
+
+	if (sendtogradebook)
+	{
+
+		sendtogradebook.checked = false;
+
+		sendtogradebook.disabled = show;
+	}
+}
+
+function showCal(id)
+{
+	var obj = document.getElementById(id);
+	
+
+  	var dt = new Date(obj.value);
+  	if (obj.value.replace(/^\s*|\s*$/g, "").length == 0) 
+  	{
+	    var cal2_date = new calendar2(obj);
+	    cal2_date.popup();
+	    obj.select(); 
+  	}
+  	else
+  	{
+	   	if (!isNaN(dt))
+	  	{
+		    var cal2_date = new calendar2(obj);
+		    cal2_date.popup();
+		    obj.select();
+	  	}
+		else
+		{
+		    alert("${I18n.getMessage("Category.Form.InvalidDateError")}");
+		    obj.select();
+	  	}
+  	}
+}
+
+function compareDates()
+{
+	if ((document.form.start_date == undefined) || (document.form.end_date == undefined))
+		return true;
+	
+	if (document.form.start_date.value.replace(/^\s*|\s*$/g, "").length == 0) 
+ 	{
+   		return true;
+ 	}
+ 	if (document.form.end_date.value.replace(/^\s*|\s*$/g, "").length == 0) 
+ 	{
+   		return true;
+ 	}
+ 	if (Date.parse(document.form.start_date.value) > Date.parse(document.form.end_date.value)) 
+ 	{
+   		alert("${I18n.getMessage("Category.Form.DateError")}");
+   		return false;
+ 	}
+
+ 	return true;
+}
+</script>
+
+<#if category?exists>
+	<input type="hidden" name="categories_id" value="${category.id}" />
+</#if>
+
+<table class="forumline" cellspacing="1" cellpadding="3" width="100%" border="0">
+	<tr>
+		<th class="thHead" valign="center" colspan="2" height="25">${I18n.getMessage("Category.Form.Title")}</th>
+	</tr>
+	<#if errorMessage?exists>
+		<tr>
+			<td colspan="2" align="center"><span class="redclass">${errorMessage}</span></td>
+		</tr>
+	</#if>
+	<tr>
+		<td class="row1" width="25%"><span class="gen">${I18n.getMessage("Category.Form.CategoryName")}</span></td>
+		<td class="row2"><input class="post" style="WIDTH: 200px" maxlength="100" size="25" name="category_name" value="<#if category?exists>${category.name}</#if>" /></td>
+	</tr>
+	<#--10/28/05 Murthy - Commented to hide Moderate this Category
+	<tr>
+		<td class="row1" width="25%"><span class="gen">${I18n.getMessage("Category.Form.Moderate")}</span></td>
+		<td class="row2">
+			<span class="gensmall">
+			<input class="post" type="radio" name="moderate" value="0" <#if category?exists><#if !category.isModerated()>checked</#if><#else>checked</#if>/>&nbsp;${I18n.getMessage("User.no")}&nbsp;&nbsp;
+			<input class="post" type="radio" name="moderate" value="1" <#if category?exists && category.isModerated()>checked</#if>/>&nbsp;${I18n.getMessage("User.yes")}
+			</span>
+		</td>
+	</tr>
+	-->
+	<#--03/07/2007 Murthy - removed the Groups part
+	<#if !category?exists>
+	<tr>
+		<td class="row1"><span class="gen">${I18n.getMessage("Category.Form.ChooseGroup")}</span></td>
+		<--9/13/05-Mallika-line below commented and changed not to show facilitator--
+		<td><--<@lib.selectFieldGroups "groups", groups, 0, true, selectedList/>--<@lib.selectFieldFacGroups "groups", groups, 0, true, selectedList/></td>
+	</tr>
+	</#if>
+	-->
+	<tr>
+		<td class="row1" valign="top"><span class="gen">${I18n.getMessage("Category.Form.Gradable")}</span></td>
+		<td class="row2">
+			<table cellspacing="0" cellpadding="3" cellpadding="3" border="0">
+				<tr>
+					<td>
+						<span class="gen">
+							<input type="radio" value="1" name="grade_category" onclick="toggleGradeOptions(false);" onkeypress="toggleGradeOptions(false);" <#if category?exists && category.gradeCategory>checked</#if>/>${I18n.getMessage("Yes")}&nbsp;&nbsp;
+							<input type="radio" value="0" name="grade_category" onclick="toggleGradeOptions(true);" onkeypress="toggleGradeOptions(true);" <#if category?exists><#if !category.gradeCategory>checked</#if><#else>checked</#if> />${I18n.getMessage("No")}
+						</span>											 
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="gen">&nbsp;&nbsp;${I18n.getMessage("Category.Form.Grading.ForumPointValue")}&nbsp;&nbsp;
+							<#setting locale="${I18n.getDefaultLocale()}">
+							<input type="text" style="WIDTH: 80px;text-align: right" maxlength="8" size="15" name="point_value" id="point_value" value="<#if grade?exists>${grade.points?string("####0.00")}</#if>" <#if !grade?exists>disabled</#if>/>
+						</span>
+					</td>
+				</tr>
+				<#if enableGrading? exists && enableGrading>
+					<tr>
+						<td>
+							<span class="gen">
+								<input type="checkbox" name="send_to_grade_book"  id="send_to_grade_book" value="1" <#if category?exists><#if (category.gradeCategory)><#if (grade.addToGradeBook)>checked</#if><#else>disabled</#if><#else>disabled</#if> />&nbsp;${I18n.getMessage("Grade.sendToGradebook")}
+							</span>
+						</td>
+					</tr>
+				</#if>
+			</table>
+		</td>
+	</tr>
+	
+	<#if forumDates?exists && forumDates>
+		<tr>
+			<td class="row1"><span class="gen">${I18n.getMessage("Category.Form.Dates")}</span></td>
+			<td class="row2"><span class="gen"><b>${I18n.getMessage("Category.Form.ForumDatesSet")}</b></span></td>
+		</tr>
+	<#else>
+		<tr>
+			<td class="row1"><span class="gen">${I18n.getMessage("Category.Form.StartDate")}</span></td>
+			<td class="row2"><input type="text" style="WIDTH: 200px" maxlength="150" size="25" name="start_date" id="start_date" value="<#if category?exists><#if category.startDate?exists>${category.startDate?datetime?string("${calendarDateTimeFormat}")}</#if></#if>" /><input type="image" id="sdateCal" onclick="showCal('start_date');return false;" width="20" height="20" src="${contextPath}/templates/${templateName}/images/date-time_preferences.gif" styleClass="ImgSpace"/></td>
+		</tr>
+	    <tr>
+			<td class="row1"><span class="gen">${I18n.getMessage("Category.Form.EndDate")}</span></td>
+			<td class="row2"><input type="text" style="WIDTH: 200px" maxlength="150" size="25" name="end_date" id="end_date" value="<#if category?exists><#if category.endDate?exists>${category.endDate?datetime?string("${calendarDateTimeFormat}")}</#if></#if>" /><input type="image" id="edateCal" onclick="showCal('end_date');return false;" width="20" height="20" src="${contextPath}/templates/${templateName}/images/date-time_preferences.gif" styleClass="ImgSpace"/></td>
+		</tr>
+		<tr>
+			<td class="row1"><span class="gen">&nbsp;</span></td>
+			<td class="row2">
+				<span class="gen">
+					<input type="checkbox" name="lock_category" id="lock_category" title="lock category" value="1" <#if category?exists><#if category.isLockCategory()>checked</#if></#if> />
+					&nbsp;${I18n.getMessage("Category.Form.LockCategory")}
+				</span>
+			</td>
+		</tr>
+	</#if>
+	
+	<tr align="center">
+		<td class="catBottom" colspan="2" height="28">
+			<input class="mainoption" type="submit" value="${I18n.getMessage("Category.Form.ClickToUpdate")}" name="submit" id="submit" accesskey="${I18n.getMessage("save-access")}" title="${I18n.getMessage("save-access-description")}"/>
+		</td>
+	</tr>
+</table>
+</form>
+
+<#include "bottom.htm"/>

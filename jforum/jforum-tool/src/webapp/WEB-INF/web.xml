@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/WEB-INF/web.xml $ 
+ * $Id: web.xml 66776 2010-03-23 18:50:51Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<web-app id="sak-jforum" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+    <display-name>sakai-JForum</display-name>
+    <description>Powering Communities</description>
+    
+    <!--<<<sakai related-->
+    <context-param>
+            <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+            <param-value>server</param-value>
+    </context-param>
+    <context-param>
+	    <param-name>com.sun.faces.validateXml</param-name>
+	    <param-value>true</param-value>
+	    <description> Set this flag to true if you want the JavaServer Faces Reference Implementation to validate the
+		XML in your faces-config.xml resources against the DTD. Default value is false. </description>
+    </context-param>
+    <context-param>
+	    <param-name>com.sun.faces.verifyObjects</param-name>
+	    <param-value>true</param-value>
+	    <description> Set this flag to true if you want the JavaServer Faces Reference Implementation to verify that all
+		of the application objects you have configured (components, converters, renderers, and validators) can be
+		successfully created. Default value is false. </description>
+    </context-param>
+    <!-->>>sakai related-->
+
+	<!-- Clickstream -->
+	<filter>
+		<filter-name>clickstream-jforum</filter-name>
+		<filter-class>org.etudes.jforum.util.legacy.clickstream.ClickstreamFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>clickstream-jforum</filter-name>
+		<url-pattern>*.page</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+        <filter-name>sakai.request</filter-name>
+        <filter-class>org.sakaiproject.util.RequestFilter</filter-class>
+    </filter>
+	
+	<filter-mapping>
+        <filter-name>sakai.request</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
+    
+    <listener>
+    	<listener-class>org.etudes.jforum.ForumSessionListener</listener-class>
+    </listener>
+	
+	<!--<<<sakai related-->
+    <listener>
+    	<listener-class>org.sakaiproject.util.SakaiContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+    	<listener-class>org.sakaiproject.util.ToolListener</listener-class>
+    </listener>
+    
+    <!-- Register jsf tool with sakai -->
+    <servlet>
+            <servlet-name>sakai.jforum.tool</servlet-name>
+            <servlet-class>org.sakaiproject.jsf.util.JsfTool</servlet-class>
+            <init-param>
+                <param-name>default</param-name>
+                <param-value>forums/list.page</param-value>
+            </init-param>
+            <init-param>
+                <param-name>path</param-name>
+                <param-value>/</param-value>
+            </init-param>
+            <load-on-startup>3</load-on-startup>
+    </servlet>
+    <!-->>>sakai related-->
+    
+    <servlet>
+            <servlet-name>sakai.synoptic.jforum.tool</servlet-name>
+            <servlet-class>org.sakaiproject.jsf.util.JsfTool</servlet-class>
+            <init-param>
+                <param-name>default</param-name>
+                <param-value>newpmrecenttopics.spage</param-value>
+            </init-param>
+            <init-param>
+                <param-name>path</param-name>
+                <param-value>/</param-value>
+            </init-param>
+            <load-on-startup>4</load-on-startup>
+    </servlet>
+
+	<!-- JForum Controller -->
+    <servlet>
+		<servlet-name>jforum</servlet-name>
+		<servlet-class>org.etudes.jforum.JForum</servlet-class>
+		
+		<init-param>
+			<param-name>development</param-name>
+			<param-value>false</param-value>
+		</init-param>
+    </servlet>
+    
+    <servlet>
+      <servlet-name>synopticJforum</servlet-name>
+      <servlet-class>org.etudes.jforum.JForumSynopticAction</servlet-class>
+    </servlet>
+    
+	<!-- Installer -->
+    <servlet>
+    	<servlet-name>install</servlet-name>
+    	<servlet-class>org.etudes.jforum.InstallServlet</servlet-class>
+    	
+    	<init-param>
+			<param-name>development</param-name>
+			<param-value>false</param-value>
+		</init-param>
+    </servlet>
+	
+	<servlet>
+    	<servlet-name>sjfbaseservlet</servlet-name>
+    	<servlet-class>org.etudes.jforum.EtudesJForumBaseServlet</servlet-class>
+		<init-param>
+			<param-name>autoddl</param-name>
+			<param-value>true</param-value>
+		</init-param>
+    	<load-on-startup>1</load-on-startup>
+    </servlet>
+	
+	<!--<<<sakai related-->
+    <!-- Faces Servlet -->
+    <servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>2</load-on-startup>
+    </servlet>
+	
+    <servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.jsf</url-pattern>
+    </servlet-mapping>
+    <!-->>>sakai related-->
+
+	<!-- AJAX -->
+	<!--
+	<servlet>
+		<servlet-name>dwr-invoker</servlet-name>
+		<servlet-class>uk.ltd.getahead.dwr.DWRServlet</servlet-class>
+
+		<init-param>
+			<param-name>configJForum</param-name>
+			<param-value>WEB-INF/dwr-jforum.xml</param-value>
+		</init-param>
+
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</servlet>
+	-->
+    
+    <!-- Mapping -->
+    <servlet-mapping>
+    	<servlet-name>install</servlet-name>
+    	<url-pattern>/install/install.page</url-pattern>
+    </servlet-mapping>
+	
+	<!--servlet-mapping>
+		<servlet-name>dwr-invoker</servlet-name>
+		<url-pattern>/dwr/dwr.page</url-pattern>
+	</servlet-mapping-->
+    
+	<servlet-mapping>
+    	<servlet-name>jforum</servlet-name>
+    	<url-pattern>*.page</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+      <servlet-name>synopticJforum</servlet-name>
+      <url-pattern>*.spage</url-pattern>
+    </servlet-mapping>
+
+    <!-- SESSION -->
+    <session-config>
+    	<session-timeout>10</session-timeout>
+    </session-config>
+    
+	<welcome-file-list>
+		<welcome-file>index.htm</welcome-file>
+	</welcome-file-list> 
+
+	<!-- SSO -->
+	<!-- Example of SSO configuration -->
+	<security-role> 
+		<role-name>user</role-name> 
+	</security-role>
+
+	<security-constraint>
+      <web-resource-collection>
+         <web-resource-name>Restricted Area</web-resource-name>
+         <url-pattern>/*</url-pattern>
+      </web-resource-collection>
+     
+      <auth-constraint>
+         <role-name>user</role-name>
+      </auth-constraint>
+   </security-constraint>
+
+   <login-config>
+      <auth-method>BASIC</auth-method>
+      <realm-name>Stargate realm</realm-name>
+   </login-config>
+</web-app>

@@ -126,6 +126,8 @@
     <joda.time.version>2.9.3</joda.time.version>
     <sakai.genericdao.version>0.10.0</sakai.genericdao.version>
     <reflectutils.version>0.9.20</reflectutils.version>
+	<etudes.util.version>1.0.8</etudes.util.version>
+	<etudes.jforum.version>2.9.1</etudes.jforum.version>
     <!-- Sakai modules that are versioned separately -->
     <!-- lessonbuilder tool pom depends on msgcntr ver prop. Need to add a profile to the LB tool pom to mark change between 10.x master and earlier versions -->
     <sakai.msgcntr.version>11-SNAPSHOT</sakai.msgcntr.version> 
@@ -317,6 +319,25 @@
 
   <dependencyManagement>
     <dependencies>
+	  <dependency>
+		<groupId>org.etudes</groupId>
+		<artifactId>etudes-util-api</artifactId>
+		<version>${etudes.util.version}</version>
+		<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+		<groupId>org.etudes</groupId>
+		<artifactId>etudes-util-util</artifactId>
+		<version>${etudes.util.version}</version>
+   	  </dependency>
+	  
+	  <dependency>
+		<groupId>org.etudes</groupId>
+		<artifactId>etudes-jforum-api</artifactId>
+		<version>${etudes.jforum.version}</version>
+		<scope>provided</scope>
+	  </dependency>
       <!-- provided by the JDK, here to ensure its not packaged in child poms child poms may still override if necessary -->
       <dependency>
         <groupId>xalan</groupId>

@@ -1,0 +1,120 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/post_show_user_inc.htm $
+ * $Id: post_show_user_inc.htm 66908 2010-03-26 22:39:40Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<span class="name">
+<b>${user.firstName?default("")} ${user.lastName?default("")}</b>
+<#if sju?exists && !sju.isUserActive(user.sakaiUserId)>(${I18n.getMessage("User.inactive")})</#if>
+</span>
+<br />
+<#if karmaEnabled && post.userId != 1>
+	<script language="javascript">writeStars(${user.karma.karmaPoints}, "${user.id}${post.id}");</script>
+	<br/>
+</#if>
+
+<span class="postdetails">
+<#-- 01/10/2009 Murthy - commented to avoid showing total messages
+<#if post.userId != 1>
+	${rank.getRankTitle(user.totalPosts)}
+	<br />
+</#if>
+-->
+
+<#if (user.avatar?exists && user.avatar?length > 0)>
+	<#if user.isExternalAvatar() || user.avatar.startsWith("http://")>
+		<img src="${user.avatar}" border="0" alt="avatar" width="130" height="130">
+	<#else>
+		<#--02/22/2006 - Murthy - updated to support avatars in clustered environment 
+		img src="${contextPath}/images/avatar/${user.avatar}" border="0" alt="avatar"/><br /-->
+		<img src="${imageContextPath}/images/avatar/${user.avatar}" border="0" alt="avatar"/><br />
+	</#if>
+</#if>
+<br /> 
+
+ <#if (post.time != post.editTime)>
+ 	${I18n.getMessage("PostShow.lastEditTime")} ${post.editTime}
+ 	<br />
+ </#if>
+ 
+<#if post.userId != 1>
+	<#--04/09/08 ${I18n.getMessage("PostShow.userRegistrationDate")}: ${user.registrationDate}<br />-->
+	${I18n.getMessage("PostShow.userTotalMessages")}: ${user.totalPosts}
+</#if>
+<br />
+
+<#if (user.from?exists && user.from?length > 0)>
+	${I18n.getMessage("PostShow.userFrom")}: ${user.from}
+	<br />
+</#if>
+
+<#-- no display of IP Address 
+<#if post.userIp?exists && isModerator>
+	${I18n.getMessage("PostShow.userIP")}: ${post.userIp}
+	<br />
+</#if>
+-->
+<#-- 10/28/05 Murthy - Commented to hide online status
+<#if post.userId != 1>
+	<#if user.isOnline(post.postUsername)>
+		<span class="online">${I18n.getMessage("PostShow.userOnline")}</span>
+	<#else>
+		<span class="offline">${I18n.getMessage("PostShow.userOffline")} </span>
+	</#if>
+</#if>
+-->
+</span>
+<br />

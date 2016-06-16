@@ -1,0 +1,2 @@
+ <Context path="/jforum-images" docBase="/opt/var/jforum/images" reloadable="true" crossContext="true">
+ </Context>

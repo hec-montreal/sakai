@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<!--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/WEB-INF/config/jforum-cache-cluster.xml $ 
+ * $Id: jforum-cache-cluster.xml 55506 2008-12-02 00:49:25Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<server>
+		<mbean code="org.jboss.cache.TreeCache" name="jboss.cache:service=TreeCache">
+		<attribute name="IsolationLevel">READ_COMMITTED</attribute>
+		<attribute name="CacheMode">REPL_ASYNC</attribute>
+		<attribute name="ClusterName">JForumCacheDev</attribute>
+
+		<attribute name="ClusterConfig">
+            <config>
+                <!-- UDP: if you have a multihomed machine,
+                set the bind_addr attribute to the appropriate NIC IP address -->
+                
+				<!-- UDP: On Windows machines, because of the media sense feature
+                 being broken with multicast (even after disabling media sense)
+                 set the loopback attribute to true -->
+                <UDP mcast_addr="228.1.2.3" mcast_port="48866"
+                    ip_ttl="64" ip_mcast="false" bind_addr=""
+                    mcast_send_buf_size="300000" mcast_recv_buf_size="640000"
+                    ucast_send_buf_size="300000" ucast_recv_buf_size="640000"
+                    loopback="false"/>
+
+                <PING timeout="2000" num_initial_members="3" up_thread="false" down_thread="false"/>
+                <MERGE2 min_interval="60000" max_interval="90000"/>
+                <!--FD shun="true" up_thread="true" down_thread="true"/-->
+                <FD timeout="10000" max_tries="12" shun="true" up_thread="true" down_thread="true"/>
+                <VERIFY_SUSPECT timeout="1500" up_thread="false" down_thread="false"/>
+                
+				<pbcast.NAKACK gc_lag="50" retransmit_timeout="100,200,300,600,1200,2400,4800"
+					max_xmit_size="32768" up_thread="false" down_thread="false"/>
+
+                <UNICAST timeout="300,600,1200,2400,3600" window_size="100" min_threshold="10" down_thread="false"/>
+                <pbcast.STABLE desired_avg_gossip="40000" up_thread="false" down_thread="false"/>
+                
+				<FRAG frag_size="16384" down_thread="false" up_thread="false"/>
+                <pbcast.GMS join_timeout="5000" join_retry_timeout="2000" shun="true" print_local_addr="true"/>
+                <pbcast.STATE_TRANSFER up_thread="false" down_thread="false"/>
+            </config>
+        </attribute>
+
+		<!--attribute name="EvictionPolicyClass">org.jboss.cache.eviction.LRUPolicy</attribute>
+			<!- Specific eviction policy configurations. This is LRU ->
+			<attribute name="EvictionPolicyConfig">
+			<config>
+				<!- Cache wide default ->
+				<attribute name="wakeUpIntervalSeconds">3600</attribute>
+	
+				<!- Cache wide default ->
+				<region name="/_default_">
+					<attribute name="maxNodes">2000</attribute>
+					<attribute name="timeToLiveSeconds">3600</attribute>
+				</region>
+				<region name="/modulesMapping/">
+					<attribute name="maxNodes">200</attribute>
+					<attribute name="timeToLiveSeconds">0</attribute>
+					<attribute name="maxAgeSeconds">0</attribute>
+				</region>
+				<region name="/templates/">
+					<attribute name="maxNodes">300</attribute>
+					<attribute name="timeToLiveSeconds">0</attribute>
+					<attribute name="maxAgeSeconds">0</attribute>
+				</region>
+				<region name="/smilies/">
+					<attribute name="maxNodes">200</attribute>
+					<attribute name="timeToLiveSeconds">0</attribute>
+					<attribute name="maxAgeSeconds">0</attribute>
+				</region>
+				<region name="/ranking/">
+					<attribute name="maxNodes">200</attribute>
+					<attribute name="timeToLiveSeconds">0</attribute>
+					<attribute name="maxAgeSeconds">0</attribute>
+				</region>
+				<region name="/bbcode/">
+					<attribute name="maxNodes">200</attribute>
+					<attribute name="timeToLiveSeconds">0</attribute>
+					<attribute name="maxAgeSeconds">0</attribute>
+				</region>
+				<region name="/courseCategories/">
+					<attribute name="maxNodes">300</attribute>
+					<attribute name="timeToLiveSeconds">3600</attribute>
+					<attribute name="maxAgeSeconds">0</attribute>
+				</region>
+			</config>
+		</attribute-->
+			
+	</mbean>
+</server>

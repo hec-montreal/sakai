@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-impl/pack/src/webapp/WEB-INF/components.xml $ 
+ * $Id: components.xml 66796 2010-03-23 23:36:07Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * Copyright (c) 2008, 2009, 2010 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ ***********************************************************************************/
+ -->
+ 
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+   <bean id="org.etudes.api.app.jforum.JforumService" class="org.etudes.component.app.jforum.JforumServiceImpl" init-method="init"
+      destroy-method="destroy">
+
+      <property name="jforumDataService">
+         <ref bean="org.etudes.api.app.jforum.JforumDataService"/>
+      </property>
+   </bean>
+
+   <bean id="org.etudes.api.app.jforum.JforumDataService" class="org.etudes.component.app.jforum.JforumDataServiceImpl" 
+      init-method="init" destroy-method="destroy">
+
+      <property name="sqlService">
+         <ref bean="org.sakaiproject.db.api.SqlService"/>
+      </property>
+   </bean>
+
+   <bean id="org.etudes.api.app.jforum.JForumGBService" class="org.etudes.component.app.jforum.JForumGBServiceImpl" init-method="init"
+      destroy-method="destroy" >
+
+      <property name="gradebookService">
+         <ref bean="org_sakaiproject_service_gradebook_GradebookService"/>
+      </property>
+      <property name="gradebookExternalAssessmentService">
+         <ref bean="org_sakaiproject_service_gradebook_GradebookExternalAssessmentService"/>
+      </property>
+   </bean>
+
+   <bean id="org.etudes.api.app.jforum.JForumSynopticService" class="org.etudes.component.app.jforum.JForumSynopticServiceImpl" init-method="init"
+      destroy-method="destroy" >
+
+      <property name="sqlService">
+         <ref bean="org.sakaiproject.db.api.SqlService"/>
+      </property>
+      <property name="toolManager">
+         <ref bean="org.sakaiproject.tool.api.ToolManager"/>
+      </property>
+      
+      <property name="siteService">
+         <ref bean="org.sakaiproject.site.api.SiteService"/>
+      </property>
+   </bean>
+   
+   <bean id="org.etudes.api.app.jforum.JForumBaseDateService" class="org.etudes.component.app.jforum.JForumBaseDateServiceImpl" init-method="init"
+      destroy-method="destroy" >
+
+      <property name="sqlService">
+         <ref bean="org.sakaiproject.db.api.SqlService"/>
+      </property>
+   </bean>
+</beans>

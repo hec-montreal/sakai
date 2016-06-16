@@ -1,0 +1,262 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/admin/category_list.htm $
+ * $Id: category_list.htm 71014 2010-10-26 20:49:34Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008, 2009, 2010 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<#include "header.htm"/>
+
+<script language="javascript">
+<#include "js/calendar2.js"/>
+
+function validateDates()
+{
+	var form = document.form;
+	
+	var eleTxt = document.getElementsByTagName("input");
+
+ 	for (i=0; i<eleTxt.length; i++) {
+ 		if (eleTxt[i].type == "text" && eleTxt[i].value.replace(/^\s*|\s*$/g, "").length > 0) 
+ 	 	{
+ 	 	 	var sdate = eleTxt[i];
+ 	 	 	if ((sdate.id).indexOf("startdate_") != -1)
+ 	 	 	{
+				if (!compareDates(sdate))
+				{
+	 				eleTxt[i].focus();
+					return false;
+				}
+ 	 	 	}	
+ 		}
+ 	}
+ 	return true;
+}
+
+
+function compareDates(sdate)
+{
+	var sdatearr = (sdate.id).split("_");
+
+	if (sdatearr.length != 2)
+		return false;
+	
+	var edate = document.getElementById("enddate_"+ sdatearr[1]);
+	
+	if (sdate.value.replace(/^\s*|\s*$/g, "").length == 0) 
+	{
+		return true;
+	}
+	if (edate.value.replace(/^\s*|\s*$/g, "").length == 0) 
+	{
+		return true;
+	}
+	if (Date.parse(sdate.value) > Date.parse(edate.value)) 
+	{
+		alert("${I18n.getMessage("Category.Form.DateError")}");
+		return false;
+	}
+	return true;
+}
+
+function showCal(id)
+{
+	var obj = document.getElementById(id);
+	
+
+  	var dt = new Date(obj.value);
+  	if (obj.value.replace(/^\s*|\s*$/g, "").length == 0) 
+  	{
+	    var cal2_enddate = new calendar2(obj);
+	    cal2_enddate.popup();
+	    obj.select(); 
+  	}
+  	else
+  	{
+	   	if (!isNaN(dt))
+	  	{
+		    var cal2_enddate = new calendar2(obj);
+		    cal2_enddate.popup();
+		    obj.select();
+	  	}
+		else
+		{
+		    alert("${I18n.getMessage("Category.Form.InvalidDateError")}");
+		    obj.select();
+	  	}
+  	}
+} 
+</script>
+
+<form action="${contextPath}/jforum${extension}" method="post" name="form" id="form" accept-charset="${encoding}">
+<input type="hidden" name="action" value="applyChanges" />
+<input type="hidden" name="module" value="${moduleName}" />
+<input type="hidden" name="securityHash" value="${securityHash}" />
+<input type="hidden" name="autosavenav" id="autosavenav" value="categorylist" />
+
+<table class="forumline" cellspacing="1" cellpadding="3" width="100%" border="0">
+	<tr>
+		<th class="thHead" valign="center" colspan="35 height="25">${I18n.getMessage("Category.List.Title")}</th>
+	</tr>
+
+	<#if errorMessage?exists>
+		<tr>
+			<td align="center" colspan="3"><span class="gensmall"><font color="#FF0000">${errorMessage}</font></span></td>
+		</tr>
+	</#if>
+	
+	<tr align="center">
+		<td class="catBottom" colspan="3" height="28">
+			<input class="mainoption" type="button" value="${I18n.getMessage("Category.List.ClickToNew")}" id="btn_insert" name="button" onclick="document.location = '${contextPath}/${moduleName}/insert${extension}';" title="${I18n.getMessage("add-category-access-description")}"/>
+			&nbsp;&nbsp;
+			<input class="mainoption" type="submit" value="${I18n.getMessage("Category.List.ClickToSave")}" name="saveCategories" accesskey="${I18n.getMessage("save-access")}" title="${I18n.getMessage("save-access-description")}" onclick="return validateDates();"/>
+			&nbsp;&nbsp;
+			<input class="mainoption" type="submit" value="${I18n.getMessage("Category.List.ClickToDelete")}" name="deleteCategories" title="${I18n.getMessage("delete-access-description")}"/>
+		</td>
+	</tr>
+
+	<#assign counter = 1/>
+	<#--<#assign categories = repository.getAllCategories()/>-->
+	<#assign categories = repository.getAllManageCategories()/>
+	<#list categories as category>
+		<tr>
+			<td class="row1" width="5%">
+				<input type="checkbox" name="categories_id" value="${category.id}" />
+			</td>
+			<td class="row1" width="85%">
+				<span class="cattitle">
+					<a id="categoryEdit" href="${contextPath}/${moduleName}/edit/${category.id}${extension}">${category.name}</a>
+				</span>
+			</td>
+			
+			<td class="row1" align="center" width="10%" nowrap>
+				<#if (counter > 1)>
+					<a href="${contextPath}/${moduleName}/up/${category.id}${extension}" title="${I18n.getMessage("up-arrow-description")}"><img src="${contextPath}/templates/${templateName}/images/arrow_up.png" alt="${I18n.getMessage("up-arrow-description")}"/></a>
+				</#if>
+				<#if (counter < categories.size())>
+					<a href="${contextPath}/${moduleName}/down/${category.id}${extension}" title="${I18n.getMessage("down-arrow-description")}"><img src="${contextPath}/templates/${templateName}/images/arrow_down.png" alt="${I18n.getMessage("down-arrow-description")}"/></a>
+				</#if>
+			</td>
+			
+		</tr>
+		<#if (!repository.isCategoryForumDates(category.id))>
+			<tr>
+				<td class="row1">&nbsp;</td>
+				<td class="row1" colspan="2">
+					<span class="gen">
+						&nbsp;${I18n.getMessage("Category.List.StartDate")}
+						&nbsp;<input type="text" style="WIDTH: 130px" maxlength="50" name="startdate_${category.id}" id="startdate_${category.id}" value="<#if category?exists><#if category.startDate?exists>${category.startDate?datetime?string("${calendarDateTimeFormat}")}</#if></#if>" /><input type="image" id="sdateCal" onclick="showCal('startdate_${category.id}');return false;" width="20" height="20" src="${contextPath}/templates/${templateName}/images/date-time_preferences.gif" styleClass="ImgSpace"/>
+					</span>
+					&nbsp;
+					<span class="gen">
+						&nbsp;${I18n.getMessage("Category.List.EndDate")}
+						&nbsp;<input type="text" style="WIDTH: 130px" maxlength="50" name="enddate_${category.id}" id="enddate_${category.id}" value="<#if category?exists><#if category.endDate?exists>${category.endDate?datetime?string("${calendarDateTimeFormat}")}</#if></#if>" /><input type="image" id="edateCal" onclick="showCal('enddate_${category.id}');return false;" width="20" height="20" src="${contextPath}/templates/${templateName}/images/date-time_preferences.gif" styleClass="ImgSpace"/>
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td class="row1">&nbsp;</td>
+				<td class="row1" colspan="3">
+					<span class="gen">
+						<input type="checkbox" name="lockcategory_${category.id}" id="lockcatg_${category.id}" value="1" <#if category?exists><#if category.isLockCategory()>checked</#if></#if> />
+						&nbsp;${I18n.getMessage("Category.List.LockCategory")}
+					</span>
+				</td>
+			</tr>
+		<#else>
+			<tr>
+				<td>&nbsp;</td>
+				<td class="row1" colspan="3">
+					<span class="gen">
+						&nbsp;&nbsp;&nbsp;${I18n.getMessage("Category.Form.ForumDatesSet")}
+					</span>
+				</td>
+			</tr>
+		</#if>
+		<tr>
+			<td colspan="4">&nbsp;</td>
+		</tr>
+		
+		<#--
+		<tr>
+			<td colspan="4" class="row1">
+				<table width="100%">
+				<#list repository.getManageCategory(category.id).getManageForums() as forum>
+					<tr>
+						<td>&nbsp;</td>
+						<td class="row1" width="100%"><span class="gen">${forum.name}</td>
+						<td>&nbsp;</td>
+					</tr>
+				</#list>
+				</table>
+			</td>
+		</tr>
+		-->
+
+		<#assign counter = counter + 1/>
+	</#list>
+
+	<tr align="center">
+		<td class="catBottom" colspan="4" height="28">
+			<input class="mainoption" type="button" value="${I18n.getMessage("Category.List.ClickToNew")}" id="btn_insert" name="button" onclick="document.location = '${contextPath}/${moduleName}/insert${extension}';" accesskey="${I18n.getMessage("add-access")}" title="${I18n.getMessage("add-category-access-description")}"/>
+			&nbsp;&nbsp;
+			<input class="mainoption" type="submit" value="${I18n.getMessage("Category.List.ClickToSave")}" name="saveCategories" id="saveCategories" accesskey="${I18n.getMessage("save-access")}" title="${I18n.getMessage("save-access-description")}" onclick="return validateDates();"/>
+			&nbsp;&nbsp;
+			<input class="mainoption" type="submit" value="${I18n.getMessage("Category.List.ClickToDelete")}" name="deleteCategories" accesskey="${I18n.getMessage("delete-access")}" title="${I18n.getMessage("delete-access-description")}"/>
+		</td>
+	</tr>
+</table>
+</form>
+
+<#include "bottom.htm"/>

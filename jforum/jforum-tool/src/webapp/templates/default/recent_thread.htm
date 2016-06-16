@@ -1,0 +1,181 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/recent_thread.htm $
+ * $Id: recent_thread.htm 63276 2009-09-15 01:02:05Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<#include "header.htm"/>
+<#import "../macros/pagination.ftl" as pagination>
+<#import "../macros/presentation.ftl" as presentation/>
+
+<link rel="alternate" type="application/rss+xml" title="RSS" href="${contextPath}/rss/recentTopics${extension}" />
+
+<table cellspacing="0" cellpadding="10" width="100%" align="center" border="0">
+	<tr>
+		<td class="bodyline" valign="top">
+		
+			<table cellspacing="0" cellpadding="2" width="100%" align="center" border="0">
+				<tr>
+					<td valign="bottom" align="left">
+						<a class="nav" href="${JForumContext.encodeURL("/forums/list")}">${I18n.getMessage("ForumListing.forumIndex")}</a>
+						<span class="nav">&nbsp;->&nbsp;</span>
+						<a id="latest" class="nav" href="${JForumContext.encodeURL("/recentTopics/list")}">${I18n.getMessage("ForumBase.recentTopics")}</a>
+						<!--10/11/05 - Mallika - commenting line below to hide XML link -- >
+						<!--
+						<#if rssEnabled>
+							&nbsp;<a href="${contextPath}/rss/recentTopics${extension}"><img src="${contextPath}/templates/${templateName}/images/xml_button.gif" border="0" align="middle" alt=""></a>
+						</#if>
+						-->
+					</td>
+					<td>&nbsp;
+					</td>
+				</tr>
+			</table>
+			
+			<table class="forumline" cellspacing="1" cellpadding="4" width="100%" border="0">
+				<tr>
+					<th class="thCornerL" nowrap="nowrap" align="middle" colspan="2" height="25">&nbsp;${I18n.getMessage("ForumIndex.topics")}&nbsp;</th>
+					<th class="thTop" nowrap="nowrap" align="middle" width="50">&nbsp;${I18n.getMessage("ForumIndex.answers")}&nbsp;</th>
+					<th class="thTop" nowrap="nowrap" align="middle" width="130">&nbsp;${I18n.getMessage("ForumIndex.scores")}&nbsp;</th>
+					<th class="thTop" nowrap="nowrap" align="middle" width="100">&nbsp;${I18n.getMessage("ForumIndex.author")}&nbsp;</th>
+					<th class="thTop" nowrap="nowrap" align="middle">&nbsp;${I18n.getMessage("ForumIndex.lastMessage")}&nbsp;</th>
+					<th class="thCornerR" nowrap="nowrap" align="middle">&nbsp;${I18n.getMessage("Forums.Form.ForumName")}&nbsp;</th>
+				</tr>
+
+				<!-- TOPICS LISTING -->
+				<#list topics as topic>
+				<tr>
+					<td class="row1" valign="center" align="middle" width="20"><@presentation.folderImage topic/></td>
+					<td class="row1" width="100%">
+						<span class="topictitle">
+						<a href="${JForumContext.encodeURL("/posts/list/${topic.id}")}"><#if (topic.title?length == 0)>No Subject<#else>${topic.title?html}</#if></a>
+						</span>
+
+						<#if topic.paginate>
+							<span class="gensmall">
+							<br />
+							<@pagination.littlePostPagination topic.id, postsPerPage, topic.totalReplies/>				
+							</span>
+						</#if>		
+					</td>
+
+					<td class="row2" valign="center" align="middle"><span class="postdetails">${topic.totalReplies}</span></td>
+					
+					<td class="row2" valign="center" align="left">
+						<span class="gensmall">
+						<#if (topic.isGradeTopic())>
+							<#if facilitator>
+								<img src="${contextPath}/templates/${templateName}/images/grade_by_topic.gif" alt="grade topics"/>
+								<a href="${JForumContext.encodeURL("/gradeForum/evalTopicList/${topic.id}/name/a")}">${I18n.getMessage("ForumIndex.gradeTopic")}</a>
+							<#else>
+								<img src="${contextPath}/templates/${templateName}/images/grade_by_topic.gif" alt="view topics grade"/>
+								<a href="${JForumContext.encodeURL("/gradeForum/viewTopicGrade/${topic.id}")}">${I18n.getMessage("ForumIndex.viewTopicGrade")}</a>
+							</#if>
+						<#elseif (forums.get(topic_index).getGradeType() == 2)>
+							<#if facilitator>
+								<img src="${contextPath}/templates/${templateName}/images/grade_by_forum.gif" alt="grade forum"/>
+								<a href="${JForumContext.encodeURL("/gradeForum/evalForumList/${forums.get(topic_index).getId()}/name/a")}">${I18n.getMessage("ForumIndex.gradeForum")}</a>
+							<#else>
+								<img src="${contextPath}/templates/${templateName}/images/grade_by_forum.gif" alt="view forum grade"/>
+								<a href="${JForumContext.encodeURL("/gradeForum/viewForumGrade/${forums.get(topic_index).getId()}")}">${I18n.getMessage("ForumIndex.viewForumGrade")}</a>
+							</#if>
+						<#else>
+							<#if categories.get(topic_index).gradeCategory>
+								<#if facilitator>
+									<img src="${contextPath}/templates/${templateName}/images/grade_by_category.gif" alt="grade category"/>
+									<a href="${JForumContext.encodeURL("/gradeForum/evalCategoryList/${categories.get(topic_index).getId()}/name/a")}">${I18n.getMessage("ForumIndex.gradeCategory")}</a>
+								<#else>
+									<img src="${contextPath}/templates/${templateName}/images/grade_by_category.gif" alt="view category grade"/>
+									<a href="${JForumContext.encodeURL("/gradeForum/viewCategoryGrade/${categories.get(topic_index).getId()}")}">${I18n.getMessage("ForumIndex.viewForumGrade")}</a>
+								</#if>
+							</#if>
+						</#if>
+						</span>
+					</td>
+					
+					
+					<td class="row3" valign="center" align="middle">
+						<span class="name">
+							<!--11/14/05 Murthy - updated to show First Name and Last name<a href="${JForumContext.encodeURL("/user/profile/${topic.postedBy.id}")}">${topic.postedBy.username}</a>-->
+							<!--1/6/06 Mallika -changed below to show original author's first and last name -->
+							<a href="${JForumContext.encodeURL("/user/profile/${topic.postedBy.id}")}">${topic.postedBy.firstName?default("")} ${topic.postedBy.lastName?default("")}</a>
+						</span>
+					</td>
+
+					<td class="row2" valign="center" nowrap="nowrap" align="middle">
+						<#if (topic.lastPostTime?length > 0)>
+							<span class="postdetails">${topic.lastPostTime}<br />
+							<#--11/14/05 Murthy - updated to show First Name and Last name<a href="${JForumContext.encodeURL("/user/profile/${topic.lastPostBy.id}")}">${topic.lastPostBy.username}</a>#-->
+							<a href="${JForumContext.encodeURL("/user/profile/${topic.lastPostBy.id}")}">${topic.lastPostBy.firstName?default("")} ${topic.lastPostBy.lastName?default("")}</a>
+
+							<#assign startPage = ""/>
+							<#if (topic.totalReplies + 1 > postsPerPage?number)>
+								<#assign startPage = ((topic.totalReplies / postsPerPage?number)?int * postsPerPage?number) +"/"/>
+							</#if>
+				  
+							<a href="${JForumContext.encodeURL("/posts/list/${startPage}${topic.id}")}#${topic.lastPostId}"><img src="${contextPath}/templates/${templateName}/images/icon_latest_reply.gif" width="18" height="9" border="0" alt="last reply icon"/></a></span>
+						</#if>		 
+					</td>
+					<td class="row3" valign="center" align="middle"><a class="postdetails" href="${JForumContext.encodeURL("/forums/show/${forums.get(topic_index).getId()}")}">${forums.get(topic_index).getName()}</a></td>
+
+				</tr>
+				</#list>		
+				<!-- END OF TOPICS LISTING -->
+				
+			</table>  
+		</td>
+	</tr>
+</table>
+<#include "bottom.htm"/>

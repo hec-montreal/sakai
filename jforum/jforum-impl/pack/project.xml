@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-impl/pack/project.xml $ 
+ * $Id: project.xml 65263 2009-12-15 18:53:36Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * Copyright (c) 2008 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ ***********************************************************************************/
+ -->
+
+<project>
+	<pomVersion>3</pomVersion>
+	<extend>../../project.xml</extend>
+	<name>Etudes JForum Pack</name>
+	<id>etudes-jforum-pack</id>
+	<groupId>etudes-jforum</groupId>
+	<currentVersion>${etudes.jforum.version}</currentVersion>
+	<organization>
+		<name>Etudes, Inc.</name>
+		<url>http://etudes.org</url>
+	</organization>
+	<inceptionYear>2007</inceptionYear>
+
+	<properties>
+		<deploy.type>components</deploy.type>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>etudes-jforum</groupId>
+			<artifactId>etudes-jforum-impl</artifactId>
+			<version>${etudes.jforum.version}</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-entity-util</artifactId>
+			<version>${sakai.version}</version>
+			<properties>
+				<war.bundle>true</war.bundle>
+			</properties>
+		</dependency>
+            
+        <dependency>
+            <groupId>etudes</groupId>
+            <artifactId>etudes-util</artifactId>
+            <version>1.0</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-util</artifactId>
+            <version>${sakai.version}</version>
+            <properties>
+               <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-gradebook-service-api</artifactId>
+            <version>${sakai.version}</version>
+        </dependency>
+	</dependencies>
+
+	<build>
+
+		<sourceDirectory>src/java</sourceDirectory>
+
+	</build>
+
+</project>

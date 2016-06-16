@@ -27,6 +27,7 @@
 		<tool id = "sakai.discussion" />
 		<tool id = "sakai.samigo" />
 		<tool id = "sakai.gradebook.tool" />
+		<tool id = "sakai.jforum.tool" />
 		<tool id = "sakai.dropbox" />
 		<tool id = "sakai.chat" />
 		<tool id = "sakai.rwiki" />

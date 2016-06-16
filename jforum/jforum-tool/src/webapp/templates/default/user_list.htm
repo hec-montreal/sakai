@@ -1,0 +1,141 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/user_list.htm $
+ * $Id: user_list.htm 71154 2010-11-03 18:29:06Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008, 2009, 2010 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<#include "header.htm"/>
+<#import "../macros/pagination.ftl" as pagination/>
+
+<#include "karma_search.inc.htm"> 
+
+<script type="text/javascript">
+function sendPM(uid)
+{
+	var features = "height=560,width=640,left=60,top=40,toolbar=no,directories=no,status=no,location=no,menubar=no,scrollbars=yes,resizable=no";
+	var winHandle = window.open("${contextPath}/pm/sendTo/"+ uid +"${extension}",null, features);
+	winHandle.focus();
+}
+</script>
+
+<table width="100%">
+	<tr>
+		<td align="right"><#if thisPage?exists><@pagination.doPagination "list", -1/></#if></td>
+		<td align="right">&nbsp;</td>
+	</tr>
+</table>
+
+<table class="forumline" cellspacing="1" cellpadding="3" width="100%" border="0">
+	<tr>
+	  <!--<th class="thCornerL" nowrap="nowrap">#</th>-->
+	  <th class="thTop" nowrap="nowrap">&nbsp;${I18n.getMessage("User.name")}&nbsp;</th>
+	  <th class="thTop" nowrap="nowrap">&nbsp;${I18n.getMessage("UserProfile.privateMessage")}&nbsp;</th>	  
+	  <th class="thTop" nowrap="nowrap">&nbsp;${I18n.getMessage("email")}&nbsp;</th>
+	  <th class="thTop" nowrap="nowrap">&nbsp;${I18n.getMessage("UserProfile.from")}&nbsp;</th>
+	  <#--04/09/08 Murthy - Commented to mask th class="thTop" nowrap="nowrap">&nbsp;${I18n.getMessage("UserProfile.registrationDate")}&nbsp;</th-->
+	  <th class="thTop" nowrap="nowrap">&nbsp;${I18n.getMessage("User.numMessages")}&nbsp;</th>
+	  <!--th class="thCornerR" nowrap="nowrap">&nbsp;${I18n.getMessage("Karma.karma")}&nbsp;</th-->
+	</tr>
+
+	<#list users as user>
+		<tr align="center">		  
+<!--			<td class="row2"><span class="gen">${user.id}</span></td>			-->
+			<td class="row2"><span class="gen"><a href="${JForumContext.encodeURL("/user/profile/${user.id}")}">${user.lastName?default("")},&nbsp;${user.firstName?default("")}</a></span></td>
+			<#--<td class="row2"><span class="gen"><#if user.id != 1><a href="${JForumContext.encodeURL("/pm/sendTo/${user.id}")}"><img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/icon_pm.gif" border="0" alt="private message icon"/></a><#else>&nbsp;</#if></span></td>-->
+			<td class="row2">
+				<span class="gen">
+				<#if user.id != 1>
+					<a href="#" onclick="sendPM(${user.id})"><img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/icon_pm.gif" border="0" alt="private message icon"/></a>
+				<#else>
+					&nbsp;
+				</#if>
+				</span>
+			</td>
+			<td class="row2">
+				<span class="gen">
+					<#if (user.email?exists && user.email?length > 0)>
+						<#if (user.isViewEmailEnabled())>
+							<#assign e = user.email.split("@")/>
+							<a href="#" onclick="document.location = 'mailto:' + showEmail('${e[0]?default("")}', '${e[1]?default("")}');"><img src="${contextPath}/templates/${templateName}/images/icon_email.gif" border="0" alt="${I18n.getMessage("PrivateMessage.userEmailTitle")}" title="${I18n.getMessage("PrivateMessage.userEmailTitle")}"/></a>
+						<#else>
+							<img src="${contextPath}/templates/${templateName}/images/icon_email_hide.gif" border="0" alt="${I18n.getMessage("PrivateMessage.userHideEmailTitle")}" title="${I18n.getMessage("PrivateMessage.userHideEmailTitle")}"/>
+						</#if>
+					<#else>
+						<img src="${contextPath}/templates/${templateName}/images/icon_email_none.gif" border="0" alt="${I18n.getMessage("PrivateMessage.userNoEmailTitle")}" title="${I18n.getMessage("PrivateMessage.userNoEmailTitle")}"/>
+					</#if>					
+				</span>
+			</td>					
+			<td class="row2"><span class="gen">${user.from?default("&nbsp;")}</span></td>
+			<#--04/09/08 Murthy - Commented to mask td class="row2"><span class="gen">${user.registrationDate}</span></td-->
+			<#--10/21/08 Murthy - Changed the way to get total posts. Added below line. td class="row2"><span class="gen">${user.totalPosts}</span></td-->
+			<td class="row2"><span class="gen">${user.totalPosts}</span></td>
+			<!--td class="row2"><span class="gen">${user.karma.karmaPoints}</span></td-->
+		</tr>
+	</#list>
+
+	<tr align="center">
+		<td class="catBottom" colspan="11" height="28">&nbsp;
+		</td>
+	</tr>
+</table>
+
+<table width="100%">
+	<tr>
+		<#--11/07/05 Murthy - Commented to mask pagination --11/14/07 uncommented-->
+			<td align="right"><#if thisPage?exists><@pagination.doPagination "list", -1/></#if></td>
+		<td align="right">&nbsp;</td>
+	</tr>
+</table>
+<#include "bottom.htm"/>

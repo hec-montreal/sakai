@@ -1,0 +1,22 @@
+<#setting number_format = "#"/>
+Bonjour,
+<br />
+Vous avez reçu un nouveau message privé dans le site : ${path}
+<br /><br />
+<a href="${serverurl}"><b>${path}</b></a>
+<br /><br />
+Veuillez vous connecter au site ci-dessus pour répondre au message. 
+<br /><br />
+-----------------------------
+<br />
+De: ${pmfrom} 
+<br />
+Sujet: ${pmsubject} 
+<br /><br />
+${pmtext}
+<br /><br />
+-----------------------------
+<br />
+Cordialement,
+<br />
+L’équipe ZoneCours

@@ -1,0 +1,557 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/forum_show.htm $
+ * $Id: forum_show.htm 70101 2010-09-02 17:43:13Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008, 2009, 2010 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<#include "header.htm"/>
+<#import "../macros/pagination.ftl" as pagination>
+<#import "../macros/presentation.ftl" as presentation/>
+
+<link rel="alternate" type="application/rss+xml" title="RSS" href="${JForumContext.encodeURL("/rss/forumTopics/${forum.id}")}" />
+
+<script type="text/JavaScript" src="${JForumContext.encodeURL("/js/list/moderation")}"></script>
+<script language="JavaScript" type="text/javascript">
+				//
+				// Should really check the browser to stop this whining ...
+				//
+				function select_switch(status) 
+				{
+					for (i = 0; i < document.form1.length; i++) {
+						document.form1.elements[i].checked = status;
+					}
+				}
+				</script>
+<table cellspacing="0" cellpadding="10" width="100%" align="center" border="0">
+	<tr>
+		<td class="bodyline" valign="top">
+			<table cellspacing="2" cellpadding="2" width="100%" align="center" border="0">
+				<tr>
+					<td valign="bottom" align="left" colspan="2">
+						<a class="maintitle" href="${JForumContext.encodeURL("/forums/show/${forum.id}")}">${forum.name}</a>
+						<!--10/11/05 - Mallika - commenting line below to hide XML link -- >
+						<!--
+						<#if rssEnabled>
+							<a href="${JForumContext.encodeURL("/rss/forumTopics/${forum.id}")}"><img src="${contextPath}/templates/${templateName}/images/xml_button.gif" border="0" alt=""></a>
+							<br />
+						</#if>
+						-->
+						<span class="gensmall"><!-- forum moderators --> </span>
+					</td>
+
+					<td valign="center" nowrap="nowrap" align="right"><@pagination.doPagination action, forum.id/></td>
+				</tr>
+
+				<tr>
+					<#if !readonly && !replyOnly>
+					   <#--<td valign="center" align="left" width="50">
+							<a href="${JForumContext.encodeURL("/jforum${extension}?module=posts&action=insert&forum_id=${forum.id}", "")}" rel="nofollow"><img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/post.gif" border="0" alt="post icon"/></a>
+						  </td>-->
+						<#assign userCatgAccess = true/>
+						<#if !facilitator>
+							<#if (specialAccessUser)>
+								<#if (!specialAccessUserAccess)>
+									<#assign userCatgAccess = false/>
+						   		</#if>
+						   	<#else>
+								<#if ((category.endDate?? && category.endDate?time <= nowDate?time && category.lockCategory) ||
+									(forum.endDate?? && forum.endDate?time <= nowDate?time && forum.lockForum))>
+									<#assign userCatgAccess = false/>
+								</#if>
+							</#if>
+						</#if>
+						
+						<#if !userCatgAccess>
+							<td valign="center" align="left" width="50">
+								<img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/reply_locked.gif" alt="lock icon"/>
+							</td>
+					    <#else>
+						    <td valign="center" align="left" width="50">
+							  <a href="${JForumContext.encodeURL("/jforum${extension}?module=posts&action=insert&forum_id=${forum.id}", "")}" accesskey="${I18n.getMessage("new-access")}" rel="nofollow" ><img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/post.gif" border="0" alt="${I18n.getMessage("add-topic-description")}" title="${I18n.getMessage("add-topic-access-description")}"/></a>
+							  <#--input type="button" name="newtopic" class="mainoption" value="${I18n.getMessage("ForumListing.newTopic")}" accesskey="${I18n.getMessage("new-access")}" title="${I18n.getMessage("add-topic-access-description")}" onclick="document.location = '${contextPath}/jforum${extension}?module=posts&action=insert&forum_id=${forum.id}'"/-->
+						    </td>
+						</#if>
+						
+					<#else>
+						<#assign colspan = "2"/>
+					</#if>
+
+					<td class="nav" valign="center" align="left" width="100%" colspan="${colspan?default("")}">
+						<span class="nav">
+							&nbsp;&nbsp;&nbsp;<a class="nav" href="${JForumContext.encodeURL("/forums/list")}">${I18n.getMessage("ForumListing.forumIndex")}</a> -&gt; <a class="nav" href="${JForumContext.encodeURL("/forums/list")}#${category.id}">${category.name}</a> -&gt; <a class="nav" href="${JForumContext.encodeURL("/forums/show/${forum.id}")}">${forum.name}</a>
+						</span>
+					</td>
+
+					<td class="nav" valign="center" nowrap="nowrap" align="right">
+		  				<span class="gensmall">
+		  				<!--Mallika - 10/19/05 - decided to comment line below -->
+						<!--<a href="${JForumContext.encodeURL("/forums/readAll/${forum.id}")}">${I18n.getMessage("ForumIndex.setAllTopicsAsRead")}</a>-->
+						<#if moderator>
+							<br />
+							
+							<#if openModeration?default(false)>
+								<#assign link = ""/>
+								<#if (start > 0)>
+									<#assign link = JForumContext.encodeURL("/forums/show/" + start + "/" + forum.id)/>
+								<#else>
+									<#assign link = JForumContext.encodeURL("/forums/show/" + forum.id)/>
+								</#if>
+								<#--a href="${link}">${I18n.getMessage("Moderation.CloseModeration")}</a-->
+								<br>
+								 <input type="hidden" name="markTopics" value="true"/>
+								 <#if (forum.gradeType == gradeForum)>
+									<#if facilitator>
+										<img src="${contextPath}/templates/${templateName}/images/grade_by_forum.gif" alt="grade forum"/>
+										<a href="${JForumContext.encodeURL("/gradeForum/evalForumList/${forum.id}/name/a")}">
+										${I18n.getMessage("ForumListing.gradeForum")}
+										</a>
+										&nbsp;
+									<#else>
+										<img src="${contextPath}/templates/${templateName}/images/grade_by_forum.gif" alt="view forum grade"/>
+										<a href="${JForumContext.encodeURL("/gradeForum/viewForumGrade/${forum.id}")}">
+										${I18n.getMessage("ForumListing.viewForumGrade")}
+										</a>
+										&nbsp;
+									</#if>
+								</#if>
+								 <img src="${contextPath}/templates/${templateName}/images/icon_mini_register.gif" width="12" height="13" border="0" alt="mark topic as unread"/> <a id="markTopicsRead1" href="#" onclick="verifyCheckedTopicsAndSubmit();return false;">${I18n.getMessage("PostShow.markTopicUnread")}</a>
+							<#else>
+								<a href="${contextPath}/forums/moderation/<#if (start > 0)>${start}/</#if>${forum.id}${extension}">${I18n.getMessage("Moderation.OpenModeration")}</a>
+								<br>
+								 <input type="hidden" name="markTopics" value="true"/>
+								 <#if (forum.gradeType == gradeForum)>
+									<#if facilitator>
+										<img src="${contextPath}/templates/${templateName}/images/grade_by_forum.gif" alt="grade forum"/>
+										<a href="${JForumContext.encodeURL("/gradeForum/evalForumList/${forum.id}/name/a")}">
+										${I18n.getMessage("ForumListing.gradeForum")}
+										</a>
+										&nbsp;
+									<#else>
+										<img src="${contextPath}/templates/${templateName}/images/grade_by_forum.gif" alt="view forum grade"/>
+										<a href="${JForumContext.encodeURL("/gradeForum/viewForumGrade/${forum.id}")}">
+										${I18n.getMessage("ForumListing.viewForumGrade")}
+										</a>
+										&nbsp;
+									</#if>
+								</#if>
+								 <img src="${contextPath}/templates/${templateName}/images/icon_mini_register.gif" width="12" height="13" border="0" alt="mark topic as unread" /> <a id="markTopicsRead1" href="#" onclick="verifyCheckedTopicsAndSubmit();return false;">${I18n.getMessage("PostShow.markTopicUnread")}</a>
+	                             
+							</#if>
+						<#else>
+			            <input type="hidden" name="markTopics" value="true"/>
+			            <#if (forum.gradeType == gradeForum)>
+							<#if facilitator>
+								<img src="${contextPath}/templates/${templateName}/images/grade_by_forum.gif" alt="grade forum"/>
+								<a href="${JForumContext.encodeURL("/gradeForum/evalForumList/${forum.id}/name/a")}">
+								${I18n.getMessage("ForumListing.gradeForum")}
+								</a>
+								&nbsp;
+							<#else>
+								<img src="${contextPath}/templates/${templateName}/images/grade_by_forum.gif" alt="view forum grade"/>
+								<a href="${JForumContext.encodeURL("/gradeForum/viewForumGrade/${forum.id}")}">
+								${I18n.getMessage("ForumListing.viewForumGrade")}
+								</a>
+								&nbsp;
+							</#if>
+						</#if>
+	                    <img src="${contextPath}/templates/${templateName}/images/icon_mini_register.gif" width="12" height="13" border="0" alt="mark topic as unread"/> <a id="markTopicsRead1" href="#" onclick="verifyCheckedTopicsAndSubmit();return false;">${I18n.getMessage("PostShow.markTopicUnread")}</a>
+			            </#if>
+						
+						</span>
+					</td>
+				</tr>
+			</table>
+
+			<#if (canApproveMessages && topicsToApprove.size() > 0)>
+				<script type="text/javascript">
+				function viewPending(id)
+				{
+					var tr = document.getElementById("tr_pending_" + id);
+					var d = tr.style.display
+					tr.style.display = (d == "none" ? "" : "none");
+				}
+				</script>
+				<form action="${JForumContext.encodeURL("/jforum")}" method="post" accept-charset="${encoding}">
+				<input type="hidden" name="action" value="approveMessages" />
+				<input type="hidden" name="module" value="${moduleName}" />
+				<input type="hidden" name="securityHash" value="${securityHash}" />
+				<input type="hidden" name="forum_id" value="${forum.id}" />
+
+				<table width="70%"class="forumline" align="center" cellspacing="1" cellpadding="4">
+					<tr>
+						<td class="bg_yellow" align="center" style="height: 30px" colspan="2"><span class="gensmall tx_red"><b>${I18n.getMessage("Moderation.checkQueue")}</b></span></td>
+					</tr>
+
+					<#list topicsToApprove.values() as topic>
+						<#if topic_index % 2 == 0>
+							<#assign rowColor = "">
+						<#else>
+							<#assign rowColor = "bg_small_yellow">
+						</#if>
+
+						<tr class="${rowColor}">
+							<td width="90%">
+								<#if (topic.topicReplies > 0)>
+									<a href="${JForumContext.encodeURL("/posts/list/${topic.topicId}")}" class="gen">${topic.topicTitle}</a>
+								<#else>
+									<span class="gen">${topic.topicTitle}</span>
+								</#if>
+							</td>
+							<td align="center"><span class="gen"><a href="javascript:viewPending(${topic.topicId});"><b>${I18n.getMessage("Moderation.Admin.view")}</b></a></span></td>
+						</tr>
+						<!-- Messages -->
+						<tr id="tr_pending_${topic.topicId}" style="display: none">
+							<td colspan="2">
+								<table width="95%" align="right">
+									<#list topic.posts as post>
+										<#assign post = postFormatter.preparePostForDisplay(post)/>
+
+										<tr><td><span class="gensmall"><b>${I18n.getMessage("PostShow.author")}</b>: ${post.postUsername}</span></td></tr>
+										<tr><td><span class="gensmall">${post.text}</span></td></tr>
+
+										<tr>
+											<td colspan="2" align="right">
+												<span class="gensmall">
+													<input type="radio" name="status_${post.id}" value="aprove">${I18n.getMessage("Moderation.Admin.aprove")}&nbsp;
+													<input type="radio" name="status_${post.id}" value="defer" checked>${I18n.getMessage("Moderation.Admin.defer")}&nbsp;
+													<input type="radio" name="status_${post.id}" value="reject">${I18n.getMessage("Moderation.Admin.reject")}&nbsp;
+													<input type="hidden" name="post_id" value="${post.id}">
+												</span>
+											</td>
+										</tr>
+
+										<#if (post_index + 1 < topic.posts.size())>
+											<tr>
+												<td colspan="2" height="1" class="spaceRow"><img src="${contextPath}/templates/${templateName}/images/spacer.gif" alt="" width="1" height="1" /></td>
+											</tr>
+										</#if>
+									</#list>
+								</table>
+							</td>
+						</tr>
+					</#list>
+
+					<!-- Submit -->
+					<tr>
+						<td colspan="2" align="center"><input type="submit" class="mainoption" value="${I18n.getMessage("Moderation.Admin.submit")}"></td></tr> 
+					</tr>
+				</table>
+				</form>
+			</#if>
+
+			<#if moderator>
+				<form action="${JForumContext.encodeURL("/jforum")}" method="post" name="form1" id="form1" accept-charset="${encoding}">
+				<input type="hidden" name="action" value="doModeration" />
+				<input type="hidden" name="module" value="${moduleName}" />
+				<input type="hidden" name="securityHash" value="${securityHash}" />
+				<input type="hidden" name="persistData" value="${forum.id}" />
+				<input type="hidden" name="forum_id" value="${forum.id}" />
+			<#else>
+              <form action="${JForumContext.encodeURL("/jforum")}" method="post" name="form1" id="form1" accept-charset="${encoding}">
+				<input type="hidden" name="action" value="doModeration" />
+				<input type="hidden" name="module" value="${moduleName}" />
+				<input type="hidden" name="forum_id" value="${forum.id}" />	
+			</#if>
+
+			<table class="forumline" cellspacing="1" cellpadding="4" width="100%" border="0">
+				<#if errorMessage?exists>
+					<tr>
+						<td colspan="7" align="center"><span class="redclass">${errorMessage}</span></td>
+					</tr>
+				</#if>
+				<tr>
+					<th class="thCornerL" nowrap="nowrap" align="middle" colspan="2" height="25">&nbsp;${I18n.getMessage("ForumIndex.topics")}&nbsp;</th>
+					<#if (forum.gradeType == gradeTopic)>
+						<th class="thCornerL" nowrap="nowrap" align="middle" width="100" height="25">&nbsp;${I18n.getMessage("ForumIndex.scores")}&nbsp;</th>
+					</#if>
+					<th class="thTop" nowrap="nowrap" align="middle" width="50">&nbsp;${I18n.getMessage("ForumIndex.answers")}&nbsp;</th>
+					<th class="thTop" nowrap="nowrap" align="middle" width="100">&nbsp;${I18n.getMessage("ForumIndex.author")}&nbsp;</th>
+					<th class="thCornerR" nowrap="nowrap" align="middle">&nbsp;${I18n.getMessage("ForumIndex.lastMessage")}&nbsp;</th>
+
+					<#if moderator && openModeration?default(false)>
+						<!--th class="thCornerR" nowrap="nowrap" align="middle">&nbsp;Moderation&nbsp;</th-->
+						<th class="thCornerR" nowrap="nowrap" align="middle">&nbsp;
+						<span class="gensmall"><a class="gensmall" href="javascript:select_switch(true);">${I18n.getMessage("PrivateMessage.checkAll")}</a> <br> 
+									<a class="gensmall" href="javascript:select_switch(false);">${I18n.getMessage("PrivateMessage.uncheckAll")}</a></span>
+						&nbsp;</th>
+					<#else>
+						<th class="thCornerR" nowrap="nowrap" align="middle">&nbsp;				
+					<span class="gensmall"><a class="gensmall" href="javascript:select_switch(true);">${I18n.getMessage("PrivateMessage.checkAll")}</a> <br> 
+									<a class="gensmall" href="javascript:select_switch(false);">${I18n.getMessage("PrivateMessage.uncheckAll")}</a></span>
+						&nbsp;</th>		
+					</#if>
+				</tr>
+
+				<!-- TOPICS LISTING -->
+				<#list topics as topic>
+					<#assign class1>class="<@presentation.row1Class topic/>"</#assign>
+					<#assign class2>class="<@presentation.row2Class topic/>"</#assign>
+					<#assign class3>class="<@presentation.row3Class topic/>"</#assign>
+
+					<#if canApproveMessages>
+						<#if topicsToApprove.containsKey(topic.id)>
+							<#assign class1 = "class='bg_yellow'"/>
+							<#assign class2 = class1/>
+							<#assign class3 = class1/>
+						</#if>
+					</#if>
+					<tr>
+						<td ${class1} valign="center" align="middle" width="20"><@presentation.folderImage topic/></td>
+						<td ${class1} width="100%">
+							<#if topic.hasAttach() && attachmentsEnabled><img src="${contextPath}/templates/${templateName}/images/icon_clip.gif" align="middle" alt="attachment icon"></#if>
+							<span class="topictitle">
+							<a href="${JForumContext.encodeURL("/posts/list/${topic.id}")}"><#if (topic.title?length == 0)>No Subject<#else>${topic.title?html}</#if></a>
+							</span>
+
+							<#if topic.paginate>
+								<span class="gensmall">
+								<br />
+								<@pagination.littlePostPagination topic.id, postsPerPage, topic.totalReplies/>				
+								</span>
+							</#if>		
+						</td>
+						
+						<#if (forum.gradeType == gradeTopic)>
+							<td ${class2} valign="center" align="middle">
+								<span class="postdetails">
+									<#if (topic.isGradeTopic())>
+										<#if facilitator>
+											<img src="${contextPath}/templates/${templateName}/images/grade_by_topic.gif" alt="grade topics"/>
+											<a href="${JForumContext.encodeURL("/gradeForum/evalTopicList/${topic.id}/name/a")}">${I18n.getMessage("ForumIndex.gradeTopic")}</a>
+										<#else>
+											<img src="${contextPath}/templates/${templateName}/images/grade_by_topic.gif" alt="view topics grade"/>
+											<a href="${JForumContext.encodeURL("/gradeForum/viewTopicGrade/${topic.id}")}">${I18n.getMessage("ForumIndex.viewGrade")}</a>
+										</#if>
+									</#if>
+								</span>
+							</td>
+						</#if>
+						
+						<td ${class2} valign="center" align="middle"><span class="postdetails">${topic.totalReplies}</span></td>
+						<td ${class3} valign="center" align="middle">
+							<span class="name"><a href="${JForumContext.encodeURL("/user/profile/${topic.postedBy.id}")}">${topic.postedBy.firstName?default("")}&nbsp;${topic.postedBy.lastName?default("")}</a></span>
+						</td>
+
+						<td ${class2} valign="center" nowrap="nowrap" align="middle">
+							<#if (topic.lastPostTime?length > 0)>
+								<span class="postdetails">${topic.lastPostTime}<br />
+								<a href="${JForumContext.encodeURL("/user/profile/${topic.lastPostBy.id}")}">		${topic.lastPostBy.firstName?default("")}&nbsp;${topic.lastPostBy.lastName?default("")}</a>
+
+								<#assign startPage = ""/>
+								<#if (topic.totalReplies + 1 > postsPerPage?number)>
+									<#assign startPage = ((topic.totalReplies / postsPerPage?number)?int * postsPerPage?number) +"/"/>
+								</#if>
+					  
+								<a href="${JForumContext.encodeURL("/posts/list/${startPage}${topic.id}")}#${topic.lastPostId}"><img src="${contextPath}/templates/${templateName}/images/icon_latest_reply.gif" width="18" height="9" border="0" alt="last reply icon"/></a></span>
+							</#if>		 
+						</td>
+
+						<#if moderator && openModeration?default(false)>
+							<td ${class3} valign="middle" align="center"><input type="checkbox" name="topic_id" value="${topic.id}" /></td>
+						<#else>	
+							<td ${class3} valign="middle" align="center"><input type="checkbox" name="topic_id" value="${topic.id}" /></td>
+						</#if>
+					</tr>
+				</#list>		
+				<!-- END OF TOPICS LISTING -->
+				
+				<tr>
+					<td class="catBottom" valign="center" align="right" colspan="<#if moderator && openModeration?default(false)>8<#else>7</#if>" height="28">
+						&nbsp;<@presentation.moderationButtons/>
+				</tr>
+			</table>
+
+			<table cellspacing="2" cellpadding="2" width="100%" align="center" border="0">
+	        <#if moderator  && openModeration?default(false)>
+	        	<tr>
+	           <td valign="center" align="right" colspan="3">
+	           <span class="gensmall">
+	            <input type="hidden" name="markTopics" value="true"/>
+	            
+	            <#if (forum.gradeType == gradeForum)>
+					<#if facilitator>
+						<img src="${contextPath}/templates/${templateName}/images/grade_by_forum.gif" alt="grade forum"/>
+						<a href="${JForumContext.encodeURL("/gradeForum/evalForumList/${forum.id}/name/a")}">
+						${I18n.getMessage("ForumListing.gradeForum")}
+						</a>
+						&nbsp;
+					<#else>
+						<img src="${contextPath}/templates/${templateName}/images/grade_by_forum.gif" alt="view forum grade"/>
+						<a href="${JForumContext.encodeURL("/gradeForum/viewForumGrade/${forum.id}")}">
+						${I18n.getMessage("ForumListing.viewForumGrade")}
+						</a>
+						&nbsp;
+					</#if>
+				</#if>      
+			   <b><img src="${contextPath}/templates/${templateName}/images/icon_mini_register.gif" width="12" height="13" border="0" alt="mark topic as read"/> <a id="markTopicsRead2" class="gensmall" href="#" onclick="verifyCheckedTopicsAndSubmit();return false;">${I18n.getMessage("PostShow.markTopicUnread")}</a></b>
+			   </span>
+	           </td>
+	           </tr>
+	        <#else> 
+	           <tr>
+	           <td valign="center" align="right" colspan="3">
+	           <span class="gensmall">
+	            <input type="hidden" name="markTopics" value="true"/>
+	            <#if (forum.gradeType == gradeForum)>
+					<#if facilitator>
+						<img src="${contextPath}/templates/${templateName}/images/grade_by_forum.gif" alt="grade forum"/>
+						<a href="${JForumContext.encodeURL("/gradeForum/evalForumList/${forum.id}/name/a")}">
+						${I18n.getMessage("ForumListing.gradeForum")}
+						</a>
+						&nbsp;
+					<#else>
+						<img src="${contextPath}/templates/${templateName}/images/grade_by_forum.gif" alt="view forum grade"/>
+						<a href="${JForumContext.encodeURL("/gradeForum/viewForumGrade/${forum.id}")}">
+						${I18n.getMessage("ForumListing.viewForumGrade")}
+						</a>
+						&nbsp;
+					</#if>
+				</#if>        
+			   <b><img src="${contextPath}/templates/${templateName}/images/icon_mini_register.gif" width="12" height="13" border="0" alt="mark topic as read"/> <a id="markTopicsRead2" class="gensmall" href="#" onclick="verifyCheckedTopicsAndSubmit();return false;">${I18n.getMessage("PostShow.markTopicUnread")}</a></b>
+			   </span>
+	           </td>
+	           </tr>   
+	         </#if>  
+	
+				<tr>
+					<#if !readonly && !replyOnly>
+					  <!--<td valign="center" align="left" width="50">
+							<a href="${JForumContext.encodeURL("/jforum${extension}?module=posts&amp;action=insert&amp;forum_id=${forum.id}","")}" rel="nofollow"><img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/post.gif" border="0" alt="post icon"/></a>
+						</td>-->
+					  <#if !facilitator>
+						  <#if !userCatgAccess>
+								<td valign="center" align="left" width="50">
+									<img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/reply_locked.gif" alt="lock icon"/>
+								</td>
+					      <#else>
+							    <td valign="center" align="left" width="50">
+								  <a href="${JForumContext.encodeURL("/jforum${extension}?module=posts&action=insert&forum_id=${forum.id}", "")}" accesskey="${I18n.getMessage("new-access")}" rel="nofollow" ><img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/post.gif" border="0" alt="${I18n.getMessage("add-topic-description")}" title="${I18n.getMessage("add-topic-access-description")}"/></a>
+								  <#--input type="button" name="newtopic" class="mainoption" value="${I18n.getMessage("ForumListing.newTopic")}" accesskey="${I18n.getMessage("new-access")}" title="${I18n.getMessage("add-topic-access-description")}" onclick="document.location = '${contextPath}/jforum${extension}?module=posts&action=insert&forum_id=${forum.id}'"/-->
+							    </td>
+						  </#if>
+					  <#else>
+	                      <td valign="center" align="left" width="50">
+							<a href="${JForumContext.encodeURL("/jforum${extension}?module=posts&amp;action=insert&amp;forum_id=${forum.id}","")}" rel="nofollow"><img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/post.gif" border="0" alt="${I18n.getMessage("add-topic-description")}" title="${I18n.getMessage("add-topic-access-description")}"/></a>
+							<#--input type="button" name="newtopic" class="mainoption" value="${I18n.getMessage("ForumListing.newTopic")}" title="${I18n.getMessage("add-topic-access-description")}" onclick="document.location = '${contextPath}/jforum${extension}?module=posts&action=insert&forum_id=${forum.id}'"/-->
+						  </td>
+					  </#if>
+					<#else>
+						<#assign colspan = "2"/>
+					</#if>
+
+					<td valign="center" align="left" width="100%" colspan="${colspan?default("0")}">
+						<span class="nav">
+							&nbsp;&nbsp;&nbsp;<a class="nav" href="${JForumContext.encodeURL("/forums/list")}">${I18n.getMessage("ForumListing.forumIndex")}</a> -&gt; <a class="nav" href="${JForumContext.encodeURL("/forums/list")}#${category.id}">${category.name}</a> -&gt; <a class="nav" href="${JForumContext.encodeURL("/forums/show/${forum.id}")}">${forum.name}</a>
+						</span>
+					</td>
+
+					<!--<#if moderator>--></form><!--</#if>-->
+
+					<td valign="center" nowrap="nowrap" align="right"><@pagination.doPagination action, forum.id/></td>
+				</tr>
+
+				<tr>
+					<td align="left" colspan="3"><span class="nav"></span></td>
+				</tr>
+			</table>
+
+			<@presentation.forumsComboTable/>
+
+			<table cellspacing="0" cellpadding="0" width="100%" align="center" border="0">
+				<tr>
+					<td valign="top" align="left">
+						<table cellspacing="3" cellpadding="0" border="0">
+							<tr>
+								<td align="left" width="20"><img src="${contextPath}/templates/${templateName}/images/folder_new.gif" width="19" height="18"  alt="new message icon"/></td>
+								<td class="gensmall">${I18n.getMessage("ForumIndex.newMessages")}</td>
+								<td>&nbsp;&nbsp;</td>
+								<td align="middle" width="20"><img src="${contextPath}/templates/${templateName}/images/folder.gif" width="19" height="18" alt="message icon"/></td>
+								<td class="gensmall">${I18n.getMessage("ForumIndex.noNewMessages")}</td>
+								<td>&nbsp;&nbsp;</td>
+								<td align="middle" width="20"><img src="${contextPath}/templates/${templateName}/images/folder_announce.gif" width="19" height="18" alt="announcement icon"/></td>
+								<td class="gensmall">${I18n.getMessage("ForumIndex.announce")}</td>
+							</tr>
+							
+							<tr>
+								<td align="middle" width="20"><img src="${contextPath}/templates/${templateName}/images/folder_new_hot.gif" width="19" height="18" alt="new hot message icon"/></td>
+								<td class="gensmall">${I18n.getMessage("ForumIndex.newMessagesHot")}</td>
+								<td>&nbsp;&nbsp;</td>
+								<td align="middle" width="20"><img src="${contextPath}/templates/${templateName}/images/folder_hot.gif" width="19" height="18" alt="hot message icon"/></td>
+								<td class="gensmall">${I18n.getMessage("ForumIndex.noNewMessagesHot")}</td>
+								<td>&nbsp;&nbsp;</td>
+								<td align="middle" width="20"><img src="${contextPath}/templates/${templateName}/images/folder_sticky.gif" width="19" height="18" alt="sticky note icon"/></td>
+								<td class="gensmall">${I18n.getMessage("ForumIndex.sticky")}</td>
+							</tr>
+
+							<tr>
+								<td align="middle" width="20"><img src="${contextPath}/templates/${templateName}/images/folder_lock_new.gif" width="19" height="18" alt="block message icon"/></td>
+								<td class="gensmall">${I18n.getMessage("ForumIndex.newMessagesBlocked")}</td>
+								<td>&nbsp;&nbsp;</td>
+								<td align="middle" width="20"><img src="${contextPath}/templates/${templateName}/images/folder_lock.gif" width="19" height="18" alt="block message icon"/></td>
+								<td class="gensmall">${I18n.getMessage("ForumIndex.noNewMessagesBlocked")}</td>
+								<td>&nbsp;&nbsp;</td>
+								<td align="middle" width="20"><img src="${contextPath}/templates/${templateName}/images/folder_task.gif" width="19" height="18" alt="task icon"/></td>
+								<td class="gensmall">${I18n.getMessage("ForumIndex.reUsableTopic")}</td>
+							</tr>
+						</table>
+					</td>
+					<td align="right"><span class="gensmall"></span></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<#include "bottom.htm"/>

@@ -1,0 +1,131 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/pm_finduser.htm $
+ * $Id: pm_finduser.htm 55651 2008-12-03 23:28:08Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<#setting number_format="#"/>
+<html>
+<head>
+<title>JForum - ${I18n.getMessage("PrivateMessage.findUser")}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=${encoding}" />
+<meta name="description" content="${metaDescription}" />
+<meta name="keywords" content="${metaKeywords}, jforum, jforum java, java jforum, java forum, forum, rafael steil, bulletin board, java bb, javabb" />
+<style type="text/css">@import url( ${contextPath}/templates/${templateName}/style.css );</style>
+</head>
+
+<body>
+
+<script language="javascript" type="text/javascript">
+function refreshUsername()
+{
+	var s = document.search.selectedUsername.value.split("#");
+	
+	opener.document.forms['post'].toUserId.value = s[0];
+	opener.document.forms['post'].toUsername.value = document.search.selectedUsername[document.search.selectedUsername.selectedIndex].text;
+	opener.document.forms['post'].toUserEmail.value = s[1];
+	opener.focus();
+	window.close();
+}
+</script>
+
+<form action="${contextPath}/jforum${extension}" method="post" name="search" id="search" accept-charset="${encoding}">
+<!--10/7/05 - Mallika - commenting lines below and hardcoding action -->
+<!--<input type="hidden" name="action" value="${action}">-->
+<input type="hidden" name="action" value="findFluser">
+<input type="hidden" name="module" value="${moduleName}">
+
+	<table cellspacing="0" cellpadding="10" width="100%" border="0">
+		<tr>
+			<td>
+				<table class="forumline" cellspacing="1" cellpadding="4" width="100%" border="0">
+					<tr>
+						<th class="thHead" height="25">${I18n.getMessage("PrivateMessage.findingUser")}</th>
+					</tr>
+					<tr>
+						<td class="row1" valign="top">
+							<span class="genmed"><br />
+							<input class="post" name="username" value="${username?default("")}"/>&nbsp; 
+							<input class="liteoption" type="submit" value="${I18n.getMessage("ForumBase.search")}" name="search" />
+							</span><br />
+							<!-- 10/6/05 - Mallika - changing line below to search by first or last name -->
+							<span class="gensmall">${I18n.getMessage("PrivateMessage.searchFlTip")}</span><br />
+							<br />
+							<#if showResult>
+							<select name="selectedUsername">
+								<#list namesList as user>
+								<!--10/7/05 - Mallika - changing line below to show first name and last name -->
+								<!--<option value="${user.id}#${user.email?default("")}">${user.username}</option>-->
+								<option value="${user.id}#${user.email?default("")}">${user.firstName} ${user.lastName}</option>
+								</#list>
+							</select>
+							&nbsp;<input type="button" value="${I18n.getMessage("PrivateMessage.select")}" class="liteoption" onClick="refreshUsername();">
+							</#if>
+							<center><span class="genmed"><a class="genmed" href="javascript:window.close();">${I18n.getMessage("closeWindow")}</a></span></center>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+		
+		<tr>
+			<td align="center">
+				<span class="copyright">Powered by <a class="copyright" href="http://www.jforum.net/" target="_blank">JForum ${version} </a>&copy; 2004 - Rafael Steil</span>
+			</td>
+		</tr>
+	</table>
+</form>
+</body>
+</html>

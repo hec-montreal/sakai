@@ -1,0 +1,75 @@
+#######################################################################
+# Etudes JForum cofig properties - add to sakai.properties and customize
+#######################################################################
+# topics per page
+etudes.jforum.topicsPerPage = 30
+
+# Posts per page
+etudes.jforum.postsPerPage = 30
+
+# Users per page
+etudes.jforum.usersPerPage = 30
+
+# Number of replies to mark a topic as hot
+etudes.jforum.hot.topic.begin = 20
+
+# Recent topics per page
+etudes.jforum.topic.recent = 30
+
+# Encoding
+etudes.jforum.encoding = UTF-8
+
+# Avatar path(should have read and write permissions) and context. Copy the files and directories under 
+# jforum-images/var/jforum_images to etudes.jforum.avatar.path. Add the jforum-images.xml from
+# jforum-images directory to tomcat/conf/Catalina/localhost. Update the "docBase" to the "etudes.jforum.avatar.path"
+etudes.jforum.avatar.clustered = true
+etudes.jforum.avatar.path = /var/jforum_images
+etudes.jforum.avatar.context = /jforum-images
+
+# Date format
+etudes.jforum.dateTime.format = MM/dd/yyyy hh:mm:ss a
+
+# Calendar date format
+etudes.jforum.calendar.dateTime.format = MM/dd/yyyy hh:mm a
+
+# i18n - en_US, pt_BR, de_DE, zh_TW, zh_CN, es_ES, ca_ES
+etudes.jforum.i18n.board.default= en_US
+etudes.jforum.i18n.images.dir = en_US
+
+# ATTACHMENTS 
+# Maximum of attachments per post
+etudes.jforum.attachments.max.post = 3
+
+# attatchments quota limit in MB(mega bytes)
+etudes.jforum.attachments.quota.limit = 5
+
+# Directory to store the uploaded files(should have read and write permissions)
+etudes.jforum.attachments.store.dir = /var/jforum/upload
+
+# Package files path(should have read and write permissions) for Import and Export for Task Topics. Copy the 
+# var/jforum/packagefiles directory contents to etudes.jforum.packaging.path
+etudes.jforum.packaging.path = /var/jforum/packagefiles
+
+# Grade book tool id for grading
+etudes.jforum.sakai.gradebook.tool.id = sakai.gradebook.tool
+
+#Maximum number of users allowed to copy in Private Messages
+etudes.jforum.maxPMToUsers=10
+
+############################################################################
+# Enabling cache is optional. It is disabled by default with Etudes Jforum 2.8.1
+# To enable category cache uncomment the below lines and add 
+# jforum-tool/src/webapp/WEB-INF/config/jforum-cache-cluster.xml to
+# etudes.jforum.local.config.dir path. In the clustered environment
+# config to use multi cast by  configuring the UDP element's attributes
+# ip_mcast to "true" and provide bind_addr of the machine
+# Note: Give the same "ClusterName" in the cluster.
+# Note: Using cache is not advised for JForum 2.7.1 and later
+############################################################################
+#etudes.category.cache.enabled = true
+#etudes.jforum.cache.engine.implementation = org.etudes.jforum.cache.JBossCacheEngine
+#etudes.jforum.local.config.dir = /var/jforum/config
+#etudes.jforum.jboss.cache.properties.file = jforum-cache-cluster.xml
+
+# JForum tool id for JForum synoptic tool
+etudes.jforum.sakai.jforum.tool.id = sakai.jforum.tool

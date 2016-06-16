@@ -1,0 +1,426 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/post_pm.htm $
+ * $Id: post_pm.htm 69032 2010-07-02 23:28:56Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008, 2009 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;" />
+<meta name="description" content="${metaDescription}" />
+<meta name="keywords" content="${metaKeywords}" />
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="-1"/>
+<style type="text/css">@import url( ${contextPath}/templates/${templateName}/style.css );</style>
+<title>${pageTitle?default("JForum")}</title>
+
+<script type="text/javascript">
+var CONTEXTPATH = "${contextPath}";
+var SERVLET_EXTENSION  = "${extension}";
+</script>
+
+<script type="text/javascript" src="/library/editor/FCKeditor/fckeditor.js"></script>
+<script type="text/javascript" src="${contextPath}/templates/${templateName}/js/postpm.js"></script>
+<script type="text/javascript" src="${contextPath}/templates/${templateName}/js/jquery.js"></script>
+</head>
+<body>
+<#if updatesucess?exists && updatesucess>
+<script type="text/javascript">
+this.window.close();
+</script>
+</#if>
+
+<#if pmRecipient?exists>
+	<#assign pmUser = true/>
+<#else>
+	<#assign pmUser = false/>
+</#if>
+
+<#if preview?exists && preview>
+	<#assign preview = true/>
+<#else>
+	<#assign preview = false/>
+</#if>
+
+
+
+<script type="text/javascript"><#include "js/bbcode_help.js"/></script>
+<script type="text/javascript" src="${contextPath}/templates/${templateName}/js/post.js"></script>
+
+<script type="text/javascript">
+function validatePostForm(f)
+{
+	<#if setType?default(true)>
+		if (f.subject.value.replace(/^\s*|\s*$/g, "").length == 0) {
+			alert("${I18n.getMessage("PostForm.subjectEmpty")}");
+			f.subject.focus();
+			
+			return false;
+		}
+		else
+		{
+		  if (f.subject.value.length > 100) {
+		    alert("${I18n.getMessage("PostForm.subjectLong")}");
+			f.subject.focus();
+			return false;
+		  }
+		}
+	<#else>
+	  if (f.subject.value.length > 100) {
+	    alert("${I18n.getMessage("PostForm.subjectLong")}");
+		f.subject.focus();
+		return false;
+	  }
+	</#if>
+	
+	if (f.toUsername.value == "") {
+		alert("${I18n.getMessage("PrivateMessage.toUserIsEmpy")}");
+		f.toUsername.focus();
+
+		return false;
+	}
+	
+	return true;
+}
+</script>
+
+<#assign attachmentsEnabled = attachmentsEnabled?exists && attachmentsEnabled/>
+
+<#if !maxAttachments?exists>
+	<#assign maxAttachments = 0/>
+</#if>
+<!--rashmi changing htmlchecked variable to blank -->
+<#assign htmlChecked = ""/>
+<#assign signatureChecked = "checked"/>
+
+<#if user.isHtmlEnabled()><#assign htmlChecked = ""/></#if>
+<#if !user.getAttachSignatureEnabled()><#assign signatureChecked = ""/></#if>
+
+<form action="${JForumContext.encodeURL("/jforum")}" method="post" enctype="multipart/form-data" name="post" id="post" onSubmit="return validatePostForm(this)">
+<input type="hidden" name="action" value="${action}" />
+<input type="hidden" name="module" value="${moduleName}" />
+<input type="hidden" name="securityHash" value="${securityHash}" />
+<#if forum?exists><input type="hidden" name="forum_id" value="${forum.id}" /></#if>
+<input type="hidden" name="start" value="${start?default("")}" />
+
+<table cellspacing="0" cellpadding="10" width="100%" align="center" border="0">
+	<tr> 
+		<td class="bodyline">
+					
+			<!-- Preview message -->
+			<a name="preview"></a>
+			<table class="forumline" width="100%" cellspacing="1" cellpadding="4" border="0"  <#if !preview>style="display: none"</#if> id="previewTable">
+				<tr>
+					<th height="25" class="thHead">${I18n.getMessage("PostForm.preview")}</th>
+				</tr>
+				<tr>
+					<td class="row1">
+						<img src="${contextPath}/templates/${templateName}/images/icon_minipost.gif" alt=""/>
+						<span class="postdetails" id="previewSubject"> ${I18n.getMessage("PostForm.subject")}: <#if postPreview?exists>${postPreview.post.subject}</#if></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="row1" height="100%">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" height="100%">
+							<tr>
+								<td><span id="previewMessage" class="postbody"><#if postPreview?exists>${postPreview.post.text}</#if></span></td>
+							</tr>
+
+							<#if (user?exists && user.attachSignatureEnabled && user.signature?exists && user.signature?length > 0 && post?exists && post.isSignatureEnabled())>
+								<tr>
+									<td>
+										<hr />
+										<span class="gensmall" id="previewSignature">
+											<#if previewUser?exists>
+												${previewUser.signature}
+											<#else>
+												${user.signature}
+											</#if>
+										</span>
+									</td>
+								</tr>
+							</#if>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td class="spaceRow" height="1"><img src="${contextPath}/templates/${templateName}/images/spacer.gif" width="1" height="1" alt=""/></td>
+				</tr>
+			</table>
+
+			<br clear="all" />			
+			
+			<table class="forumline" cellspacing="1" cellpadding="3" width="100%" border="0">
+				<tr>
+					<th class="thHead" colspan="2" height="25">
+						<b>
+						<#if forum?exists>
+							<#if (topic?exists && topic.id > -1)>
+								${I18n.getMessage("PostForm.reply")} "${topic.title}"
+							<#else>
+								${I18n.getMessage("PostForm.title")}
+							</#if>
+						<#else>
+							<#if pmReply?default(false)>
+								${I18n.getMessage("PrivateMessage.reply")}
+							<#else>
+								${I18n.getMessage("PrivateMessage.title")}
+							</#if>
+						</#if>
+						</b>
+					</th>
+				</tr>
+
+				<#if !forum?exists>
+					<tr>
+						<td class="row1" width="22%"><span class="gen"><b>${I18n.getMessage("PrivateMessage.user")}</b></span></td>
+						<td class="row2" width="78%">
+							<#if pmRecipient?exists>
+								<select name="toUsername" size="1">
+									<option value="${toUserId}">${pmRecipient.lastName}, ${pmRecipient.firstName}</option>
+								</select>
+									
+								<#assign toUsername = toUsername/>
+								<#assign toUserId = toUserId/>
+								<#assign toUserEmail = toUserEmail/>
+							</#if>
+
+							<input type="hidden" name="toUserId" value="${toUserId}" />
+							<input type="hidden" name="toUserEmail" value="${toUserEmail}"/>
+						</td>
+					</tr>
+				</#if>
+
+				<#if errorMessage?exists>
+					<tr>
+						<td colspan="2" align="center"><span class="redclass">${errorMessage}</span></td>
+					</tr>
+				</#if>
+				
+				<tr>
+					<td class="row1" width="22%"><span class="gen"><b>${I18n.getMessage("PostForm.subject")}</b></span></td>
+					<td class="row2" width="78%">
+						<span class="gen">
+							<input class="post" style="WIDTH: 460px" maxlength="100" size="45" name="subject" value="<#if postPreview?exists>${postPreview.post.subject}</#if>" /> 
+						</span>
+					</td>
+				</tr>
+
+				<tr>
+					<td class="row1" valign="top">
+						<table cellspacing="0" cellpadding="1" width="100%" border="0">
+							<tr>
+								<td><span class="gen"><b>${I18n.getMessage("PostForm.body")}</b></span> </td>
+							</tr>
+							
+							<tr>
+								<td valign="center" align="middle">
+									<br />
+								</td>
+							</tr>
+						</table>
+					</td>
+
+					<td class="row2" valign="top">
+						<span class="gen">
+							<table cellspacing="0" cellpadding="2" width="470" border="0">
+	
+								<script type="text/javascript" language="JavaScript">
+															
+								function myeditor(textarea_id)
+								{
+									var oFCKeditor = new FCKeditor( textarea_id ) ;
+									oFCKeditor.BasePath = "/library/editor/FCKeditor/";
+									oFCKeditor.Width	="450";
+									oFCKeditor.Height	= "300" ;
+									oFCKeditor.Config['CustomConfigurationsPath']="/library/editor/FCKeditor/config.js";
+									oFCKeditor.ToolbarSet = 'JforumDefault';
+									oFCKeditor.Config['LinkBrowser'] = false;
+									oFCKeditor.ReplaceTextarea() ;
+								}
+
+								function editorContent()
+								{
+									var new_text_input =  FCKeditorAPI.GetInstance('message');
+									var new_text = new_text_input.GetHTML();
+
+									document.post.fckcontent.value = new_text;
+								}
+				
+							</script>
+							<input type="hidden" id="fckcontent" name="fckcontent" value=""/>
+								<tr>
+									<td colspan="9" valign="top">
+										<span class="gen">
+											<textarea class="post" onkeyup="storeCaret(this);" onclick="storeCaret(this);" onselect="storeCaret(this);" style="WIDTH: 450px" name="message" id="message" rows="15" wrap="virtual" cols="35">
+												<#if postPreview?exists>${postPreview.post.text}</#if>
+											</textarea>
+											<script type="text/javascript" >myeditor('message')</script>	
+										</span>
+									</td>
+								</tr>
+				
+							</table>
+						</span>
+					</td>
+				</tr>
+				
+				<tr>
+					<td class="row1" valign="center" align='center'><span class="gen"><b>${I18n.getMessage("PostForm.options")}</b></span></td>
+					<td class="row2">
+						<table cellspacing="0" cellpadding="1" border="0">
+							<#if htmlAllowed>
+								<tr>
+								<td><input type="checkbox" name="disable_html" ${htmlChecked} /></td>
+								<td><span class="gen">${I18n.getMessage("PostForm.disableHtml")}</span></td>
+								</tr>
+							<#else>
+								<input type="hidden" name="disable_html" value="1" />
+							</#if>
+							<#if user.id != 1>
+								<tr>
+									<td><input type="checkbox" name="attach_sig" ${signatureChecked} /> </td>
+									<td><span class="gen">${I18n.getMessage("PostForm.appendSignature")}</span></td>
+								</tr>
+							</#if>
+							<tr>
+								<td colspan="2">
+									<span class="gen">
+										<input type="checkbox" name="high_priority_pm" id="high_priority_pm" value="1" title="high priority private message"/>${I18n.getMessage("PostForm.highPriorityPm")}
+									</span>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				
+				<#if error?exists>
+					<tr>
+						<td class="row1">&nbsp;</td>
+						<td class="row2"><span class="gen"><font color="red"><b>${error}</b></font></span></td>
+					</tr>
+				</#if>
+				
+				<tr align="center">
+					<td height="28" colspan="2" class="catBottom">
+						<input class="mainoption" type="submit" value="${I18n.getMessage("PostForm.submit")}" name="post" accesskey="${I18n.getMessage("save-access")}" title="${I18n.getMessage("save-access-description")}"/>
+						<input class="mainoption" type="button" name="preview" value="${I18n.getMessage("PostForm.preview")}" onclick="editorContent();previewPM();" accesskey="${I18n.getMessage("preview-access")}" title="${I18n.getMessage("preview-access-description")}"/>&nbsp;             
+						<#if attachmentsEnabled>
+							<input class="mainoption" type="button" onClick="openAttachmentPanel();" value="${I18n.getMessage("Attachments.attach")}" name="post" accesskey="${I18n.getMessage("add-access")}" title="${I18n.getMessage("add-attach-access-description")}" onClick="addAttachmentFields()"/>
+						</#if>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+
+	<#if attachmentsEnabled || attachments?exists>
+	<input type="hidden" name="edit_attach_ids">
+	<input type="hidden" name="delete_attach">
+	<input type="hidden" name="total_files" id="total_files">
+	<tr>
+	<td colspan="2" id="tdAttachPanel" align="center" style="display: <#if attachmentsEnabled>none;<#elseif attachments?exists>'';</#if>">
+
+		<table border="0" cellpadding="3" cellspacing="0" width="70%" class="forumline" id="tblAttachments">
+			<tr>
+				<td class="catHead" height="28" colspan="3" align="center"><b><span class="cattitle">${I18n.getMessage("Attachments.panel")}</span></b></td>
+			</tr>
+			<tr>
+				<td align="center">
+					<span class="gensmall">
+					<b>${I18n.getMessage("Attachments.maxToAttach")}:</b> <font color="red">${maxAttachments}</font> 
+					<#assign maxSize = maxAttachmentsSize / 1024>
+					<#if (maxSize > 1)>
+						/ 
+						<b>${I18n.getMessage("Attachments.maxSize")}:</b> <font color="red">${maxSize} kb</font>
+					</#if>
+					</span>
+				</td>
+			</tr>
+			<tr>
+				<td align="center">
+					<div id="edit_attach"></div>
+
+					<!-- Attachments -->
+				   <div id="attach_0"></div>
+				   
+				</td>
+			</tr>
+			<#if attachmentsEnabled>
+			<tr>
+				<td align="center" class="row3"><input type="button" name="add_attach" value="${I18n.getMessage("Attachments.anotherFile")}" class="mainoption"/></td>
+			</tr>
+			</#if>
+		</table>
+	</td>
+	</tr>
+	</#if>
+</table>
+
+<script language="javascript">
+<#include "js/attachments.js"/>
+
+<#if attachments?exists>
+	ignoreStart = true;
+	<#if attachmentsEnabled>
+		openAttachmentPanel();
+	</#if>
+	editAttachments();
+</#if>
+</script>
+
+</form>
+
+<#include "bottom.htm"/>

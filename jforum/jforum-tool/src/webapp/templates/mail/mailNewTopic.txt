@@ -1,0 +1,24 @@
+<#setting number_format = "#"/>
+Bonjour
+<br \>
+Vous recevez ce courriel car une nouvelle discussion "${topic.title}" a été ajoutée dans le forum de discussion du site ${path}.
+<br /><br />
+Vous pouvez consulter la discussion ci-dessous. Pour répondre à cette discussion, veuillez vous connecter au site :
+<br /><br />
+<a href="${serverurl}"><b>${path}</b></a>
+<br /><br />
+-----------------------------
+<br />
+De: ${topicfrom} 
+<br />
+Sujet: ${post.subject}
+<br /><br />
+${post.text}
+<br /><br />
+-----------------------------
+<br /><br />
+Si vous ne voulez plus recevoir des avis par courriel pour des nouvelles discussions, veuillez vous connecter au forum de discussion du cours, cliquez sur «Mon profil» dans le haut de la page et cochez «Non» pour l’option «Veuillez me prévenir par courriel lorsqu’une nouvelle discussion est ajoutée».
+<br /><br />
+Cordialement,
+<br />
+L’équipe ZoneCours

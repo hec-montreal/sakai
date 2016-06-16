@@ -1,0 +1,193 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/karma_search.inc.htm $
+ * $Id: karma_search.inc.htm 55651 2008-12-03 23:28:08Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<script language="javascript">
+var quick = false;
+
+function activateAdvancedQuery()
+{
+	quick = !quick;
+
+	document.getElementById("tableKarmaSearch").style.display = (quick ? "" : "none");
+
+	if (quick) {
+		document.location = "#quick";
+	}
+}
+
+</script>
+<table cellspacing="0" cellpadding="0" width="100%" border="0">
+	<tr>
+		<td colspan="3">
+			<table width="100%">
+				<tr>
+					<td align="left"><span class="nav"><a class="nav" href="${JForumContext.encodeURL("/forums/list")}">${I18n.getMessage("ForumListing.forumIndex")}</a></span></td>
+					<td align="right">&nbsp;<!--
+						<img src="${contextPath}/templates/${templateName}/images/icon_mini_message.gif" align="middle">
+						<span class="nav"><a href="javascript:activateAdvancedQuery()">${I18n.getMessage("Karma.advancedQuery")}</a></span>-->
+					</td>
+				</td>
+			</table>
+		</td>
+	</tr>
+</table>
+
+<table align="center" cellspacing="0" cellpadding="0" bgcolor="FFFFFF" width="100%" border="0" style="display: none;" id="tableKarmaSearch">
+	<tr>
+		<td>
+			<form action="${JForumContext.encodeURL("/jforum")}" method="post" name="searchByMonthForm" id="post">
+			<input type="hidden" name="action" value="searchByMonth" />
+			<input type="hidden" name="module" value="karma" />
+			<table class="forumline" width="100%" align="center">				
+				<tr>
+					<th class="thTop" align="left">
+						<b>${I18n.getMessage("Karma.advancedQuery")}</b>
+					</th>
+				</tr>
+				
+				<tr>
+					<td><span class="gen"><b>${I18n.getMessage("Karma.queryByMonth")}:</b></span></td>
+				</tr>
+				
+				<tr>
+					<td>
+						<span class="gen">
+						${I18n.getMessage("Karma.month")}:
+						<select name="month">
+							<option value="01">${I18n.getMessage("january")}</option>
+							<option value="02">${I18n.getMessage("february")}</option>
+							<option value="03">${I18n.getMessage("march")}</option>
+							<option value="04">${I18n.getMessage("april")}</option>
+							<option value="05">${I18n.getMessage("may")}</option>
+							<option value="06">${I18n.getMessage("june")}</option>
+							<option value="07">${I18n.getMessage("july")}</option>
+							<option value="08">${I18n.getMessage("august")}</option>
+							<option value="09">${I18n.getMessage("september")}</option>
+							<option value="10">${I18n.getMessage("october")}</option>
+							<option value="11">${I18n.getMessage("november")}</option>
+							<option value="12">${I18n.getMessage("december")}</option>
+						</select> &nbsp;
+						${I18n.getMessage("Karma.year")}:<input class="post" type="text" maxlength="10" size="15" name="year" value="2005"/>
+						</span>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<span class="gen">
+						${I18n.getMessage("Karma.orderBy")}:&nbsp;
+						<input type="radio" name="order_by" value="total" checked/> ${I18n.getMessage("Karma.totalReceived")}
+						&nbsp;<input type="radio" name="order_by" value="votes_received"/> ${I18n.getMessage("Karma.votesReceived")}
+						&nbsp;<input type="radio" name="order_by" value="votes_given"/> ${I18n.getMessage("Karma.votesGiven")}
+						&nbsp;<input type="radio" name="order_by" value="user_karma"/> ${I18n.getMessage("Karma.karma")}
+						</span>
+					</td>
+				</tr>
+
+				<tr>
+					<td align="center" >
+						<input type="submit" value="${I18n.getMessage("PostForm.submit")}" class="mainoption">
+					</td>
+				</tr>		
+				</form>
+			</table>
+
+			<table class="forumline" width="100%" align="center">				
+				<form action="${JForumContext.encodeURL("/jforum")}" method="post" name="searchByPeriodForm" id="post">
+				<input type="hidden" name="action" value="searchByPeriod" />
+				<input type="hidden" name="module" value="karma" />
+
+				<tr>
+					<td align="center"class="row2" height="1"><img src="${contextPath}/templates/${templateName}/images/spacer.gif" alt="" width="1" height="1" /></td>
+				</tr>
+				
+				<tr>
+					<td><span class="gen"><b>${I18n.getMessage("Karma.queryByPeriod")}:</b></span></td>
+				</tr>
+
+				<tr>
+					<td>
+						<span class="gen">
+						${I18n.getMessage("Karma.firstDate")}: <input class="post" type="text" maxlength="10" size="15" name="first_date" value=""/>
+						&nbsp;
+						${I18n.getMessage("Karma.lastDate")}: <input class="post" type="text"  maxlength="10" size="15" name="last_date" value="" id="last_date"/>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<span class="gen">
+						${I18n.getMessage("Karma.orderBy")}:&nbsp;
+						<input type="radio" name="order_by" value="total" checked/> ${I18n.getMessage("Karma.totalReceived")}
+						&nbsp;<input type="radio" name="order_by" value="votes_received"/> ${I18n.getMessage("Karma.votesReceived")}
+						&nbsp;<input type="radio" name="order_by" value="votes_given"/> ${I18n.getMessage("Karma.votesGiven")}
+						&nbsp;<input type="radio" name="order_by" value="user_karma"/> ${I18n.getMessage("Karma.karma")}
+						</span>
+					</td>
+				</tr>
+
+				<tr>
+					<td align="center">
+						<input type="submit" value="${I18n.getMessage("PostForm.submit")}" class="mainoption">
+					</td>
+				</tr>
+				</form>
+			</table>
+		</td>
+	</tr>
+</table>

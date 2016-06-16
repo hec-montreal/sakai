@@ -1,0 +1,167 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/grade_user_topic.htm $
+ * $Id: grade_user_topic.htm 66560 2010-03-15 21:33:33Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;" />
+<meta name="description" content="${metaDescription}" />
+<meta name="keywords" content="${metaKeywords}" />
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="-1"/>
+<style type="text/css">@import url( ${contextPath}/templates/${templateName}/style.css );</style>
+<title>${pageTitle?default("JForum")}</title>
+
+<script type="text/javascript">
+function validateScore() {
+ 	var scoreEle = document.getElementById("score");
+
+	if (scoreEle.value.replace(/^\s*|\s*$/g, "").length > 0) {
+		if (scoreEle.value < 0) {
+			alert("${I18n.getMessage("Grade.Points.NegativeNumber")}");
+			scoreEle.focus();
+			return false;
+		}	
+	}
+ 	return true;
+}
+</script>
+
+</head>
+<body>
+<#if updatesucess?exists && updatesucess>
+<script type="text/javascript">
+this.window.close();
+</script>
+</#if>
+
+
+<form action="${JForumContext.encodeURL("/jforum")}" method="post" name="form1" id="form1" accept-charset="${encoding}">
+<input type="hidden" name="action" value="evaluateTopicUser" />
+<input type="hidden" name="module" value="${moduleName}" />
+<input type="hidden" name="securityHash" value="${securityHash}" />
+<input type="hidden" name="topic_id" value="${topic.id}" />
+<input type="hidden" name="user_id" value="${userId}" />
+
+<table cellspacing="0" cellpadding="10" width="100%" align="center" border="0">
+	<tr>
+		<td class="bodyline" valign="top">
+			<table cellspacing="2" cellpadding="2" width="100%" align="center" border="0">
+				<tr>
+					<td valign="bottom" align="left" colspan="2">
+						<span class="maintitle">
+							${forum.name}
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td valign="center" align="left" width="50">
+						<img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/grade_topic.gif" alt="grade topic icon"/>
+					</td>
+				
+					<td class="nav" valign="center" align="left" width="100%">
+						<span class="nav">&nbsp;&nbsp;&nbsp;${I18n.getMessage("ForumListing.forumIndex")} -&gt; ${forum.name}</span>
+					</td>
+				</tr>
+				<tr>
+					<td align="left" colspan="3"><span class="nav"></span></td>
+				</tr>
+			</table>
+			
+			<table class="" cellspacing="1" cellpadding="4" width="100%" border="0">
+				<tr>
+					<td width="120" valign="top">
+						<span class="genmed">
+							${user.lastName}&nbsp;${user.firstName}
+							<#if inactive?exists && inactive>(${I18n.getMessage("User.inactive")})</#if>
+						</span>
+					</td>
+					<td>
+						<textarea rows="20" cols="60" name="comments" id="comments">${evaluation.comments?default("")}</textarea>
+					</td>
+				</tr>
+				<tr>
+					<td align="left">
+						<span class="genmed">
+							${I18n.getMessage("GradePoints")}
+						</span>
+					</td>
+					<td>
+						<#setting locale="${I18n.getDefaultLocale()}">
+						<span class="genmed">
+							<input type="text" name="score" id="score" style="WIDTH: 80px;text-align: right" value="<#if evaluation.score?exists>${evaluation.score?string("####0.00")}</#if>"/> (max <#if grade.points?exists>${grade.points?string("####0.00")}</#if>)
+						</span>
+					</td>
+				</tr>
+				<tr align="left">
+					<td class="catBottom" colspan="2" height="28">
+						<span class="genmed">
+							<input type="checkbox" name="release" id="release" value="1" <#if evaluation.released>checked</#if>/>${I18n.getMessage("Grade.ReleaseToStudent")}
+						</span>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input class="mainoption" type="submit" value="${I18n.getMessage("Forums.Form.ClickToUpdate")}" name="grades_submit" accesskey="${I18n.getMessage("save-access")}" title="${I18n.getMessage("save-access-description")}"/>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>	
+
+</form>
+
+</body>
+</html>

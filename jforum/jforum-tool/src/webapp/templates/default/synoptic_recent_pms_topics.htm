@@ -1,0 +1,59 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/synoptic_recent_pms_topics.htm $
+ * $Id: synoptic_recent_pms_topics.htm 67336 2010-04-26 21:06:09Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008, 2009, 2010 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at  
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ ***********************************************************************************/
+ -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="-1"/>
+<meta http-equiv="Cache-Control" content="no-cache">
+<link href="/library/skin/tool_base.css" type="text/css" rel="stylesheet" media="all" />
+<link href="/library/skin/default/tool.css" type="text/css" rel="stylesheet" media="all" />
+${JForumContext.sakaiHeadJSScriptTag()}
+<title>${I18n.getSynopticMessage("Synoptic.pageTitle")}</title>
+</head>
+<body onload="${JForumContext.sakaiWinHeightJSFunction()}">
+<div class="portletBody">
+
+<p class="instruction">
+<#if (newPrivateMessageCount > 0)>
+	<#if contextPath?exists>
+		<img src="${contextPath}/templates/${templateName}/images/mail_new.png" border="0" alt="New PMs"/>
+	</#if>
+	${I18n.getSynopticMessage("Synoptic.newPMs")} <a href="${pmUrl}" target="_top">(${newPrivateMessageCount})</a>&nbsp;
+<#else>
+	${I18n.getSynopticMessage("Synoptic.noNewPMs")}
+</#if>
+</p>
+
+<p class="instruction">
+<#if (hasUnreadTopicsReplies)>
+	<#if contextPath?exists>
+		<img src="${contextPath}/templates/${templateName}/images/topics_new.png" border="0" alt="New Topics"/>
+	</#if>
+	${newTopicsReplies}&nbsp;
+<#else>
+	${I18n.getSynopticMessage("Synoptic.noNewTopicsReplies")}
+</#if>
+</p>
+<div>
+</body>
+</html>

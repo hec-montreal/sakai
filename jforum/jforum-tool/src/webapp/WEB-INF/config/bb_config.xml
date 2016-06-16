@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/WEB-INF/config/bb_config.xml $ 
+ * $Id: bb_config.xml 55506 2008-12-02 00:49:25Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<!-- $Id: bb_config.xml 55506 2008-12-02 00:49:25Z murthy@etudes.org $ -->
+<bbConfig>
+	<!-- CODE -->
+	<match name="code">
+		<regex>(?s)(?i)\[code\](.*?)\[/code\]</regex>
+		<replace>
+		<![CDATA[
+		<table class="code-table-simple" align="center">
+		<tr> 
+		<td><span class="genmed"><b>Code:</b></span></td>
+		</tr>
+		</table>
+		<table class="code-table" align="center">
+		<tr>
+		<td class="code">
+		<pre>$1</pre></td>
+		</tr>
+		</table>
+		]]>
+		</replace>
+	</match>
+	
+	<match name="openSimpleQuote">
+		<regex>(?i)\[quote\]</regex>
+		<replace>
+		<![CDATA[
+		<table class="quote-table" align="center">
+		<tr>
+		<td class="quote">
+		]]>
+		</replace>
+	</match>
+	
+	<match name="openQuote">
+		<regex>(?i)\[quote=['"]?(.*?[^'"])['"]?\]</regex>
+		<replace>
+		<![CDATA[
+		<table class="quote-table-simple" align="center">
+		<tr> 
+		<td><span class="genmed"><b>$1 a écrit:</b></span></td>
+		</tr>
+		</table>
+		
+		<table class="quote-table" align="center">
+		<tr>
+		<td class="quote">
+		]]>
+		</replace>
+	</match>
+	
+	<match name="closeQuote">
+		<regex>(?i)\[/quote\]</regex>
+		<replace>
+		<![CDATA[
+		&nbsp;
+		</td>
+		</tr>
+		</table>
+		]]>
+		</replace>
+	</match>
+
+	<!-- B -->
+	<match name="b">
+		<regex>(?s)(?i)\[b\](.*?)\[/b\]</regex>
+		<replace>
+		<![CDATA[
+		<b>$1</b>
+		]]>
+		</replace>
+	</match>
+	
+	<!-- I -->
+	<match name="i">
+		<regex>(?s)(?i)\[i\](.*?)\[/i\]</regex>
+		<replace>
+		<![CDATA[
+		<i>$1</i>
+		]]>
+		</replace>
+	</match>
+	
+	<!-- U -->
+	<match name="u">
+		<regex>(?s)(?i)\[u\](.*?)\[/u\]</regex>
+		<replace>
+		<![CDATA[
+		<u>$1</u>
+		]]>
+		</replace>
+	</match>
+	
+	<!-- LIST -->
+	<match name="list">
+		<regex>(?i)\[list\](.*?)\[/list\]</regex>
+		<replace>
+		<![CDATA[
+		<li> $1
+		]]>
+		</replace>
+	</match>
+	
+	<!-- IMG -->
+	<match name="img" removeQuotes="true">
+		<regex>(?i)\[img\](.*?)\[/img\]</regex>
+		<replace>
+		<![CDATA[
+		<img src="$1" border="0">
+		]]>
+		</replace>
+	</match>
+
+	<!-- Automatic URL matching -->
+	<match name="auto-url" removeQuotes="true" alwaysProcess="true">
+		<regex>(^|[\n ]|\()([\w]+?://[^ \"\n\r\t&lt;\)\[]*)</regex>
+		<replace>
+		<![CDATA[
+		$1<a href="$2" target="_blank" rel="nofollow">$2</a>
+		]]>
+		</replace>
+	</match>
+
+	<match name="auto-url-simple" removeQuotes="true" alwaysProcess="true">
+		<regex>(^|[\n ]\()(www\.[^ \"\t\n\r&lt;\)\[]*)</regex>
+		<replace>
+		<![CDATA[
+		$1<a href="http://$2" target="_blank" rel="nofollow">$2</a>
+		]]>
+		</replace>
+	</match>
+
+	<match name="auto-ftp-simple" removeQuotes="true" alwaysProcess="true">
+		<regex>(^|[\n ]\()(ftp\.[^ \"\t\n\r&lt;\)\[]*)</regex>
+		<replace>
+		<![CDATA[
+		$1<a href="ftp://$2" target="_blank" rel="nofollow">$2</a>
+		]]>
+		</replace>
+	</match>
+
+	<match name="auto-email" removeQuotes="true" alwaysProcess="true">
+		<regex>(^|[\n ])([a-z0-9&amp;\-_.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)</regex>
+		<replace>
+		<![CDATA[
+		$1<a href="mailto:$2@$3">$2@$3</a>
+		]]>
+		</replace>
+	</match>
+	
+	<!-- URL -->
+	<match name="simple-url" removeQuotes="true">
+		<regex>(?i)\[url\](.*?)\[/url\]</regex>
+		<replace>
+		<![CDATA[
+		<a href='$1' target='_new' rel="nofollow">$1</a>
+		]]>
+		</replace>
+	</match>
+	
+	<!-- URL=?? -->
+	<match name="descriptive-url" removeQuotes="true">
+		<regex>(?i)\[url=['"]?(.*?[^'"])['"]?\](.*?)\[/url\]</regex>
+		<replace>
+		<![CDATA[
+		<a href="$1" target="_new" rel="nofollow">$2</a>
+		]]>
+		</replace>
+	</match>
+	
+	<!-- COLOR -->
+	<match name="color" removeQuotes="true">
+		<regex>(?s)(?i)\[color=['"]?(.*?[^'"])['"]?\](.*?)\[/color\]</regex>
+		<replace>
+		<![CDATA[
+		<font color='$1'>$2</font>
+		]]>
+		</replace>
+	</match>
+
+	<!-- SIZE -->
+	<match name="size" removeQuotes="true">
+		<regex>(?s)(?i)\[size=['"]?(.*?[^'"])['"]?\](.*?)\[/size\]</regex>
+		<replace>
+		<![CDATA[
+		<span style="font-size: $1px; line-height: normal">$2</span>
+		]]>
+		</replace>
+	</match>
+</bbConfig>

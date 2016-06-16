@@ -1,0 +1,160 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/admin/extensions.htm $
+ * $Id: extensions.htm 66496 2010-03-11 00:25:25Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008, 2009, 2010 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<#include "header.htm"/>
+
+<table width="100%" align="center" cellpadding="4" cellspacing="1" border="0" class="forumline">
+	<tr>
+		<td class="catHead" colspan="8" align="center" height="28"><span class="cattitle">${I18n.getMessage("AdminAttachments.extensionTitle")}</span></td>
+	</tr>
+	
+	<form accept-charset="${encoding}" name="form" action="${contextPath}/jforum${extension}" method="post">
+	<input type="hidden" name="action" value="extensionsSave" />
+	<input type="hidden" name="module" value="${moduleName}" />
+	<input type="hidden" name="securityHash" value="${securityHash}" />
+	<!-- Add new -->
+	<tr>
+		<th class="thLeft">&nbsp;${I18n.getMessage("AdminAttachments.extension")}&nbsp;</th>
+		<th>&nbsp;${I18n.getMessage("AdminAttachments.allowed")}&nbsp;</th>
+		<th>&nbsp;${I18n.getMessage("AdminAttachments.extensionExplanation")}&nbsp;</th>
+		<th>&nbsp;${I18n.getMessage("AdminAttachments.extensionGroup")}&nbsp;</th>
+		<th colspan="2">&nbsp;${I18n.getMessage("AdminAttachments.uploadIcon")}&nbsp;</th>
+	</tr>
+	<tr>
+		<td class="row1" align="center" valign="middle">
+			<table width="100%" align="center" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td class="row1" align="center" valign="middle" width="10%" wrap="nowrap">&nbsp;</td>
+					<td class="row1" align="center" valign="middle"><input type="text" size="20" maxlength="100" name="extension" value="" /></td>
+				</tr>
+			</table>
+		</td>
+
+		<td class="row1" align="center" valign="middle"><input type="checkbox" name="allow" /></td>
+		<td class="row1" align="center" valign="middle"><input type="text" size="20" maxlength="100" name="comment" value="" /></td>
+
+		<td class="row2" align="center" valign="middle">
+			<select name="extension_group">
+				<#list groups as g>
+					<option value="${g.id}">${g.name}</option>
+				</#list>
+			</select>
+		</td>
+
+		<td colspan="2" class="row1" align="center" valign="middle"><input type="text" size="30" name="upload_icon" /></td>
+	</tr>
+
+	<tr align="right">
+	  <td class="catBottom" colspan="8" height="29"><input type="submit" name="submit" class="liteoption" value="${I18n.getMessage("AdminAttachments.submit")}" accesskey="${I18n.getMessage("save-access")}" title="${I18n.getMessage("save-access-description")}"/></td>
+    </tr>
+	</form>
+
+	<!-- Edit -->
+	<#if (extensions.size() > 0)>
+		<form accept-charset="${encoding}" name="form" action="${contextPath}/jforum${extension}" method="post">
+		<input type="hidden" name="action" value="extensionsUpdate" />
+		<input type="hidden" name="module" value="${moduleName}" />
+		<input type="hidden" name="securityHash" value="${securityHash}" />
+		<input type="hidden" name="total_records" value="${extensions.size()}"/>
+
+		<tr>
+			<th class="thLeft">&nbsp;${I18n.getMessage("AdminAttachments.extension")}&nbsp;</th>
+			<th>&nbsp;${I18n.getMessage("AdminAttachments.allowed")}&nbsp;</th>
+			<th>&nbsp;${I18n.getMessage("AdminAttachments.extensionExplanation")}&nbsp;</th>
+			<th>&nbsp;${I18n.getMessage("AdminAttachments.extensionGroup")}&nbsp;</th>
+			<th>&nbsp;${I18n.getMessage("AdminAttachments.uploadIcon")}&nbsp;</th>
+			<th>&nbsp;${I18n.getMessage("AdminAttachments.quotaDelete")}&nbsp;</th>
+		</tr>
+
+		<#assign counter = 0/>
+		<#list extensions as e>
+			<input type="hidden" name="id_${counter}" value="${e.id}"/>
+			<tr>
+				<td class="row1" align="center" valign="middle">
+					<table width="100%" align="center" cellpadding="0" cellspacing="0" border="0">
+						<tr>
+							<td class="row1" align="center" valign="middle" width="10%" wrap="nowrap">&nbsp;</td>
+							<td class="row1" align="center" valign="middle"><input type="text" size="20" maxlength="100" name="extension_${counter}" value="${e.extension}" /></td>
+						</tr>
+					</table>
+				</td>
+
+				<td class="row1" align="center" valign="middle"><input type="checkbox" name="allow_${counter}" <#if e.isAllow()>checked</#if>/></td>		
+				<td class="row1" align="center" valign="middle"><input type="text" size="20" maxlength="100" name="comment_${counter}" value="${e.comment?default("")}" /></td>
+				<td class="row2" align="center" valign="middle">
+					<select name="extension_group_${counter}">
+						<#list groups as g>
+							<option value="${g.id}" <#if e.extensionGroupId == g.id>selected</#if>>${g.name}</option>
+						</#list>
+					</select>
+				</td>
+
+				<td class="row1" align="center" valign="middle"><input type="text" size="30" name="upload_icon_${counter}" value="${e.uploadIcon?default("")}" /></td>
+				<td class="row1" align="center" valign="middle"><input type="checkbox" name="delete" value="${e.id}"/></td>
+			</tr>
+			<#assign counter = counter + 1/>
+		</#list>
+
+		<tr align="right">
+		  <td class="catBottom" colspan="8" height="29"><input type="submit" name="submit" class="liteoption" value="${I18n.getMessage("AdminAttachments.submit")}" accesskey="${I18n.getMessage("save-access")}" title="${I18n.getMessage("save-access-description")}"/></td>
+		</tr>
+		</form>
+	</#if>
+</table>
+
+<#include "bottom.htm"/>

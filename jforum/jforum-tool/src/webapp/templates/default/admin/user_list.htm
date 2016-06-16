@@ -1,0 +1,227 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/admin/user_list.htm $
+ * $Id: user_list.htm 55651 2008-12-03 23:28:08Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<#setting number_format = "#"/>
+<#import "../../macros/pagination.ftl" as pagination/>
+<#import "macros/group_macros.ftl" as lib>
+
+<style type="text/css">@import url( ${contextPath}/templates/${templateName}/admin/style.css );</style>
+<table class="forumline" cellspacing="1" cellpadding="3" width="100%" border="0">
+	<tr>
+		<th class="thHead" valign="center" colspan="7" height="25">${I18n.getMessage("User.adminTitle")}</th>
+	</tr>
+
+	<tr>
+		<td class="gen" align="center" colspan="3">
+			<form id="formusersearch" action="${JForumContext.encodeURL("/jforum")}" accept-charset="${encoding}" method="post">
+			<span class="gensmall">
+			<!--10/6/05 - Mallika - changing the line below to display the other message-->
+			${I18n.getMessage("User.searchByName")}: 
+			<!--10/6/05 - Mallika - changing the below to search by first or last name -->
+			<!--<input type="hidden" name="action" value="search" />-->
+			<input type="hidden" name="action" value="searchFlname" />
+			<input type="hidden" name="module" value="${moduleName}" />
+			<input type="hidden" name="securityHash" value="${securityHash}" />
+
+			<input type="text" name="username" value="${search?default("")}" />&nbsp;
+
+			or
+
+			${I18n.getMessage("User.searchByGroup")}: 
+			<@lib.selectFieldGroups "group_id", groups, 0, false, selectedList/>
+
+			<input type="submit" value="${I18n.getMessage("ForumBase.search")}" class="mainoption"/>
+			</form>
+		</td>
+	</tr>
+
+	<form accept-charset="${encoding}" name="form" action="${JForumContext.encodeURL("/jforum")}" method="post">
+	<input type="hidden" name="action" value="delete" />
+	<input type="hidden" name="module" value="${moduleName}" />
+	<input type="hidden" name="securityHash" value="${securityHash}" />
+	<input type="hidden" name="start" value="${start}" />
+	<!-- if user is a sakai user then he can edit user info and see all users -->
+  <#if session.isSakaiAdmin()>
+	<tr>
+	<!--	<td class="gen"><b>${I18n.getMessage("User.id")}</b></td> -->
+<!--		<td class="gen"><b>${I18n.getMessage("User.username")}</b></td>-->
+		<td class="gen"><b>Name</b></td>
+		<td class="gen">&nbsp;</td>
+		<td class="gen">&nbsp;</td>
+		<#--10/27/05 - Murthy - commented to hide permissions and lock/unlock	
+		<td class="gen">&nbsp;</td>
+		<td class="gen" width="5%" align="center"><b>${I18n.getMessage("Lock")}</b></td>
+		<td class="gen" width="5%" align="center"><b>${I18n.getMessage("Unlock")}</b></td>
+		-->
+	</tr>
+
+	<#list users as user>
+	   
+		<tr>
+<!--			<td class="row2"><span class="gen">${user.id}</span></td> -->
+<!--			<td class="row2"><span class="gen">${user.username}</span></td> -->
+			<td class="row2"><span class="gen">${user.firstName} ${user.lastName}</span></td>
+	  
+			<td class="row2"><span class="gen"><a href="${contextPath}/jforum${extension}?module=adminUsers&amp;action=edit&amp;id=${user.id}">${I18n.getMessage("Edit")}</a></span></td>
+						
+			<td class="row2"><span class="gen">
+			<a href="${contextPath}/jforum${extension}?module=adminUsers&amp;action=groups&amp;id=${user.id}">${I18n.getMessage("User.Groups")}</a>
+			</span></td>
+			<#--10/27/05 - Murthy - commented to hide permissions and lock/unlock
+			<td class="row2"><span class="gen"><a href="${contextPath}/jforum${extension}?module=adminUsers&amp;action=permissions&amp;id=${user.id}">${I18n.getMessage("Permissions")}</a></span></td>
+
+			<#if user.deleted>
+				<td class="row2">&nbsp;</td>
+				<td class="row2" align="center"><input type="checkbox" name="user_id" value="${user.id}" /></td>
+			<#else>
+				<td class="row2" align="center"><input type="checkbox" name="user_id" value="${user.id}" /></td>
+				<td class="row2">&nbsp;</td>
+			</#if>
+			-->
+		</tr>		
+	</#list>
+	<tr align="center">
+		<td class="catBottom" colspan="3" height="28">
+		<!--
+			<input class="mainoption" type="button" value="${I18n.getMessage("Insert")}" onClick="document.location = '${contextPath}/jforum${extension}?module=adminUsers&action=insert';" />&nbsp;&nbsp;	
+		-->
+		</td>
+		<#-- 10/27/05 - Murthy - commented to hide permissions and lock/unlock
+		<td class="catBottom" colspan="2">
+			<input class="mainoption" type="submit" value="${I18n.getMessage("Lock")} / ${I18n.getMessage("Unlock")}" name="submit" />&nbsp;&nbsp;
+		</td>
+		-->
+	</tr>
+	</#if>
+	
+	<!-- if user is facilitator then he cannot edit user info and cannot see admin as user -->
+
+	<#if session.isFacilitator()>
+	<tr>
+	<!--	<td class="gen"><b>${I18n.getMessage("User.id")}</b></td> -->
+	<!--	<td class="gen"><b>${I18n.getMessage("User.username")}</b></td> -->
+		<td class="gen"><b>${I18n.getMessage("User.name")}</b></td>
+		<td class="gen">&nbsp;</td>
+		<#--10/27/05 - Murthy - commented to hide permissions and lock/unlock
+		<td class="gen" colspan="3">&nbsp;</td>
+		<td class="gen" width="5%" align="center"><b>${I18n.getMessage("Lock")}</b></td>
+		<td class="gen" width="5%" align="center"><b>${I18n.getMessage("Unlock")}</b></td>
+		-->
+	</tr>
+
+	<#list users as user>
+		<#if !user.username.equalsIgnoreCase("Admin")>
+		<tr>
+		<!--	<td class="row2"><span class="gen">${user.id}</span></td> -->
+		<!--	<td class="row2"><span class="gen">${user.username}</span></td> -->
+			<td class="row2"><span class="gen">${user.firstName} ${user.lastName}</span></td>
+			<td class="row2" ><span class="gen">
+				
+			<!--Mallika's if condition below-->
+			<#if !(session.isFacilitator(user.sakaiUserId))>
+			<a href="${contextPath}/jforum${extension}?module=adminUsers&amp;action=groups&amp;id=${user.id}">${I18n.getMessage("User.Groups")}</a>
+			</#if>
+			
+			</span></td>
+			
+			<!--<td class="row2"><span class="gen">
+            Mallika's if condition below-->
+			<#--10/27/05 - Murthy - commented to hide permissions and lock/unlock
+			<#if !(session.isFacilitator(user.sakaiUserId))>			
+			<a href="${contextPath}/jforum${extension}?module=adminUsers&amp;action=permissions&amp;id=${user.id}">${I18n.getMessage("Permissions")}</a>
+			</#if>
+			</span>
+			</td>
+			
+			<#if user.deleted>
+				<td class="row2">&nbsp;</td>
+				<td class="row2" align="center"><input type="checkbox" name="user_id" value="${user.id}" /></td>
+			<#else>
+				<td class="row2" align="center"><input type="checkbox" name="user_id" value="${user.id}" /></td>
+				<td class="row2">&nbsp;</td>
+			</#if>
+			-->
+		</tr>		
+	</#if>
+	</#list>
+		<!--<tr align="center">-->
+		<td class="catBottom" colspan="2" height="28">
+			&nbsp;
+		<!--
+			<input class="mainoption" type="button" value="${I18n.getMessage("Insert")}" onClick="document.location = '${contextPath}/jforum${extension}?module=adminUsers&action=insert';" />&nbsp;&nbsp;	
+		-->
+		</td>
+		<#--10/27/05 - Murthy - commented to hide permissions and lock/unlock
+		<td class="catBottom" colspan="3">
+			&nbsp;
+			
+				<input class="mainoption" type="submit" value="${I18n.getMessage("Lock")} / ${I18n.getMessage("Unlock")}" name="submit" />&nbsp;&nbsp;
+		</td>
+		-->
+	</tr>
+	</#if>	
+	
+</table>
+</form>
+<table width="100%">
+	<tr>
+		<td align="right"><#if thisPage?exists><@pagination.doPagination searchAction, searchId/></#if></td>
+	</tr>
+</table>
+
+

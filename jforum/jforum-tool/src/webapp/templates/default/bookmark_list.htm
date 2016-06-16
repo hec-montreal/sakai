@@ -1,0 +1,133 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/bookmark_list.htm $
+ * $Id: bookmark_list.htm 55651 2008-12-03 23:28:08Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<#include "header.htm"/>
+<#import "../macros/pagination.ftl" as pagination/>
+<script language="javascript">
+function confirmDelete(id)
+{
+	if (confirm("${I18n.getMessage("Bookmarks.reallyDelete")}")) {
+		document.location = "${contextPath}/bookmarks/delete/" + id + "${extension}";
+	}
+}
+</script>
+<table cellspacing="2" cellpadding="2" width="100%" align="center" border="0">
+    <tr>
+      <td align="left">
+		<td>
+			<span class="nav">
+				<a class="nav" href="${JForumContext.encodeURL("/forums/list")}">${I18n.getMessage("ForumListing.forumIndex")}</a>
+				->
+				<a href="${JForumContext.encodeURL("/bookmarks/list/${user.id}")}">${I18n.getMessage("Bookmarks.for")} ${user.username}</a>
+			</span>
+		</td>
+    </tr>
+</table>
+
+<table class="forumline" cellspacing="1" cellpadding="3" width="100%" border="0">
+	<#assign owner = loggedUserId == user.id/>  
+	<tr>
+	  <th class="thTop" nowrap="nowrap">&nbsp;${I18n.getMessage("Bookmarks.title")}&nbsp;</th>
+	  <th class="thTop" nowrap="nowrap">&nbsp;${I18n.getMessage("Bookmarks.description")}&nbsp;</th>
+	  <#if owner><th class="thTop" nowrap="nowrap" colspan="2">&nbsp;${I18n.getMessage("Action")}&nbsp;</th></#if>
+	</tr>
+
+	<#if bookmarks.size() == 0>
+		<tr>
+			<td align="center" colspan="3">
+				<span class="gen">${I18n.getMessage("Bookmarks.empty")}</span>
+			</td>
+		</tr>
+	</#if>
+
+	<#assign color = "row1"/>
+	<#list bookmarks as b> 
+		<#if b.relationType == topicType>
+			<#if b.isPublicVisible() || owner>
+				<tr align="center">	
+					<td class="${color}" align="left">
+						<span class="gen">
+						<img src="${contextPath}/templates/${templateName}/images/icon_minipost.gif" align="middle" alt=""><a href="${JForumContext.encodeURL("/posts/list/${b.relationId}")}" class="gen">${b.title}</a>
+						</span>
+					</td>
+					<td class="${color}"><span class="gen"><#if (b.description?default("")?length > 0)>${b.description}</#if></span></td>
+					<#if owner><td class="${color}"><span class="gen"><a href="javascript:addBookmark(2, ${b.relationId});">${I18n.getMessage("Edit")}</a></span></td></#if>
+					<#if owner><td class="${color}"><span class="gen"><a href="javascript:confirmDelete(${b.id})">${I18n.getMessage("Delete")}</a></span></td></#if>
+				</tr>
+
+				<#if color == "row1">
+					<#assign color = "row2"/>
+				<#else>
+					<#assign color = "row1"/>
+				</#if>
+			</#if>
+		</#if>
+	</#list>
+
+	<tr align="center">
+		<td class="catBottom" colspan="5" height="28">&nbsp;
+		</td>
+	</tr>
+</table>
+</form>
+<table width="100%">
+	<tr>
+		<td align="right"><#if thisPage?exists><@pagination.doPagination "list", -1/></#if></td>
+	</tr>
+</table>
+<#include "bottom.htm"/>

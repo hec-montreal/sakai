@@ -1,0 +1,181 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/admin/menu.htm $
+ * $Id: menu.htm 63695 2009-09-30 17:54:51Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008, 2009 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<style type="text/css">
+@import url( templates/${templateName}/admin/style.css );
+</style>
+</head>
+<body text="#000000" vlink="#5493b4" link="#006699" bgcolor="#e5e5e5">
+<table cellspacing="0" cellpadding="4" width="100%" align="center" border="0">
+	<tr>
+		<td align="middle">
+			<table class="forumline" cellspacing="1" cellpadding="4" width="100%" border="0">
+				<tr>
+					<th class="thHead" height="25"><b>${I18n.getMessage("Admin.administration")}</b></th>
+				</tr>
+
+				<tr>
+					<td class="row1"><a id="forumIndex" class="genmed"  target="_parent" href="${contextPath}/forums/list${extension}">${I18n.getMessage("Admin.forumIndex")}</a></td>
+				</tr>
+				<tr>
+					<td class="catSides" height="28"><span class="cattitle">${I18n.getMessage("Admin.forumAdmin")}</span></td>
+				</tr>
+				<#-- 03/07/05 Murthy - commented to hide groups and users
+				<tr>
+					<td class="row1"><a id="groups" class="genmed" href="${contextPath}/adminGroups/list${extension}" target="main">${I18n.getMessage("Admin.groups")}</a></td>
+				</tr>
+				<tr>
+					<td class="row1"><a id="users" class="genmed" href="${contextPath}/adminUsers/list${extension}" target="main">${I18n.getMessage("Admin.users")}</a></td>
+				</tr>
+				-->
+				<tr>
+					<td class="row1"><a id="categories" class="genmed" href="${contextPath}/adminCategories/list${extension}" target="main">${I18n.getMessage("Admin.categories")}</a></td>
+				</tr>
+				<tr>
+					<td class="row1"><a id="forums" class="genmed" href="${contextPath}/adminForums/list${extension}" target="main">${I18n.getMessage("Admin.forums")}</a></td>
+				</tr>
+
+				<tr>
+					<td class="row1"><a id="importexport" class="genmed" href="${contextPath}/adminImportExport/list${extension}" target="main">${I18n.getMessage("Admin.importexport")}</a></td>
+				</tr>
+				
+				<#-- 10/28/05 Murthy - commented to hide Message Approving in the menu
+				<tr>
+					<td class="row1"><a id="forums" class="genmed" href="${contextPath}/adminModeration/list${extension}" target="main">${I18n.getMessage("Admin.approving")}</a></td>
+				</tr>
+				-->
+				<#-- 10/27/05 Murthy - commented to hide Rankings in the menu
+				<tr>
+					<td class="row1">
+						<p><a id="rankings" class="genmed" href="${contextPath}/adminRankings/list${extension}" target="main">${I18n.getMessage("Admin.rankings")}</a></p>
+					</td>
+				</tr>
+				-->
+				<#-- 08/11/2009 Murthy - hide configurations as these are moved to sakai.properties
+			<!- if condition for admin to see and no facilitator ->
+		      <#if  !session.isFacilitator()>
+				<tr>
+					<td class="row1"><p><a id="configurations" class="genmed" href="${contextPath}/adminConfig/list${extension}" target="main">${I18n.getMessage("Admin.configurations")}</a></p></td>
+				</tr>
+			</#if>
+			-->
+			<#-- 01/30/05 Murthy - commented to hide smilies in the menu
+				<tr>
+					<td class="row1"><p><a id="smilies" class="genmed" href="${contextPath}/adminSmilies/list${extension}" target="main">${I18n.getMessage("Admin.smilies")}</a></p></td>
+				</tr>
+			-->
+
+      <#if  session.isSakaiAdmin()>
+				<tr>
+					<td class="row1">
+						<p></p>
+						<table width="100%" cellspacing="0" cellpadding="0">
+							<tr><td colspan="2"><span class="genmed">${I18n.getMessage("Admin.attachments")}</span></td></tr>
+							<#-- 08/11/2009 Murthy - hide attachment configurations as these are moved to sakai.properties
+							<tr>
+								<td width="20px">&nbsp;</td>
+								<td>
+									<a id="attachments" class="gensmall" href="${contextPath}/adminAttachments/configurations${extension}" target="main">${I18n.getMessage("Admin.attachConfigurations")}</a>
+								</td>
+							</tr>
+							-->
+                           <!--Mallika - 1/31/06 - comments beg-->
+							<!--<tr>
+								<td width="20px">&nbsp;</td>
+								<td>
+									<a id="attachments" class="gensmall" href="${contextPath}/adminAttachments/quotaLimit${extension}" target="main">${I18n.getMessage("Admin.attachQuota")}</a>
+								</td>
+							</tr>-->
+							<!--Mallika - 1/31/06 - comments end-->
+
+							<tr>
+								<td width="20px">&nbsp;</td>
+								<td>
+									<a id="attachments" class="gensmall" href="${contextPath}/adminAttachments/extensionGroups${extension}" target="main">${I18n.getMessage("Admin.attachExtensionGroups")}</a>
+								</td>
+							</tr>
+
+							<tr>
+								<td width="20px">&nbsp;</td>
+								<td>
+									<a id="attachments" class="gensmall" href="${contextPath}/adminAttachments/extensions${extension}" target="main">${I18n.getMessage("Admin.attachExtensions")}</a>
+								</td>
+							</tr>
+						</table>
+						
+					</td>
+				</tr>
+				</#if>
+				<!--
+				<tr>
+					<td class="row1"><p><a id="banners" class="genmed" href="${contextPath}/adminBanner/list${extension}" target="main">${I18n.getMessage("Admin.banners")}</a></p></td>
+				</tr>
+				-->
+			  <#if  session.isSakaiAdmin()>
+				<tr>
+					<td class="row1"><p><a id="configurations" class="genmed" href="${contextPath}/adminCache/list${extension}" target="main">${I18n.getMessage("Admin.cache")}</a></p></td>
+				</tr>
+				</#if>
+			</table>
+		</td>
+	</tr>
+</table>
+</body></html>

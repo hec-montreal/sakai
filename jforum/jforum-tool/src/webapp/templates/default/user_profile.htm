@@ -1,0 +1,235 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/user_profile.htm $
+ * $Id: user_profile.htm 71154 2010-11-03 18:29:06Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008, 2009, 2010 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<#include "header.htm"/>
+
+<script type="text/javascript">
+function sendPM(uid)
+{
+	var features = "height=560,width=640,left=60,top=40,toolbar=no,directories=no,status=no,location=no,menubar=no,scrollbars=yes,resizable=no";
+	var winHandle = window.open("${contextPath}/pm/sendTo/"+ uid +"${extension}",null, features);
+	winHandle.focus();
+}
+</script>
+
+<table cellspacing="2" cellpadding="2" width="100%" align="center" border="0">
+    <tr>
+      <td align="left"><span class="nav"><a class="nav" href="${JForumContext.encodeURL("/forums/list")}">${I18n.getMessage("ForumListing.forumIndex")}</a></span></td>
+    </tr>
+</table>
+
+<table class="forumline" cellspacing="1" cellpadding="3" width="100%" align="center" border="0">
+	<tr>
+		<th class="thHead" nowrap="nowrap" colspan="2" height="25">${I18n.getMessage("UserProfile.profileFor")} :: ${u.firstName?default("")}&nbsp;${u.lastName?default("")}</th>
+	</tr>
+
+	<tr>
+		<td class="catLeft" align="middle" width="40%" height="28"><b><span class="gen">${I18n.getMessage("UserProfile.avatar")}</span></b></td>
+		<td class="catRight" align="center" width="60%"><b><span class="gen">${I18n.getMessage("UserProfile.allAbout")} ${u.firstName?default("")}&nbsp;${u.lastName?default("")}</span></b></td>
+    </tr>
+
+	<tr>
+		<td class="row1" valign="top" align="middle" height="6">
+			<#if (u.avatar?exists && u.avatar?length > 0)>
+				<#if u.isExternalAvatar() || u.avatar.startsWith("http://")>
+					<img src="${u.avatar}" border="0" alt="avatar" width="130" height="130">
+				<#else>
+				<!--Mallika - 10/9/06 - commented the line below and changed it to point to imageContextPath for a clustered environment -->
+				<!--<img src="${contextPath}/images/avatar/${u.avatar}" border="0" alt="avatar"/><br />-->
+					<img src="${imageContextPath}/images/avatar/${u.avatar}" border="0" alt="avatar"/><br />
+				</#if>
+			</#if>
+			<#--01/10/2009 Murthy - commented to avoid showing total posts 
+			<span class="postdetails">
+				${I18n.getMessage("PostShow.ranking")}: ${rank.getRankTitle(u.totalPosts)}
+			
+				<#if karmaEnabled>
+					<br/>${I18n.getMessage("Karma.karma")}: <script language="javascript">writeStars(${u.karma.karmaPoints}, ${u.id});</script>
+				</#if>
+			</span>
+			-->
+		</td>
+
+		<td class="row1" valign="top" rowspan="3">
+			<table cellspacing="1" cellpadding="3" width="100%" border="0">
+				<#--04/09/08 Murthy - Commented to mask
+				<tr>
+					<td valign="center" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("UserProfile.registrationDate")}:&nbsp;</span></td>
+					<td width="100%"><b><span class="gen">${u.registrationDate}</span></b></td>
+				</tr>
+				-->
+				
+				<tr>
+					<td valign="top" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("UserProfile.totalMessages")}:&nbsp;</span></td>
+					<td valign="top" width="100%"><b><span class="gen">${u.totalPosts}</span></b><br /></span></td>
+				</tr>
+
+				<#if (u.location?exists && u.location?length > 0)>
+				<tr>
+					<td valign="center" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("PostShow.userFrom")}:&nbsp;</span></td>
+					<td><b><span class="gen">${u.location}</span></b></td>
+				</tr>
+				</#if>
+            
+				<#if (u.webSite?exists && u.webSite?length > 0)>
+				<tr>
+					<td valign="center" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("UserProfile.webSite")}:&nbsp;</span></td>
+					<td><span class="gen"><b><a href="${u.webSite}" target="_new">${u.webSite}</a></b></span></td>
+				</tr>
+				</#if>
+            
+				<#if (u.occupation?exists && u.occupation?length > 0)>
+				<tr>
+					<td valign="center" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("UserProfile.occupation")}:&nbsp;</span></td>
+					<td><b><span class="gen">${u.occupation}</span></b></td>
+				</tr>
+				</#if>
+            
+				<#if (u.interests?exists && u.interests?length > 0)>
+				<tr>
+					<td valign="top" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("UserProfile.interests")}:</span></td>
+					<td><b><span class="gen">${u.interests}</span></b></td>
+				</tr>
+				</#if>
+		<!-- commented by rashmi on 9/26/05 to disable bookmarks 
+				<#if bookmarksEnabled>
+				<tr>
+					<td valign="top" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("Bookmarks.myBag")}:</span></td>
+					<td><b><a class="gen" href="${JForumContext.encodeURL("/bookmarks/list/${u.id}")}">${I18n.getMessage("Bookmarks.for")} ${u.firstName?default("")}&nbsp;${u.lastName?default("")}</a></b></td>
+				</tr>
+				</#if>-->
+			</table>
+		</td>
+	</tr>
+    
+	<tr>
+		<td class="catLeft" align="middle" height="28"><b><span class="gen">${I18n.getMessage("UserProfile.contact")} ${u.firstName?default("")}&nbsp;${u.lastName?default("")}</span></b></td>
+	</tr>
+    
+	<tr>
+		<td class="row1" valign="top">
+			<table cellspacing="1" cellpadding="3" width="100%" border="0">
+			<#if (u.isViewEmailEnabled() && u.email?exists && u.email?length > 0)>
+			<tr>
+				<td valign="center" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("UserProfile.emailAddress")}:</span></td>
+				<td class="row1" valign="center" width="100%">
+					<b><span class="gen">
+					<#assign e = u.email.split("@")/>
+					<a href="#" onclick="document.location = 'mailto:' + showEmail('${e[0]}', '${e[1]}');"><img src="${contextPath}/templates/${templateName}/images/icon_email.gif" border="0" alt="send email"/></a>
+					</span></b>
+				</td>
+			</tr>
+			</#if>
+
+			<#if u.id != 1>
+			<tr>
+				<td valign="center" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("UserProfile.privateMessage")}:</span></td>
+				<td class="row1" valign="center">
+					<b><span class="gen">
+					<#--<a href="${JForumContext.encodeURL("/pm/sendTo/${u.id}")}"><img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/icon_pm.gif" border="0" alt="private message icon"/></a>-->
+					<a href="#" onclick="sendPM(${u.id})"><img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/icon_pm.gif" border="0" alt="private message icon"/></a>
+					</span></b>
+				</td>
+			</tr>
+			</#if>
+            
+			<#if (u.msnm?exists && u.msnm?length > 0)>
+			<tr>
+				<td valign="center" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("User.msn")}:</span></td>
+				<td class="row1" valign="center"><span class="gen">${u.msnm}</span></td>
+			</tr>
+			</#if>
+            
+			<#if (u.yim?exists && u.yim?length > 0)>
+			<tr>
+				<td valign="center" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("User.yahoo")}:</span></td>
+				<td class="row1" valign="center"><span class="gen">${u.yim}</span></td>
+			</tr>
+			</#if>
+
+			<#if (u.icq?exists && u.icq?length > 0)>
+			<tr>
+				<td valign="center" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("User.icq")}:</span></td>
+				<td class="row1">
+					<a target="_new" href="http://wwp.icq.com/scripts/search.dll?to=${u.icq}"><img src="${contextPath}/templates/${templateName}/images/icon_icq_add.gif" border="0" alt="icq icon"/></a>
+				</td>
+			</tr>
+			</#if>
+			
+			<#if (u.faceBookAccount?exists && u.faceBookAccount?length > 0)>
+			<tr>
+				<td valign="center" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("User.facebook")}:</span></td>
+				<td class="row1" valign="center">
+					<a target="_new" href="http://www.facebook.com/${u.faceBookAccount}"><img src="${contextPath}/templates/${templateName}/images/facebook.gif" border="0" alt="facebook icon"/></a>
+				</td>
+			</tr>
+			</#if>
+			
+			<#if (u.twitterAccount?exists && u.twitterAccount?length > 0)>
+			<tr>
+				<td valign="center" nowrap="nowrap" align="right"><span class="gen">${I18n.getMessage("User.twitter")}:</span></td>
+				<td class="row1" valign="center">
+					<a target="_new" href="http://twitter.com/${u.twitterAccount}"><img src="${contextPath}/templates/${templateName}/images/twitter.gif" border="0" alt="twitter icon"/></a>
+				</td>
+			</tr>
+			</#if>
+			</table>
+		</td>
+	</tr>
+</table>
+<#include "bottom.htm"/>

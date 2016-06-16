@@ -1,0 +1,129 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/bookmark_insert.htm $
+ * $Id: bookmark_insert.htm 69160 2010-07-12 18:58:52Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<#assign edit = bookmark?exists/>
+<#setting number_format = "#"/>
+<#if edit>
+</#if>
+<html>
+<head>
+<title>Bookmarks - <#if edit>${I18n.getMessage("Update")}<#else>${I18n.getMessage("Insert")}</#if></title>
+<meta http-equiv="Content-Type" content="text/html; charset=${encoding}" />
+<meta name="description" content="${metaDescription}" />
+<meta name="keywords" content="${metaKeywords}, jforum, jforum java, java jforum, java forum, forum, rafael steil, bulletin board, java bb, javabb" />
+<style type="text/css">@import url( ${contextPath}/templates/${templateName}/style.css );</style>
+</head>
+
+<body>
+<form action="${contextPath}/jforum${extension}" method="post" name="search" id="search" accept-charset="${encoding}">
+<input type="hidden" name="action" value="<#if edit>updateSave<#else>insertSave</#if>">
+<input type="hidden" name="module" value="${moduleName}">
+<input type="hidden" name="relation_id" value="${relationId}">
+<input type="hidden" name="relation_type" value="${relationType}">
+
+<#if edit>
+	<input type="hidden" name="bookmark_id" value="${bookmark.id}"/>
+</#if>
+
+<table cellspacing="0" cellpadding="10" width="100%" border="0" align="center">
+	<tr>
+		<td>
+			<table class="forumline" cellspacing="1" cellpadding="4" width="100%" border="0">
+				<tr>
+					<th class="thHead" height="25" colspan="2">
+						<#if edit>
+							${I18n.getMessage("Bookmarks.edit")}
+						<#else>
+							${I18n.getMessage("Bookmarks.add")}
+						</#if>
+					</th>
+				</tr>
+
+				<tr>
+					<td width="20%"><span class="gen">${I18n.getMessage("Bookmarks.title")}</td>
+					<td><input type="text" name="title" size="70" maxLength="244" value="${title}"/></td>
+				</tr>
+
+				<tr>
+					<td><span class="gen">${I18n.getMessage("Bookmarks.description")}</td>
+					<td><input type="text" name="description" size="70" maxLength="244" value="${description?default("")}"/></td>
+				</tr>
+				<#--
+				<tr>
+					<td><span class="gen">${I18n.getMessage("Bookmarks.publicVisible")}</td>
+					<td>
+						<select name="visible">
+							<option value="1" <#if edit && bookmark.isPublicVisible()>selected</#if>>${I18n.getMessage("User.yes")}</option>
+							<option value="" <#if edit && !bookmark.isPublicVisible()>selected</#if>>${I18n.getMessage("User.no")}</option>
+						</select>
+					</td>
+				</tr>
+				-->
+				<tr>
+					<td colspan="2" align="center"><input type="submit" value="${I18n.getMessage("Update")}" class="mainoption"/></td>
+				</tr>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+</form>
+</body>
+</html>

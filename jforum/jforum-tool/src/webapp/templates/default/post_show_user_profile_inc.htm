@@ -1,0 +1,113 @@
+<#--
+/**********************************************************************************
+ * $URL: https://source.sakaiproject.org/contrib/etudes/sakai-jforum/tags/2.8.1/jforum-tool/src/webapp/templates/default/post_show_user_profile_inc.htm $
+ * $Id: post_show_user_profile_inc.htm 67521 2010-05-05 20:06:19Z murthy@etudes.org $ 
+ *********************************************************************************** 
+ * 
+ * Copyright (c) 2008, 2009, 2010 Etudes, Inc. 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * 
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License. 
+ * 
+ * Portions completed before July 1, 2004 Copyright (c) 2003, 2004 Rafael Steil, All rights reserved, licensed under the BSD license. 
+ * http://www.opensource.org/licenses/bsd-license.php 
+ * 
+ * Redistribution and use in source and binary forms, 
+ * with or without modification, are permitted provided 
+ * that the following conditions are met: 
+ * 
+ * 1) Redistributions of source code must retain the above 
+ * copyright notice, this list of conditions and the 
+ * following disclaimer. 
+ * 2) Redistributions in binary form must reproduce the 
+ * above copyright notice, this list of conditions and 
+ * the following disclaimer in the documentation and/or 
+ * other materials provided with the distribution. 
+ * 3) Neither the name of "Rafael Steil" nor 
+ * the names of its contributors may be used to endorse 
+ * or promote products derived from this software without 
+ * specific prior written permission. 
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT 
+ * HOLDERS AND CONTRIBUTORS "AS IS" AND ANY 
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, 
+ * BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR 
+ * PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 
+ * THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE 
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER 
+ * IN CONTRACT, STRICT LIABILITY, OR TORT 
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE 
+ ***********************************************************************************/
+ -->
+<table height="18" cellspacing="0" cellpadding="0" border="0" width="100%">
+<tr>
+	<td valign="center" nowrap="nowrap">
+		<a href="${JForumContext.encodeURL("/user/profile/${user.id}")}"><img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/icon_profile.gif" border="0" alt="profile icon"/></a>
+		<#--
+		<a href="${JForumContext.encodeURL("/pm/sendTo/${user.id}")}"><img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/icon_pm.gif" border="0" alt="private message icon"/></a>
+		-->
+		<a href="#" onclick="sendPM(${user.id})" rel="nofollow"><img src="${contextPath}/templates/${templateName}/images/${imagesI18n}/icon_pm.gif" border="0" alt="private message icon"/></a>
+		
+		<#if (user.isViewEmailEnabled() && user.email?exists && user.email?length > 0)>
+			<#assign e = user.email.split("@")/>
+			<a href="#" onClick="document.location = 'mailto:' + showEmail('${e[0]}', '${e[1]}');"><img src="${contextPath}/templates/${templateName}/images/icon_email.gif" border=0 alt="email icon"></a>
+		</#if>
+
+		<#if (user.webSite?exists && user.webSite?length > 0)>
+			<a href="${user.webSite}" target="_new"><img src="${contextPath}/templates/${templateName}/images/icon_www.gif" border="0" alt="website icon"/></a>
+		</#if>
+
+		<#if (user.yim?exists && user.yim?length > 0)>
+			<a target="_new" href="http://edit.yahoo.com/config/send_webmesg?.target=${user.yim}&amp;.src=pg"><img src="${contextPath}/templates/${templateName}/images/icon_yim.gif" border="0" alt="yahoo messanger icon"/></a>
+		</#if>
+
+		<#if (user.aim?exists && user.aim?length > 0)>
+			<a target="_new" href="https://my.screenname.aol.com/_cqr/login/login.psp"><img src="${contextPath}/templates/${templateName}/images/icon_aim.png" border="0" alt="aim icon"/></a>
+		</#if>
+
+		<#if (user.msnm?exists && user.msnm?length > 0)>
+			<a href="${JForumContext.encodeURL("/user/profile/${user.id}")}"><img src="${contextPath}/templates/${templateName}/images/icon_msnm.gif" border="0" alt="msn messanger icon"/></a>
+		</#if>
+
+		<#if (user.icq?exists && user.icq?length > 0)>
+			<a target="_new" href="http://wwp.icq.com/scripts/search.dll?to=${user.icq}"><img src="${contextPath}/templates/${templateName}/images/icon_icq_add.gif" border="0" alt="icq icon"/></a>
+		</#if>
+		
+		<#if (user.faceBookAccount?exists && user.faceBookAccount?length > 0)>
+			<a target="_new" href="http://www.facebook.com/${user.faceBookAccount}"><img src="${contextPath}/templates/${templateName}/images/facebook.gif" border="0" alt="facebook icon"/></a>
+		</#if>
+		
+		<#if (user.twitterAccount?exists && user.twitterAccount?length > 0)>
+			<a target="_new" href="http://twitter.com/${user.twitterAccount}"><img src="${contextPath}/templates/${templateName}/images/twitter.gif" border="0" alt="twitter icon"/></a>
+		</#if>
+
+	</td>
+
+	<#if karmaEnabled && post.userId != session.userId && logged>
+		<td align="right">
+		<#if !karmaVotes.containsKey(post.id)>
+			<script language="javascript">karmaPointsCombo(${post.id})</script>
+		<#else>
+			<span class="gensmall">${I18n.getMessage("Karma.yourRate")}: ${karmaVotes.get(post.id)}</span>
+		</#if>
+		</td>
+	</#if>
+</tr>
+</table>
