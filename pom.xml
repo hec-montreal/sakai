@@ -118,7 +118,7 @@
 				<module>etudes-util</module>
 				<module>jforum</module>
 				<module>webservices</module>
-				<module>evaluation</module>
+			<!--	<module>evaluation</module>
 				<module>sdata</module>
 				<module>via</module>
 				<module>hec-commons-utils</module>
@@ -126,7 +126,7 @@
 				<module>hec-course-archive</module>
 				<module>hec-public-portal-manager</module>
 				<module>hec-public-portal-ui</module>
-				<module>opensyllabus</module>
+				<module>opensyllabus</module>  -->
           </modules>
         </profile>
         <profile>
