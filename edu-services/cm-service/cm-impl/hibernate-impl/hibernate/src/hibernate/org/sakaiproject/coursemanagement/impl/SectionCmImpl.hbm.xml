@@ -17,7 +17,8 @@
 		</set>
 
 		<property name="maxSize" type="integer" column="MAXSIZE" not-null="false" />
-
+        <property name="lang" column="LANG" type="string" />
+        <property name="typeEvaluation" column="typeEvaluation" type="string" />
 	</subclass>
 
     <query name="isSectionDefined">
@@ -57,6 +58,13 @@
         select sec from SectionCmImpl as sec, EnrollmentSetCmImpl as es join es.officialInstructors as instructor
             where :userId = instructor and
         	sec.enrollmentSet = es
+        ]]>
+    </query>
+
+    <query name="findSectionsByCategory">
+        <![CDATA[
+        select sec from SectionCmImpl as sec
+            where sec.category = :category
         ]]>
     </query>
 
