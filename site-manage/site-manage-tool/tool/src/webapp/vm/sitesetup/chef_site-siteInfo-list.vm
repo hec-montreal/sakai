@@ -638,14 +638,12 @@
 								#else
 									$validator.escapeHtml($participantName)
 								#end
-							#if ($viewRosterDisplayId)
 								(#set($displayId=false)
 								#set($displayId = $participant.getDisplayId())
 								#if ($!displayId)
 									## for those internal users as Participant objects
 									$displayId
 								#end)
-							#end
 						</th>
 						#if ($hasProviderSet)
 							<td headers="coursename">
