@@ -1,6 +1,29 @@
 /* HEC Customizations */
-$logo: 'http://osyltest.hec.ca:12345/library/skin/neo-zonecours2/images/logo.png';
+$logo: 'images/custom/logo.png';
 $logo-height: 30px;
 $logo-width: 134px;
 
-$background-color-secondary: #a7a7a7;
+$background-color-secondary: #133461;
+$font-family: "Arial", "sans-serif";
+
+.Mrphs-toolTitleNav__title, .Mrphs-toolTitleNav__text {
+	font-family: $font-family;
+}
+
+/* Login nav */
+.Mrphs-topHeader .Mrphs-loginNav {
+	margin-top: 5px!important;
+}
+
+/* Footer */
+$footer-font-size: 1.2em !default;
+
+.Mrphs-footer {
+	text-align: center;
+	font-size: $footer-font-size;
+}
+
+.Mrphs-footer--nav.Mrphs-footer--nav__project {
+	text-align: center;
+	list-style: none;
+}
