@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-5589-1"/>
+
+		<link href="res/css/index.css" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/jquery-ui.min.css" type="text/css" rel="stylesheet" media="all"/>
+
+		<title>ZoneCours - Accueil</title>
+
+		<script src="res/js/lib/jquery-1.10.2.min.js"></script>
+		<script src="res/js/lib/jquery-ui.min.js"></script>
+		<script src="res/js/lib/jquery.placeholder.min.js"></script>
+
+		<script>
+			var checkLogin = function() {
+				$.getJSON('/direct/user/current.json?' + new Date().getTime(), function(data) {
+					if (data.id && data.id.length > 0) {
+						gotoHome();
+					}
+				});
+			};
+
+			var gotoHome = function () {
+				window.location.replace("/portal");
+			};
+
+			checkLogin();
+		</script>
+	</head>
+
+	<body>
+		<div id="dialog">
+		</div>
+
+ 		<div id="index-content">
+ 			<div id="title">
+				<p id="main">ZoneCours</p>
+				<p id="tagline">APPRENDRE &bull; COLLABORER &bull; CR&Eacute;ER</p>
+ 			</div>
+ 			<form id="loginform" method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded" >
+ 				<div id="loginformcontent">
+ 	 				<p>
+	 					<input name="eid" id="eid" type="text" size="24" placeholder="Nom d'utilisateur"/>
+	 				</p>
+	 				<p>
+	 					<input id="pw" type="password" name="pw" size="24" placeholder="Mot&nbsp;de&nbsp;passe"/>
+	 				</p>
+	 				<input id="submit" type="submit" name="submit" value=""/>
+	 				<p>
+	 					<a id="connexion-problem-link" href="/connexionInfo-fr.html" target="_blank">Probl&egrave;me de connexion ?</a>
+	 				</p>
+ 				</div>
+ 			</form>
+		</div>
+
+		<div id="index-footer">
+			<ul>
+				<li>
+					<a target="blank" href="http://www.hec.ca">HEC MONTR&Eacute;AL</a>
+				</li>
+				<li>
+					<a target="blank" href="http://www.hec.ca/cours">PORTAIL DES COURS</a>
+				</li>
+				<li>
+					<a target="blank" href="https://confluence.hec.ca:8443/display/aidezc2/Aide+de+ZoneCours">AIDE</a>
+				</li>
+				<li>
+					<a target="blank" href="https://enligne.hec.ca/">HEC EN LIGNE</a>
+				</li>
+				<li>
+					<a href="/index-en.jsp" title="English version">ENGLISH</a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="res/js/index.js"></script>
+		
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-NHPH76"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push(
+{'gtm.start': new Date().getTime(),event:'gtm.js'}
+);var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NHPH76');</script>
+<!-- End Google Tag Manager -->
+
+	</body>
+</html>

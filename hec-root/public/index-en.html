@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=ISO-5589-1"/>
+
+		<link href="res/css/index.css" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/jquery-ui.min.css" type="text/css" rel="stylesheet" media="all"/>
+
+		<title>ZoneCours - Home</title>
+	</head>
+	<body>
+		<div id="dialog"></div>
+ 		<div id="index-content">
+ 			<div id="title">
+				<p id="main">ZoneCours</p>
+				<p id="tagline">LEARN &bull; COLLABORATE &bull; CREATE</p>
+ 			</div>
+ 			<form id="loginform" method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded" >
+ 				<div id="loginformcontent">
+	 				<p>
+	 					<input name="eid" id="eid" type="text" size="24" placeholder="User ID"/>
+	 				</p>
+	 				<p>
+	 					<input id="pw" type="password" name="pw" size="24" placeholder="Password"/>
+	 				</p>
+	 				<input id="submit" type="submit" name="submit" value=""/>
+	 				<p>
+	 					<a id="connexion-problem-link" href="/connexionInfo-en.html" target="_blank">Cannot access your account ?</a>
+	 				</p>
+ 				</div>
+ 			</form>
+		</div>
+		<div id="index-footer">
+			<ul>
+				<li>
+					<a target="blank" href="http://www.hec.ca/en/">HEC MONTR&Eacute;AL</a>
+				</li>
+				<li>
+					<a target="blank" href="http://www.hec.ca/en/course/">COURSE PORTAL</a>
+				</li>
+				<li>
+					<a target="blank" href="https://confluence.hec.ca:8443/display/aidezc2/Aide+de+ZoneCours">HELP</a>
+				</li>
+				<li>
+					<a target="blank" href="https://enligne.hec.ca/psp/GAPET/HEL/HRMS/?cmd=login&languageCd=ENG/">HEC EN LIGNE</a>
+				</li>
+				<li>
+					<a href="/" title="version française">FRAN&Ccedil;AIS</a>
+				</li>
+			</ul>
+		</div>
+
+		<script src="res/js/lib/jquery-1.10.2.min.js"></script>
+		<script src="res/js/lib/jquery-ui.min.js"></script>
+		<script src="res/js/lib/jquery.placeholder.min.js"></script>
+		<script src="res/js/index.js"></script>
+		
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-NHPH76"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push(
+{'gtm.start': new Date().getTime(),event:'gtm.js'}
+);var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NHPH76');</script>
+<!-- End Google Tag Manager -->
+
+	</body>
+</html>

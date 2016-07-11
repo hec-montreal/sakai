@@ -1,0 +1,155 @@
+body {
+	font-family: Arial, 'Trebuchet MS',Verdana,sans-serif;
+	font-size:.8em;
+	margin:0;
+}
+
+#index-content{
+	background-color:black;
+	background-image: url(/access/content/public/background.jpg);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+/* 	background-size: contain; */
+/* 	background-size: auto; */
+	width:100%;
+	bottom: 55px;
+	top:0px;
+	position:absolute;
+	height: 100%;
+}
+
+#title{
+	color: white;
+	font-weight: bold;
+	position:relative;
+	top:14%;
+	margin:0 auto;
+	width:320px;
+	text-align:center;
+}
+
+#main{
+	margin: 0;
+	font-size: 61px;
+}
+
+#tagline{
+	font-size: 17px;
+	margin: 0;
+}
+
+#loginform{
+	position:relative;
+	margin:0 auto;
+ 	top:15%;
+	background-color: #dae0e1;
+	width:320px;
+	height: 161px;
+	border-radius: 10px;
+	box-shadow: 4px 4px 4px 0px white inset,
+				-4px -4px 4px 0px #bcc7ca inset;
+	background: linear-gradient(45deg,  #dae0e1, white, #dae0e1);
+}
+
+#loginformcontent {
+	position:relative;
+	top:10px;
+}
+
+#loginform input {
+	font-size: 1.4em;
+	width: 230px;
+}
+
+#eid {
+	margin-top: 20px;
+}
+
+#loginform input[type="submit"] {
+	border: 0;
+	background:url(/res/images/bouton_connexion.png) no-repeat;
+	width: 32px;
+    height: 60px;
+    position:absolute;
+    top:26px;
+    right:10px;
+}
+
+#loginform input[type="submit"]:hover {
+	cursor: pointer;
+}
+
+#loginform p {
+	margin-left: 30px;
+}
+
+#connexion-problem-link {
+	color:#79acd2;
+	font-size:small;
+	margin-left: 5px;
+	position:relative;
+	top:10px;
+}
+
+#index-footer{
+	height: 36px;
+	text-align: center;
+	line-height:35px;
+/* 	filter:alpha(opacity=50); */
+/* 	opacity:0.5; */
+	background-color:black;
+	position:absolute;
+	bottom: 0;
+	width:100%;
+}
+
+#index-footer div {
+	border-left: 5px solid rgb(68,81,79);
+	display: inline-block;
+	padding: 0px 20px 0px 20px;
+}
+
+#index-footer div:last-child {
+	border-right: 5px solid rgb(68,81,79);
+}
+
+#index-footer ul {
+	display: inline-block;
+	margin: 0 auto;
+	list-style-type: none;
+}
+#index-footer ul li
+{
+	float: left;
+	border-left: 5px solid rgb(68,81,79);
+	padding: 0px 20px 0px 20px;
+}
+
+#index-footer ul li:last-child
+{
+	border-right: 5px solid rgb(68,81,79);
+}
+
+#index-footer ul li a
+{
+	color:white;
+	text-decoration:none;
+	font-size:14px;
+}
+
+#index-footer ul li:hover{
+	background: #00ACEC;
+}
+
+.help {
+	padding: 10px;
+}
+
+.help h2 {
+	font-size: 1.7em;
+}
+
+.help h3 {
+	font-size: 1.2em;
+}
