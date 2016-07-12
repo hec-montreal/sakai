@@ -153,3 +153,9 @@ body {
 .help h3 {
 	font-size: 1.2em;
 }
+
+#loading {
+	background-color: #f00;
+	position: relative;
+	top: 25%;
+}

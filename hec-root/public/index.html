@@ -3,30 +3,15 @@
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-5589-1"/>
 
-		<link href="res/css/index.css" type="text/css" rel="stylesheet" media="all"/>
 		<link href="res/css/jquery-ui.min.css" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/index.css" type="text/css" rel="stylesheet" media="all"/>
 
 		<title>ZoneCours - Accueil</title>
 
 		<script src="res/js/lib/jquery-1.10.2.min.js"></script>
 		<script src="res/js/lib/jquery-ui.min.js"></script>
 		<script src="res/js/lib/jquery.placeholder.min.js"></script>
-
-		<script>
-			var checkLogin = function() {
-				$.getJSON('/direct/user/current.json?' + new Date().getTime(), function(data) {
-					if (data.id && data.id.length > 0) {
-						gotoHome();
-					}
-				});
-			};
-
-			var gotoHome = function () {
-				window.location.replace("/portal");
-			};
-
-			checkLogin();
-		</script>
+		<script src="res/js/lib/spin.min.js"></script>
 	</head>
 
 	<body>
@@ -38,7 +23,12 @@
 				<p id="main">ZoneCours</p>
 				<p id="tagline">APPRENDRE &bull; COLLABORER &bull; CR&Eacute;ER</p>
  			</div>
- 			<form id="loginform" method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded" >
+
+ 			<div id="loading">
+ 				<div id="spinner"></div>
+ 			</div>
+
+ 			<form id="loginform" method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded" style="display: none;">
  				<div id="loginformcontent">
  	 				<p>
 	 					<input name="eid" id="eid" type="text" size="24" placeholder="Nom d'utilisateur"/>
@@ -73,19 +63,35 @@
 				</li>
 			</ul>
 		</div>
+		
+		<!-- Google Tag Manager -->
+		<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-NHPH76"
+		height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push(
+		{'gtm.start': new Date().getTime(),event:'gtm.js'}
+		);var f=d.getElementsByTagName(s)[0],
+		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+		'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+		})(window,document,'script','dataLayer','GTM-NHPH76');</script>
+		<!-- End Google Tag Manager -->
+
+		<!-- Google Analytics ? -->
+		<script>
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-2831257-12']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+		<!-- End Google Analytics ? -->
 
 		<script src="res/js/index.js"></script>
-		
-<!-- Google Tag Manager -->
-<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-NHPH76"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push(
-{'gtm.start': new Date().getTime(),event:'gtm.js'}
-);var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-NHPH76');</script>
-<!-- End Google Tag Manager -->
-
 	</body>
 </html>
