@@ -128,6 +128,14 @@
             <script>$(document).ready(function(){startTutorial({'showTutorialLocationOnHide': 'true'});});</script>
         #end ## END of IF ( $tutorial && $loggedIn )
 
+        <!-- Code of conduct -->
+        <script src="/library/skin/morpheus-default/js/custom/code-of-conduct.js"></script>
+
+        #if ( $loggedIn )
+            <script type="text/javascript" language="JavaScript">$(document).ready(function(){firstShowCodeOfConductPage({'codeOfConductTitle': '${rloader.sit_code_of_conduct}','userLocale' : '$!{locale}', 'tutorial': '$!tutorial','showTutorialLocationOnHide': 'true' });});</script>
+        #end
+        <!-- End Code of conduct -->
+
         #parse("/vm/morpheus/snippets/portalChat-snippet.vm")
 
         #parse("/vm/morpheus/snippets/styleable-snippet.vm")
@@ -180,6 +188,8 @@
         ${d}PBJQ(document).ready(portal_check_pnotify);
     #end
         </script>
+
+        <div id="codeOfConduct"></div>
 
         <!--[if lt IE 9]>
         <script src="${pageSkinRepo}/${pageSkin}/js/ie/sakai.portal.ie.js$!{portalCDNQuery}"></script>
