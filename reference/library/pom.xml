@@ -181,6 +181,7 @@
 											<includes>
 												<include>lib/**/*.js</include>
 												<include>ie/**/*.js</include>
+												<include>custom/**/*.js</include>
 											</includes>
 										</resource>
 									</resources>
