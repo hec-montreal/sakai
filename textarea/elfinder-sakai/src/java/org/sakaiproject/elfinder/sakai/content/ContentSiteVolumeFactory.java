@@ -21,9 +21,7 @@ import org.sakaiproject.site.api.SiteService;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * This is the creator of ContentHosting FsVolumes.
@@ -265,9 +263,8 @@ public class ContentSiteVolumeFactory implements SiteVolumeFactory {
 
         public FsItem getParent(FsItem fsi) {
             String rootId = asId(getRoot());
-            String id1 = asId(fsi);
-            if (!rootId.equals(id1)) {
-                String id = asId(fsi);
+            String id = asId(fsi);
+            if (id.startsWith(rootId) && !rootId.equals(id))  {
                 String parentId = contentHostingService.getContainingCollectionId(id);
                 return fromPath(parentId);
             } else {
@@ -411,6 +408,14 @@ public class ContentSiteVolumeFactory implements SiteVolumeFactory {
         public String getURL(FsItem fsItem) {
             String id = asId(fsItem);
             return contentHostingService.getUrl(id);
+        }
+
+        @Override
+        public void filterOptions(FsItem fsItem, Map<String, Object> map) {
+            // The preview isn't working properly
+            map.put("disabled", Arrays.asList(new String[]{"search", "zipdl"}));
+            // Disabled chunked uploads
+            map.put("uploadMaxConn", "-1");
         }
     }
 }
