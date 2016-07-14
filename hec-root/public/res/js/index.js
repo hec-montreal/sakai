@@ -14,7 +14,7 @@
 
 	// Message d'acceuil
 	var getMessage = function() {
-		get("/direct/announcement/motd.json?n=1", function(data) {
+		get("/direct/announcement/motd.json?n=1&" + new Date().getTime(), function(data) {
 			if (data && data.announcement_collection.length > 0) {
 				var announcement = data.announcement_collection[0];
 
@@ -25,10 +25,10 @@
 						my: "center center",
 						at: "right-175 top+135",
 						of: window
-					}
-				});
+					},
 
-				$("#submit").focus();
+					closeText: "Fermer"
+				});
 			}
 		});
 	};
