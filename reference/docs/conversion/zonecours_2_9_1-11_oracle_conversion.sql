@@ -2055,7 +2055,7 @@ CREATE TABLE SST_PRESENCE_TOTALS (
                 USER_ID varchar2(99) NOT NULL,
                 TOTAL_VISITS NUMBER(10,0) NOT NULL,
                 LAST_VISIT_TIME DATE NOT NULL,
-                UNIQUE KEY(SITE_ID, USER_ID),
+                CONSTRAINT unique_sst_presence_totals UNIQUE(SITE_ID, USER_ID),
                 PRIMARY KEY(ID));
 -- END SAK-29546
 
