@@ -74,7 +74,8 @@ ALTER TABLE lti_tools MODIFY   (     secret VARCHAR2(255) );
 -- end BLTI-238
 
 -- SAM-973
-alter table SAM_ITEMGRADING_T add ISCORRECT number(1,0);
+--HEC on a deja cette colonne.
+--alter table SAM_ITEMGRADING_T add ISCORRECT number(1,0); 
 -- end SAM-973
 -- SAK-21225 Extra Credit in Gradebook
 Update GB_CATEGORY_T
@@ -977,19 +978,19 @@ ALTER TABLE QRTZ_CRON_TRIGGERS MODIFY CRON_EXPRESSION VARCHAR2(120);
 --
 -- ------------------------
 
-CREATE TABLE ASN_PEER_ASSESSMENT_ITEM_T  ( 
-	SUBMISSION_ID   	varchar2(255) NOT NULL,
-	ASSESSOR_USER_ID	varchar2(255) NOT NULL,
-	ASSIGNMENT_ID   	varchar2(255) NOT NULL,
-	SCORE           	NUMBER(11) NULL,
-	REVIEW_COMMENT      clob NULL,
-	REMOVED         	NUMBER(1) NULL,
-	SUBMITTED         	NUMBER(1) NULL,
-	PRIMARY KEY(SUBMISSION_ID,ASSESSOR_USER_ID)
-);
+--CREATE TABLE ASN_PEER_ASSESSMENT_ITEM_T  ( 
+--	SUBMISSION_ID   	varchar2(255) NOT NULL,
+--	ASSESSOR_USER_ID	varchar2(255) NOT NULL,
+--	ASSIGNMENT_ID   	varchar2(255) NOT NULL,
+--	SCORE           	NUMBER(11) NULL,
+--	REVIEW_COMMENT      clob NULL,
+--	REMOVED         	NUMBER(1) NULL,
+--	SUBMITTED         	NUMBER(1) NULL,
+--	PRIMARY KEY(SUBMISSION_ID,ASSESSOR_USER_ID)
+--);
 
-create index PEER_ASSESSOR_I on ASN_PEER_ASSESSMENT_ITEM_T (SUBMISSION_ID, ASSESSOR_USER_ID);
-create index PEER_ASSESSOR2_I on ASN_PEER_ASSESSMENT_ITEM_T (ASSIGNMENT_ID, ASSESSOR_USER_ID);
+--create index PEER_ASSESSOR_I on ASN_PEER_ASSESSMENT_ITEM_T (SUBMISSION_ID, ASSESSOR_USER_ID);
+--create index PEER_ASSESSOR2_I on ASN_PEER_ASSESSMENT_ITEM_T (ASSIGNMENT_ID, ASSESSOR_USER_ID);
 
 -- --------------------
 --
@@ -1043,36 +1044,36 @@ CREATE SEQUENCE user_audits_log_seq;
 
 -- INFRSTR-257 Delegated Access and Hierarchy
 
-create table HIERARCHY_NODE (
-	ID number(19,0) not null,
-	directParentIds varchar2(2000),
-	parentIds varchar2(4000),
-	directChildIds clob,
-	childIds clob,
-	primary key (ID)
-);
+--create table HIERARCHY_NODE (
+--	ID number(19,0) not null,
+--	directParentIds varchar2(2000),
+--	parentIds varchar2(4000),
+--	directChildIds clob,
+--	childIds clob,
+--	primary key (ID)
+--);
 
-create table HIERARCHY_NODE_META (
-	ID number(19,0) not null,
-	hierarchyId varchar2(255),
-	isRootNode number(1,0) not null,
-	ownerId varchar2(99),
-	title varchar2(255),
-	description clob,
-	permToken varchar2(255),
-	isDisabled number(1,0) not null,
-	primary key (ID)
-);
+--create table HIERARCHY_NODE_META (
+--	ID number(19,0) not null,
+--	hierarchyId varchar2(255),
+--	isRootNode number(1,0) not null,
+--	ownerId varchar2(99),
+--	title varchar2(255),
+--	description clob,
+--	permToken varchar2(255),
+--	isDisabled number(1,0) not null,
+--	primary key (ID)
+--);
 
-create table HIERARCHY_PERMS (
-	ID number(19,0) not null,
-	createdOn date not null,
-	lastModified date not null,
-	userId varchar2(99) not null,
-	nodeId varchar2(255) not null,
-	permission varchar2(255) not null,
-	primary key (ID)
-);
+--create table HIERARCHY_PERMS (
+--	ID number(19,0) not null,
+--	createdOn date not null,
+--	lastModified date not null,
+--	userId varchar2(99) not null,
+--	nodeId varchar2(255) not null,
+--	permission varchar2(255) not null,
+--	primary key (ID)
+--);
 
 create index HIERARCHY_PERMTOKEN on HIERARCHY_NODE_META (permToken);
 
@@ -1084,11 +1085,11 @@ create index HIER_PERM_NODE on HIERARCHY_PERMS (nodeId);
 
 create index HIER_PERM_PERM on HIERARCHY_PERMS (permission);
 
-create sequence HIERARCHY_META_ID_SEQ;
+--create sequence HIERARCHY_META_ID_SEQ;
 
-create sequence HIERARCHY_NODE_ID_SEQ;
+--create sequence HIERARCHY_NODE_ID_SEQ;
 
-create sequence HIERARCHY_PERM_ID_SEQ;
+--create sequence HIERARCHY_PERM_ID_SEQ;
 
 INSERT INTO SAKAI_SITE_PAGE VALUES('!admin-1300', '!admin', 'Delegated Access', '0', 18, '0' );
 INSERT INTO SAKAI_SITE_TOOL VALUES('!admin-1350', '!admin-1300', '!admin', 'sakai.delegatedaccess', 1, 'Delegated Access', NULL );
@@ -1626,15 +1627,16 @@ ALTER TABLE SAM_QUESTIONPOOLITEM_T MODIFY (ITEMID NOT NULL ENABLE);
 ALTER TABLE SAM_QUESTIONPOOLITEM_T ADD PRIMARY KEY (QUESTIONPOOLID, ITEMID);
 
 CREATE INDEX SAM_IDX_ITEMID ON SAM_QUESTIONPOOLITEM_T (ITEMID);
-DROP INDEX SAM_AUTHZ_FUNCTIONID_IDX;
-DROP INDEX SAM_AUTHZ_QUALIFIERID_IDX;
+--DROP INDEX SAM_AUTHZ_FUNCTIONID_IDX;
+--DROP INDEX SAM_AUTHZ_QUALIFIERID_IDX;
 CREATE INDEX SAM_IDX_FUNC_QUAL ON SAM_AUTHZDATA_T (FUNCTIONID, QUALIFIERID);
 ALTER TABLE SAM_AUTHZDATA_T MODIFY (AGENTID VARCHAR2(99 CHAR));
 ALTER TABLE SAM_AUTHZDATA_T MODIFY (LASTMODIFIEDBY VARCHAR2(99 CHAR));
 -- End SAM-2259
 
 -- SAK-29571 MFR_MESSAGE_DELETD_I causes bad performance
-drop index MFR_MESSAGE_DELETED_I;
+-- we don't have this index
+--drop index MFR_MESSAGE_DELETED_I;
 -- END SAK-29571 MFR_MESSAGE_DELETD_I causes bad performance
 
 --KNL-1379 Bigger SESSION_USER_AGENT
@@ -2048,12 +2050,15 @@ INSERT INTO SAKAI_SITE_TOOL VALUES('!admin-1650', '!admin-1600', '!admin', 'saka
 INSERT INTO SAKAI_SITE_PAGE_PROPERTY VALUES('!admin', '!admin-1600', 'sitePage.customTitle', 'true');
 
 -- END SAK-29422 Incorporate NYU's "public announcement system"
+
 -- SAK-29571 MFR_MESSAGE_DELETD_I causes bad performance
-drop index MFR_MESSAGE_DELETED_I;
+-- HEC we don't have this index
+--drop index MFR_MESSAGE_DELETED_I;
 -- END SAK-29571 MFR_MESSAGE_DELETD_I causes bad performance
 
 -- LSNBLDR-646
-drop index lb_qr_questionId;
+-- HEC we don't have this index either
+--drop index lb_qr_questionId;
 -- END LSNBLDR-646
 
 -- SAK-29546 Add site visit totals per user
