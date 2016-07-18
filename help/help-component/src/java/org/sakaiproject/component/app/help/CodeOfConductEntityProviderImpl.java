@@ -25,6 +25,7 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvider, AutoRegisterEntityProvider, RESTful
 {
@@ -60,11 +61,13 @@ public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvi
 	}
 
 	@Override
+	@Transactional
 	public String createEntity(EntityReference ref, Object entity, Map<String, Object> params)
 	{
-
 		User currentUser = userDirectoryService.getCurrentUser();
 		String userId = currentUser.getEid();
+
+		log.info("Accepting code of conduct for " + userId);
 
 		if (userId == null || userId.isEmpty())
 			throw new SecurityException("You must be logged in to perform this request.");
@@ -148,6 +151,7 @@ public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvi
 		return valuesMap;
 	}
 
+	@Transactional
 	private boolean hasUserAccepted(String id)
 	{
 		int i = jdbcTemplate.queryForInt("select count(*) from CODE_OF_CONDUCT where MATRICULE = ?", new Object[] { id });
