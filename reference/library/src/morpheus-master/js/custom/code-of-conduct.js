@@ -6,6 +6,10 @@ var title;
 var version;
 var type = 'student';
 
+function findVersion()
+{
+	return version.replace("-", "_");
+}
 
 function startCodeOfConduct(opts){
 	showCodeOfConductPage( opts);
@@ -16,9 +20,7 @@ function startCodeOfConduct(opts){
  * the dialog box is closed.
  * Any change to showCodeOfConductPage should be done here too
  */
-function firstShowCodeOfConductPage( opts){
-
-	
+function firstShowCodeOfConductPage( opts){	
 	//store options in cache so we can use the same options from start to end of the tutorial:
 	if(opts != null)
 		optsCache = opts;
@@ -52,7 +54,7 @@ function firstShowCodeOfConductPage( opts){
 					el.innerHTML = response.data.title;
 					seen = localStorage.getItem('seenAtLogin');
 				
-					if (!response.data.hasUserAccepted && response.data.type==type && localSeen != jsonSeen){
+					if (!response.data.hasUserAccepted){
 						 $('div#codeOfConduct').dialog({
 							 title: el.innerHTML,
 							 open: function (event, ui) {
@@ -190,7 +192,7 @@ function showCodeOfConductPage( opts){
 
 function englishVersion(){
 	var el = document.createElement( 'div' );
-	if (version == 'fr_CA')
+	if (findVersion() == 'fr_CA')
 		$.getJSON(codeOfConductUrl,
 				function(response){
 			el.innerHTML = response.data.otherVersionTitle;
@@ -212,7 +214,7 @@ function englishVersion(){
 
 function frenchVersion(){
 	var el = document.createElement( 'div' );
-	if (version == 'fr_CA')
+	if (findVersion() == 'fr_CA')
 		$.getJSON(codeOfConductUrl,
 				function(response){
 			el.innerHTML = response.data.title;
