@@ -67,8 +67,6 @@ public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvi
 		User currentUser = userDirectoryService.getCurrentUser();
 		String userId = currentUser.getEid();
 
-		log.info("Accepting code of conduct for " + userId);
-
 		if (userId == null || userId.isEmpty())
 			throw new SecurityException("You must be logged in to perform this request.");
 

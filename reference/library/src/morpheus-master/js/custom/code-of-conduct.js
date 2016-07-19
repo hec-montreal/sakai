@@ -54,7 +54,7 @@ function firstShowCodeOfConductPage( opts){
 					el.innerHTML = response.data.title;
 					seen = localStorage.getItem('seenAtLogin');
 				
-					if (!response.data.hasUserAccepted){
+					if (!response.data.hasUserAccepted && response.data.type==type && localSeen != jsonSeen){
 						 $('div#codeOfConduct').dialog({
 							 title: el.innerHTML,
 							 open: function (event, ui) {
