@@ -6,12 +6,14 @@ $logo-width: 134px;
 $background-color-secondary: #133461;
 $font-family: "Arial", "sans-serif";
 
-.Mrphs-toolTitleNav__title, .Mrphs-toolTitleNav__text {
+.Mrphs-toolTitleNav__title, 
+.Mrphs-toolTitleNav__text {
 	font-family: $font-family;
 }
 
 /* Login nav */
-.Mrphs-topHeader .Mrphs-loginNav {
+.Mrphs-topHeader 
+.Mrphs-loginNav {
 	margin-top: 5px!important;
 }
 
@@ -26,4 +28,9 @@ $footer-font-size: 1.2em !default;
 .Mrphs-footer--nav.Mrphs-footer--nav__project {
 	text-align: center;
 	list-style: none;
+}
+
+.Mrphs-footer--details__build-info,
+.Mrphs-footer--details__server-time {
+	display: none;
 }
