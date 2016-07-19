@@ -51,10 +51,25 @@
         
         #set($index = 0)
         #foreach( $page in $sitePages.pageNavTools )
+       	    #if (${fullTitle} == ${hecTitle})
+				#set ($tooltip = "${fullTitle}")
+			#else
+				#set ($tooltip = "${siteTitle}: ${hecTitle}")
+			#end
             #if ( $index == 0 )
-                <span class="Mrphs-hierarchy--siteName" title="${siteTitle}">
-                    <a href="${page.pageResetUrl}">${siteTitleTruncated}</a>
-                </span>
+	            #if (${isUserSite})
+	                <span class="Mrphs-hierarchy--siteName" title="${siteTitle}">
+	                    <a href="${page.pageResetUrl}">${siteTitleTruncated}</a>
+	                </span>
+	            #elseif (${isUserStudent})
+	            	<span class="Mrphs-hierarchy--siteName" title="$tooltip">
+	                    <a href="${page.pageResetUrl}">${hecShortTitle}</a>
+	                </span>
+	            #else
+	            	<span class="Mrphs-hierarchy--siteName" title="$tooltip">
+	                    <a href="${page.pageResetUrl}">${siteTitleTruncated}</a>
+	                </span>
+	            #end
                 <span class="Mrphs-hierarchy--siteNameSeparator Mrphs-hierarchy--separator"><i class="fa fa-lg fa-angle-right"></i></span>
             #end
             #set($index = $index + 1 )
