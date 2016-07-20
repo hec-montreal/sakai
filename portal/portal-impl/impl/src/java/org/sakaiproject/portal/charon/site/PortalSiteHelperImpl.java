@@ -95,6 +95,8 @@ public class PortalSiteHelperImpl implements PortalSiteHelper
 
 	private final String PROP_PARENT_ID = SiteService.PROP_PARENT_ID;
 
+	private final String PROP_SITE_TITLE = "title";
+
 	private static final String PROP_HTML_INCLUDE = "sakai:htmlInclude";
 
 	private static final String PROP_MENU_CLASS = "sakai:menuClass";
@@ -417,6 +419,31 @@ public class PortalSiteHelperImpl implements PortalSiteHelper
 		// TODO: This should come from the site neighbourhood.
 		ResourceProperties rp = s.getProperties();
 		String ourParent = rp.getProperty(PROP_PARENT_ID);
+
+		// ZCII-1137 add hec title (shortened and full length) for the tab
+		int siteTitleMaxLength = 25;
+		String titleStr = s.getTitle();
+		String fullTitle = titleStr;
+
+		String hecShortTitle = rp.getProperty(PROP_SITE_TITLE);
+		String hecFullTitle = hecShortTitle;
+
+		if ( hecShortTitle != null )
+		{
+			hecShortTitle = hecShortTitle.trim();
+			if ( hecShortTitle.length() > siteTitleMaxLength && siteTitleMaxLength >= 10 )
+			{
+				hecShortTitle = hecShortTitle.substring(0,siteTitleMaxLength-4) + " ...";
+			}
+			else if ( hecShortTitle.length() > siteTitleMaxLength )
+			{
+				hecShortTitle = hecShortTitle.substring(0,siteTitleMaxLength);
+			}
+			hecShortTitle = hecShortTitle.trim();
+		}
+
+		m.put("hecShortTitle", (hecShortTitle==null) ? Web.escapeHtml(titleStr) : Web.escapeHtml(hecShortTitle));
+		m.put("hecTitle", (hecFullTitle==null) ? Web.escapeHtml(fullTitle) : Web.escapeHtml(hecFullTitle));
 		// We are not really a child unless the parent exists
 		// And we have a valid pwd
 		boolean isChild = false;

@@ -527,6 +527,33 @@ public class SiteHandler extends WorksiteHandler
 			rcontext.put("shortDescription", Web.escapeHtml(site.getShortDescription()));
 		}
 		
+		// ZCII-1137 add hec title (shortened and full length) for the tab
+		ResourceProperties rp = site.getProperties();
+		int siteTitleMaxLength = 25;
+		String titleStr = site.getTitle();
+		String fullTitle = titleStr;
+		String PROP_SITE_TITLE = "title";
+		String hecShortTitle = rp.getProperty(PROP_SITE_TITLE);
+		String hecFullTitle = hecShortTitle;
+
+		if ( hecShortTitle != null )
+		{
+			hecShortTitle = hecShortTitle.trim();
+			if ( hecShortTitle.length() > siteTitleMaxLength && siteTitleMaxLength >= 10 )
+			{
+				hecShortTitle = hecShortTitle.substring(0,siteTitleMaxLength-4) + " ...";
+			}
+			else if ( hecShortTitle.length() > siteTitleMaxLength )
+			{
+				hecShortTitle = hecShortTitle.substring(0,siteTitleMaxLength);
+			}
+			hecShortTitle = hecShortTitle.trim();
+		}
+
+		rcontext.put("hecShortTitle", (hecShortTitle==null) ? Web.escapeHtml(titleStr) : Web.escapeHtml(hecShortTitle));
+		rcontext.put("hecTitle", (hecFullTitle==null) ? Web.escapeHtml(fullTitle) : Web.escapeHtml(hecFullTitle));
+		rcontext.put("isUserSite", SiteService.isUserSite(siteId));
+		
 		if (SiteService.isUserSite(siteId)){
 			rcontext.put("siteTitle", rb.getString("sit_mywor") );
 			rcontext.put("siteTitleTruncated", rb.getString("sit_mywor") );
@@ -860,6 +887,9 @@ public class SiteHandler extends WorksiteHandler
 			siteView.setPrefix(prefix);
 			siteView.setToolContextPath(null);
 			rcontext.put("tabsSites", siteView.getRenderContextObject());
+
+			// ZCII-1137 add a user type boolean to determine if we should use the site id or title for the tab
+			rcontext.put("isUserStudent", UserDirectoryService.getCurrentUser().getType().equalsIgnoreCase("student"));
 
 			String cssClass = (siteType != null) ? "siteNavWrap " + siteType
 					: "siteNavWrap";
