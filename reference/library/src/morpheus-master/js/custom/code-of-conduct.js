@@ -45,7 +45,7 @@ function firstShowCodeOfConductPage( opts){
 	if (version == '')
 		version = 'en_US';
 		
-	$.getJSON(codeOfConductUrl,
+	$.getJSON(codeOfConductUrl + "?" + new Date().getTime(),
 			function(response){
 		
 				try{
@@ -54,7 +54,7 @@ function firstShowCodeOfConductPage( opts){
 					el.innerHTML = response.data.title;
 					seen = localStorage.getItem('seenAtLogin');
 				
-					if (!response.data.hasUserAccepted && response.data.type==type && localSeen != jsonSeen){
+					if (!response.data.hasUserAccepted && response.data.type==type){
 						 $('div#codeOfConduct').dialog({
 							 title: el.innerHTML,
 							 open: function (event, ui) {
@@ -139,7 +139,7 @@ function showCodeOfConductPage( opts){
 	if (version == '')
 		version = 'en_US';
 		
-	$.getJSON(codeOfConductUrl,
+	$.getJSON(codeOfConductUrl + "?" + new Date().getTime(),
 			function(response){
 				try{
 					el.innerHTML = response.data.title;
