@@ -1653,8 +1653,9 @@ ALTER TABLE poll_poll RENAME COLUMN tmpdetails TO poll_details;
 -- END SAK-30667 Polls fails on Oracle migrated database
 
 -- LSNBLDR-500
-alter table lesson_builder_pages add folder varchar2(250);
-create index lb_page_folder on lesson_builder_pages(siteId, folder);
+-- HEC this is already later in the script (zonecours_2_9_1-11_oracle_conversion_3.sql)
+--alter table lesson_builder_pages add folder varchar2(250);
+--create index lb_page_folder on lesson_builder_pages(siteId, folder);
 
 -- SAK-25784 Convert News to RSS Portlet
 -- ---------------------------
