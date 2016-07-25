@@ -4,12 +4,18 @@
 	<parent>
         <groupId>org.sakaiproject.site</groupId>
         <artifactId>site</artifactId>
-        <version>11-SNAPSHOT</version>
+        <version>11.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 	<groupId>org.sakaiproject.mbm.tool</groupId>
 	<artifactId>sakai-message-bundle-manager-tool</artifactId>
 	<packaging>war</packaging>
+
+	<properties>
+		<maven.deploy.skip>true</maven.deploy.skip>
+		<skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+	</properties>
+
 
 	<dependencies>
 		<dependency>
