@@ -6,7 +6,7 @@
   <packaging>pom</packaging>
   <name>Sakai Master</name>
   <description>Corporate POM for the Sakai Open Source Collaborative Learning Environment/Learning Management System</description>
-  <version>11-SNAPSHOT</version>
+  <version>11.0</version>
   <url>http://sakaiproject.org</url>
   <organization>
     <name>Sakai Project</name>
@@ -73,7 +73,7 @@
   </scm>
 
   <properties>
-    <sakai.version>11-SNAPSHOT</sakai.version>
+    <sakai.version>11.0</sakai.version>
     <!-- Retain this for backward compatibility -->
     <sakai.kernel.version>${sakai.version}</sakai.kernel.version>
     <kernel.spring.version>${sakai.spring.version}</kernel.spring.version>
@@ -130,13 +130,13 @@
 	<etudes.jforum.version>2.9.1</etudes.jforum.version>
     <!-- Sakai modules that are versioned separately -->
     <!-- lessonbuilder tool pom depends on msgcntr ver prop. Need to add a profile to the LB tool pom to mark change between 10.x master and earlier versions -->
-    <sakai.msgcntr.version>11-SNAPSHOT</sakai.msgcntr.version> 
+    <sakai.msgcntr.version>${sakai.version}</sakai.msgcntr.version> 
     <!-- Set the source encoding to avoid maven warnings -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <sakai.jdk.version>1.8</sakai.jdk.version>
     <sakai.build.directory>target</sakai.build.directory>
     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
-    <sakai.opensyllabus.version>${sakai.version}</sakai.opensyllabus.version>
+    <sakai.opensyllabus.version>11-SNAPSHOT</sakai.opensyllabus.version>
     <sakai.edu-services.version>${sakai.version}</sakai.edu-services.version>
   </properties>
   <distributionManagement>
@@ -227,6 +227,18 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>deploy-skip</id>
+      <activation>
+        <file>
+          <exists>${basedir}/src/webapp</exists>
+        </file>
+      </activation>
+      <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
+      </properties>
     </profile>
   </profiles>
 
@@ -1506,6 +1518,12 @@
       <dependency>
         <groupId>org.sakaiproject.velocity</groupId>
         <artifactId>sakai-velocity-tool-api</artifactId>
+        <version>${sakai.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.sakaiproject.oauth</groupId>
+        <artifactId>oauth-api</artifactId>
         <version>${sakai.version}</version>
         <scope>provided</scope>
       </dependency>

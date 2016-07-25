@@ -4,7 +4,7 @@
   <parent>
     <artifactId>kernel</artifactId>
     <groupId>org.sakaiproject</groupId>
-    <version>11-SNAPSHOT</version><!-- KernelVersion -->
+    <version>11.0</version><!-- KernelVersion -->
     <relativePath>../pom.xml</relativePath>
   </parent>
   <name>Sakai Kernel Component Package</name>
@@ -19,6 +19,8 @@
   <packaging>sakai-component</packaging>
   <properties>
     <deploy.target>components</deploy.target>
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <skipNexusStagingDeployMojo>true</skipNexusStagingDeployMojo>
   </properties>
   <dependencies>
     <dependency>
