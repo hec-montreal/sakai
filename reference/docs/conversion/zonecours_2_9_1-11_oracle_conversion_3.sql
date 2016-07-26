@@ -519,3 +519,7 @@ create table EVAL_HIERARCHY_RULE (
 --ZCII-2404 - remove rutgers link tool everywhere
 delete from sakai_site_tool_property where tool_id in (select tool_id from SAKAI_SITE_TOOL where registration like 'sakai.rutgers.linktool');
 delete from SAKAI_SITE_TOOL where registration like 'sakai.rutgers.linktool';
+
+-- Insert missing option to avoid errors in EvalSys:
+insert into EVAL_CONFIG (ID, LAST_MODIFIED, NAME, VALUE) values 
+((select max(ID)+1 from EVAL_CONFIG), sysdate, 'EVAL_EVALUATEE_RECENTLY_CLOSED_DAYS', '730');
