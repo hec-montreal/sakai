@@ -105,12 +105,6 @@ sakai.editor.editors.ckeditor.launch = function(targetId, config, w, h) {
     }
 
     var ckconfig = {
-	//Some defaults for audio recorder
-        audiorecorder : {
-            "maxSeconds" : 180,
-            "attemptAllowed" : Number.MAX_VALUE,
-            "attemptsRemaining": Number.MAX_VALUE
-        },
         skin: 'moono',
         defaultLanguage: 'en',
         allowedContent: true, // http://docs.ckeditor.com/#!/guide/dev_advanced_content_filter-section-3
@@ -120,9 +114,10 @@ sakai.editor.editors.ckeditor.launch = function(targetId, config, w, h) {
         fileConnectorUrl : '/sakai-fck-connector/web/editor/filemanager/browser/default/connectors/jsp/connector' + collectionId + '?' + folder,
 
         // These are the general URLs for browsing generally and specifically for images/flash object.
-        filebrowserBrowseUrl :      filebrowser.browseUrl,
-        filebrowserImageBrowseUrl : filebrowser.imageBrowseUrl,
-        filebrowserFlashBrowseUrl : filebrowser.flashBrowseUrl,
+        // Disabled for zc
+        // filebrowserBrowseUrl :      filebrowser.browseUrl,
+        // filebrowserImageBrowseUrl : filebrowser.imageBrowseUrl,
+        // filebrowserFlashBrowseUrl : filebrowser.flashBrowseUrl,
 
         extraPlugins: (sakai.editor.enableResourceSearch ? 'resourcesearch,' : '')+'',
 
@@ -154,8 +149,8 @@ sakai.editor.editors.ckeditor.launch = function(targetId, config, w, h) {
             ['BidiLtr', 'BidiRtl' ],
             ['Link','Unlink','Anchor'],
             (sakai.editor.enableResourceSearch
-                ? ['AudioRecorder','ResourceSearch', 'Image','Movie','Table','HorizontalRule','Smiley','SpecialChar','fmath_formula','FontAwesome']
-                : ['AudioRecorder','Image','Movie','Table','HorizontalRule','Smiley','SpecialChar','fmath_formula','FontAwesome']),
+                ? ['ResourceSearch', 'Image','Movie','Table','HorizontalRule','Smiley','SpecialChar','fmath_formula','FontAwesome']
+                : ['Image','Movie','Table','HorizontalRule','Smiley','SpecialChar','fmath_formula','FontAwesome']),
             '/',
             ['Styles','Format','Font','FontSize'],
             ['TextColor','BGColor'],
@@ -189,7 +184,7 @@ sakai.editor.editors.ckeditor.launch = function(targetId, config, w, h) {
             CKEDITOR.plugins.addExternal('movieplayer',basePath+'movieplayer/', 'plugin.js');
             CKEDITOR.plugins.addExternal('wordcount',basePath+'wordcount/', 'plugin.js');
             CKEDITOR.plugins.addExternal('fmath_formula',basePath+'fmath_formula/', 'plugin.js');
-            CKEDITOR.plugins.addExternal('audiorecorder',basePath+'audiorecorder/', 'plugin.js');
+            // CKEDITOR.plugins.addExternal('audiorecorder',basePath+'audiorecorder/', 'plugin.js');
             CKEDITOR.plugins.addExternal('image2',basePath+'image2/', 'plugin.js');
             //Autosave has a dependency on notification
             CKEDITOR.plugins.addExternal('autosave',basePath+'autosave/', 'plugin.js');
@@ -211,7 +206,7 @@ sakai.editor.editors.ckeditor.launch = function(targetId, config, w, h) {
             //ckconfig.extraPlugins+="atd-ckeditor,";
             //ckconfig.contentsCss = basePath+'/atd-ckeditor/atd.css';
 
-            ckconfig.extraPlugins+="image2,audiorecorder,movieplayer,wordcount,fmath_formula,autosave,fontawesome,notification";
+            ckconfig.extraPlugins+="image2,movieplayer,wordcount,fmath_formula,autosave,fontawesome,notification";
 
             //SAK-29648
             ckconfig.contentsCss = basePath+'/fontawesome/font-awesome/css/font-awesome.min.css';
