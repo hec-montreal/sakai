@@ -1,10 +1,10 @@
-/* HEC Customizations */
+	/* HEC Customizations */
 $logo: 'images/custom/logo.png';
-$logo-height: 30px;
-$logo-width: 134px;
+$logo-height: 35px;
+$logo-width: 167px;
 
 $background-color-secondary: #133461;
-$font-family: "Arial", "sans-serif";
+$font-family: 'Arial', 'sans-serif';
 
 .Mrphs-toolTitleNav__title, 
 .Mrphs-toolTitleNav__text {
@@ -33,4 +33,21 @@ $footer-font-size: 1.2em !default;
 .Mrphs-footer--details__build-info,
 .Mrphs-footer--details__server-time {
 	display: none;
+}
+
+/* Icon font */
+@font-face {
+  font-family: 'ZcIconFont';
+  src: url('images/custom/icons/zc-icon-font.eot'); /* IE9 Compat Modes */
+  src: url('images/custom/icons/zc-icon-font.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('images/custom/icons/zc-icon-font.woff') format('woff'), /* Pretty Modern Browsers */
+       url('images/custom/icons/zc-icon-font.ttf')  format('truetype'), /* Safari, Android, iOS */
+}
+
+.icon-sakai-opensyllabus-tool {
+	font-family: 'ZcIconFont'!important;
+}
+
+.icon-sakai-opensyllabus-tool:before {
+	content: "\e900";
 }
