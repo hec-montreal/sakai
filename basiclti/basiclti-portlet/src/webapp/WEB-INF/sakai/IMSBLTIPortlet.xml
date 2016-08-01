@@ -138,6 +138,111 @@
                 <configuration name="final.contentlink" value="true"/>
                 <configuration name="final.splash" value="true"/>
         </tool>
-        -->
+	-->
+
+
+        <tool
+                        id="sakai.tegrity"
+                        title="Tegrity"
+                        description="Pour enregistrer votre cours">
+
+                <configuration name="sakai:portlet-pre-render" value="true" />
+
+                <category name="course" />
+
+                <configuration name="functions.require" />
+                <configuration name="sakai:menuClass" value="icon-sakai-lessonbuildertool"/>
+
+                <configuration name="imsti.launch"
+                   value="https://aairs.tegrity.com/Service/RedirectCMSLink.aspx" />
+                <configuration name="imsti.xml" />
+                <configuration name="imsti.secret" value="099BE7" />
+                <configuration name="imsti.key" value="ZP59-SO5W-YYSM" />
+
+                <configuration name="imsti.pagetitle" value="Tegrity"/>
+                <configuration name="imsti.tooltitle" value="Tegrity"/>
+                <configuration name="imsti.newpage" value="on" />
+                <configuration name="imsti.maximize" value="off" />
+                <configuration name="imsti.releasename" value="on"/>  
+                <configuration name="imsti.releaseemail" value="off"/> 
+                <configuration name="imsti.custom" value="application_type=Tegrity"/>
+                <configuration name="imsti.allowsettings" value="on"/>
+                <configuration name="imsti.allowroster" value="on"/> 
+                <configuration name="imsti.allowoutcomes" value="on"/> 
+                <configuration name="imsti.allowlori" value="on"/> 
+                <configuration name="imsti.contentlink" />
+
+                <configuration name="final.launch" value="true"/>
+                <configuration name="final.xml" value="true"/>
+                <configuration name="final.secret" value="true"/>
+                <configuration name="final.key" value="true"/>
+
+                <configuration name="final.pagetitle" value="true"/>
+                <configuration name="final.tooltitle" value="true"/>
+                <configuration name="final.newpage" value="true"/>
+                <configuration name="final.maximize" value="true"/>
+                <configuration name="final.frameheight" value="true"/>
+                <configuration name="final.debug" value="true"/>
+                <configuration name="final.releasename" value="true"/>
+                <configuration name="final.releaseemail" value="true"/>
+                <configuration name="final.custom" value="true"/>
+                <configuration name="final.allowsettings" value="true"/>
+                <configuration name="final.allowroster" value="true"/>
+                <configuration name="final.allowoutcomes" value="true"/>
+                <configuration name="final.allowlori" value="true"/>
+                <configuration name="final.contentlink" value="true"/>
+        </tool>
+
+        <tool
+                        id="sakai.aat"
+                        title="Artistes, Artisans et Technocrates"
+                        description="Artistes, Artisans et Technocrates">
+
+                <configuration name="sakai:portlet-pre-render" value="true" />
+
+                <category name="course" />
+
+                <configuration name="functions.require" />
+                <!--<configuration name="sakai:menuClass" value="icon-sakai-lessonbuildertool"/>-->
+
+                <configuration name="imsti.launch"
+                   value="https://education.hec.ca/aat/app/lti/launch" />
+                <configuration name="imsti.xml" />
+                <configuration name="imsti.secret" value="secret" />
+                <configuration name="imsti.key" value="12345" />
+
+                <configuration name="imsti.pagetitle" value="Artistes, Artisans et Technocrates"/>
+                <configuration name="imsti.tooltitle" value="Artistes, Artisans et Technocrates"/>
+                <configuration name="imsti.newpage" value="off" />
+                <configuration name="imsti.maximize" value="off" />
+                <configuration name="imsti.releasename" value="on"/>  
+                <configuration name="imsti.releaseemail" value="on"/> 
+                <configuration name="imsti.custom"/>
+                <configuration name="imsti.allowsettings" value="off"/>
+                <configuration name="imsti.allowroster" value="off"/> 
+                <configuration name="imsti.allowoutcomes" value="off"/> 
+                <configuration name="imsti.allowlori" value="off"/> 
+                <configuration name="imsti.contentlink" />
+
+                <configuration name="final.launch" value="true"/>
+                <configuration name="final.xml" value="true"/>
+                <configuration name="final.secret" value="true"/>
+                <configuration name="final.key" value="true"/>
+
+                <configuration name="final.pagetitle" value="true"/>
+                <configuration name="final.tooltitle" value="true"/>
+                <configuration name="final.newpage" value="true"/>
+                <configuration name="final.maximize" value="true"/>
+                <configuration name="final.frameheight" value="true"/>
+                <configuration name="final.debug" value="true"/>
+                <configuration name="final.releasename" value="true"/>
+                <configuration name="final.releaseemail" value="true"/>
+                <configuration name="final.custom" value="true"/>
+                <configuration name="final.allowsettings" value="true"/>
+                <configuration name="final.allowroster" value="true"/>
+                <configuration name="final.allowoutcomes" value="true"/>
+                <configuration name="final.allowlori" value="true"/>
+                <configuration name="final.contentlink" value="true"/>
+        </tool>
 
 </registration>
