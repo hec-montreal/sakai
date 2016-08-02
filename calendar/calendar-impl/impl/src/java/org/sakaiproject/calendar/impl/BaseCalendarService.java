@@ -6350,7 +6350,7 @@ public abstract class BaseCalendarService implements CalendarService, DoubleStor
 
 			try
 			{
-				String organizer = m_userDirectoryService.getUser( event.getCreator() ).getDisplayName();
+				String organizer = m_userDirectoryService.getUser( event.getCreator() ).getEmail(); //getDisplayName();
 				organizer = organizer.replaceAll(" ","%20"); // get rid of illegal URI characters
 				icalEvent.getProperties().add(new Organizer(new URI("CN="+organizer)));
 			}
