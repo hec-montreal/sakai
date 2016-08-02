@@ -151,7 +151,6 @@
                 <category name="course" />
 
                 <configuration name="functions.require" />
-                <configuration name="sakai:menuClass" value="icon-sakai-lessonbuildertool"/>
 
                 <configuration name="imsti.launch"
                    value="https://aairs.tegrity.com/Service/RedirectCMSLink.aspx" />
@@ -203,7 +202,6 @@
                 <category name="course" />
 
                 <configuration name="functions.require" />
-                <!--<configuration name="sakai:menuClass" value="icon-sakai-lessonbuildertool"/>-->
 
                 <configuration name="imsti.launch"
                    value="https://education.hec.ca/aat/app/lti/launch" />
