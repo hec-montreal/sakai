@@ -522,3 +522,13 @@ delete from SAKAI_SITE_TOOL where registration like 'sakai.rutgers.linktool';
 -- Insert missing option to avoid errors in EvalSys:
 insert into EVAL_CONFIG (ID, LAST_MODIFIED, NAME, VALUE) values 
 ((select max(ID)+1 from EVAL_CONFIG), sysdate, 'EVAL_EVALUATEE_RECENTLY_CLOSED_DAYS', '730');
+
+-- ZCII-2455 - cacher ressources aux étudiants
+-- first delete existing properties with the same name.
+delete from sakai_site_tool_property where (tool_id, name) in (select tool_id, 'sakai-portal:visible' from sakai_site_tool where registration = 'sakai.resources'
+and site_id in (select site_id from sakai_site where type = 'course'));
+
+-- insert the property for every resource tool for a section site to hide it.
+insert into sakai_site_tool_property (SITE_ID, TOOL_ID, NAME, VALUE)
+select SITE_ID, TOOL_ID, 'sakai-portal:visible', 'false' from sakai_site_tool where registration = 'sakai.resources' 
+and site_id in (select site_id from sakai_site where type = 'course');
