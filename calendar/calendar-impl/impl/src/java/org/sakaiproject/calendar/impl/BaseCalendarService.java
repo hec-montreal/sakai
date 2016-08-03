@@ -6353,7 +6353,7 @@ public abstract class BaseCalendarService implements CalendarService, DoubleStor
 				String organizer = m_userDirectoryService.getUser( event.getCreator() ).getEmail(); //getDisplayName();
 				if (null != organizer && organizer != ""){
 					organizer = organizer.replaceAll(" ","%20"); // get rid of illegal URI characters
-					icalEvent.getProperties().add(new Organizer(new URI("CN="+organizer)));
+					icalEvent.getProperties().add(new Organizer(new URI("MAILTO="+organizer)));
 				}
 			}
 			catch (UserNotDefinedException e) {} // ignore
