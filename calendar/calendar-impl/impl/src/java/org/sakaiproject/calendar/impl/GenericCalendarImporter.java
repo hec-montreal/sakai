@@ -775,8 +775,8 @@ public class GenericCalendarImporter implements CalendarImporterService
 						{
 							mapCellValue = column.getCellValue();
 						}
-						else if (endTimeColumn != null && endTimeColumn.equals(column.getColumnHeader())
-								|| (startTimeColumn != null && startTimeColumn.equals(column.getColumnHeader())))
+						else if (endTimeColumn != null && endTimeColumn.equals(column.getColumnHeader()) && column.getColumnNumber() == 4
+								|| (startTimeColumn != null && startTimeColumn.equals(column.getColumnHeader()) && column.getColumnNumber() == 2))
 						{
 							boolean success = false;
 
