@@ -26,8 +26,8 @@
         <ref bean="messagesUserGuide"/>
         <ref bean="newsUserGuide"/>
         <ref bean="permissionsandRolesUserGuide"/>
-        <ref bean="podcastsUserGuide"/>
-        <ref bean="pollsUserGuide"/>
+        <ref bean="podcastsUserGuide"/> -->
+        <ref bean="pollsUserGuide"/> <!--
         <ref bean="postEmUserGuide"/>
         <ref bean="profileUserGuide"/>
         <ref bean="resourcesUserGuide"/>
@@ -67,6 +67,31 @@
     </property>
     <property name="defaultForTool">
       <value>sakai.announcements</value>
+    </property>
+  </bean>
+
+  <bean id="pollsUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Vote</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="pollsRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="pollsRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>pollsRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/polls.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.poll</value>
     </property>
   </bean>
 
