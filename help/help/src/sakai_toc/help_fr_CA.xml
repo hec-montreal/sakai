@@ -38,8 +38,8 @@
         <ref bean="signUpUserGuide"/>
         <ref bean="siteInfoUserGuide"/>
         <ref bean="statisticsUserGuide"/>
-        <ref bean="syllabusUserGuide"/>
-        <ref bean="testsandQuizzesUserGuide"/>
+        <ref bean="syllabusUserGuide"/> !-->
+        <ref bean="testsandQuizzesUserGuide"/><!--
         <ref bean="webContentUserGuide"/>
         <ref bean="wikiUserGuide"/> -->
       </list>
@@ -92,6 +92,31 @@
     </property>
     <property name="defaultForTool">
       <value>sakai.poll</value>
+    </property>
+  </bean>
+
+  <bean id="testsandQuizzesUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Tests et Quiz</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="testsandQuizzesRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="testsandQuizzesRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>testsandQuizzesRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/testsquiz.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.samigo</value>
     </property>
   </bean>
 
