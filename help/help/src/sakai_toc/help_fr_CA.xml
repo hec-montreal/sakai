@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+  <bean id="org.sakaiproject.api.app.help.TableOfContents" class="org.sakaiproject.component.app.help.model.TableOfContentsBean">
+    <property name="name">
+      <value>root</value>
+    </property>
+    <property name="categories">
+      <list>
+<!--         <ref bean="aboutHelpUserGuide"/>-->
+        <ref bean="announcementsUserGuide"/> 
+<!--         <ref bean="assignmentsUserGuide"/>
+        <ref bean="calendarUserGuide"/>
+        <ref bean="chatUserGuide"/>
+        <ref bean="contactUsUserGuide"/>
+        <ref bean="courseandProjectSitesUserGuide"/>
+        <ref bean="dropBoxUserGuide"/>
+        <ref bean="emailUserGuide"/>
+        <ref bean="emailArchiveUserGuide"/>
+        <ref bean="externalToolLTIUserGuide"/>
+        <ref bean="forumsUserGuide"/>
+        <ref bean="gradebookClassicUserGuide"/>
+        <ref bean="gradebookUserGuide"/>
+        <ref bean="homeUserGuide"/>
+        <ref bean="lessonsUserGuide"/>
+        <ref bean="messagesUserGuide"/>
+        <ref bean="newsUserGuide"/>
+        <ref bean="permissionsandRolesUserGuide"/>
+        <ref bean="podcastsUserGuide"/>
+        <ref bean="pollsUserGuide"/>
+        <ref bean="postEmUserGuide"/>
+        <ref bean="profileUserGuide"/>
+        <ref bean="resourcesUserGuide"/>
+        <ref bean="richTextEditorUserGuide"/>
+        <ref bean="rosterUserGuide"/>
+        <ref bean="searchUserGuide"/>
+        <ref bean="sectionInfoUserGuide"/>
+        <ref bean="signUpUserGuide"/>
+        <ref bean="siteInfoUserGuide"/>
+        <ref bean="statisticsUserGuide"/>
+        <ref bean="syllabusUserGuide"/>
+        <ref bean="testsandQuizzesUserGuide"/>
+        <ref bean="webContentUserGuide"/>
+        <ref bean="wikiUserGuide"/> -->
+      </list>
+    </property>
+  </bean>
+  <bean id="announcementsUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Annonces</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="announcementsRedirect"/>
+      </list>
+    </property>
+  </bean> 
+  <bean id="announcementsRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>announcementsRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/annonces.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.announcements</value>
+    </property>
+  </bean>
+
+</beans>
