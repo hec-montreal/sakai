@@ -244,9 +244,10 @@ public class IMSBLTIPortlet extends GenericPortlet {
 					String siteName = ServerConfigurationService.getString(SITE_NAME, SAKAI);
 					title = title!=null ? title : rb.getString("tool.name", "your tool");
 					String newPageLaunchText = rb.getFormattedMessage("new.page.launch", new Object[]{FormattedText.escapeHtml(title, false), FormattedText.escapeHtml(siteName, false)});
+					String launchButtonText = rb.getFormattedMessage("new.page.launchButton");
 					text.append(newPageLaunchText);
 					text.append("</p>\n");
-					text.append("<input type=\"submit\" onclick=\""+windowOpen+"\" target=\"BasicLTI\" value=\"Launch " + title + "\"/>");
+					text.append("<input type=\"submit\" onclick=\""+windowOpen+"\" target=\"BasicLTI\" value=\"" + launchButtonText +" "+ title + "\"/>");
 				} else {
 					if ( "on".equals(maximize) ) {
 						text.append("<script type=\"text/javascript\" language=\"JavaScript\">\n");
