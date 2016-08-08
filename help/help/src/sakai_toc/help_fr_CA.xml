@@ -14,38 +14,16 @@
         <ref bean="archiveUserGuide"/>
         <ref bean="chatUserGuide"/>
         <ref bean="webContentUserGuide"/>
-        <ref bean="assignmentsUserGuide"/><!--
-        <ref bean="calendarUserGuide"/>
-        <ref bean="chatUserGuide"/>
-        <ref bean="contactUsUserGuide"/>
-        <ref bean="courseandProjectSitesUserGuide"/>
-        <ref bean="dropBoxUserGuide"/>
-        <ref bean="emailUserGuide"/>
-        <ref bean="emailArchiveUserGuide"/>
-        <ref bean="externalToolLTIUserGuide"/> -->
-        <ref bean="forumsUserGuide"/><!--
-        <ref bean="gradebookClassicUserGuide"/>
-        <ref bean="gradebookUserGuide"/>
-        <ref bean="homeUserGuide"/>
-        <ref bean="lessonsUserGuide"/>
-        <ref bean="messagesUserGuide"/>
-        <ref bean="newsUserGuide"/> -->
-        <ref bean="permissionsandRolesUserGuide"/> <!--
-        <ref bean="podcastsUserGuide"/> -->
-        <ref bean="pollsUserGuide"/> <!--
-        <ref bean="postEmUserGuide"/> -->
+        <ref bean="assignmentsUserGuide"/>
+        <ref bean="forumsUserGuide"/>
+        <ref bean="permissionsandRolesUserGuide"/>
+        <ref bean="pollsUserGuide"/>
         <ref bean="profileUserGuide"/> 
-        <ref bean="resourcesUserGuide"/> <!--
-        <ref bean="richTextEditorUserGuide"/> -->
-        <ref bean="rosterUserGuide"/> <!--
-        <ref bean="searchUserGuide"/>
-        <ref bean="sectionInfoUserGuide"/>
-        <ref bean="signUpUserGuide"/>
-        <ref bean="statisticsUserGuide"/>
-        <ref bean="syllabusUserGuide"/> !-->
-        <ref bean="testsandQuizzesUserGuide"/><!--
-        <ref bean="webContentUserGuide"/>
-        <ref bean="wikiUserGuide"/> -->
+        <ref bean="resourcesUserGuide"/>
+        <ref bean="rosterUserGuide"/>
+        <ref bean="testsandQuizzesUserGuide"/>
+        <ref bean="evaluationUserGuide"/>
+        <ref bean="tegrityUserGuide"/>
       </list>
     </property>
   </bean>
@@ -254,6 +232,7 @@
     <property name="resources">
       <list>
         <ref bean="contenuWebRedirect"/>
+        <ref bean="contenuWeb2Redirect"/>
       </list>
     </property>
   </bean> 
@@ -271,7 +250,21 @@
       <value>sakai.iframe</value>
     </property>
   </bean>
-    <bean id="permissionsandRolesUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+  <bean id="contenuWeb2Redirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>contenuWeb2Redirect</value>
+    </property>
+    <property name="name">
+      <value>Aide site</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/contenu-web.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.iframe.site</value>
+    </property>
+  </bean>
+  <bean id="permissionsandRolesUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
     <property name="name">
       <value>Droits d'accès et rôles</value>
     </property>
@@ -341,7 +334,7 @@
       <value>/zonecours_confluence_redirects/listeetudiants.html</value>
     </property>
     <property name="defaultForTool">
-      <value>sakai.roster2</value>
+      <value>sakai.site.roster2</value>
     </property>
   </bean>
 
@@ -419,4 +412,54 @@
       <value>sakai.resources</value>
     </property>
   </bean>
+
+  <bean id="evaluationUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Évaluation de l'enseignement</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="evaluationRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="evaluationRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>evaluationRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/evaluation.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.rsf.evaluation</value>
+    </property>
+  </bean>
+
+  <bean id="tegrityUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Tegrity</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="tegrityRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="tegrityRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>tegrityRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/tegrity.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.tegrity</value>
+    </property>
+  </bean>  
 </beans>
