@@ -540,3 +540,6 @@ create table OAUTH_CONSUMERS (id varchar2(255 char) not null, name varchar2(255 
 create table OAUTH_RIGHTS (id varchar2(255 char) not null, accessright varchar2(255 char) not null, primary key (id, accessright));
 create index user_idx on OAUTH_ACCESSORS (userId);
 alter table OAUTH_RIGHTS add constraint FK5992789F74F42154 foreign key (id) references OAUTH_CONSUMERS;
+
+-- Update Samigo template, set honor pledge on
+update sam_assessaccesscontrol_t set honorpledge = 1 where assessmentid = 1;
