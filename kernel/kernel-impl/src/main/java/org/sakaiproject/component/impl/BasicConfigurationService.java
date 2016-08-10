@@ -319,7 +319,7 @@ public class BasicConfigurationService implements ServerConfigurationService, Ap
     	PreferencesService preferencesService = (PreferencesService) ComponentManager.get(PreferencesService.class);
     	Locale locale = preferencesService.getLocale(sessionManager.getCurrentSessionUserId());
     	if (Locale.CANADA_FRENCH.equals(locale) && helpContext == null) {
-    		return "https://confluence.hec.ca:8443/display/aidezc2/Aide+de+ZoneCours";
+    		return "https://confluence.hec.ca:8443/display/NouveauCours/Aide+de+ZoneCours";
     	}
     	//
     	// fin personnalisation
