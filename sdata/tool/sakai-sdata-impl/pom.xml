@@ -87,10 +87,10 @@ limitations under the License.
 	    	<groupId>org.sakaiproject</groupId>
 	    	<artifactId>sakai-citations-api</artifactId>
 	</dependency>	
-<!--   	<dependency> -->
-<!--   		<groupId>org.sakaiquebec.opensyllabus</groupId> -->
-<!--   		<artifactId>osyl-common-api</artifactId> -->
-<!-- 	</dependency> -->
+   	<dependency> 
+   		<groupId>org.sakaiquebec.opensyllabus</groupId> 
+   		<artifactId>osyl-common-api</artifactId>
+ 	</dependency>
   	<dependency>
 		<groupId>org.sakaiproject</groupId>
 		<artifactId>sakai-jcr-api</artifactId>

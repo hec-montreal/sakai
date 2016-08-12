@@ -208,12 +208,12 @@
 				<version>${sakai.version}</version>
 				<scope>provided</scope>
 			</dependency>
-<!-- 			<dependency> -->
-<!-- 				<groupId>org.sakaiquebec.opensyllabus</groupId> -->
-<!-- 				<artifactId>osyl-common-api</artifactId> -->
-<!-- 				<version>${sakai.opensyllabus.version}</version> -->
-<!-- 				<scope>provided</scope> -->
-<!-- 			</dependency> -->
+			<dependency>
+				<groupId>org.sakaiquebec.opensyllabus</groupId>
+				<artifactId>osyl-common-api</artifactId>
+				<version>${sakai.opensyllabus.version}</version>
+				<scope>provided</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 

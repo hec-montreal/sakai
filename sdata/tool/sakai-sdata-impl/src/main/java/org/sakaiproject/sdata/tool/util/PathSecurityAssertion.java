@@ -42,7 +42,7 @@ import org.sakaiproject.sdata.tool.api.SecurityAssertion;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.util.StringUtil;
-//import org.sakaiquebec.opensyllabus.common.dao.CORelationDao;
+import org.sakaiquebec.opensyllabus.common.dao.CORelationDao;
 
 /**
  * An implementaiton of the Security Assertion that uses the http method, the
@@ -109,7 +109,7 @@ public class PathSecurityAssertion implements SecurityAssertion
 	
 	private AuthzGroupService authzGroupService;
 
-//	private CORelationDao coRelationDao;
+	private CORelationDao coRelationDao;
 	
 	private String childSiteId;
 	
@@ -184,8 +184,8 @@ public class PathSecurityAssertion implements SecurityAssertion
 			userDirectoryService = (UserDirectoryService) componentManager
 					.get(UserDirectoryService.class.getName());
 			
-//			coRelationDao = (CORelationDao) componentManager
-//					.get(CORelationDao.class.getName());
+			coRelationDao = (CORelationDao) componentManager
+					.get(CORelationDao.class.getName());
 
 			authzGroupService = (AuthzGroupService) componentManager
 					.get(AuthzGroupService.class.getName());
@@ -407,13 +407,13 @@ public class PathSecurityAssertion implements SecurityAssertion
 		this.userDirectoryService = userDirectoryService;
 	}
 
-//	public CORelationDao getCoRelationDao() {
-//		return coRelationDao;
-//	}
-//
-//	public void setCoRelationDao(CORelationDao coRelationDao) {
-//		this.coRelationDao = coRelationDao;
-//	}
+	public CORelationDao getCoRelationDao() {
+		return coRelationDao;
+	}
+
+	public void setCoRelationDao(CORelationDao coRelationDao) {
+		this.coRelationDao = coRelationDao;
+	}
 
     /*
      * Check if the site are related and each contains an opensyllabus tool.
@@ -432,23 +432,23 @@ public class PathSecurityAssertion implements SecurityAssertion
 
 		parentSiteId = refs[3];
 
-//		if (coRelationDao.areCourseOutlinesRelated(parentSiteId, siteId)) {
-//			User user = userDirectoryService.getCurrentUser();
-//			//Anonymous user
-//			if (user.getEid() == null)
-//				return false;
-//			
-//			//User is member of the child site
-//			try {
-//				AuthzGroup realm = authzGroupService.getAuthzGroup("/site/"+ siteId);
-//				if (realm.isAllowed(user.getId(), lock)){
-//					hasInheritedAccess = true;
-//					return true;
-//				}
-//			} catch (GroupNotDefinedException e) {
-//				return false;
-//			}
-//		}
+		if (coRelationDao.areCourseOutlinesRelated(parentSiteId, siteId)) {
+			User user = userDirectoryService.getCurrentUser();
+			//Anonymous user
+			if (user.getEid() == null)
+				return false;
+			
+			//User is member of the child site
+			try {
+				AuthzGroup realm = authzGroupService.getAuthzGroup("/site/"+ siteId);
+				if (realm.isAllowed(user.getId(), lock)){
+					hasInheritedAccess = true;
+					return true;
+				}
+			} catch (GroupNotDefinedException e) {
+				return false;
+			}
+		}
 
 		return false;
 	}

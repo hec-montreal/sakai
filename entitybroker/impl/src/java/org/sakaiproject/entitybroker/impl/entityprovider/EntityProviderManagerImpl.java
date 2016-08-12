@@ -74,27 +74,48 @@ public class EntityProviderManagerImpl implements EntityProviderManager {
         
         //SAK-27902 list of allowed services (prefixes) (default: all services registered. Only set this property if you want to filter the allowed services)
         allowedServices = new HashSet<String>();
+        disallowedServices = new HashSet<String>();
+
         String allowedServicesConfig = null;
+        String disallowedServicesConfig = null;
+        
         if (serverConfigurationService != null) {
           allowedServicesConfig = serverConfigurationService.getString("entitybroker.allowed.services");
+          disallowedServicesConfig = serverConfigurationService.getString("entitybroker.disallowed.services");
         }
 
         if(allowedServicesConfig != null && allowedServicesConfig.length()>0) {
-        	filterServices = true;
-        	
-        	//clean the list
-        	String[] prefixes = allowedServicesConfig.split(",");
-        	for(int i=0; i< prefixes.length; i++) {
-        		String cleanedPrefix = prefixes[i].trim();
-        		if(cleanedPrefix.length() > 0){
-        			allowedServices.add(cleanedPrefix);
-        		}
-        	}
-        	
-        	//must have describe in the list
-        	allowedServices.add(EntityRequestHandler.DESCRIBE);
-        	
-        	System.out.println("INFO Allowed services: " + allowedServices);
+            filterAllowedServices = true;
+            
+            //clean the list
+            String[] prefixes = allowedServicesConfig.split(",");
+            for(int i=0; i< prefixes.length; i++) {
+                String cleanedPrefix = prefixes[i].trim();
+                if(cleanedPrefix.length() > 0){
+                    allowedServices.add(cleanedPrefix);
+                }
+            }
+            
+            //must have describe in the list
+            allowedServices.add(EntityRequestHandler.DESCRIBE);
+            
+            System.out.println("INFO Allowed services: " + allowedServices);
+
+        }
+        
+        if(disallowedServicesConfig != null && disallowedServicesConfig.length()>0) {
+            filterDisallowedServices = true;
+            
+            //clean the list
+            String[] prefixes = disallowedServicesConfig.split(",");
+            for(int i=0; i< prefixes.length; i++) {
+                String cleanedPrefix = prefixes[i].trim();
+                if(cleanedPrefix.length() > 0){
+                    disallowedServices.add(cleanedPrefix);
+                }
+            }
+            
+            System.out.println("INFO Disallowed services: " + disallowedServices);
 
         }
         
@@ -135,8 +156,10 @@ public class EntityProviderManagerImpl implements EntityProviderManager {
     private EntityPropertiesService entityProperties;
     private EntityProviderMethodStore entityProviderMethodStore;
     private ServerConfigurationService serverConfigurationService;
-    private boolean filterServices = false;
+    private boolean filterAllowedServices = false;
+    private boolean filterDisallowedServices = false;
     private Set<String> allowedServices;
+    private Set<String> disallowedServices;
 
     protected ReferenceMap<String, EntityProvider> prefixMap = new ReferenceMap<String, EntityProvider>(ReferenceType.STRONG, ReferenceType.SOFT);
 
@@ -284,11 +307,12 @@ public class EntityProviderManagerImpl implements EntityProviderManager {
         for (Class<? extends EntityProvider> superclazz : superclasses) {
         	
         	//if filtering and prefix not in list, skip registration
-        	if(filterServices) {
-        		if(!allowedServices.contains(prefix)) {
-        			continue;
-        		}
+        	if(filterAllowedServices && !allowedServices.contains(prefix)) {
+       			continue;
         	}
+            if (filterDisallowedServices && disallowedServices.contains(prefix)) {
+                continue;
+            }
         	
         	registerPrefixCapability(prefix, superclazz, entityProvider);
         	count++;
