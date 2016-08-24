@@ -165,6 +165,22 @@ FCKConfig.ToolbarSets["Basic"] = [
         ['Bold','Italic','-','OrderedList','UnorderedList','-','Link','Unlink','-','About']
 ] ;
 
+FCKConfig.ToolbarSets["JforumDefault"] = [
+	['Source','-','Preview'],
+	['Cut','Copy','Paste','PasteText','PasteWord','-','SpellCheck'],
+	['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
+	['Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript'],
+	['OrderedList','UnorderedList','-','Outdent','Indent'],
+	['JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'],
+	['Link','Unlink','Anchor'],
+	['Smiley'],
+	['SpecialChar'], ['Style'],
+	'/',
+	['FontFormat','FontName','FontSize'],
+	['TextColor','BGColor'],
+	['About']
+] ;
+
 FCKConfig.EnterMode = 'br' ;			// p | div | br
 FCKConfig.ShiftEnterMode = 'p' ;	// p | div | br
 
