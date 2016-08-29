@@ -32,7 +32,7 @@ $footer-font-size: 1.2em !default;
 
 /* Tools menu (left) */
 #toolMenu ul li a .Mrphs-toolsNav__menuitem--title, #subSites ul li a .Mrphs-toolsNav__menuitem--title {
-	text-overflow: normal;
+	white-space: normal!important;
 }
 
 /* Icon font */
