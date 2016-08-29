@@ -30,6 +30,11 @@ $footer-font-size: 1.2em !default;
 	list-style: none;
 }
 
+/* Tools menu (left) */
+#toolMenu ul li a .Mrphs-toolsNav__menuitem--title, #subSites ul li a .Mrphs-toolsNav__menuitem--title {
+	text-overflow: normal;
+}
+
 /* Icon font */
 @font-face {
   font-family: 'ZcIconFont';
