@@ -1,3 +1,5 @@
+@import "customization"; //it is created on-the-fly by maven.
+
 /* Global namespace */
 
 $namespace : "Mrphs-";
@@ -161,7 +163,5 @@ $icon-size: 20px !default;
 /* Footer */
 $footer-background: transparent !default;
 $footer-color: $background-color-secondary !default;
-
-@import "customization"; //it is created on-the-fly by maven.
 
 @import url(#{$font-family-url});
