@@ -1,0 +1,80 @@
+	/* HEC Customizations */
+$logo: 'images/custom/logo.png';
+$logo-height: 35px;
+$logo-width: 167px;
+
+$background-color-secondary: #133461;
+$font-family: 'Arial', 'sans-serif';
+
+.Mrphs-toolTitleNav__title, 
+.Mrphs-toolTitleNav__text {
+	font-family: $font-family;
+}
+
+/* Login nav */
+.Mrphs-topHeader 
+.Mrphs-loginNav {
+	margin-top: 5px!important;
+}
+
+/* Footer */
+$footer-font-size: 1.2em !default;
+
+.Mrphs-footer {
+	text-align: center;
+	font-size: $footer-font-size;
+}
+
+.Mrphs-footer--nav.Mrphs-footer--nav__project {
+	text-align: center;
+	list-style: none;
+}
+
+/* Icon font */
+@font-face {
+  font-family: 'ZcIconFont';
+  src: url('images/custom/icons/zc-icon-font.eot'); /* IE9 Compat Modes */
+  src: url('images/custom/icons/zc-icon-font.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+       url('images/custom/icons/zc-icon-font.woff') format('woff'), /* Pretty Modern Browsers */
+       url('images/custom/icons/zc-icon-font.ttf')  format('truetype'), /* Safari, Android, iOS */
+}
+
+.icon-sakai-opensyllabus-tool {
+	font-family: 'ZcIconFont'!important;
+}
+
+.icon-sakai-opensyllabus-tool:before {
+	content: "\e900";
+}
+
+.icon-sakai-hec-course-archive:before {
+	content: "\f1da";
+}
+
+.icon-sakai-rsf-evaluation:before {
+	content: "\f046";
+}
+
+.icon-sakai-cdm:before {
+	content: "\f044";
+}
+
+.icon-sakai-opensyllabus-manager-tool:before {
+	content: "\f085";
+}
+
+.icon-sakai-hec-public-portal-manager:before {
+	content: "\f07e";
+}
+
+.icon-sakai-aat:before {
+	content: "\f1fc";
+}
+
+.icon-sakai-via:before {
+	content: "\f1d7";
+}
+
+.icon-sakai-tegrity:before {
+	content: "\f03d";
+}

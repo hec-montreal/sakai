@@ -171,7 +171,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<sakai.skin.source>morpheus-master</sakai.skin.source>
+				<sakai.skin.source>zonecours-master</sakai.skin.source>
 				<sakai.skin.target>morpheus-default</sakai.skin.target>
 				<sakai.skin.customization.file>src/${sakai.skin.source}/sass/custom/hec-custom.scss</sakai.skin.customization.file>
 				<sakai.skin.outputSyle>compressed</sakai.skin.outputSyle>
