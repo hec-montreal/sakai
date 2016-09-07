@@ -80,11 +80,6 @@
 					<div class="centreColumn">
 						<input type="button" name="cancelgradesubmission1" class="cancelgradesubmission" value="$tlang.getString( "nav.list" )"
 							onclick="SPNR.disableControlsAndSpin( this, null ); ASN.submitForm( 'gradeForm', 'cancelgradesubmission', '$validator.escapeUrl( $submission.Reference )', null ); return false;" />
-						<div id="subsOnlyContainer">
-							<input type="checkbox" id="chkSubsOnly1" name="chkSubsOnly1" #if( $subsOnlySelected ) checked="checked" #end
-								onclick="ASN.toggleSubNavButtons( this );" />
-							<label for="chkSubsOnly1">$tlang.getString( "nav.view.subsOnly" )</label>
-						</div>
 					</div>
 					<div class="rightColumn">
 
