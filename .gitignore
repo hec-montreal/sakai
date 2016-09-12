@@ -14,3 +14,12 @@ sakai-demo.zip
 .metadata
 .DS_Store
 *nb-configuration.xml
+*velocity.log
+evaluation/
+hec-catalog-description-manager/
+hec-commons-utils/
+hec-course-archive/
+hec-public-portal-ui/
+hec-public-portal-manager/
+opensyllabus/
+via/

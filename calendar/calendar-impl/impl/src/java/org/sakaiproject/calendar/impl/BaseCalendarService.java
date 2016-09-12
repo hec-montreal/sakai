@@ -6320,8 +6320,8 @@ public abstract class BaseCalendarService implements CalendarService, DoubleStor
 			net.fortuna.ical4j.model.Dur duration = new net.fortuna.ical4j.model.Dur( timeString );
 			
 			VEvent icalEvent = new VEvent(icalStartDate, duration, event.getDisplayName() );
-			
-			net.fortuna.ical4j.model.parameter.TzId tzId = new net.fortuna.ical4j.model.parameter.TzId( m_timeService.getLocalTimeZone().getID() );
+
+			net.fortuna.ical4j.model.parameter.TzId tzId = new net.fortuna.ical4j.model.parameter.TzId(getTzIdSafe());
 			icalEvent.getProperty(Property.DTSTART).getParameters().add(tzId);
 			icalEvent.getProperty(Property.DTSTART).getParameters().add(Value.DATE_TIME);
 			icalEvent.getProperties().add(new Uid(event.getId()));
@@ -6779,8 +6779,17 @@ public abstract class BaseCalendarService implements CalendarService, DoubleStor
 		ical.getProperties().add(new XProperty("X-WR-CALDESC", calendarName));
 		
 		TimeZoneRegistry registry = TimeZoneRegistryFactory.getInstance().createRegistry(); 
-		TzId tzId = new TzId( m_timeService.getLocalTimeZone().getID() ); 
-		ical.getComponents().add(registry.getTimeZone(tzId.getValue()).getVTimeZone());
+		TzId tzId = new TzId(getTzIdSafe());
+		
+		net.fortuna.ical4j.model.TimeZone icalTz = registry.getTimeZone(tzId.getValue());
+
+		// Second fallback, should not happen
+		if(icalTz == null)
+		{
+			icalTz = registry.getTimeZone("America/Toronto");
+		}
+		
+		ical.getComponents().add(icalTz.getVTimeZone());
 		
 		CalendarOutputter icalOut = new CalendarOutputter();
 		int numEvents = generateICal(ical, calRefs);
@@ -7487,6 +7496,33 @@ public abstract class BaseCalendarService implements CalendarService, DoubleStor
 	// Checks the calendar has been created. For now just returning true to support the API contract.
 	public boolean isCalendarToolInitialized(String siteId){
 		return true;
+	}
+	
+	// Convert invalid TZ ids to valid TZ ids
+	private String getTzIdSafe()
+	{
+		final String DEFAULT_TZ = "America/Toronto";
+		List<String> INVALID_TZS = new ArrayList<>();
+		
+		// America/Montreal is invalid for ical4j (https://en.wikipedia.org/wiki/America/Montreal)
+		INVALID_TZS.add("America/Montreal");
+		
+		String ret = m_timeService.getLocalTimeZone().getID();
+		
+		if (ret == null)
+		{
+			return DEFAULT_TZ;
+		}
+		
+		for (String invalidTz : INVALID_TZS)
+		{
+			if (ret.equals(invalidTz))
+			{
+				return DEFAULT_TZ;
+			}
+		}
+		
+		return ret;
 	}
 	
 } // BaseCalendarService
