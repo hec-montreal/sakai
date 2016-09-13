@@ -470,8 +470,15 @@ public class GradebookNgBusinessService {
 		}
 
 		// get current grade
-		final String storedGrade = this.gradebookService.getAssignmentScoreString(gradebook.getUid(), assignmentId,
+		String storedGrade = this.gradebookService.getAssignmentScoreString(gradebook.getUid(), assignmentId,
 				studentUuid);
+		
+		// Patch HEC ZCII-2506: Corriger l'entrée de décimales
+		// Permettre l'entrée avec , ou .
+		if(storedGrade != null)
+		{
+			storedGrade = storedGrade.replaceAll(",", ".");
+		}
 
 		// get assignment config
 		final Assignment assignment = this.getAssignment(assignmentId);

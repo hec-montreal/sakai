@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -71,8 +72,11 @@ public class FormatHelper {
 		String s = null;
 		try {
 			final Double d = Double.parseDouble(grade);
+			
+			// Patch HEC ZCII-2506: Locale US
+			final NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);
+			final DecimalFormat df = (DecimalFormat)nf;
 
-			final DecimalFormat df = new DecimalFormat();
 			df.setMinimumFractionDigits(0);
 			df.setGroupingUsed(false);
 

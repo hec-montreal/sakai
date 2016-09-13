@@ -3,6 +3,7 @@ package org.sakaiproject.gradebookng.tool.panels;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -210,7 +211,14 @@ public class GradeItemCellPanel extends Panel {
 
 				@Override
 				protected void onUpdate(final AjaxRequestTarget target) {
-					final String rawGrade = GradeItemCellPanel.this.gradeCell.getValue();
+					String rawGrade = GradeItemCellPanel.this.gradeCell.getValue();
+
+					// Patch HEC ZCII-2506: Corriger l'entrée de décimales
+					// Permettre l'entrée avec , ou .
+					if(StringUtils.isNotBlank(rawGrade) && rawGrade != null)
+					{
+						rawGrade = rawGrade.replaceAll(",", ".");
+					}
 					
 					final GradebookPage page = (GradebookPage) getPage();
 
@@ -218,8 +226,9 @@ public class GradeItemCellPanel extends Panel {
 
 					// perform validation here so we can bypass the backend
 					final DoubleValidator validator = new DoubleValidator();
-
-					if (StringUtils.isNotBlank(rawGrade) && (!validator.isValid(rawGrade) || Double.parseDouble(rawGrade) < 0)) {
+					
+					// Patch HEC ZCII-2506: Ajouter Locale.US dans validator.isValid(rawGrade, Locale.US)
+					if (StringUtils.isNotBlank(rawGrade) && (!validator.isValid(rawGrade, Locale.US) || Double.parseDouble(rawGrade) < 0)) {
 						// show warning and revert button
 						markWarning(getComponent());
 						target.add(page.updateLiveGradingMessage(getString("feedback.error")));
