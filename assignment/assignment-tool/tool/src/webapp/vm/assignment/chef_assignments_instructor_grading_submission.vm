@@ -64,7 +64,7 @@
 			<div class="navigator">
 				<fieldset class="roundedBorder">
 					<legend>$tlang.getString( "nav.header" )</legend>
-					<div class="leftColumn">
+					<div class="leftColumn" style="width: 20%;">
 						<input type="button" name="prevsubmission1" class="prevsubmission" value="$tlang.getString( "nav.prev" )"
 							#if( !$!goPTButton ) disabled="disabled" #end 
 							onclick="SPNR.disableControlsAndSpin( this, null ); ASN.submitForm( 'gradeForm', 'prevsubmission', '$validator.escapeUrl( $submission.Reference )', null ); return false;" />
@@ -77,9 +77,15 @@
 
 						<div class="small text-muted">$tlang.getString( "nav.message" )</div>
 					</div>
-					<div class="centreColumn">
+					<div class="centreColumn" style="width: 80%;">
 						<input type="button" name="cancelgradesubmission1" class="cancelgradesubmission" value="$tlang.getString( "nav.list" )"
 							onclick="SPNR.disableControlsAndSpin( this, null ); ASN.submitForm( 'gradeForm', 'cancelgradesubmission', '$validator.escapeUrl( $submission.Reference )', null ); return false;" />
+							
+						<div id="subsOnlyContainer">
+                               <input type="checkbox" id="chkSubsOnly1" name="chkSubsOnly1" #if( $subsOnlySelected ) checked="checked" #end
+                                       onclick="ASN.toggleSubNavButtons( this );" />
+                               <label for="chkSubsOnly1">$tlang.getString( "nav.view.subsOnly" )</label>
+                       </div>
 					</div>
 					<div class="rightColumn">
 
