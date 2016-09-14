@@ -89,15 +89,16 @@
 					</div>
 					<div class="rightColumn">
 
+						<input type="button" name="nextsubmission1" class="nextsubmission" value="$tlang.getString( "nav.next" )"
+							#if( !$!goNTButton ) disabled="disabled" #end 
+							onclick="SPNR.disableControlsAndSpin( this, null ); ASN.submitForm( 'gradeForm', 'nextsubmission', '$validator.escapeUrl( $submission.Reference )', null ); return false;" />
+						
 						#if ($gradeType != 1)
 						<input type="button" name="nextungraded1" class="nextUngraded" value="$tlang.getString( "nav.next.ungraded" )"
 							#if( !$!goNextUngradedEnabled ) disabled="disabled" #end 
 							onclick="SPNR.disableControlsAndSpin( this, null ); ASN.submitForm( 'gradeForm', 'nextUngraded', '$validator.escapeUrl( $submission.Reference )', null ); return false;" />
 						#end
 
-						<input type="button" name="nextsubmission1" class="nextsubmission" value="$tlang.getString( "nav.next" )"
-							#if( !$!goNTButton ) disabled="disabled" #end 
-							onclick="SPNR.disableControlsAndSpin( this, null ); ASN.submitForm( 'gradeForm', 'nextsubmission', '$validator.escapeUrl( $submission.Reference )', null ); return false;" />
 						<div class="small text-muted">$tlang.getString( "nav.message" )</div>
 					</div>
 				</fieldset>
