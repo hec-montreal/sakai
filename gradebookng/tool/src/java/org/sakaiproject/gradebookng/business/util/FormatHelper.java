@@ -23,7 +23,7 @@ public class FormatHelper {
 	 * @return double to decimal places
 	 */
 	public static String formatDoubleToTwoDecimalPlaces(final Double score) {
-		final NumberFormat df = NumberFormat.getInstance();
+		final NumberFormat df = NumberFormat.getNumberInstance(Locale.US);
 		df.setMinimumFractionDigits(0);
 		df.setMaximumFractionDigits(2);
 		df.setRoundingMode(RoundingMode.HALF_DOWN);
