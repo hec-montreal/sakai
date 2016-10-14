@@ -127,6 +127,7 @@
         		<module>hec-public-portal-manager</module>
         		<module>hec-public-portal-ui</module>
                 <module>hec-root</module>
+                <module>hec-grade-viewer</module>
         		<module>opensyllabus</module>
           </modules>
         </profile>
