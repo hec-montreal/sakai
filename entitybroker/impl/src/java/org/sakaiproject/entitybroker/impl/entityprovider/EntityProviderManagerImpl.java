@@ -61,61 +61,43 @@ import org.sakaiproject.entitybroker.providers.EntityPropertiesService;
 import org.sakaiproject.entitybroker.providers.EntityRequestHandler;
 import org.sakaiproject.entitybroker.util.core.EntityProviderMethodStoreImpl;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Base implementation of the entity provider manager
  * 
  * @author Aaron Zeckoski (aaronz@vt.edu)
  * @author Antranig Basman (antranig@caret.cam.ac.uk)
  */
+@Slf4j
 public class EntityProviderManagerImpl implements EntityProviderManager {
 
     public void init() {
-        System.out.println("EntityProviderManagerImpl init");
+        log.info("EntityProviderManagerImpl init");
         
         //SAK-27902 list of allowed services (prefixes) (default: all services registered. Only set this property if you want to filter the allowed services)
         allowedServices = new HashSet<String>();
-        disallowedServices = new HashSet<String>();
-
         String allowedServicesConfig = null;
-        String disallowedServicesConfig = null;
-        
         if (serverConfigurationService != null) {
           allowedServicesConfig = serverConfigurationService.getString("entitybroker.allowed.services");
-          disallowedServicesConfig = serverConfigurationService.getString("entitybroker.disallowed.services");
         }
 
         if(allowedServicesConfig != null && allowedServicesConfig.length()>0) {
-            filterAllowedServices = true;
-            
-            //clean the list
-            String[] prefixes = allowedServicesConfig.split(",");
-            for(int i=0; i< prefixes.length; i++) {
-                String cleanedPrefix = prefixes[i].trim();
-                if(cleanedPrefix.length() > 0){
-                    allowedServices.add(cleanedPrefix);
-                }
-            }
-            
-            //must have describe in the list
-            allowedServices.add(EntityRequestHandler.DESCRIBE);
-            
-            System.out.println("INFO Allowed services: " + allowedServices);
-
-        }
-        
-        if(disallowedServicesConfig != null && disallowedServicesConfig.length()>0) {
-            filterDisallowedServices = true;
-            
-            //clean the list
-            String[] prefixes = disallowedServicesConfig.split(",");
-            for(int i=0; i< prefixes.length; i++) {
-                String cleanedPrefix = prefixes[i].trim();
-                if(cleanedPrefix.length() > 0){
-                    disallowedServices.add(cleanedPrefix);
-                }
-            }
-            
-            System.out.println("INFO Disallowed services: " + disallowedServices);
+        	filterServices = true;
+        	
+        	//clean the list
+        	String[] prefixes = allowedServicesConfig.split(",");
+        	for(int i=0; i< prefixes.length; i++) {
+        		String cleanedPrefix = prefixes[i].trim();
+        		if(cleanedPrefix.length() > 0){
+        			allowedServices.add(cleanedPrefix);
+        		}
+        	}
+        	
+        	//must have describe in the list
+        	allowedServices.add(EntityRequestHandler.DESCRIBE);
+        	
+        	log.info("Allowed services: " + allowedServices);
 
         }
         
@@ -156,10 +138,8 @@ public class EntityProviderManagerImpl implements EntityProviderManager {
     private EntityPropertiesService entityProperties;
     private EntityProviderMethodStore entityProviderMethodStore;
     private ServerConfigurationService serverConfigurationService;
-    private boolean filterAllowedServices = false;
-    private boolean filterDisallowedServices = false;
+    private boolean filterServices = false;
     private Set<String> allowedServices;
-    private Set<String> disallowedServices;
 
     protected ReferenceMap<String, EntityProvider> prefixMap = new ReferenceMap<String, EntityProvider>(ReferenceType.STRONG, ReferenceType.SOFT);
 
@@ -221,7 +201,7 @@ public class EntityProviderManagerImpl implements EntityProviderManager {
                 } catch (RuntimeException e) {
                     // added because there will be times where we cannot resolve capabilities 
                     // because of shifting ClassLoaders or CL visibility and that should not cause this to die
-                    System.out.println("WARN getPrefixCapabilities: Unable to retrieve class for capability bikey ("+bikey+"), skipping this capability");
+                    log.warn("getPrefixCapabilities: Unable to retrieve class for capability bikey ("+bikey+"), skipping this capability");
                 }
             }
         }
@@ -247,7 +227,7 @@ public class EntityProviderManagerImpl implements EntityProviderManager {
             } catch (RuntimeException e) {
                 // added because there will be times where we cannot resolve capabilities 
                 // because of shifting ClassLoaders or CL visibility and that should not cause this to die
-                System.out.println("WARN getRegisteredEntityCapabilities: Unable to retrieve class for capability bikey ("+bikey+"), skipping this capability");
+                log.warn("getRegisteredEntityCapabilities: Unable to retrieve class for capability bikey ("+bikey+"), skipping this capability");
             }
         }      
         return m;
@@ -307,12 +287,11 @@ public class EntityProviderManagerImpl implements EntityProviderManager {
         for (Class<? extends EntityProvider> superclazz : superclasses) {
         	
         	//if filtering and prefix not in list, skip registration
-        	if(filterAllowedServices && !allowedServices.contains(prefix)) {
-       			continue;
+        	if(filterServices) {
+        		if(!allowedServices.contains(prefix)) {
+        			continue;
+        		}
         	}
-            if (filterDisallowedServices && disallowedServices.contains(prefix)) {
-                continue;
-            }
         	
         	registerPrefixCapability(prefix, superclazz, entityProvider);
         	count++;
@@ -376,7 +355,7 @@ public class EntityProviderManagerImpl implements EntityProviderManager {
                 entityProviderMethodStore.addURLRedirects(prefix, redirects);
             }
         }
-        System.out.println("INFO Registered entity provider ("+entityProvider.getClass().getName()
+        log.info("Registered entity provider ("+entityProvider.getClass().getName()
                 +") prefix ("+prefix+") with "+count+" capabilities");
 
         // call the registered listeners
@@ -417,7 +396,7 @@ public class EntityProviderManagerImpl implements EntityProviderManager {
         // clean up the properties cache
         entityProperties.unloadProperties(prefix);
 
-        System.out.println("INFO Unregistered entity provider ("+entityProvider.getClass().getName()+") and "+count+" capabilities");
+        log.info("Unregistered entity provider ("+entityProvider.getClass().getName()+") and "+count+" capabilities");
     }
 
     /*
@@ -446,7 +425,7 @@ public class EntityProviderManagerImpl implements EntityProviderManager {
             // clean up the redirect URLs record
             entityProviderMethodStore.removeURLRedirects(prefix);
         }
-        System.out.println("INFO Unregistered entity provider capability ("+capability.getName()+") for prefix ("+prefix+")");
+        log.info("Unregistered entity provider capability ("+capability.getName()+") for prefix ("+prefix+")");
     }
 
     /*
@@ -463,7 +442,7 @@ public class EntityProviderManagerImpl implements EntityProviderManager {
                 prefixMap.remove(bikey);
             }
         }
-        System.out.println("INFO Unregistered entity prefix ("+prefix+")");
+        log.info("Unregistered entity prefix ("+prefix+")");
     }
 
     /**
