@@ -152,11 +152,9 @@ public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvi
 	@Transactional
 	private boolean hasUserAccepted(String id)
 	{
-		Object accepted = jdbcTemplate.queryForObject("select count(*) from CODE_OF_CONDUCT where MATRICULE = ?", Integer.class, new Object[] { id });
+		Integer accepted = jdbcTemplate.queryForObject("select count(*) from CODE_OF_CONDUCT where MATRICULE = ?", Integer.class, new Object[] { id });
 		
-		int i = (accepted != null ? Integer.parseInt((String) accepted): 0);
-		
-		if (i > 0)
+		if ((accepted != null ? accepted : 0) > 0)
 		{
 			return true;
 		}
