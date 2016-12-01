@@ -1,6 +1,8 @@
 package org.sakaiproject.citation.entity;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -55,11 +57,39 @@ public class CitationEntityProvider extends AbstractEntityProvider implements
 		return "citation";
 	}
 
+	@EntityCustomAction(action = "list-b64", viewKey = EntityView.VIEW_LIST)
+	public DecoratedCitationCollection getCitationListB64(EntityView view, Map<String, Object> params) {
+		// origSegs = {"citation", "list-b64", base64 encoded path}
+		String[] origSegs = view.getPathSegments();
+		
+		// Just to make sure the getCitationList call is exactly the same as before
+		origSegs[1] = "list";
+		
+		// Decode the base64 encoded path
+		String resPath = new String(Base64.getDecoder().decode(origSegs[2]), Charset.forName("utf-8"));		
+		String comps[] = resPath.split("/");
+		
+		// Segments to send to getCitationList
+		String newSegs[] = new String[(origSegs.length - 1) + comps.length];
+		
+		newSegs[0] = origSegs[0];
+		newSegs[1] = origSegs[1];
+		
+		for(int i = 0; i < comps.length; i++) {
+			newSegs[i + 2] = comps[i];
+		}
+		
+		return getCitationList(newSegs);
+	}
+	
 	@EntityCustomAction(action = "list", viewKey = EntityView.VIEW_LIST)
-	public DecoratedCitationCollection getCitationList(EntityView view,
-			Map<String, Object> params) {
+	public DecoratedCitationCollection getCitationList(EntityView view, Map<String, Object> params) {
+		return getCitationList(view.getPathSegments());
+	}
+
+	private DecoratedCitationCollection getCitationList(String[] segments) {
 		StringBuilder resourceId = new StringBuilder();
-		String[] segments = view.getPathSegments();
+
 		for (int i = 2; i < segments.length; i++) {
 			resourceId.append("/");
 			resourceId.append(segments[i]);
@@ -69,8 +99,9 @@ public class CitationEntityProvider extends AbstractEntityProvider implements
 					"You must supply a path to the citation list.", null);
 		}
 		try {
+			String resourceIdStr = resourceId.toString();
 			ContentResource resource = contentHostingService
-					.getResource(resourceId.toString());
+					.getResource(resourceIdStr);
 
 			if (!CitationService.CITATION_LIST_ID.equals(resource
 					.getResourceType())) {
@@ -117,7 +148,7 @@ public class CitationEntityProvider extends AbstractEntityProvider implements
 		}
 
 	}
-
+	
 	//
 	/**
 	 * This wraps fields from a citation for entity broker.
