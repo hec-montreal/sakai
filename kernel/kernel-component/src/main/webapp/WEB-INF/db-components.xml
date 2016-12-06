@@ -110,7 +110,7 @@
 		  dropped from the pool, and we will attempt to borrow another.
 		  Note: this has been shown to cause performance problems with Oracle (leave it false) -->
 		<property name="testOnBorrow">
-			<value>true</value>
+			<value>false</value>
 		</property>
 
 		<!-- The indication of whether objects will be validated before being
@@ -131,7 +131,7 @@
 		  SQL SELECT statement that returns at least one row.
 		  Note: This has been shown to cause performance problems under Oracle: leave it unset. -->
 		<property name="validationQuery">
-			<value>select 1 from INFORMATION_SCHEMA.SYSTEM_USERS</value>
+			<value></value>
 		</property>
 
 		<!-- The default auto-commit state of connections created by this pool. -->
@@ -148,7 +148,7 @@
 		<!-- DO NOT SET for Oracle (the default TRANSACTION_READ_COMMITTED is fine, and setting it causes performance problems) -->
 		<!-- Up to and including 1.7.1, HSQLDB supports only Connection.TRANSACTION_READ_UNCOMMITTED. -->
 		<property name="defaultTransactionIsolationString">
-			<value>TRANSACTION_READ_UNCOMMITTED</value>
+			<value></value>
 		</property>
 
 		<!-- Prepared statement pooling for this pool. -->
@@ -208,7 +208,7 @@
 		<!-- DO NOT SET for Oracle (the default TRANSACTION_READ_COMMITTED is fine, and setting it causes performance problems) -->
 		<!-- Up to and including 1.7.1, HSQLDB supports only Connection.TRANSACTION_READ_UNCOMMITTED. -->
 		<property name="defaultTransactionIsolationString">
-			<value>TRANSACTION_READ_UNCOMMITTED</value>
+			<value></value>
 		</property>
 
 		<!-- Whether or not to autocommit, setting to true is causing an error in content, so might not be a great idea -->
@@ -338,7 +338,7 @@
 		  dropped from the pool, and we will attempt to borrow another.
 		  Note: this has been shown to cause performance problems with Oracle (leave it false) -->
 		<property name="testOnBorrow">
-			<value>true</value>
+			<value>false</value>
 		</property>
 
 		<!-- The indication of whether objects will be validated before being
@@ -359,7 +359,7 @@
 		  SQL SELECT statement that returns at least one row.
 		  Note: This has been shown to cause performance problems under Oracle: leave it unset. -->
 		<property name="validationQuery">
-			<value>select 1 from INFORMATION_SCHEMA.SYSTEM_USERS</value>
+			<value></value>
 		</property>
 
 		<!-- The default auto-commit state of connections created by this pool. -->
@@ -376,7 +376,7 @@
 		<!-- DO NOT SET for Oracle (the default TRANSACTION_READ_COMMITTED is fine, and setting it causes performance problems) -->
 		<!-- Up to and including 1.7.1, HSQLDB supports only Connection.TRANSACTION_READ_UNCOMMITTED. -->
 		<property name="defaultTransactionIsolationString">
-			<value>TRANSACTION_READ_UNCOMMITTED</value>
+			<value></value>
 		</property>
 
 		<!-- Prepared statement pooling for this pool. -->
