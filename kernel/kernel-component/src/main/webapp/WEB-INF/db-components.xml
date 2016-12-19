@@ -220,7 +220,7 @@
 		 Note: There *may* be some other much less commonly used beans that cannot or are not currently defined here. Check the webpage if you want to see them. -->
 		<!-- Number of ms to wait for a connection, default 30 seconds -->
 		<property name="connectionTimeout">
-			<value>30000</value>
+			<value>90000</value>
 		</property>
 
 		<!-- Time that a connection is allowed to sit idle, default 10 minutes -->
@@ -241,7 +241,7 @@
 
 		<!-- This property controls the minimum number of idle connections that HikariCP tries to maintain in the pool. Default 10 -->
 		<property name="minimumIdle">
-			<value>10</value>
+			<value>200</value>
 		</property>
 
 		<!-- This property controls the maximum size of the pool for idle and in use. Default 10 (TODO: Seems low)-->
