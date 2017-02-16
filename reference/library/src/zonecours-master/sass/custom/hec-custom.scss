@@ -30,6 +30,11 @@ $footer-font-size: 1.2em !default;
 	list-style: none;
 }
 
+/* Hide "Forgot your password?" link on xlogin */
+#Mrphs-xlogin p a {
+	disply: none;
+}
+
 /* Icon font */
 @font-face {
   font-family: 'ZcIconFont';
