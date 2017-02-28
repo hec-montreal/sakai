@@ -67,6 +67,7 @@
 				lblReviewService.className='';
 				reviewSwitchNe2.style.display='none';
 				useReview.disabled=false;
+				lblUseReview.style.display = 'block';
 			#end
 			## SAK-26640
 			document.getElementById('tempAllowRes').style.display = 'block';
@@ -89,6 +90,7 @@
 				useReview.checked=false;
 				useReview.disabled=true;
 				lblUseReview.className='';
+				lblUseReview.style.display = 'none';
 				reviewSwitchNe1.style.removeProperty('display');
 			#end
 			## SAK-26640
