@@ -8,7 +8,7 @@
 
         		 #if (${site.isMyWorkspace})
                     <li class="Mrphs-sitesNav__menuitem Mrphs-sitesNav__menuitem--myworkspace #if (${site.isCurrentSite}) is-selected #end">
-                        <a href="${site.siteUrl}" title="${rloader.sit_mywor}" role="menuitem">
+                        <a class="link-container" href="${site.siteUrl}" title="${rloader.sit_mywor}" role="menuitem">
                             <i class="fa fa-home"></i>
                             <span class="Mrphs-sitesNav__menuitem--myworkspace-label">${rloader.sit_mywor}</span>
                             <span class="Mrphs-sitesNav__drop" tabindex="-1" data-site-id="${site.siteId}"></span>
@@ -28,13 +28,13 @@
                     	#if (${isUserStudent})
 	                        <a href="${site.siteUrl}" title="${tooltip}" role="menuitem" aria-haspopup="true">
 	                            <span>#if ( ( ${tabDisplayLabel} == 2 ) && ( ${site.hecShortTitle} ) )${site.shortDescription}#else${site.hecShortTitle}#end</span>
-	                            <span class="Mrphs-sitesNav__dropdown" tabindex="-1" data-site-id="${site.siteId}"></span>
 	                        </a>
+                        	<a class="Mrphs-sitesNav__dropdown" href="#" data-site-id="${site.siteId}" role="separator"></a>
 	                    #else
 	                        <a href="${site.siteUrl}" title="${tooltip}" role="menuitem" aria-haspopup="true">
 	                            <span>#if ( ( ${tabDisplayLabel} == 2 ) && ( ${site.shortDescription} ) )${site.shortDescription}#else${site.siteTitle}#end</span>
-	                            <span class="Mrphs-sitesNav__dropdown" tabindex="-1" data-site-id="${site.siteId}"></span>
 	                        </a>	                    
+                        	<a class="Mrphs-sitesNav__dropdown" href="#" data-site-id="${site.siteId}" role="separator"></a>
 	                    #end
                     </li>
 

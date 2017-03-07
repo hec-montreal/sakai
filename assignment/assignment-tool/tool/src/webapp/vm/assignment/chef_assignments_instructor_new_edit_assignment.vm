@@ -67,6 +67,7 @@
 				reviewSwitchNe2.style.display='none';
 				useReview.disabled=false;
 				lblUseReview.style.display = 'block';
+			#end
 			## SAK-26640
 			document.getElementById('tempAllowRes').style.display = 'block';
 			if (document.getElementById('allowResToggle').checked)
@@ -98,7 +99,7 @@
 	}
 	focus_path = [ '$fField' ];
 </script>
-<script type="text/javascript" src="/library/js/lang-datepicker/lang-datepicker.js"></script>
+#javascript("/library/js/lang-datepicker/lang-datepicker.js")
 
 <div class="portletBody container-fluid">
 	#navBarOnClick( $allowAddAssignment $withGrade $allowGradeSubmission $allowAddAssignment $allowAllGroups $assignmentscheck $allowUpdateSite $enableViewOption $view "newAssignmentForm" "new" )
@@ -742,7 +743,7 @@
 						</div>
 						#end
 				<!-- End VeriCite custom options -->
-								#elseif($reviewServiceName.equals("Compilatio"))
+				#elseif($reviewServiceName.equals("Compilatio"))
 						#if ($content_review_note)
 							$content_review_note
 						#end
@@ -763,6 +764,11 @@
 							#end
 						</div>
 				<!-- End Compilatio custom options -->
+				#elseif($reviewServiceName.equals("Urkund"))
+						#if ($content_review_note)
+							$content_review_note
+						#end
+				<!-- End Urkund custom options -->
 				#end
 			</div>
 		#end
@@ -1688,10 +1694,10 @@
 						<tr>
 							<td class="groupCell">
 								<a href="javascript:void(0)" id="collapse_$roleCount" class="toggleRoleLink" style="display:none;" title="$collapseString">
-									<img src="/library/image/sakai/collapse.gif" alt="$collapseString" /><span class="members"><i class="icon-sakai-membership"></i></span>
+									<img src="/library/image/sakai/collapse.gif" alt="$collapseString" /><span class="members"><i class="icon-sakai--sakai-membership"></i></span>
 								</a>
 								<a href="javascript:void(0)" id="expand_$roleCount" class="toggleRoleLink" style="display:inline" title="$expandString">
-									<img src="/library/image/sakai/expand.gif"  alt="$expandString"/><span class="members"><i class="icon-sakai-membership"></i></span>
+									<img src="/library/image/sakai/expand.gif"  alt="$expandString"/><span class="members"><i class="icon-sakai--sakai-membership"></i></span>
 								</a>
 								<input id="$showInputString" name="showInputString_$roleCount" #if ($!value_allPurposeAccessList.contains($role)) checked="checked" #end type="checkbox" name="allPurpose_$role" class="selectAllMembers"/>
 								<label for="showInputString_$roleCount">

@@ -5,32 +5,35 @@
 		<message>
 			Dear ${userName},
 
-				You have been added to the following ${localSakaiName} site: 
+				${currentUserName} added you to the following ${localSakaiName} site:
 					${siteName}
-				by ${currentUserName}.
-			
+
 			&lt;#if newNonOfficialAccount == "true" &gt;
-			&lt;#if hasNonOfficialAccountUrl == "true" &gt;	
-				To get a guest account, open the following site:
-					${nonOfficialAccountUrl}
-				and follow the steps listed.
-			
+			&lt;#if hasNonOfficialAccountUrl == "true" &gt;
+				To get a guest account, follow the steps on ${nonOfficialAccountUrl}
+
 			&lt;/#if&gt;
-				Once you have your guest account, you can log in to ${localSakaiName}:
-				
-					1. Open ${localSakaiName}: ${localSakaiURL}
-					2. Type your guest account login and password, and click Login.
-					3. Click on the site tab to go to the site. (You will see two or more tabs in a row across the upper part of the screen.)
-			
-			&lt;#else&gt;		
+				Once you have your guest account, you can log into ${localSakaiName}:
+
+					1. Visit ${localSakaiName}: ${localSakaiURL}
+					2. In the top right corner of the page, type your guest account user id and password into the login fields, and click the "Log In" button.
+					3. Once you're logged in, find this site using these steps:
+						a. click the "Sites" link in the top right corner, then
+						b. type the site name in the provided search field
+					4. Click on the name of the site that appears to visit it
+
+			&lt;#else&gt;
 				To log in:
 
 					1. Open ${localSakaiName}: ${localSakaiURL}
-					2. Enter your username and password, and click Login.
-					3. Click on the site tab to go to the site. (You will see two or more tabs in a row across the upper part of the screen.)
+					2. In the top right corner of the page, type your user id and password into the login fields, and click the "Log In" button.
+					3. Once you're logged in, find this site using these steps:
+						a. click the "Sites" link in the top right corner, then
+						b. type the site name in the provided search field
+					4. Click on the name of the site that appears to visit it
 			&lt;/#if&gt;
 		</message>
- 		<locale></locale>
+		<locale></locale>
 	</emailTemplate>
 	
 	<emailTemplate>
@@ -56,29 +59,32 @@ Quan tingueu el vostre compte de convidat, ja podeu accedir-hi. ${localSakaiName
 	<message>
 		Dear ${userName},
 
-		You have been added to the following ${localSakaiName} site: 
+		${currentUserName} added you to the following ${localSakaiName} site:
 			${siteName}
-		by ${currentUserName}.
-			
+
 		&lt;#if newNonOfficialAccount == "true" &gt;
 			&lt;#if hasNonOfficialAccountUrl == "true" &gt;	
-				To get a guest account, open the following site:
-					${nonOfficialAccountUrl}
-				and follow the steps listed.
-			
+				To get a guest account, follow the steps on ${nonOfficialAccountUrl}
+
 			&lt;/#if&gt;
-			Once you have your guest account, you can log in to ${localSakaiName}:
-			
-				1. Open ${localSakaiName}: ${localSakaiURL}
-				2. Type your guest account login and password, and click Login.
-				3. Click on the site tab to go to the site. (You will see two or more tabs in a row across the upper part of the screen.)
-		
-		&lt;#else&gt;		
+			Once you have your guest account, you can log into ${localSakaiName}:
+
+				1. Visit ${localSakaiName}: ${localSakaiURL}
+				2. In the top right corner of the page, type your guest account user id and password into the login fields, and click the "Log In" button.
+				3. Once you're logged in, find this site using these steps:
+					a. click the "Sites" link in the top right corner, then
+					b. type the site name in the provided search field
+				4. Click on the name of the site that appears to visit it
+
+		&lt;#else&gt;
 			To log in:
 
 				1. Open ${localSakaiName}: ${localSakaiURL}
-				2. Enter your username and password, and click Login.
-				3. Click on the site tab to go to the site. (You will see two or more tabs in a row across the upper part of the screen.)
+				2. In the top right corner of the page, type your user id and password into the login fields, and click the "Log In" button.
+				3. Once you're logged in, find this site using these steps:
+					a. click the "Sites" link in the top right corner, then
+					b. type the site name in the provided search field
+				4. Click on the name of the site that appears to visit it
 		&lt;/#if&gt;
 	</message>
 	<locale>en_GB</locale>

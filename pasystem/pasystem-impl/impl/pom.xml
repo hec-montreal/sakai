@@ -13,7 +13,7 @@
   <parent>
     <artifactId>pasystem-base</artifactId>
     <groupId>org.sakaiproject.pasystem</groupId>
-    <version>11.2</version>
+    <version>11.3</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -47,6 +47,10 @@
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
     </dependency>
     <dependency>
       <groupId>org.sakaiproject.entitybroker</groupId>
