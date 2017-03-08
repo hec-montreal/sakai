@@ -1,3 +1,6 @@
+//for icons
+@import "font-awesome";
+
 	/* HEC Customizations */
 $logo: 'images/custom/logo.png';
 $logo-height: 35px;
@@ -44,42 +47,19 @@ $footer-font-size: 1.2em !default;
        url('images/custom/icons/zc-icon-font.ttf')  format('truetype'), /* Safari, Android, iOS */
 }
 
-.icon-sakai-opensyllabus-tool {
+.icon-sakai--sakai-opensyllabus-tool {
 	font-family: 'ZcIconFont'!important;
 }
 
-.icon-sakai-opensyllabus-tool:before {
+.icon-sakai--sakai-opensyllabus-tool:before {
 	content: "\e900";
 }
 
-.icon-sakai-hec-course-archive:before {
-	content: "\f1da";
-}
-
-.icon-sakai-rsf-evaluation:before {
-	content: "\f046";
-}
-
-.icon-sakai-cdm:before {
-	content: "\f044";
-}
-
-.icon-sakai-opensyllabus-manager-tool:before {
-	content: "\f085";
-}
-
-.icon-sakai-hec-public-portal-manager:before {
-	content: "\f07e";
-}
-
-.icon-sakai-aat:before {
-	content: "\f1fc";
-}
-
-.icon-sakai-via:before {
-	content: "\f1d7";
-}
-
-.icon-sakai-tegrity:before {
-	content: "\f03d";
-}
+.icon-sakai--sakai-cdm {                                  @extend .fa-pencil-square-o; }
+.icon-sakai--sakai-opensyllabus-manager-tool {            @extend .fa-cogs; }
+.icon-sakai--sakai-hec-public-portal-manager {            @extend .fa-arrows-h; }
+.icon-sakai--sakai-hec-course-archive {                   @extend .fa-history; }
+.icon-sakai--sakai-aat {                                  @extend .fa-paint-brush; }
+.icon-sakai--sakai-rsf-evaluation {                       @extend .fa-check-square-o; }
+.icon-sakai--sakai-via {                                  @extend .fa-comments; }
+.icon-sakai--sakai-tegrity {                              @extend .fa-video-camera; }
