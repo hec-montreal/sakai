@@ -607,19 +607,11 @@ body.is-logged-out{
 				color: $sites-nav-menu-item-color;
 				text-decoration: none;
 			}
-			
+				
 			&:not(.dropdown-is-visible) > a:hover, &:not(.dropdown-is-visible) > a:active /* hover for sites when tool quick-menu isn't open */
 			{
 				box-shadow: 0 0 10px 10px rgba(255, 255, 255, 0.1) inset;
 				color: $sites-nav-menu-item-color-hover;
-			}
-
-			&.is-selected {
-				/* hover for selected site when tool quick-menu isn't open */
-				&:not(.dropdown-is-visible) > a:hover, &:not(.dropdown-is-visible) > a:active
-				{
-					color: $sites-nav-menu-item-selected-color-hover;
-				}
 			}
 			
 			span
