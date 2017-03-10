@@ -67,7 +67,6 @@
 				reviewSwitchNe2.style.display='none';
 				useReview.disabled=false;
 				lblUseReview.style.display = 'block';
-			#end
 			## SAK-26640
 			document.getElementById('tempAllowRes').style.display = 'block';
 			if (document.getElementById('allowResToggle').checked)
@@ -99,7 +98,7 @@
 	}
 	focus_path = [ '$fField' ];
 </script>
-#javascript("/library/js/lang-datepicker/lang-datepicker.js")
+<script type="text/javascript" src="/library/js/lang-datepicker/lang-datepicker.js"></script>
 
 <div class="portletBody container-fluid">
 	#navBarOnClick( $allowAddAssignment $withGrade $allowGradeSubmission $allowAddAssignment $allowAllGroups $assignmentscheck $allowUpdateSite $enableViewOption $view "newAssignmentForm" "new" )
