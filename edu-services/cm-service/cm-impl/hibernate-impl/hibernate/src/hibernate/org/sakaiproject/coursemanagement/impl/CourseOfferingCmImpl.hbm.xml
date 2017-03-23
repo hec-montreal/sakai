@@ -67,8 +67,8 @@
     </query>
     
     <query name="findActiveCourseOfferingsInCanonicalCourse">
-    <![CDATA[from CourseOfferingCmImpl where start_date <= now() 
-    	and end_date>=now() and class_discr='org.sakaiproject.coursemanagement.impl.CourseOfferingCmImpl' 
+    <![CDATA[from CourseOfferingCmImpl where start_date <= sysdate
+    	and end_date>=sysdate and class_discr='org.sakaiproject.coursemanagement.impl.CourseOfferingCmImpl'
     	and canonicalCourse = :canonicalCourse);
     ]]>
     </query>
