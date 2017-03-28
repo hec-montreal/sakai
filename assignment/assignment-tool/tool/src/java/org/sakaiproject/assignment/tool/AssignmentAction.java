@@ -12703,8 +12703,9 @@ public class AssignmentAction extends PagedResourceActionII
 		else {
 			state.setAttribute(Assignment.ASSIGNMENT_OPENDATE_NOTIFICATION, Assignment.ASSIGNMENT_OPENDATE_NOTIFICATION_NONE);
 		}
-		// make the honor pledge not include as the default
-		state.setAttribute(NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE, (Integer.valueOf(Assignment.HONOR_PLEDGE_NONE)).toString());
+		// make the honor pledge not include as the default (Integer.valueOf(Assignment.HONOR_PLEDGE_NONE)).toString()
+		// ZCII-2851: Activate by default honor pledge
+		state.setAttribute(NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE, "0");
 
 		state.setAttribute(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK, AssignmentService.GRADEBOOK_INTEGRATION_NO);
 
