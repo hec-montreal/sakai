@@ -129,7 +129,8 @@
                 <module>hec-root</module>
                 <module>hec-grade-viewer</module>
         		<module>opensyllabus</module>
-				<module>compilatio</module>  
+			<module>compilatio</module>  
+		<module>tenjin</module>
           </modules>
         </profile>
         <profile>

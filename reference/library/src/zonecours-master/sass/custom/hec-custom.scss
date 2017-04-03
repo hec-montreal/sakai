@@ -55,6 +55,14 @@ $footer-font-size: 1.2em !default;
 	content: "\e900";
 }
 
+.icon-sakai--sakai-tenjin {
+	font-family: 'ZcIconFont'!important;
+}
+
+.icon-sakai--sakai-tenjin:before {
+	content: "\e900";
+}
+
 .icon-sakai--sakai-cdm {                                  @extend .fa-pencil-square-o; }
 .icon-sakai--sakai-opensyllabus-manager-tool {            @extend .fa-cogs; }
 .icon-sakai--sakai-hec-public-portal-manager {            @extend .fa-arrows-h; }
