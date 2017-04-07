@@ -127,9 +127,13 @@ public class CitationEntityProvider extends AbstractEntityProvider implements
 					collection.getId(), title, description);
 
 			for (Citation citation : (List<Citation>) collection.getCitations()) {
+
+				String url = citation.getOpenurl();
+				Map <String, String> citationProperties = citation.getCitationProperties();
+				citationProperties.put("openUrl", url);
 				dCollection.addCitation(new DecoratedCitation(
 						citation.getId(), citation.getSchema().getIdentifier(),
-						citation.getCitationProperties()));
+						citationProperties));
 			}
 			return dCollection;
 		} catch (PermissionException e) {
