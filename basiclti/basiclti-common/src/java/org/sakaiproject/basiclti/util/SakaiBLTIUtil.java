@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 
+import org.sakaiproject.site.api.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -332,19 +333,22 @@ public class SakaiBLTIUtil {
 		}
 	}
 
-	public static boolean sakaiInfo(Properties props, Placement placement, ResourceLoader rb)
+	public static boolean sakaiInfo(Properties props, Placement placement, ResourceLoader rb, String selectedSection)
 	{
 		dPrint("placement="+ placement.getId());
 		dPrint("placement title=" + placement.getTitle());
 		String context = placement.getContext();
 		dPrint("ContextID="+context);
 
-		return sakaiInfo(props, context, placement.getId(), rb);
+		return sakaiInfo(props, context, placement.getId(), rb, selectedSection);
 	}
 
-	public static void addSiteInfo(Properties props, Properties lti2subst, Site site)
-	{
-		if ( site != null ) {
+	public static void addSiteInfo(Properties props, Properties lti2subst, Site site) {
+		addSiteInfo(props, lti2subst, site, null);
+	}
+
+	public static void addSiteInfo(Properties props, Properties lti2subst, Site site, String selectedSection) {
+		if (site != null) {
 			String context_type = site.getType();
 			if ( context_type != null && context_type.toLowerCase().contains("course") ){
 				setProperty(props,BasicLTIConstants.CONTEXT_TYPE,BasicLTIConstants.CONTEXT_TYPE_COURSE_SECTION);
@@ -353,30 +357,44 @@ public class SakaiBLTIUtil {
 				setProperty(props,BasicLTIConstants.CONTEXT_TYPE,BasicLTIConstants.CONTEXT_TYPE_GROUP);
 				setProperty(lti2subst,LTI2Vars.CONTEXT_TYPE,BasicLTIConstants.CONTEXT_TYPE_GROUP);
 			}
-			setProperty(props,BasicLTIConstants.CONTEXT_ID,site.getId());
-			setProperty(lti2subst,LTI2Vars.COURSESECTION_SOURCEDID,site.getId());
-			setProperty(lti2subst,LTI2Vars.CONTEXT_ID,site.getId());
 
-			setProperty(props,BasicLTIConstants.CONTEXT_LABEL,site.getTitle());
-			setProperty(lti2subst,LTI2Vars.COURSESECTION_LABEL,site.getTitle());
-			setProperty(lti2subst,LTI2Vars.CONTEXT_LABEL,site.getTitle());
+			if (selectedSection != null) {
+				setProperty(props, BasicLTIConstants.CONTEXT_ID, site.getId() + "." + selectedSection);
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_SOURCEDID, site.getId() + "." + selectedSection);
+				setProperty(lti2subst, LTI2Vars.CONTEXT_ID, site.getId() + "." + selectedSection);
 
-			setProperty(props,BasicLTIConstants.CONTEXT_TITLE,site.getTitle());
-			setProperty(lti2subst,LTI2Vars.COURSESECTION_LONGDESCRIPTION,site.getTitle());
-			setProperty(lti2subst,LTI2Vars.CONTEXT_TITLE,site.getTitle());
+				setProperty(props, BasicLTIConstants.CONTEXT_LABEL, site.getTitle() + "." + selectedSection);
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_LABEL, site.getTitle() + "." + selectedSection);
+				setProperty(lti2subst, LTI2Vars.CONTEXT_LABEL, site.getTitle() + "." + selectedSection);
+
+				setProperty(props, BasicLTIConstants.CONTEXT_TITLE, site.getTitle() + "." + selectedSection);
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_LONGDESCRIPTION, site.getTitle() + "." + selectedSection);
+				setProperty(lti2subst, LTI2Vars.CONTEXT_TITLE, site.getTitle() + "." + selectedSection);
+			} else {
+				setProperty(props, BasicLTIConstants.CONTEXT_ID, site.getId());
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_SOURCEDID, site.getId());
+				setProperty(lti2subst, LTI2Vars.CONTEXT_ID, site.getId());
+
+				setProperty(props, BasicLTIConstants.CONTEXT_LABEL, site.getTitle());
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_LABEL, site.getTitle());
+				setProperty(lti2subst, LTI2Vars.CONTEXT_LABEL, site.getTitle());
+
+				setProperty(props, BasicLTIConstants.CONTEXT_TITLE, site.getTitle());
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_LONGDESCRIPTION, site.getTitle());
+				setProperty(lti2subst, LTI2Vars.CONTEXT_TITLE, site.getTitle());
+			}
 
 			String courseRoster = getExternalRealmId(site.getId());
-			if ( courseRoster != null ) 
-			{
-				setProperty(props,BasicLTIConstants.LIS_COURSE_OFFERING_SOURCEDID,courseRoster);
-				setProperty(props,BasicLTIConstants.LIS_COURSE_SECTION_SOURCEDID,courseRoster);
-				setProperty(lti2subst,LTI2Vars.COURSESECTION_SOURCEDID,courseRoster);
-				setProperty(lti2subst,LTI2Vars.COURSEOFFERING_SOURCEDID,courseRoster);
+			if (courseRoster != null) {
+				setProperty(props, BasicLTIConstants.LIS_COURSE_OFFERING_SOURCEDID, courseRoster);
+				setProperty(props, BasicLTIConstants.LIS_COURSE_SECTION_SOURCEDID, courseRoster);
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_SOURCEDID, courseRoster);
+				setProperty(lti2subst, LTI2Vars.COURSEOFFERING_SOURCEDID, courseRoster);
 			} else {
-				setProperty(props,BasicLTIConstants.LIS_COURSE_OFFERING_SOURCEDID,site.getId());
-				setProperty(props,BasicLTIConstants.LIS_COURSE_SECTION_SOURCEDID,site.getId());
-				setProperty(lti2subst,LTI2Vars.COURSESECTION_SOURCEDID,site.getId());
-				setProperty(lti2subst,LTI2Vars.COURSEOFFERING_SOURCEDID,site.getId());
+				setProperty(props, BasicLTIConstants.LIS_COURSE_OFFERING_SOURCEDID, site.getId());
+				setProperty(props, BasicLTIConstants.LIS_COURSE_SECTION_SOURCEDID, site.getId());
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_SOURCEDID, site.getId());
+				setProperty(lti2subst, LTI2Vars.COURSEOFFERING_SOURCEDID, site.getId());
 			}
 		}
 
@@ -499,8 +517,34 @@ public class SakaiBLTIUtil {
 		}
 	}
 
+	public static List<String> getSectionsForCurrentUser(String context) {
+		List<String> sectionsList = new ArrayList<String>();
+		Site site = null;
+		try {
+			site = SiteService.getSite(context);
+		} catch (Exception e) {
+			dPrint("No site/page associated with Launch context="+context);
+			return sectionsList;
+		}
+		User user = UserDirectoryService.getCurrentUser();
+		List<Group> groups = new ArrayList<Group>();
+		if (SecurityService.isSuperUser()) {
+			groups.addAll(site.getGroups());
+		} else {
+			groups.addAll(site.getGroupsWithMember(user.getId()));
+		}
+
+		for (Group g : groups) {
+			if (g.getProviderGroupId() != null) {
+				sectionsList.add(g.getTitle());
+			}
+		}
+
+		return sectionsList;
+	}
+
 	// Retrieve the Sakai information about users, etc.
-	public static boolean sakaiInfo(Properties props, String context, String placementId, ResourceLoader rb)
+	public static boolean sakaiInfo(Properties props, String context, String placementId, ResourceLoader rb, String selectedSection)
 	{
 
 		Site site = null;
@@ -517,7 +561,7 @@ public class SakaiBLTIUtil {
 		Properties config = placement.getConfig();
 		String roleMapProp = toNull(getCorrectProperty(config, "rolemap", placement));
 		addRoleInfo(props, null, context, roleMapProp);
-		addSiteInfo(props, null, site);
+		addSiteInfo(props, null, site, selectedSection);
 
 		// Add Placement Information
 		addPlacementInfo(props, placementId);
@@ -740,7 +784,7 @@ public class SakaiBLTIUtil {
 
 		// Add user, course, etc to the launch parameters
 		Properties launch = new Properties();
-		if ( ! sakaiInfo(launch, contextId, resourceId, rb) ) {
+		if ( ! sakaiInfo(launch, contextId, resourceId, rb, null) ) {
 			return postError("<p>" + getRB(rb, "error.info.resource",
 						"Error, cannot load Sakai information for resource=")+resourceId+".</p>");
 		}
@@ -1338,9 +1382,13 @@ public class SakaiBLTIUtil {
 		return retval;
 	}
 
+	public static String[] postLaunchHTML(String placementId, ResourceLoader rb)
+	{
+		return postLaunchHTML(placementId, rb, null);
+	}
 	// This must return an HTML message as the [0] in the array
 	// If things are successful - the launch URL is in [1]
-	public static String[] postLaunchHTML(String placementId, ResourceLoader rb)
+	public static String[] postLaunchHTML(String placementId, ResourceLoader rb, String selectedSection)
 	{
 		if ( placementId == null ) return postError("<p>" + getRB(rb, "error.missing" ,"Error, missing placementId")+"</p>" );
 		ToolConfiguration placement = SiteService.findTool(placementId);
@@ -1348,7 +1396,7 @@ public class SakaiBLTIUtil {
 
 		// Add user, course, etc to the launch parameters
 		Properties ltiProps = new Properties();
-		if ( ! sakaiInfo(ltiProps, placement, rb) ) {
+		if ( ! sakaiInfo(ltiProps, placement, rb, selectedSection) ) {
 			return postError("<p>" + getRB(rb, "error.missing",
 						"Error, cannot load Sakai information for placement=")+placementId+".</p>");
 		}

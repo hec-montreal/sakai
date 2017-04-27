@@ -233,9 +233,32 @@ public class IMSBLTIPortlet extends GenericPortlet {
 				session.setAttribute("sakai:maximized-url",iframeUrl);
 				dPrint("Setting sakai:maximized-url="+iframeUrl);
 
-				if ( "on".equals(newPage) || forcePopup ) {
-					String windowOpen = "window.open('"+iframeUrl+"','BasicLTI');"; 			
-					if ( popupDone == null ) {
+				List<String> sections = new ArrayList<String>();
+				// HEC only use section aware hack if site id contains only one period
+				if (context.indexOf('.') == context.lastIndexOf('.')) {
+					sections.addAll(SakaiBLTIUtil.getSectionsForCurrentUser(context));
+				}
+
+				if ( "on".equals(newPage) || forcePopup || sections.size()>1 ) {
+					String windowOpen = null;
+					StringBuffer sectionSelector = null;
+					if (sections.size() > 1) {
+						windowOpen = "window.open('"+iframeUrl+"?sakai.specifiedSection='+document.getElementById('selectSection').value,'BasicLTI');";
+						
+						// build section select element
+						sectionSelector = new StringBuffer();
+						sectionSelector.append("<select id=\"selectSection\">");
+						for(String s : sections) {
+							sectionSelector.append("<option>"+s+"</option>");
+						}
+						sectionSelector.append("</select>");
+					} else if (sections.size() == 1) {
+						windowOpen = "window.open('"+iframeUrl+"?sakai.specifiedSection="+sections.get(0)+"','BasicLTI');";
+					} else {
+						windowOpen = "window.open('"+iframeUrl+"','BasicLTI');";
+					}
+
+					if ( popupDone == null && sections.size() <= 1 ) {
 						text.append("<p>\n");
 						text.append("<script type=\"text/javascript\">\n");
 						text.append(windowOpen+"\n");
@@ -247,6 +270,10 @@ public class IMSBLTIPortlet extends GenericPortlet {
 					String launchButtonText = rb.getFormattedMessage("new.page.launchButton");
 					text.append(newPageLaunchText);
 					text.append("</p>\n");
+
+					if (sections.size() > 1) {
+						text.append(sectionSelector + "&nbsp;");
+					}
 					text.append("<input type=\"submit\" onclick=\""+windowOpen+"\" target=\"BasicLTI\" value=\"" + launchButtonText +" "+ title + "\"/>");
 				} else {
 					if ( "on".equals(maximize) ) {
@@ -263,6 +290,9 @@ public class IMSBLTIPortlet extends GenericPortlet {
 					text.append("\" \n");
 					text.append("width=\"100%\" frameborder=\"0\" marginwidth=\"0\"\n");
 					text.append("marginheight=\"0\" scrolling=\"auto\"\n");
+					if (sections.size() == 1) {
+						iframeUrl += "?sakai.specifiedSection=" + sections.get(0);
+					}
 					text.append("src=\""+iframeUrl+"\">\n");
 					text.append(rb.getString("noiframes"));
 					text.append("<br>");

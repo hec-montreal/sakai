@@ -415,8 +415,9 @@ public class BasicLTISecurityServiceImpl implements EntityProducer {
 						}
 					}
 
+					String selectedSection = req.getParameter("sakai.specifiedSection");
 					// Get the post data for the placement
-					retval = SakaiBLTIUtil.postLaunchHTML(refId, rb);
+					retval = SakaiBLTIUtil.postLaunchHTML(refId, rb, selectedSection);
 				}
 
 				try
