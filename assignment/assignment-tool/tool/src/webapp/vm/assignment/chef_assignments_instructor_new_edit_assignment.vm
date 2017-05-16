@@ -938,12 +938,17 @@
 		<h4>
 			$tlang.getString("additionalOptionsName")
 		</h4>
-
+		<p class="text-muted small">
+			$tlang.getString("gen.cant.change.after.draft")
+		</p>
 		<div class="radio">
 			<label for="$name_noAdditionalOptionsName" class="$class">
 				<input id="$name_noAdditionalOptionsName" name="$name_additionalOptions" type="radio" value="1"
 					#if ($!value_additionalOptions.equals("none"))
 						checked="checked"
+					#end
+					#if($!assignment && !$assignment.draft)
+						disabled="disabled"
 					#end
 					onclick="ASN.toggleAddOptions('none');" />
 					$tlang.getString("noAdditionalOptionsName")
@@ -958,6 +963,9 @@
 						<input id="$name_UsePeerAssessment" name="$name_additionalOptions" type="radio" value="peerreview"
 						#if ($!value_additionalOptions.equals("peerreview"))
 							checked="checked"
+						#end
+						#if($!assignment && !$assignment.draft)
+							disabled="disabled"
 						#end
 						onclick="ASN.toggleAddOptions('peerreview')"/>
 						$tlang.getString("peerAssessmentUse")
@@ -1037,7 +1045,7 @@
 					#if ($!value_additionalOptions.equals("group") && $!groupsList)
 						checked="checked"
 					#end
-					#if( !$!groupsList )
+					#if( !$!groupsList || ($!assignment && !$assignment.draft))
 						disabled="disabled"
 					#end
 					/>
