@@ -20,38 +20,18 @@
  **********************************************************************************/
 package org.sakaiproject.coursemanagement.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.DetachedCriteria;
-
+import org.sakaiproject.coursemanagement.api.*;
+import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sakaiproject.coursemanagement.api.AcademicCareer;
-import org.sakaiproject.coursemanagement.api.AcademicSession;
-import org.sakaiproject.coursemanagement.api.CanonicalCourse;
-import org.sakaiproject.coursemanagement.api.CourseManagementService;
-import org.sakaiproject.coursemanagement.api.CourseOffering;
-import org.sakaiproject.coursemanagement.api.CourseSet;
-import org.sakaiproject.coursemanagement.api.Enrollment;
-import org.sakaiproject.coursemanagement.api.EnrollmentSet;
-import org.sakaiproject.coursemanagement.api.Membership;
-import org.sakaiproject.coursemanagement.api.Section;
-import org.sakaiproject.coursemanagement.api.SectionCategory;
-import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import java.util.*;
 
 /**
  * Provides access to course and enrollment data stored in sakai's local hibernate tables.
@@ -298,7 +278,23 @@ public class CourseManagementServiceHibernateImpl extends HibernateDaoSupport im
 		};
 		return (Enrollment)getHibernateTemplate().execute(hc);
 	}
-	
+
+	public String findEnrollmentId(final String userId, final String enrollmentSetEid) {
+		if( ! isEnrollmentSetDefined(enrollmentSetEid)) {
+			log.warn("Could not find an enrollment set with eid=" + enrollmentSetEid);
+			return null;
+		}
+		HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException {
+				Query q = session.getNamedQuery("findEnrollment");
+				q.setParameter("userId", userId);
+				q.setParameter("enrollmentSetEid", enrollmentSetEid);
+				return q.uniqueResult();
+			}
+		};
+		return (String)getHibernateTemplate().execute(hc);
+	}
+
 	public Set<String> getInstructorsOfRecordIds(String enrollmentSetEid) throws IdNotFoundException {
 		EnrollmentSet es = getEnrollmentSet(enrollmentSetEid);
 		return es.getOfficialInstructors();
@@ -307,6 +303,16 @@ public class CourseManagementServiceHibernateImpl extends HibernateDaoSupport im
 
 	public Set<EnrollmentSet> findCurrentlyEnrolledEnrollmentSets(final String userId) {
 		return new HashSet<EnrollmentSet>((List<EnrollmentSet>) getHibernateTemplate().findByNamedQueryAndNamedParam("findCurrentlyEnrolledEnrollmentSets", "userId", userId));
+	}
+
+	@Override
+	public Set<String> findCurrentEnrollmentIds() {
+		return null;
+	}
+
+	public Set<Enrollment> findCurrentEnrollments() {
+		return new HashSet<Enrollment>((List<Enrollment>) getHibernateTemplate().findByNamedQuery(
+				"findCurrentEnrollments"));
 	}
 
 

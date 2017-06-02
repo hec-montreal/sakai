@@ -20,13 +20,13 @@
  **********************************************************************************/
 package org.sakaiproject.coursemanagement.api;
 
+import org.sakaiproject.coursemanagement.api.exception.IdExistsException;
+import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
+
 import java.sql.Time;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import org.sakaiproject.coursemanagement.api.exception.IdExistsException;
-import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
 
 /**
  * A service that provides for the administration of enterprise-defined course data.
@@ -189,7 +189,7 @@ public interface CourseManagementAdministration {
 	 * @throws IdExistsException
 	 */
 	public CourseOffering createCourseOffering(String eid, String title, String description,
-			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate, String lang, String career, String credits, String requirements)
+			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate, String lang, String career, String credits, String requirements, String instructionMode)
 			throws IdExistsException;
 
 	/**

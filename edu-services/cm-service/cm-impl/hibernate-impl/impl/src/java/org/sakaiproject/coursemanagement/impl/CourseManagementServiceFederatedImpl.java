@@ -20,31 +20,13 @@
  **********************************************************************************/
 package org.sakaiproject.coursemanagement.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-
+import org.sakaiproject.coursemanagement.api.*;
+import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sakaiproject.coursemanagement.api.AcademicCareer;
-import org.sakaiproject.coursemanagement.api.AcademicSession;
-import org.sakaiproject.coursemanagement.api.CanonicalCourse;
-import org.sakaiproject.coursemanagement.api.CourseManagementService;
-import org.sakaiproject.coursemanagement.api.CourseOffering;
-import org.sakaiproject.coursemanagement.api.CourseSet;
-import org.sakaiproject.coursemanagement.api.Enrollment;
-import org.sakaiproject.coursemanagement.api.EnrollmentSet;
-import org.sakaiproject.coursemanagement.api.Membership;
-import org.sakaiproject.coursemanagement.api.Section;
-import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * <p>
@@ -194,6 +176,17 @@ public Set<CourseOffering> findCourseOfferingsByAcadCareer(String acadCareer) th
 		return resultSet;
 	}
 
+	public Set<String> findCurrentEnrollmentIds() {
+		Set<String> resultSet = new HashSet<String>();
+		for(Iterator implIter = implList.iterator(); implIter.hasNext();) {
+			CourseManagementService cm = (CourseManagementService)implIter.next();
+			Set<String> set = cm.findCurrentEnrollmentIds();
+			if(set != null) {
+				resultSet.addAll(set);
+			}
+		}
+		return resultSet;
+	}
 	public Set<EnrollmentSet> findCurrentlyInstructingEnrollmentSets(String userId) {
 		Set<EnrollmentSet> resultSet = new HashSet<EnrollmentSet>();
 		for(Iterator implIter = implList.iterator(); implIter.hasNext();) {
@@ -210,6 +203,17 @@ public Set<CourseOffering> findCourseOfferingsByAcadCareer(String acadCareer) th
 		for(Iterator implIter = implList.iterator(); implIter.hasNext();) {
 			CourseManagementService cm = (CourseManagementService)implIter.next();
 			Enrollment enr = cm.findEnrollment(userId, enrollmentSetEid);
+			if(enr != null) {
+				return enr;
+			}
+		}
+		return null;
+	}
+
+	public String findEnrollmentId(String userId, String enrollmentSetEid) {
+		for(Iterator implIter = implList.iterator(); implIter.hasNext();) {
+			CourseManagementService cm = (CourseManagementService)implIter.next();
+			String enr = cm.findEnrollmentId(userId, enrollmentSetEid);
 			if(enr != null) {
 				return enr;
 			}

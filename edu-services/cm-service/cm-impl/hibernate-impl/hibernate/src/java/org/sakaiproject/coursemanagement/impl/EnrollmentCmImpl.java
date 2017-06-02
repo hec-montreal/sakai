@@ -20,11 +20,11 @@
  **********************************************************************************/
 package org.sakaiproject.coursemanagement.impl;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import org.sakaiproject.coursemanagement.api.Enrollment;
 import org.sakaiproject.coursemanagement.api.EnrollmentSet;
+
+import java.io.Serializable;
+import java.util.Date;
 
 public class EnrollmentCmImpl extends AbstractPersistentCourseManagementObjectCmImpl
 	implements Enrollment, Serializable {
@@ -103,4 +103,6 @@ public class EnrollmentCmImpl extends AbstractPersistentCourseManagementObjectCm
 	public void setDropDate(Date dropDate) {
 		this.dropDate = dropDate;
 	}
+
 }
+

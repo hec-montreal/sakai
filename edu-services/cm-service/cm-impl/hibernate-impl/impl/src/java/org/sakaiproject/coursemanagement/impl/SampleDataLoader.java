@@ -20,39 +20,14 @@
  **********************************************************************************/
 package org.sakaiproject.coursemanagement.impl;
 
-import java.sql.Time;
-import java.text.DateFormatSymbols;
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sakaiproject.authz.api.AuthzGroupService;
-import org.sakaiproject.coursemanagement.api.AcademicSession;
-import org.sakaiproject.coursemanagement.api.CanonicalCourse;
-import org.sakaiproject.coursemanagement.api.CourseManagementAdministration;
-import org.sakaiproject.coursemanagement.api.CourseManagementService;
-import org.sakaiproject.coursemanagement.api.CourseOffering;
-import org.sakaiproject.coursemanagement.api.EnrollmentSet;
-import org.sakaiproject.coursemanagement.api.Meeting;
-import org.sakaiproject.coursemanagement.api.Section;
-import org.sakaiproject.coursemanagement.api.SectionCategory;
+import org.sakaiproject.coursemanagement.api.*;
 import org.sakaiproject.event.cover.EventTrackingService;
 import org.sakaiproject.event.cover.UsageSessionService;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -60,6 +35,13 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
+
+import java.sql.Time;
+import java.text.DateFormatSymbols;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class SampleDataLoader implements BeanFactoryAware {
 	private static final Logger log = LoggerFactory.getLogger(SampleDataLoader.class);
@@ -90,6 +72,7 @@ public class SampleDataLoader implements BeanFactoryAware {
 
 	protected static final String CREDITS_A="3";
 	protected static final String REQUIREMENTS_A="requirements";
+	protected static final String INSTRUCTION_MODE_A = "";
 
 	protected static final int ENROLLMENT_SETS_PER_ACADEMIC_SESSION = 2;
 	protected static final int ENROLLMENTS_PER_SET = 180;
@@ -261,10 +244,10 @@ public class SampleDataLoader implements BeanFactoryAware {
 			AcademicSession as = iter.next();
 			CourseOffering co1 = cmAdmin.createCourseOffering(CO1_PREFIX + as.getEid(),
 					CC1, "Sample course offering #1, " + as.getEid(), "open", as.getEid(),
-					CC1, as.getStartDate(), as.getEndDate(), LANGA, CAREER_A, CREDITS_A, REQUIREMENTS_A);
+					CC1, as.getStartDate(), as.getEndDate(), LANGA, CAREER_A, CREDITS_A, REQUIREMENTS_A, INSTRUCTION_MODE_A);
 			CourseOffering co2 = cmAdmin.createCourseOffering(CO2_PREFIX + as.getEid(),
 					CC2, "Sample course offering #2, " + as.getEid(), "open", as.getEid(),
-					CC2, as.getStartDate(), as.getEndDate(), LANGB, CAREER_B, CREDITS_A, REQUIREMENTS_A);
+					CC2, as.getStartDate(), as.getEndDate(), LANGB, CAREER_B, CREDITS_A, REQUIREMENTS_A, INSTRUCTION_MODE_A);
 
 			courseOfferingsList.add(co1);
 			courseOfferingsList.add(co2);

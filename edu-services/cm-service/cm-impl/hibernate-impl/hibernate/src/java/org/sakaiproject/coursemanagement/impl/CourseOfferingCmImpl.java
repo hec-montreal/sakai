@@ -20,16 +20,16 @@
  **********************************************************************************/
 package org.sakaiproject.coursemanagement.impl;
 
+import org.sakaiproject.coursemanagement.api.AcademicSession;
+import org.sakaiproject.coursemanagement.api.CanonicalCourse;
+import org.sakaiproject.coursemanagement.api.CourseOffering;
+import org.sakaiproject.coursemanagement.api.CourseSet;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import org.sakaiproject.coursemanagement.api.AcademicSession;
-import org.sakaiproject.coursemanagement.api.CanonicalCourse;
-import org.sakaiproject.coursemanagement.api.CourseOffering;
-import org.sakaiproject.coursemanagement.api.CourseSet;
 
 public class CourseOfferingCmImpl extends CrossListableCmImpl
 	implements CourseOffering, Serializable {
@@ -48,13 +48,14 @@ public class CourseOfferingCmImpl extends CrossListableCmImpl
 	private String academicCareer;
 	private String credits;
 	private String requirements;
+	private String instructionMode;
 
 	/** A cache of courseSetEids */
 	private Set courseSetEids;
 
 	public CourseOfferingCmImpl() {}
 	
-	public CourseOfferingCmImpl(String eid, String title, String description,String status, AcademicSession academicSession, CanonicalCourse canonicalCourse, Date startDate, Date endDate, String lang, String career, String credits, String requirements) {
+	public CourseOfferingCmImpl(String eid, String title, String description,String status, AcademicSession academicSession, CanonicalCourse canonicalCourse, Date startDate, Date endDate, String lang, String career, String credits, String requirements, String instructionMode) {
 		this.eid = eid;
 		this.title = title;
 		this.description = description;
@@ -72,6 +73,7 @@ public class CourseOfferingCmImpl extends CrossListableCmImpl
 		this.academicCareer=career;
 		this.credits=credits;
 		this.requirements=requirements;
+		this.instructionMode = instructionMode;
 	}
 	
 	public Set getCourseSets() {
@@ -195,5 +197,16 @@ public class CourseOfferingCmImpl extends CrossListableCmImpl
 	public void setRequirements(String requirements){
 	    this.requirements=requirements;
 	}
+
+	@Override
+	public String getInstructionMode() {
+		return instructionMode;
+	}
+
+	@Override
+	public void setInstructionMode(String instructionMode) {
+		this.instructionMode = instructionMode;
+	}
+
 
 }

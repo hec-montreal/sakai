@@ -215,10 +215,10 @@ public class CourseManagementAdministrationHibernateImpl extends
 	}
 
 	public CourseOffering createCourseOffering(String eid, String title, String description,
-			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate, String lang, String career, String credits, String requirements) throws IdExistsException {
+			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate, String lang, String career, String credits, String requirements, String instructionMode) throws IdExistsException {
 		AcademicSession as = (AcademicSession)getObjectByEid(academicSessionEid, AcademicSessionCmImpl.class.getName());
 		CanonicalCourse cc = (CanonicalCourse)getObjectByEid(canonicalCourseEid, CanonicalCourseCmImpl.class.getName());
-		CourseOfferingCmImpl co = new CourseOfferingCmImpl(eid, title, description, status, as, cc, startDate, endDate, lang, career, credits, requirements);
+		CourseOfferingCmImpl co = new CourseOfferingCmImpl(eid, title, description, status, as, cc, startDate, endDate, lang, career, credits, requirements, instructionMode);
 		co.setCreatedBy(authn.getUserEid());
 		co.setCreatedDate(new Date());
 		try {

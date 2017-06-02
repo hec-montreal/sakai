@@ -434,6 +434,16 @@ public interface CourseManagementService {
 	public Set<EnrollmentSet> findCurrentlyEnrolledEnrollmentSets(String userEid);
 
 	/**
+	 * Finds the set of current Enrollments.
+	 * An Enrollment is considered current if its CourseOffering's start date
+	 * (is null or prior to the current date/time) and its end date (is null or
+	 * after the current date/time).
+	 *
+	 * @return
+	 */
+	public Set<String> findCurrentEnrollmentIds();
+
+	/**
 	 * Finds the set of current EnrollmentSets for which a user is an instructor of
 	 * record.  An EnrollmentSet is considered current if its CourseOffering's start
 	 * date (is null or prior to the current date/time) and its end date (is null or
@@ -512,6 +522,13 @@ public interface CourseManagementService {
 	 * @param eid
 	 * @return
 	 */
-	public List<CourseOffering> findActiveCourseOfferingsInCanonicalCourse(String eid); 
+	public List<CourseOffering> findActiveCourseOfferingsInCanonicalCourse(String eid);
 
+
+	/**
+	 * Retrieve enrollmentId with thw enrollmentSetId and the userId.
+	 *
+	 */
+
+	public String findEnrollmentId (String userId, String enrollmentSetId);
 }

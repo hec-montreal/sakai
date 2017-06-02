@@ -20,21 +20,13 @@
  **********************************************************************************/
 package org.sakaiproject.coursemanagement.impl;
 
+import org.sakaiproject.coursemanagement.api.*;
+import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import org.sakaiproject.coursemanagement.api.AcademicCareer;
-import org.sakaiproject.coursemanagement.api.AcademicSession;
-import org.sakaiproject.coursemanagement.api.CanonicalCourse;
-import org.sakaiproject.coursemanagement.api.CourseManagementService;
-import org.sakaiproject.coursemanagement.api.CourseOffering;
-import org.sakaiproject.coursemanagement.api.CourseSet;
-import org.sakaiproject.coursemanagement.api.Enrollment;
-import org.sakaiproject.coursemanagement.api.EnrollmentSet;
-import org.sakaiproject.coursemanagement.api.Section;
-import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
 
 /**
  * A template to use when implementing CourseManagementService to provide
@@ -68,11 +60,24 @@ public class CourseManagementServiceSampleChainImpl implements CourseManagementS
 		return null;
 	}
 
+	@Override
+	public Set<String> findCurrentEnrollmentIds() {
+		return null;
+	}
+
+	public Set findCurrentEnrollments() {
+		return null;
+	}
+
 	public Set findCurrentlyInstructingEnrollmentSets(String userId) {
 		return null;
 	}
 
 	public Enrollment findEnrollment(String userId, String eid) {
+		return null;
+	}
+
+	public String findEnrollmentId(String userId, String eid) {
 		return null;
 	}
 
