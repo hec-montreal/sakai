@@ -273,8 +273,7 @@ public abstract class CmSynchronizer {
 		String career= "MBA";
 		String credits = "3";
 		String requirements="";
-		String instructionMode="";
-		return cmAdmin.createCourseOffering(eid, title, description, status, academicSessionEid, canonicalCourseEid, startDate, endDate, lang, career, credits, requirements, instructionMode);
+		return cmAdmin.createCourseOffering(eid, title, description, status, academicSessionEid, canonicalCourseEid, startDate, endDate, lang, career, credits, requirements);
 	}
 
 	protected void updateCourseOfferingMembers(Element membersElement, CourseOffering courseOffering) {
@@ -500,11 +499,13 @@ public abstract class CmSynchronizer {
 		String enrollmentSetEid = null;
 		String enrollmentSetEidFromXml =  element.getChildText("enrollment-set-eid");
 		String lang = "fr_CA";
+		String instructionMode="";
 		String typeEvaluation = null;
 		if(cmService.isEnrollmentSetDefined(enrollmentSetEidFromXml)) {
 			enrollmentSetEid = enrollmentSetEidFromXml;
 		}
-		return cmAdmin.createSection(eid, title, description, category, parentSectionEid, courseOfferingEid, enrollmentSetEid, lang, typeEvaluation);
+		return cmAdmin.createSection(eid, title, description, category, parentSectionEid, courseOfferingEid,
+				enrollmentSetEid, lang, typeEvaluation, instructionMode);
 	}
 
 	protected void updateSectionMembers(Element membersElement, Section section) {

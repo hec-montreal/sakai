@@ -137,14 +137,6 @@ public interface CourseOffering {
 	public String getRequirements();
 	public void setRequirements(String requirements);
 
-	/**
-	 * Instruction mode of the course section
-	 *
-	 * @return
-	 */
-	public String getInstructionMode();
-	public void setInstructionMode (String instructionMode);
-
 
 
 

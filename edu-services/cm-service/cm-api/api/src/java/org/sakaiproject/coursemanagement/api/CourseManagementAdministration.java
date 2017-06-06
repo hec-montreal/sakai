@@ -189,7 +189,7 @@ public interface CourseManagementAdministration {
 	 * @throws IdExistsException
 	 */
 	public CourseOffering createCourseOffering(String eid, String title, String description,
-			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate, String lang, String career, String credits, String requirements, String instructionMode)
+			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate, String lang, String career, String credits, String requirements)
 			throws IdExistsException;
 
 	/**
@@ -321,7 +321,7 @@ public interface CourseManagementAdministration {
 	 */
 	public Section createSection(String eid, String title, String description,
 			String category, String parentSectionEid, String courseOfferingEid,
-			String enrollmentSetEid, String lang, String typeEvaluation) throws IdExistsException;
+			String enrollmentSetEid, String lang, String typeEvaluation, String instructionMode) throws IdExistsException;
 
 	
 	public SectionCategory addSectionCategory(String categoryCode, String categoryDescription);

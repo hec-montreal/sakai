@@ -279,22 +279,6 @@ public class CourseManagementServiceHibernateImpl extends HibernateDaoSupport im
 		return (Enrollment)getHibernateTemplate().execute(hc);
 	}
 
-	public String findEnrollmentId(final String userId, final String enrollmentSetEid) {
-		if( ! isEnrollmentSetDefined(enrollmentSetEid)) {
-			log.warn("Could not find an enrollment set with eid=" + enrollmentSetEid);
-			return null;
-		}
-		HibernateCallback hc = new HibernateCallback() {
-			public Object doInHibernate(Session session) throws HibernateException {
-				Query q = session.getNamedQuery("findEnrollment");
-				q.setParameter("userId", userId);
-				q.setParameter("enrollmentSetEid", enrollmentSetEid);
-				return q.uniqueResult();
-			}
-		};
-		return (String)getHibernateTemplate().execute(hc);
-	}
-
 	public Set<String> getInstructorsOfRecordIds(String enrollmentSetEid) throws IdNotFoundException {
 		EnrollmentSet es = getEnrollmentSet(enrollmentSetEid);
 		return es.getOfficialInstructors();
@@ -304,17 +288,6 @@ public class CourseManagementServiceHibernateImpl extends HibernateDaoSupport im
 	public Set<EnrollmentSet> findCurrentlyEnrolledEnrollmentSets(final String userId) {
 		return new HashSet<EnrollmentSet>((List<EnrollmentSet>) getHibernateTemplate().findByNamedQueryAndNamedParam("findCurrentlyEnrolledEnrollmentSets", "userId", userId));
 	}
-
-	@Override
-	public Set<String> findCurrentEnrollmentIds() {
-		return null;
-	}
-
-	public Set<Enrollment> findCurrentEnrollments() {
-		return new HashSet<Enrollment>((List<Enrollment>) getHibernateTemplate().findByNamedQuery(
-				"findCurrentEnrollments"));
-	}
-
 
 	public Set<EnrollmentSet> findCurrentlyInstructingEnrollmentSets(final String userId) {
 		return new HashSet<EnrollmentSet>((List<EnrollmentSet>) getHibernateTemplate().findByNamedQueryAndNamedParam(

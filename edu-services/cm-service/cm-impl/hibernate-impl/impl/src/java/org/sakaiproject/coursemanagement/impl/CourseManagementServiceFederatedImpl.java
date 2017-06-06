@@ -176,17 +176,6 @@ public Set<CourseOffering> findCourseOfferingsByAcadCareer(String acadCareer) th
 		return resultSet;
 	}
 
-	public Set<String> findCurrentEnrollmentIds() {
-		Set<String> resultSet = new HashSet<String>();
-		for(Iterator implIter = implList.iterator(); implIter.hasNext();) {
-			CourseManagementService cm = (CourseManagementService)implIter.next();
-			Set<String> set = cm.findCurrentEnrollmentIds();
-			if(set != null) {
-				resultSet.addAll(set);
-			}
-		}
-		return resultSet;
-	}
 	public Set<EnrollmentSet> findCurrentlyInstructingEnrollmentSets(String userId) {
 		Set<EnrollmentSet> resultSet = new HashSet<EnrollmentSet>();
 		for(Iterator implIter = implList.iterator(); implIter.hasNext();) {
@@ -203,17 +192,6 @@ public Set<CourseOffering> findCourseOfferingsByAcadCareer(String acadCareer) th
 		for(Iterator implIter = implList.iterator(); implIter.hasNext();) {
 			CourseManagementService cm = (CourseManagementService)implIter.next();
 			Enrollment enr = cm.findEnrollment(userId, enrollmentSetEid);
-			if(enr != null) {
-				return enr;
-			}
-		}
-		return null;
-	}
-
-	public String findEnrollmentId(String userId, String enrollmentSetEid) {
-		for(Iterator implIter = implList.iterator(); implIter.hasNext();) {
-			CourseManagementService cm = (CourseManagementService)implIter.next();
-			String enr = cm.findEnrollmentId(userId, enrollmentSetEid);
 			if(enr != null) {
 				return enr;
 			}

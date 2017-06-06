@@ -21,12 +21,12 @@
 
 package org.sakaiproject.coursemanagement.impl;
 
-import java.io.Serializable;
-import java.util.Set;
-
 import org.sakaiproject.coursemanagement.api.CourseOffering;
 import org.sakaiproject.coursemanagement.api.EnrollmentSet;
 import org.sakaiproject.coursemanagement.api.Section;
+
+import java.io.Serializable;
+import java.util.Set;
 
 public class SectionCmImpl extends AbstractMembershipContainerCmImpl
 	implements Section, Serializable {
@@ -42,16 +42,19 @@ public class SectionCmImpl extends AbstractMembershipContainerCmImpl
         private Integer maxSize;
 	private String lang;
 	private String typeEvaluation;
-	
+	private String instructionMode;
+
+
 	public SectionCmImpl() {}
 	
-    public SectionCmImpl(String eid, String title, String description, String category, Section parent, CourseOffering courseOffering, EnrollmentSet enrollmentSet, Integer maxSize, String lang, String typeEvaluation) {
+    public SectionCmImpl(String eid, String title, String description, String category, Section parent, CourseOffering courseOffering, EnrollmentSet enrollmentSet, Integer maxSize, String lang, String typeEvaluation, String instructionMode) {
 		this.eid = eid;
 		this.title = title;
 		this.description = description;
 		this.category = category;
 		this.parent = parent;
 		this.courseOffering = courseOffering;
+		this.instructionMode = instructionMode;
 		if(courseOffering != null) {
 			this.courseOfferingEid = courseOffering.getEid();
 		}
@@ -141,5 +144,15 @@ public class SectionCmImpl extends AbstractMembershipContainerCmImpl
 	public void setTypeEvaluation(String typeEvaluation) {
 	    this.typeEvaluation = typeEvaluation;
 	}
+
+	public String getInstructionMode() {
+		return instructionMode;
+	}
+
+	public void setInstructionMode(String instructionMode) {
+		this.instructionMode = instructionMode;
+	}
+
+
 
 }

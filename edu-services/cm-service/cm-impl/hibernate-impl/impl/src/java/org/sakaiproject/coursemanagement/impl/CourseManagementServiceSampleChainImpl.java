@@ -60,24 +60,11 @@ public class CourseManagementServiceSampleChainImpl implements CourseManagementS
 		return null;
 	}
 
-	@Override
-	public Set<String> findCurrentEnrollmentIds() {
-		return null;
-	}
-
-	public Set findCurrentEnrollments() {
-		return null;
-	}
-
 	public Set findCurrentlyInstructingEnrollmentSets(String userId) {
 		return null;
 	}
 
 	public Enrollment findEnrollment(String userId, String eid) {
-		return null;
-	}
-
-	public String findEnrollmentId(String userId, String eid) {
 		return null;
 	}
 

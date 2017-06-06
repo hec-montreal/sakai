@@ -48,14 +48,13 @@ public class CourseOfferingCmImpl extends CrossListableCmImpl
 	private String academicCareer;
 	private String credits;
 	private String requirements;
-	private String instructionMode;
 
 	/** A cache of courseSetEids */
 	private Set courseSetEids;
 
 	public CourseOfferingCmImpl() {}
 	
-	public CourseOfferingCmImpl(String eid, String title, String description,String status, AcademicSession academicSession, CanonicalCourse canonicalCourse, Date startDate, Date endDate, String lang, String career, String credits, String requirements, String instructionMode) {
+	public CourseOfferingCmImpl(String eid, String title, String description,String status, AcademicSession academicSession, CanonicalCourse canonicalCourse, Date startDate, Date endDate, String lang, String career, String credits, String requirements) {
 		this.eid = eid;
 		this.title = title;
 		this.description = description;
@@ -73,7 +72,6 @@ public class CourseOfferingCmImpl extends CrossListableCmImpl
 		this.academicCareer=career;
 		this.credits=credits;
 		this.requirements=requirements;
-		this.instructionMode = instructionMode;
 	}
 	
 	public Set getCourseSets() {
@@ -196,16 +194,6 @@ public class CourseOfferingCmImpl extends CrossListableCmImpl
 
 	public void setRequirements(String requirements){
 	    this.requirements=requirements;
-	}
-
-	@Override
-	public String getInstructionMode() {
-		return instructionMode;
-	}
-
-	@Override
-	public void setInstructionMode(String instructionMode) {
-		this.instructionMode = instructionMode;
 	}
 
 

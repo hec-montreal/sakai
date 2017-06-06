@@ -20,37 +20,22 @@
  **********************************************************************************/
 package org.sakaiproject.coursemanagement.impl;
 
-import java.sql.Time;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.sakaiproject.coursemanagement.api.AcademicCareer;
-import org.sakaiproject.coursemanagement.api.AcademicSession;
-import org.sakaiproject.coursemanagement.api.CanonicalCourse;
-import org.sakaiproject.coursemanagement.api.CourseManagementAdministration;
-import org.sakaiproject.coursemanagement.api.CourseOffering;
-import org.sakaiproject.coursemanagement.api.CourseSet;
-import org.sakaiproject.coursemanagement.api.Enrollment;
-import org.sakaiproject.coursemanagement.api.EnrollmentSet;
-import org.sakaiproject.coursemanagement.api.Meeting;
-import org.sakaiproject.coursemanagement.api.Membership;
-import org.sakaiproject.coursemanagement.api.Section;
-import org.sakaiproject.coursemanagement.api.SectionCategory;
+import org.sakaiproject.coursemanagement.api.*;
 import org.sakaiproject.coursemanagement.api.exception.IdExistsException;
 import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
 import org.sakaiproject.coursemanagement.impl.facade.Authentication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import java.sql.Time;
+import java.util.*;
 
 /**
  * Manipulates course and enrollment data stored in sakai's local hibernate tables.
@@ -215,10 +200,10 @@ public class CourseManagementAdministrationHibernateImpl extends
 	}
 
 	public CourseOffering createCourseOffering(String eid, String title, String description,
-			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate, String lang, String career, String credits, String requirements, String instructionMode) throws IdExistsException {
+			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate, String lang, String career, String credits, String requirements) throws IdExistsException {
 		AcademicSession as = (AcademicSession)getObjectByEid(academicSessionEid, AcademicSessionCmImpl.class.getName());
 		CanonicalCourse cc = (CanonicalCourse)getObjectByEid(canonicalCourseEid, CanonicalCourseCmImpl.class.getName());
-		CourseOfferingCmImpl co = new CourseOfferingCmImpl(eid, title, description, status, as, cc, startDate, endDate, lang, career, credits, requirements, instructionMode);
+		CourseOfferingCmImpl co = new CourseOfferingCmImpl(eid, title, description, status, as, cc, startDate, endDate, lang, career, credits, requirements);
 		co.setCreatedBy(authn.getUserEid());
 		co.setCreatedDate(new Date());
 		try {
@@ -349,7 +334,8 @@ public class CourseManagementAdministrationHibernateImpl extends
 	}
 
 	public Section createSection(String eid, String title, String description, String category,
-		String parentSectionEid, String courseOfferingEid, String enrollmentSetEid, String lang, String typeEvaluation) throws IdExistsException {
+		String parentSectionEid, String courseOfferingEid, String enrollmentSetEid, String lang,
+								 String typeEvaluation, String instructionMode) throws IdExistsException {
 		
 		// The objects related to this section
 		Section parent = null;
@@ -372,7 +358,8 @@ public class CourseManagementAdministrationHibernateImpl extends
 			es = (EnrollmentSet)getObjectByEid(enrollmentSetEid, EnrollmentSetCmImpl.class.getName());
 		}
 
-		SectionCmImpl section = new SectionCmImpl(eid, title, description, category, parent, co, es, maxSize, lang, typeEvaluation);
+		SectionCmImpl section = new SectionCmImpl(eid, title, description, category, parent, co, es, maxSize, lang,
+				typeEvaluation, instructionMode);
 		section.setCreatedBy(authn.getUserEid());
 		section.setCreatedDate(new Date());
 		try {

@@ -49,27 +49,6 @@
         ]]>
     </query>
 
-	<query name="findCurrentlyEnrolledEnrollmentSets">
-        <![CDATA[
-        select enr.enrollmentSet from EnrollmentCmImpl as enr where enr.userId=:userId and enr.dropped=false and
-        	(enr.enrollmentSet.courseOffering.startDate is null or enr.enrollmentSet.courseOffering.startDate <= current_date()) and
-        	(enr.enrollmentSet.courseOffering.endDate is null or enr.enrollmentSet.courseOffering.endDate >= current_date())
-        ]]>
-    </query>
-
-	<query name="findCurrentEnrollmentIds">
-		<![CDATA[
-         from EnrollmentCmImpl as enr where
-        	(enr.enrollmentSet.courseOffering.startDate is null or enr.enrollmentSet.courseOffering.startDate <= current_date()) and
-        	(enr.enrollmentSet.courseOffering.endDate is null or enr.enrollmentSet.courseOffering.endDate >= current_date())
-        ]]>
-	</query>
-
-	<query name="findEnrollmentId">
-		<![CDATA[
-        select enr.enrollment_id from EnrollmentCmImpl as enr where enr.enrollmentSet.eid=:enrollmentSetEid and enr.userId=:userId
-        ]]>
-	</query>
 
 
 </hibernate-mapping>

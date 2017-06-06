@@ -11,7 +11,6 @@
         <property name="startDate" column="START_DATE" type="date" not-null="false" />
         <property name="endDate" column="END_DATE" type="date" not-null="false" />
 		<property name="lang" column="LANG" type="string" />
-        <property name="instructionMode" column="INSTRUCTIONMODE" type="string" />
 		<property name="academicCareer" column="ACAD_CAREER" type="string" />
 		<property name="credits" column="CREDITS" type="string" />
 		<property name="requirements" column="REQUIREMENTS" type="string" length="5000" />

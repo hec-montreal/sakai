@@ -16,6 +16,7 @@
 		    <one-to-many class="org.sakaiproject.coursemanagement.impl.MeetingCmImpl"/>
 		</set>
 
+        <property name="instructionMode" column="INSTRUCTIONMODE" type="string" />
 		<property name="maxSize" type="integer" column="MAXSIZE" not-null="false" />
         <property name="lang" column="LANG" type="string" />
         <property name="typeEvaluation" column="typeEvaluation" type="string" />
