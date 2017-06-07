@@ -334,6 +334,14 @@ public class CourseManagementAdministrationHibernateImpl extends
 	}
 
 	public Section createSection(String eid, String title, String description, String category,
+								 String parentSectionEid, String courseOfferingEid, String enrollmentSetEid, String lang,
+								 String typeEvaluation) throws IdExistsException {
+		return createSection(eid, title, description, category,
+				parentSectionEid, courseOfferingEid, enrollmentSetEid, lang,
+				typeEvaluation, null);
+	}
+
+	public Section createSection(String eid, String title, String description, String category,
 		String parentSectionEid, String courseOfferingEid, String enrollmentSetEid, String lang,
 								 String typeEvaluation, String instructionMode) throws IdExistsException {
 		

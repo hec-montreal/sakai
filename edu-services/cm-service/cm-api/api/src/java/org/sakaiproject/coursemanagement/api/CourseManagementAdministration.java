@@ -317,13 +317,30 @@ public interface CourseManagementAdministration {
 	 * @param parentSectionEid
 	 * @param courseOfferingEid
 	 * @param enrollmentSetEid
+	 * @param instructionMode
 	 * @throws IdExistsException
 	 */
 	public Section createSection(String eid, String title, String description,
 			String category, String parentSectionEid, String courseOfferingEid,
 			String enrollmentSetEid, String lang, String typeEvaluation, String instructionMode) throws IdExistsException;
 
-	
+
+	/**
+	 * Creates a new Section.
+	 *
+	 * @param eid
+	 * @param title
+	 * @param description
+	 * @param category
+	 * @param parentSectionEid
+	 * @param courseOfferingEid
+	 * @param enrollmentSetEid
+	 * @throws IdExistsException
+	 */
+	public Section createSection(String eid, String title, String description,
+								 String category, String parentSectionEid, String courseOfferingEid,
+								 String enrollmentSetEid, String lang, String typeEvaluation) throws IdExistsException;
+
 	public SectionCategory addSectionCategory(String categoryCode, String categoryDescription);
 	
 	/**
