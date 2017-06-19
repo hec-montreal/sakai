@@ -20,19 +20,16 @@
  **********************************************************************************/
 package org.sakaiproject.coursemanagement.impl.provider;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.regex.Pattern;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sakaiproject.authz.api.GroupProvider;
 import org.sakaiproject.coursemanagement.api.CourseManagementService;
 import org.sakaiproject.coursemanagement.api.Section;
 import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
 /**
  * A Sakai GroupProvider that utilizes the CourseManagementService and the
@@ -50,6 +47,12 @@ public class CourseManagementGroupProvider implements GroupProvider {
 	public static String EID_SEPARATOR = "+";
 	public static String QUOTED_SEPARATOR = "/+";
 	public static Pattern EID_SEPARATOR_PATTERN = Pattern.compile("(?<!/)\\+");
+
+	private List<String> piloteE2017Exceptions = Arrays.asList("39291321721","106021121721","24019721721","44200921721",
+			"25000921721","304600921721", "329311321721","309001621721","200251521721","63001521721","43301321721"
+			,"22011521721","11111121721" );
+
+
 
 	/** The course management service */
 	CourseManagementService cmService;
@@ -88,6 +91,7 @@ public class CourseManagementGroupProvider implements GroupProvider {
 		if(log.isDebugEnabled()) log.debug(id + " is mapped to " + sectionEids.length + " sections");
 
 		for (RoleResolver rr : roleResolvers) {
+
 			for(int i=0; i < sectionEids.length; i++) {
 				String sectionEid = sectionEids[i];
 				Section section;
@@ -101,24 +105,29 @@ public class CourseManagementGroupProvider implements GroupProvider {
 			
 				Map<String, String> rrUserRoleMap = rr.getUserRoles(cmService, section);
 
-				for(Iterator<Entry<String, String>> rrRoleIter = rrUserRoleMap.entrySet().iterator(); rrRoleIter.hasNext();) {
-					Entry<String, String> entry = rrRoleIter.next();
-					String userEid = entry.getKey();
-					String existingRole = userRoleMap.get(userEid);
-					String rrRole = entry.getValue();
+				if (!(!(piloteE2017Exceptions.contains(section.getCourseOfferingEid())) && rr.getClass().equals(CourseOfferingRoleResolver.class))) {
+					for (Iterator<Entry<String, String>> rrRoleIter = rrUserRoleMap.entrySet().iterator(); rrRoleIter.hasNext(); ) {
+						Entry<String, String> entry = rrRoleIter.next();
+						String userEid = entry.getKey();
+						String existingRole = userRoleMap.get(userEid);
+						String rrRole = entry.getValue();
 
-					// The Role Resolver has found no role for this user
-					if(rrRole == null) {
-						continue;
-					}
-					
-					// Add or replace the role in the map if this is a more preferred role than the previous role
-					if(existingRole == null) {
-						if(log.isDebugEnabled()) log.debug("Adding "+ userEid + " to userRoleMap with role=" + rrRole);
-						userRoleMap.put(userEid, rrRole);
-					} else if(preferredRole(existingRole, rrRole).equals(rrRole)){
-						if(log.isDebugEnabled()) log.debug("Changing "+ userEid + "'s role in userRoleMap from " + existingRole + " to " + rrRole + " for section " + sectionEid);
-						userRoleMap.put(userEid, rrRole);
+
+						// The Role Resolver has found no role for this user
+						if (rrRole == null) {
+							continue;
+						}
+
+						// Add or replace the role in the map if this is a more preferred role than the previous role
+						if (existingRole == null) {
+							if (log.isDebugEnabled())
+								log.debug("Adding " + userEid + " to userRoleMap with role=" + rrRole);
+							userRoleMap.put(userEid, rrRole);
+						} else if (preferredRole(existingRole, rrRole).equals(rrRole)) {
+							if (log.isDebugEnabled())
+								log.debug("Changing " + userEid + "'s role in userRoleMap from " + existingRole + " to " + rrRole + " for section " + sectionEid);
+							userRoleMap.put(userEid, rrRole);
+						}
 					}
 				}
 			}
@@ -146,17 +155,22 @@ public class CourseManagementGroupProvider implements GroupProvider {
 				String existingRole = groupRoleMap.get(sectionEid);
 				String rrRole = entry.getValue();
 
-				// The Role Resolver has found no role for this section
-				if(rrRole == null) {
-					continue;
-				}
-				
-				if(existingRole ==  null) {
-					if(log.isDebugEnabled()) log.debug("Adding " + sectionEid + " to groupRoleMap with sakai role" + rrRole + " for user " + userEid);
-					groupRoleMap.put(sectionEid, rrRole);
-				}  else if(preferredRole(existingRole, rrRole).equals(rrRole)){
-					if(log.isDebugEnabled()) log.debug("Changing "+ userEid + "'s role in groupRoleMap from " + existingRole + " to " + rrRole + " for section " + sectionEid);
-					groupRoleMap.put(sectionEid, rrRole);
+				if (!(!(piloteE2017Exceptions.contains(cmService.getSection(sectionEid).getCourseOfferingEid())) && rr.getClass().equals(CourseOfferingRoleResolver.class))) {
+
+					// The Role Resolver has found no role for this section
+					if (rrRole == null) {
+						continue;
+					}
+
+					if (existingRole == null) {
+						if (log.isDebugEnabled())
+							log.debug("Adding " + sectionEid + " to groupRoleMap with sakai role" + rrRole + " for user " + userEid);
+						groupRoleMap.put(sectionEid, rrRole);
+					} else if (preferredRole(existingRole, rrRole).equals(rrRole)) {
+						if (log.isDebugEnabled())
+							log.debug("Changing " + userEid + "'s role in groupRoleMap from " + existingRole + " to " + rrRole + " for section " + sectionEid);
+						groupRoleMap.put(sectionEid, rrRole);
+					}
 				}
 			}
 		}
