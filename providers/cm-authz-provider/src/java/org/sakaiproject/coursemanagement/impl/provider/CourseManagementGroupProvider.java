@@ -48,6 +48,7 @@ public class CourseManagementGroupProvider implements GroupProvider {
 	public static String QUOTED_SEPARATOR = "/+";
 	public static Pattern EID_SEPARATOR_PATTERN = Pattern.compile("(?<!/)\\+");
 
+	//ZCII-3007: Bogue Evalsys
 	private List<String> piloteE2017Exceptions = Arrays.asList("39291321721","106021121721","24019721721","44200921721",
 			"25000921721","304600921721", "329311321721","309001621721","200251521721","63001521721","43301321721"
 			,"22011521721","11111121721" );
@@ -105,36 +106,41 @@ public class CourseManagementGroupProvider implements GroupProvider {
 			
 				Map<String, String> rrUserRoleMap = rr.getUserRoles(cmService, section);
 
-				if (!(!(piloteE2017Exceptions.contains(section.getCourseOfferingEid())) && rr.getClass().equals(CourseOfferingRoleResolver.class))) {
-					for (Iterator<Entry<String, String>> rrRoleIter = rrUserRoleMap.entrySet().iterator(); rrRoleIter.hasNext(); ) {
-						Entry<String, String> entry = rrRoleIter.next();
-						String userEid = entry.getKey();
-						String existingRole = userRoleMap.get(userEid);
-						String rrRole = entry.getValue();
+				//ZCII-3007: Bogue Evalsys
+				if (!(piloteE2017Exceptions.contains(section.getCourseOfferingEid())) && rr.getClass().equals(CourseOfferingRoleResolver.class))
+					continue;
+				//End ZCII-3007
+
+				for (Iterator<Entry<String, String>> rrRoleIter = rrUserRoleMap.entrySet().iterator(); rrRoleIter.hasNext(); ) {
+					Entry<String, String> entry = rrRoleIter.next();
+					String userEid = entry.getKey();
+					String existingRole = userRoleMap.get(userEid);
+					String rrRole = entry.getValue();
 
 
-						// The Role Resolver has found no role for this user
-						if (rrRole == null) {
-							continue;
-						}
+					// The Role Resolver has found no role for this user
+					if (rrRole == null) {
+						continue;
+					}
 
-						// Add or replace the role in the map if this is a more preferred role than the previous role
-						if (existingRole == null) {
-							if (log.isDebugEnabled())
-								log.debug("Adding " + userEid + " to userRoleMap with role=" + rrRole);
-							userRoleMap.put(userEid, rrRole);
-						} else if (preferredRole(existingRole, rrRole).equals(rrRole)) {
-							if (log.isDebugEnabled())
-								log.debug("Changing " + userEid + "'s role in userRoleMap from " + existingRole + " to " + rrRole + " for section " + sectionEid);
-							userRoleMap.put(userEid, rrRole);
-						}
+					// Add or replace the role in the map if this is a more preferred role than the previous role
+					if (existingRole == null) {
+						if (log.isDebugEnabled())
+							log.debug("Adding " + userEid + " to userRoleMap with role=" + rrRole);
+						userRoleMap.put(userEid, rrRole);
+					} else if (preferredRole(existingRole, rrRole).equals(rrRole)) {
+						if (log.isDebugEnabled())
+							log.debug("Changing " + userEid + "'s role in userRoleMap from " + existingRole + " to " + rrRole + " for section " + sectionEid);
+						userRoleMap.put(userEid, rrRole);
 					}
 				}
+
 			}
 		}
 		if(log.isDebugEnabled()) log.debug("_____________getUserRolesForGroup=" + userRoleMap);
 		return userRoleMap;
 	}
+
 
 	/**
 	 * Provides a map of Course Section EIDs (which can be used as AuthzGroup provider IDs)
@@ -155,23 +161,27 @@ public class CourseManagementGroupProvider implements GroupProvider {
 				String existingRole = groupRoleMap.get(sectionEid);
 				String rrRole = entry.getValue();
 
-				if (!(!(piloteE2017Exceptions.contains(cmService.getSection(sectionEid).getCourseOfferingEid())) && rr.getClass().equals(CourseOfferingRoleResolver.class))) {
-
-					// The Role Resolver has found no role for this section
-					if (rrRole == null) {
+				//ZCII-3007: Bogue Evalsys
+					if (!(piloteE2017Exceptions.contains(cmService.getSection(sectionEid).getCourseOfferingEid())) && rr.getClass().equals(CourseOfferingRoleResolver.class))
 						continue;
-					}
+				//End ZCII-3007
 
-					if (existingRole == null) {
-						if (log.isDebugEnabled())
-							log.debug("Adding " + sectionEid + " to groupRoleMap with sakai role" + rrRole + " for user " + userEid);
-						groupRoleMap.put(sectionEid, rrRole);
-					} else if (preferredRole(existingRole, rrRole).equals(rrRole)) {
-						if (log.isDebugEnabled())
-							log.debug("Changing " + userEid + "'s role in groupRoleMap from " + existingRole + " to " + rrRole + " for section " + sectionEid);
-						groupRoleMap.put(sectionEid, rrRole);
-					}
+
+				// The Role Resolver has found no role for this section
+				if (rrRole == null) {
+					continue;
 				}
+
+				if (existingRole == null) {
+					if (log.isDebugEnabled())
+						log.debug("Adding " + sectionEid + " to groupRoleMap with sakai role" + rrRole + " for user " + userEid);
+					groupRoleMap.put(sectionEid, rrRole);
+				} else if (preferredRole(existingRole, rrRole).equals(rrRole)) {
+					if (log.isDebugEnabled())
+						log.debug("Changing " + userEid + "'s role in groupRoleMap from " + existingRole + " to " + rrRole + " for section " + sectionEid);
+					groupRoleMap.put(sectionEid, rrRole);
+				}
+
 			}
 		}
 		if(log.isDebugEnabled()) log.debug("______________getGroupRolesForUser=" + groupRoleMap);
