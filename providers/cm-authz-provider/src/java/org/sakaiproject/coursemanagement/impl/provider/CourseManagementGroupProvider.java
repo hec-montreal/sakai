@@ -162,7 +162,9 @@ public class CourseManagementGroupProvider implements GroupProvider {
 				String rrRole = entry.getValue();
 
 				//ZCII-3007: Bogue Evalsys
-					if (!(piloteE2017Exceptions.contains(cmService.getSection(sectionEid).getCourseOfferingEid())) && rr.getClass().equals(CourseOfferingRoleResolver.class))
+					if (!(piloteE2017Exceptions.contains(cmService.getSection(sectionEid).getCourseOfferingEid()))
+							&& rr.getClass().equals(CourseOfferingRoleResolver.class)
+							&& (cmService.getSection(sectionEid).getCourseOfferingEid()).endsWith("21721") )
 						continue;
 				//End ZCII-3007
 
