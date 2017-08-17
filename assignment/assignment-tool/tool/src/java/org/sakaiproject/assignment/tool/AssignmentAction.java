@@ -2454,7 +2454,12 @@ public class AssignmentAction extends PagedResourceActionII
                                     if (_dupUsers.size() > 0) context.put("multipleGroupUsers", _dupUsers);
 			}
 		}
-		}
+		}//ZCII-2924
+		 else
+			state.setAttribute(NEW_ASSIGNMENT_USE_REVIEW_SERVICE, "true");
+		//ZCII-2924 : End
+
+
 
 		// set up context variables
 		setAssignmentFormContext(state, context);
@@ -7301,7 +7306,7 @@ public class AssignmentAction extends PagedResourceActionII
 			}
 		}
 		state.setAttribute(NEW_ASSIGNMENT_USE_REVIEW_SERVICE, b);
-		
+
 		//set whether students can view the review service results
 		r = params.getString(NEW_ASSIGNMENT_ALLOW_STUDENT_VIEW);
 		if (r == null) b = Boolean.FALSE.toString();

@@ -567,7 +567,7 @@
 				#else
 					<div id="reviewServiceOptions" style="display:none" class="indnt3">
 				#end
-					<!-- BEGIN ZCII-2925
+					<!-- ZCII-2925: Compilatio- Bloquer la possibilité de donner accès aux résultats aux étudiants.
 					<div class="checkbox">
 						<label for="$name_AllowStudentView">
 						#if ($!value_AllowStudentView.equals("true"))
