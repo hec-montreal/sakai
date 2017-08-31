@@ -2,9 +2,14 @@ package org.sakaiproject.util;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -48,5 +53,16 @@ public class CalendarUtilTest {
         assertEquals("PM", CalendarUtil.getLocalPMString(dateTime));
     }
 
+    @Test
+     public void testDayOfMonthAtEnd() {
+       // This tests a problem with how Sakai was calculating the month when it was the last day of the month.
+        ResourceLoader rb = Mockito.mock(ResourceLoader.class);
+        Mockito.when(rb.getLocale()).thenReturn(Locale.ENGLISH);
+        Instant instant = Instant.parse("2007-08-31T09:30:00Z");
+        CalendarUtil util = new CalendarUtil(Clock.fixed(instant, ZoneOffset.ofHours(0)),rb);
+        String[] calendarMonthNames = util.getCalendarMonthNames(false);
+        String[] expected = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        Assert.assertArrayEquals(expected, calendarMonthNames);
+    }
 
 }
