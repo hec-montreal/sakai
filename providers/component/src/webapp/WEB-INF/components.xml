@@ -29,6 +29,7 @@
 	<util:map id="org.sakaiproject.coursemanagement.GroupProviderConfiguration">
 		<entry key="siteRoleResolutionOrder">
 			<list>
+				<value>Coordinator-Instructor</value>
 				<value>Coordinator</value>
 				<value>Instructor</value>
 				<value>Full-time Lecturer</value>
@@ -46,6 +47,7 @@
 		</entry>
 		<entry key="sectionRoleToSiteRole">
 			<map>
+				<entry key="CI" value="Coordinator-Instructor"/>
 				<entry key="I" value="Instructor"/>
 				<entry key="C" value="Coordinator"/>
 				<entry key="SEC" value="Secretary"/>
@@ -56,9 +58,10 @@
 		</entry>
 		<entry key="courseOfferingRoleToSiteRole">
 			<map>
+				<entry key="CI" value="Coordinator-Instructor"/>
 				<entry key="CourseAdmin" value="Instructor"/>
-				<entry key="I" value="Instructor"/>
 				<entry key="C" value="Coordinator"/>
+				<entry key="I" value="Instructor"/>
 				<entry key="FTL" value="Full-time Lecturer"/>
 				<entry key="SEC" value="Secretary"/>
 			</map>
