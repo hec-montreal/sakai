@@ -528,7 +528,7 @@ public class SakaiBLTIUtil {
 		}
 		User user = UserDirectoryService.getCurrentUser();
 		List<Group> groups = new ArrayList<Group>();
-		if (SecurityService.isSuperUser()) {
+		if (SecurityService.isSuperUser() || SecurityService.unlock("site.upd", site.getReference())) {
 			groups.addAll(site.getGroups());
 		} else {
 			groups.addAll(site.getGroupsWithMember(user.getId()));
