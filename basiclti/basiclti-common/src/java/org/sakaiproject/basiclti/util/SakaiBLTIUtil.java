@@ -528,7 +528,12 @@ public class SakaiBLTIUtil {
 		}
 		User user = UserDirectoryService.getCurrentUser();
 		List<Group> groups = new ArrayList<Group>();
-		if (SecurityService.isSuperUser() || SecurityService.unlock("site.upd", site.getReference())) {
+		Member m = site.getMember(user.getId());
+
+		// user can access all sections if he is admin or if he is not a member
+		// and has site.upd permission (by delegated access)
+		if (SecurityService.isSuperUser() ||
+				(m == null && SecurityService.unlock("site.upd", site.getReference()))) {
 			groups.addAll(site.getGroups());
 		} else {
 			groups.addAll(site.getGroupsWithMember(user.getId()));
