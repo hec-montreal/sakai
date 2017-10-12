@@ -19,14 +19,7 @@
 
 package org.sakaiproject.basiclti.util;
 
-import java.util.Properties;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Enumeration;
+import java.util.*;
 
 import java.net.URL;
 import java.net.URLEncoder;
@@ -527,18 +520,21 @@ public class SakaiBLTIUtil {
 			return sectionsList;
 		}
 		User user = UserDirectoryService.getCurrentUser();
-		List<Group> groups = new ArrayList<Group>();
-		Member m = site.getMember(user.getId());
 
-		// user can access all sections if he is admin or if he is not a member
-		// and has site.upd permission (by delegated access)
-		if (SecurityService.isSuperUser() ||
-				(m == null && SecurityService.unlock("site.upd", site.getReference()))) {
+		List<Group> groups = new ArrayList<Group>();
+		Collection<Group> userGroups = site.getGroupsWithMember(user.getId());
+
+		// user can access all sections if he is admin, the sections they are a member of
+		// or finally all sections if they have site.upd on the site's realm
+		if (SecurityService.isSuperUser()) {
 			groups.addAll(site.getGroups());
-		} else {
-			groups.addAll(site.getGroupsWithMember(user.getId()));
+		} else if (userGroups != null && userGroups.size() > 0) {
+			groups.addAll(userGroups);
+		} else if (SecurityService.unlock("site.upd", site.getReference()) {
+			groups.addAll(site.getGroups());
 		}
 
+		// filter out non official groups (user created)
 		for (Group g : groups) {
 			if (g.getProviderGroupId() != null) {
 				sectionsList.add(g.getTitle());
