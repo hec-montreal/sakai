@@ -530,7 +530,7 @@ public class SakaiBLTIUtil {
 			groups.addAll(site.getGroups());
 		} else if (userGroups != null && userGroups.size() > 0) {
 			groups.addAll(userGroups);
-		} else if (SecurityService.unlock("site.upd", site.getReference()) {
+		} else if (SecurityService.unlock("site.upd", site.getReference())) {
 			groups.addAll(site.getGroups());
 		}
 
