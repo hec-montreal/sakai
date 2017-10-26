@@ -10876,8 +10876,22 @@ public abstract class BaseAssignmentService implements AssignmentService, Entity
 		 * @inheritDoc
 		 */
 		@Override
-		public List<ContentReviewResult> getContentReviewResults()
-		{
+		public List<ContentReviewResult> getContentReviewResults() {
+			return getContentReviewResults(true);
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		@Override
+		public List<ContentReviewResult> getContentReviewResultsWithNoReport() {
+			return getContentReviewResults(false);
+		}
+
+		/*
+		 * @inheritDoc
+		 */
+		private List<ContentReviewResult> getContentReviewResults(boolean includeReport) {
 			ArrayList<ContentReviewResult> reviewResults = new ArrayList<ContentReviewResult>();
 
 			//get all the attachments for this submission and populate the reviewResults
@@ -10891,7 +10905,9 @@ public abstract class BaseAssignmentService implements AssignmentService, Entity
 				reviewResult.setContentResource(cr);
 				int reviewScore = getReviewScore(cr);
 				reviewResult.setReviewScore(reviewScore);
-				reviewResult.setReviewReport(getReviewReport(cr));
+				if (includeReport) {
+					reviewResult.setReviewReport(getReviewReport(cr));
+				}
 				//skip review status, it's unused
 				String iconUrl = contentReviewService.getIconUrlforScore(Long.valueOf(reviewScore));
 				reviewResult.setReviewIconURL(iconUrl);
