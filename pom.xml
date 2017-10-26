@@ -122,7 +122,6 @@
         		<module>sdata</module>
         		<module>via</module>
         		<module>hec-commons-utils</module>
-        		<module>hec-catalog-description-manager</module>
         		<module>hec-course-archive</module>
         		<module>hec-public-portal-manager</module>
         		<module>hec-public-portal-ui</module>
