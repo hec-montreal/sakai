@@ -697,7 +697,7 @@
 							#if ($allowReviewService && $assignmentContent.AllowReviewService)
 								<td headers="reviewService">
 
-									#set($reviewResults = $submission.ContentReviewResults)
+									#set($reviewResults = $submission.ContentReviewResultsWithNoReport)
 									#if ($reviewResults.size() >= 3)
 										<div>
 											<input class="disclosureTriangle" type="image" onclick="ASN.handleReportsTriangleDisclosure(this, this.parentNode.parentNode.children[1]); return false;" src="#imageLink("sakai/expand.gif")" alt="$tlang.getString('review.report.expand')"/>
@@ -710,13 +710,9 @@
 										<div>
 											#set ($props = $reviewResult.getContentResource().Properties)
 											<span class="reportIcon">
-											#if ($reviewResult.getReviewReport().equals("Error"))
-												<img src="/library/skin/images/error.png" alt="$reviewResult.getReviewError()" title="$reviewResult.getReviewError()">
-											#else
-												<a href="$reviewResult.getReviewReport()" target="_blank">
+												<a href="#toolLinkParam("AssignmentAction" "doGrade_submission" "assignmentId=$validator.escapeUrl($assignment.Reference)&submissionId=$validator.escapeUrl($submission.Reference)")" title="$tlang.getString("listsub.grasub")">
 													<img src="$reviewResult.getReviewIconURL()" alt="$reviewResult.getReviewScore()" title="$reviewResult.getReviewScore()">
 												</a>
-											#end
 											</span>
 											#if ($reviewResult.isInline())
 												$tlang.getString("submission.inline")

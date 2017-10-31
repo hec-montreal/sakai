@@ -295,6 +295,12 @@ public interface AssignmentSubmission extends Entity
 	public List<ContentReviewResult> getContentReviewResults();
 
 	/**
+	 * Umu
+	 * @return Content review results, with no report URL
+	 */
+	public List<ContentReviewResult> getContentReviewResultsWithNoReport();
+
+	/**
 	* SAK-17606 - Method to return a specialized string for anonymous grading.
 	* @return
 	*/
