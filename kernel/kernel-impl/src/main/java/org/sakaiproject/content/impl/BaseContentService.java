@@ -8311,7 +8311,7 @@ SiteContentAdvisorProvider, SiteContentAdvisorTypeRegistry, EntityTransferrerRef
 
 								ContentChangeHandler cch = m_resourceTypeRegistry.getContentChangeHandler(((ContentResource) oResource).getResourceType());
 								if (cch!=null){
-									cch.copy(((ContentResource) oResource));
+									cch.copy(((ContentResource) edit));
 								}
 							}
 							catch (PermissionException e)
