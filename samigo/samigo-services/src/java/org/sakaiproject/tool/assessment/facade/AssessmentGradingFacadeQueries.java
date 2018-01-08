@@ -3461,7 +3461,7 @@ public class AssessmentGradingFacadeQueries extends HibernateDaoSupport implemen
                 "a.finalScore, a.comments, a.status, a.gradedBy, a.gradedDate, a.attemptDate, a.timeElapsed) " +
                 "from AssessmentGradingData a, PublishedAccessControl c " +
                 "where a.publishedAssessmentId = c.assessment.publishedAssessmentId " +
-                "and ((c.lateHanding = 1 and c.retractDate <= :now) or c.dueDate <= :now) " +
+                "and c.retractDate <= :now " +
                 "and a.status != 5 " +
                 "and (a.hasAutoSubmissionRun = 0 or a.hasAutoSubmissionRun is null) " +
                 "and c.autoSubmit = 1 " +
