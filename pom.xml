@@ -136,17 +136,17 @@
         <profile>
             <id>hec</id>
             <modules>
-        	<module>sdata</module>
-        	<module>via</module>
-        	<module>hec-commons-utils</module>
-        	<module>hec-course-archive</module>
-        	<module>hec-public-portal-manager</module>
-        	<module>hec-public-portal-ui</module>
-                <module>hec-root</module>
+		<module>sdata</module>
+		<module>via</module>
+		<module>hec-commons-utils</module>
+		<module>hec-course-archive</module>
+		<module>hec-public-portal-manager</module>
+		<module>hec-public-portal-ui</module>
+		<module>hec-root</module>
 		<module>hec-grade-viewer</module>
 		<module>hec-quartz-jobs</module>
-        	<module>opensyllabus</module>
-		<module>compilatio</module>  
+		<module>opensyllabus</module>
+		<module>compilatio</module>
 		<module>tenjin</module>
           </modules>
         </profile>

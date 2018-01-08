@@ -3825,7 +3825,7 @@ public class DeliveryBean
 	  
 	  public String getAutoSaveRepeatMilliseconds()
 	  {
-   	    String s = ServerConfigurationService.getString("samigo.autoSave.repeat.milliseconds");
+  	    String s = ServerConfigurationService.getString("samigo.autoSave.repeat.milliseconds");
   	    try {
   	    	Integer.parseInt(s);
   	    }
