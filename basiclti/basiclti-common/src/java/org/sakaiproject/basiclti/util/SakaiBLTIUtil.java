@@ -528,6 +528,8 @@ public class SakaiBLTIUtil {
 		// or finally all sections if they have site.upd on the site's realm
 		if (SecurityService.isSuperUser()) {
 			groups.addAll(site.getGroups());
+		} else if ("Coordinator-Instructor".equalsIgnoreCase(site.getUserRole(user.getId()).getId())){
+			groups.addAll(site.getGroups());
 		} else if (userGroups != null && userGroups.size() > 0) {
 			groups.addAll(userGroups);
 		} else if (SecurityService.unlock("site.upd", site.getReference())) {
