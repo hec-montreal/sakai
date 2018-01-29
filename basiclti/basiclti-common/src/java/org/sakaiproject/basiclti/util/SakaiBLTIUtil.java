@@ -520,7 +520,7 @@ public class SakaiBLTIUtil {
 			return sectionsList;
 		}
 		User user = UserDirectoryService.getCurrentUser();
-
+		Role userRole = site.getUserRole(user.getId());
 		List<Group> groups = new ArrayList<Group>();
 		Collection<Group> userGroups = site.getGroupsWithMember(user.getId());
 
@@ -528,9 +528,10 @@ public class SakaiBLTIUtil {
 		// or finally all sections if they have site.upd on the site's realm
 		if (SecurityService.isSuperUser()) {
 			groups.addAll(site.getGroups());
-		} else if ("Coordinator-Instructor".equalsIgnoreCase(site.getUserRole(user.getId()).getId())){
+		}else if (userRole != null && "Coordinator-Instructor".equalsIgnoreCase(userRole.getId())){
 			groups.addAll(site.getGroups());
-		} else if (userGroups != null && userGroups.size() > 0) {
+		}
+		else if (userGroups != null && userGroups.size() > 0) {
 			groups.addAll(userGroups);
 		} else if (SecurityService.unlock("site.upd", site.getReference())) {
 			groups.addAll(site.getGroups());
