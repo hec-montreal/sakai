@@ -24,15 +24,16 @@ package org.sakaiproject.tool.assessment.facade;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -762,7 +763,7 @@ public class AssessmentFacadeQueries extends HibernateDaoSupport implements
 		ArrayList assessmentList = new ArrayList();
 		String lastModifiedBy = "";
 		Map groupsForSite = null;
-		String releaseToGroups;
+		Map releaseToGroups = new HashMap();
 		AgentFacade agent = null;
 		for (int i = 0; i < list.size(); i++) {
 			AssessmentData a = (AssessmentData) list.get(i);
@@ -772,7 +773,7 @@ public class AssessmentFacadeQueries extends HibernateDaoSupport implements
 					groupsForSite = getGroupsForSite(siteAgentId);
 				}
 				Long assessmentId = a.getAssessmentBaseId();
-				releaseToGroups = getReleaseToGroupsAsString(groupsForSite, assessmentId);
+				releaseToGroups = getReleaseToGroups(groupsForSite, assessmentId);
 			}
 
 			agent = new AgentFacade(a.getLastModifiedBy());
@@ -2547,39 +2548,27 @@ public class AssessmentFacadeQueries extends HibernateDaoSupport implements
 		return h;
 	}
 
-	private String getReleaseToGroupsAsString(Map groupsForSite, Long assessmentId) {
-		List releaseToGroups = new ArrayList();
-		String releaseToGroupsAsString = null;
+	private Map<String, String> getReleaseToGroups(Map groupsForSite, Long assessmentId) {
+		Map<String, String> releaseToGroups = new HashMap();
 		AuthzQueriesFacadeAPI authz = PersistenceService.getInstance().getAuthzQueriesFacade();
 		List authorizations = authz.getAuthorizationByFunctionAndQualifier("TAKE_ASSESSMENT", assessmentId.toString());
 		if (authorizations != null && authorizations.size()>0) {
 			Iterator authsIter = authorizations.iterator();
 			while (authsIter.hasNext()) {
 				AuthorizationData ad = (AuthorizationData) authsIter.next();
-				Object group = groupsForSite.get(ad.getAgentIdString());
-				if (group != null) {
-					releaseToGroups.add(group);
-				}
-			}
-			Collections.sort(releaseToGroups);
-			StringBuilder releaseToGroupsAsStringbuf = new StringBuilder();
-
-			if (releaseToGroups != null && releaseToGroups.size()!=0 ) {
-				String lastGroup = (String) releaseToGroups.get(releaseToGroups.size()-1);
-				Iterator releaseToGroupsIter = releaseToGroups.iterator();
-				while (releaseToGroupsIter.hasNext()) {
-					String group = (String) releaseToGroupsIter.next();
-					//releaseToGroupsAsString += group;
-					releaseToGroupsAsStringbuf.append(group);
-					if (!group.equals(lastGroup) ) {
-						//releaseToGroupsAsString += ", ";
-						releaseToGroupsAsStringbuf.append(", ");
+				if (groupsForSite.containsKey(ad.getAgentIdString())) {
+					String group = groupsForSite.get(ad.getAgentIdString()).toString();
+					if (group != null) {
+							releaseToGroups.put(ad.getAgentIdString(), group);
 					}
 				}
 			}
-			releaseToGroupsAsString = releaseToGroupsAsStringbuf.toString();
+			releaseToGroups.entrySet().stream()
+				.sorted(Map.Entry.comparingByValue())
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+				(oldValue, newValue) -> oldValue, LinkedHashMap::new));
 		}
-		return releaseToGroupsAsString;
+		return releaseToGroups;
 	}
 
 	private Map getGroupsForSite(String siteId){

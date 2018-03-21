@@ -79,6 +79,10 @@ public class AuthorActionListener
 
   // UVa, per SAK-2438 
   private ResourceProperties siteProperties = null;
+
+  // SAM-3383 Property for enable/disable the group filter
+  public static final String PROP_SAMIGO_GROUP_FILTER_ENABLED = "samigo.group.filter.enabled";
+
   
   public AuthorActionListener()
   {
@@ -101,6 +105,9 @@ public class AuthorActionListener
     // full template object - be cheap.
     boolean showAssessmentTypes = ServerConfigurationService.getBoolean("samigo.showAssessmentTypes", false);
     author.setShowTemplateList(showAssessmentTypes);
+
+    boolean groupFilterEnabled = ServerConfigurationService.getBoolean(PROP_SAMIGO_GROUP_FILTER_ENABLED, false);
+    author.setGroupFilterEnabled(groupFilterEnabled);
 
     ArrayList templateList = assessmentService.getTitleOfAllActiveAssessmentTemplates();
     // get the managed bean, author and set the list
