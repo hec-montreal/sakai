@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -64,6 +65,7 @@ public class AuthorBean implements Serializable
   private ArrayList assessmentTemplateList;
   private ArrayList assessments;
   private ArrayList publishedAssessments;
+  private List allAssessments;
   private ArrayList inactivePublishedAssessments;
   private SelectItem[] assessmentTemplates;
   private boolean showCompleteAssessment;
@@ -214,6 +216,14 @@ public class AuthorBean implements Serializable
 
   public ArrayList getPublishedAssessments(){
     return publishedAssessments;
+  }
+
+  public void setAllAssessments(List allAssessments) {
+    this.allAssessments = allAssessments;
+  }
+
+  public List getAllAssessments() {
+    return allAssessments;
   }
 
   public void setInactivePublishedAssessments(ArrayList inactivePublishedAssessments){
@@ -687,7 +697,6 @@ public class AuthorBean implements Serializable
 	  boolean isDeleteAnyAssessment = authorizationBean.getDeleteAnyAssessment();
 	  boolean isDeleteOwnAssessment = authorizationBean.getDeleteOwnAssessment();
 
-	  pendingActionList1.add(new SelectItem("select", com.getString("action_select")));
 	  if (isEditAnyAssessment || isEditOwnAssessment) {
 		  pendingActionList1.add(new SelectItem("edit_pending", com.getString("edit_action")));
 		  pendingActionList1.add(new SelectItem("preview_pending", com.getString("action_preview")));
@@ -698,9 +707,6 @@ public class AuthorBean implements Serializable
 		  pendingActionList1.add(new SelectItem("publish", com.getString("publish_action")));
 		  pendingActionList1.add(new SelectItem("duplicate", com.getString("action_duplicate")));
 		  pendingActionList1.add(new SelectItem("export", com.getString("export_action")));
-	  }
-	  if (isDeleteAnyAssessment || isDeleteOwnAssessment) {
-		  pendingActionList1.add(new SelectItem("remove_pending", com.getString("remove_action")));
 	  }
 	  return pendingActionList1;
   }
@@ -720,7 +726,6 @@ public class AuthorBean implements Serializable
 	  boolean isDeleteAnyAssessment = authorizationBean.getDeleteAnyAssessment();
 	  boolean isDeleteOwnAssessment = authorizationBean.getDeleteOwnAssessment();
 
-	  pendingActionList2.add(new SelectItem("select", com.getString("action_select")));
 	  if (isEditAnyAssessment || isEditOwnAssessment) {
 		  pendingActionList2.add(new SelectItem("edit_pending", com.getString("edit_action")));
 		  pendingActionList2.add(new SelectItem("preview_pending", com.getString("action_preview")));
@@ -730,9 +735,6 @@ public class AuthorBean implements Serializable
 		  pendingActionList2.add(new SelectItem("settings_pending", com.getString("settings_action")));
 		  pendingActionList2.add(new SelectItem("duplicate", com.getString("action_duplicate")));
 		  pendingActionList2.add(new SelectItem("export", com.getString("export_action")));
-	  }
-	  if (isDeleteAnyAssessment || isDeleteOwnAssessment) {
-		  pendingActionList2.add(new SelectItem("remove_pending", com.getString("remove_action")));
 	  }
 	  return pendingActionList2;
   }

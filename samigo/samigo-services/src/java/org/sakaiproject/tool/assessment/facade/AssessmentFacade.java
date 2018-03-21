@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.osid.assessment.AssessmentException;
+
 import org.sakaiproject.tool.assessment.data.dao.assessment.AssessmentData;
 import org.sakaiproject.tool.assessment.data.dao.assessment.SectionData;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.AssessmentIfc;
@@ -56,7 +57,14 @@ public class AssessmentFacade extends AssessmentBaseFacade
   private Set sectionSet;
   private Set assessmentAttachmentSet;
   private Integer questionSize;
+  private Date startDate;
+  private Date dueDate;
   private String lastModifiedDateForDisplay;
+  private String releaseTo;
+  private String releaseToGroups;
+  private List<String> releaseToGroupsList = new ArrayList<String>();
+  private int groupCount;
+  private boolean selected;
   
   public AssessmentFacade() {
     //super();
@@ -104,13 +112,21 @@ public class AssessmentFacade extends AssessmentBaseFacade
     super.setLastModifiedBy(lastModifiedBy);
   }
 
-  public AssessmentFacade(Long id, String title, Date lastModifiedDate, String lastModifiedBy, int questionSize) {
+  public AssessmentFacade(Long id, String title, Date lastModifiedDate, Date startDate, Date dueDate, String releaseTo, String releaseToGroups, String lastModifiedBy, int questionSize) {
 	    // in the case of template assessmentBaseId is the assessmentTemplateId
 	    super.setAssessmentBaseId(id);
 	    super.setTitle(title);
 	    super.setLastModifiedDate(lastModifiedDate);
 	    super.setLastModifiedBy(lastModifiedBy);
 	    this.questionSize = questionSize;
+	    this.startDate = startDate;
+	    this.dueDate = dueDate;
+	    this.releaseTo = releaseTo;
+	    this.releaseToGroups = releaseToGroups;
+	    if (releaseToGroups != null && !releaseToGroups.trim().equals("")) {
+	        setReleaseToGroupsList();
+	    }
+	    setGroupCount();
   }
   
   public AssessmentFacade(AssessmentIfc data, Boolean loadSection) {
@@ -290,11 +306,75 @@ public class AssessmentFacade extends AssessmentBaseFacade
 	  this.questionSize = questionSize;
   }
   
+  public Date getStartDate() {
+	  return this.startDate;
+  }
+
+  public void setStartDate(Date startDate) {
+	  this.startDate = startDate;
+  }
+
+  public Date getDueDate() {
+	  return this.dueDate;
+  }
+
+  public void setDueDate(Date dueDate) {
+	  this.dueDate = dueDate;
+  }
+
   public String getLastModifiedDateForDisplay() {
 	  return lastModifiedDateForDisplay;
   }
 
   public void setLastModifiedDateForDisplay(String lastModifiedDateForDisplay) {
 	  this.lastModifiedDateForDisplay = lastModifiedDateForDisplay;
+  }
+
+  public String getReleaseTo() {
+	  return this.releaseTo;
+  }
+
+  public void setReleaseTo(String releaseTo) {
+	  this.releaseTo = releaseTo;
+  }
+
+  public String getReleaseToGroups() {
+	  return this.releaseToGroups;
+  }
+
+  public void setReleaseToGroups(String releaseToGroups) {
+	  this.releaseToGroups = releaseToGroups;
+  }
+
+  public void setReleaseToGroupsList() {
+    releaseToGroupsList = new ArrayList<String>();
+    for (String group : releaseToGroups.split(",")) {
+      releaseToGroupsList.add( group.trim());
+    }
+    Collections.sort(releaseToGroupsList);
+  }
+
+  public List<String> getReleaseToGroupsList() {
+    return releaseToGroupsList;
+  }
+
+  public void setGroupCount() {
+    if (releaseToGroupsList != null) {
+      groupCount = releaseToGroupsList.size();
+    } else {
+      groupCount = 0;
+    }
+  }
+
+  public int getGroupCount() {
+    return groupCount;
+  }
+
+  public boolean isSelected() {
+    return this.selected;
+  }
+
+  public void setSelected(boolean selected) {
+    this.selected = selected;
   }
 }
