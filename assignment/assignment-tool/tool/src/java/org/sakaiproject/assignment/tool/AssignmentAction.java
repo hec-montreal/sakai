@@ -52,6 +52,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -821,7 +822,14 @@ public class AssignmentAction extends PagedResourceActionII
 	
 	// search string for submission list
 	private static final String VIEW_SUBMISSION_SEARCH = "view_submission_search";
-	
+
+	/* 
+	 * SAK-33971 filter by group in assignments list
+	 */
+	//Property for enable/disable the group filter
+	private static final String PROP_ASSIGNMENT_GROUP_FILTER_ENABLED = "assignment.group.filter.enabled";
+	private static final String FILTER_BY_GROUP = "filterByGroup";
+
 	private ContentHostingService m_contentHostingService = null;
 
 	private org.sakaiproject.entity.api.EntityManager m_entityManager = null;
@@ -2369,6 +2377,13 @@ public class AssignmentAction extends PagedResourceActionII
 			Collection groups = getAllGroupsInSite(contextString);
 			
 			context.put("groups", (groups != null && groups.size()>0)?Boolean.TRUE:Boolean.FALSE);
+
+			boolean groupFilterEnabled = ServerConfigurationService.getBoolean(PROP_ASSIGNMENT_GROUP_FILTER_ENABLED, true);
+			context.put("groupFilterEnabled", groupFilterEnabled);
+			if(groupFilterEnabled){
+				User user = (User) state.getAttribute(STATE_USER);
+				context.put("groupListWhereIsMember", new SortedIterator(site.getGroupsWithMember(user.getId()).iterator(), new AssignmentComparator(state, SORTED_BY_GROUP_TITLE, Boolean.TRUE.toString())));
+			}
 
 			// add active user list
 			AuthzGroup realm = authzGroupService.getAuthzGroup(SiteService.siteReference(contextString));
@@ -5349,6 +5364,19 @@ public class AssignmentAction extends PagedResourceActionII
 			}
 		}
 	} // integrateGradebook
+
+	/**
+	 * Filter the assignments list by group
+	 */
+	public void doFilterByGroup(RunData data) {
+		SessionState state = ((JetspeedRunData) data).getPortletSessionState(((JetspeedRunData) data).getJs_peid());
+
+		resetPaging(state);
+		state.setAttribute(STATE_MODE, MODE_LIST_ASSIGNMENTS);
+		state.setAttribute(SORTED_BY, SORTED_BY_DEFAULT);
+		state.setAttribute(SORTED_ASC, Boolean.TRUE.toString());
+		state.setAttribute(FILTER_BY_GROUP, (String) data.getParameters().getString(FILTER_BY_GROUP));
+	} // doFilterByGroup
 
 	/**
 	 * Go to the instructor view
@@ -14322,6 +14350,8 @@ public class AssignmentAction extends PagedResourceActionII
 				view = (String) state.getAttribute(STATE_SELECTED_VIEW);
 			}
 
+			String selectedGroup = (String) state.getAttribute(FILTER_BY_GROUP);
+
 			if (allowAddAssignment && view.equals(MODE_LIST_ASSIGNMENTS))
 			{
 				// read all Assignments
@@ -14368,7 +14398,12 @@ public class AssignmentAction extends PagedResourceActionII
 				returnResources = AssignmentService.getListAssignmentsForContext((String) state
 						.getAttribute(STATE_CONTEXT_STRING));
 			}
-			
+
+			//Filter assignments by group
+			if(StringUtils.isNotEmpty(selectedGroup) && !"all".equals(selectedGroup)){
+				returnResources = ((List<Assignment>)returnResources).stream().filter(a -> a.getGroups().stream().anyMatch(g -> ((String) g).endsWith(selectedGroup))).collect(Collectors.toList());
+			}
+
 			state.setAttribute(HAS_MULTIPLE_ASSIGNMENTS, Boolean.valueOf(returnResources.size() > 1));
 		}
 		else if (MODE_INSTRUCTOR_REORDER_ASSIGNMENT.equals(mode))

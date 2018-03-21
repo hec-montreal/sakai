@@ -115,13 +115,17 @@
 		}
 	}
 
-	#groupTable{
+	#groupTable, #filterByGroupDiv{
 		button.multiselect-clear-filter{
 			padding: 6px 12px;
 			font-size: 14px;
 			line-height: 1.42857143;
 			background-color: #eee;
 		}
+		button.multiselect.dropdown-toggle.btn.btn-default {
+			color: $text-color !important;
+		}
 	}
+
 
 }
