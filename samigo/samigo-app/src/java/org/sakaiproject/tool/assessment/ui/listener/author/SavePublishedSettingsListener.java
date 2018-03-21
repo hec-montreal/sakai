@@ -78,6 +78,7 @@ import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.tool.assessment.integration.helper.ifc.CalendarServiceHelper;
 import org.sakaiproject.tool.assessment.ui.bean.author.PublishRepublishNotificationBean;
 import org.sakaiproject.time.cover.TimeService;
+import org.sakaiproject.tool.assessment.ui.bean.authz.AuthorizationBean;
 import org.sakaiproject.tool.assessment.util.ExtendedTimeService;
 
 /**
@@ -209,13 +210,14 @@ implements ActionListener
 		EventTrackingService.post(EventTrackingService.newEvent("sam.pubSetting.edit", "siteId=" + AgentFacade.getCurrentSiteId() + ", pubAssessmentId=" + assessmentSettings.getAssessmentId(), true));
 	    
 		AuthorBean author = (AuthorBean) ContextUtil.lookupBean("author");
+		AuthorizationBean authorization = (AuthorizationBean) ContextUtil.lookupBean("authorization");
 		if ("editAssessment".equals(author.getFromPage())) {
 			// If go back to edit assessment page, need to refresh the title
 			AssessmentBean assessmentBean = (AssessmentBean) ContextUtil.lookupBean("assessmentBean");
 			assessmentBean.setTitle(assessmentSettings.getTitle());
 		}
 		else {
-			resetPublishedAssessmentsList(author, assessmentService);
+			resetPublishedAssessmentsList(author, authorization, assessmentService);
 		}
 		assessmentSettings.setOutcome(author.getFromPage());
 		
@@ -813,13 +815,13 @@ implements ActionListener
 		return true;
 	}
 
-	public void resetPublishedAssessmentsList(AuthorBean author,
+	public void resetPublishedAssessmentsList(AuthorBean author, AuthorizationBean authorization,
 			PublishedAssessmentService assessmentService) {
 		AuthorActionListener authorActionListener = new AuthorActionListener();
 		GradingService gradingService = new GradingService();
 		ArrayList publishedAssessmentList = assessmentService.getBasicInfoOfAllPublishedAssessments2(
 				  PublishedAssessmentFacadeQueries.TITLE, true, AgentFacade.getCurrentSiteId());
-		authorActionListener.prepareAllPublishedAssessmentsList(author, gradingService, publishedAssessmentList);
+		authorActionListener.prepareAllPublishedAssessmentsList(author, authorization, gradingService, publishedAssessmentList);
 	}
 
 	/**
