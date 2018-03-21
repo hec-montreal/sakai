@@ -8,13 +8,13 @@
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
 *
-*            http://www.osedu.org/licenses/ECL-2.0
+*      http://www.osedu.org/licenses/ECL-2.0
 *
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and
-* limitations under the License.
+* limitations under the License. 
 *
 **********************************************************************************/
 --%>
@@ -23,12 +23,8 @@
     <ul class="navIntraTool actionToolbar" role="menu">
         <h:panelGroup rendered="#{authorization.createAssessment}">
             <li role="menuitem">
-                <span>
-                    <h:commandLink title="#{generalMessages.add}" action="#{author.getOutcome}" immediate="true">
-                        <f:param name="action" value="create_assessment_title" />
-                        <f:actionListener type="org.sakaiproject.tool.assessment.ui.listener.author.AuthorAssessmentListener" />
-                        <h:outputText value="#{generalMessages.add}" />
-                    </h:commandLink>
+                <span class="current">
+                    <h:outputText value="#{generalMessages.add}" />
                 </span>
             </li>
         </h:panelGroup>
@@ -44,7 +40,7 @@
         </h:panelGroup>
         <h:panelGroup rendered="#{authorization.adminTemplate and template.showAssessmentTypes}">
             <li role="menuitem">
-                <span>
+                <span> 
                     <h:commandLink title="#{generalMessages.t_template}" action="template" immediate="true">
                         <f:actionListener type="org.sakaiproject.tool.assessment.ui.listener.author.TemplateListener" />
                         <h:outputText value="#{generalMessages.template}" />
@@ -74,13 +70,13 @@
         </h:panelGroup>
         <h:panelGroup rendered="#{authorization.adminQuestionPool}">
             <li role="menuitem">
-                <span>
+                <span> 
                     <h:commandLink id="sectionActivity" accesskey="#{generalMessages.a_section_activity}" title="#{generalMessages.section_activity}" action="sectionActivity" immediate="true">
                         <h:outputText value="#{generalMessages.section_activity}" />
                         <f:actionListener type="org.sakaiproject.tool.assessment.ui.listener.author.SectionActivityListener" />
                     </h:commandLink>
                 </span>
-            </li>
+            </li> 
         </h:panelGroup>
     </ul>
 </h:panelGroup>

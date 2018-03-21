@@ -76,6 +76,7 @@ import org.sakaiproject.site.api.Site;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.tool.assessment.ui.bean.authz.AuthorizationBean;
 
 /**
  * <p>Title: Samigo</p>2
@@ -134,6 +135,7 @@ public class PublishAssessmentListener
   			//Map requestParams = context.getExternalContext().getRequestParameterMap();
   			AuthorBean author = (AuthorBean) ContextUtil.lookupBean(
   			"author");
+  			AuthorizationBean authorization = (AuthorizationBean) ContextUtil.lookupBean("authorization");
 
   			AssessmentSettingsBean assessmentSettings = (AssessmentSettingsBean) ContextUtil.lookupBean("assessmentSettings");
 
@@ -164,7 +166,7 @@ public class PublishAssessmentListener
   				GradingService gradingService = new GradingService();
   				PublishedAssessmentService publishedAssessmentService = new PublishedAssessmentService();
   				AuthorActionListener authorActionListener = new AuthorActionListener();
-  				authorActionListener.prepareAssessmentsList(author, assessmentService, gradingService, publishedAssessmentService);
+  				authorActionListener.prepareAssessmentsList(author, authorization, assessmentService, gradingService, publishedAssessmentService);
 
   				repeatedPublish = true;
   			}else{

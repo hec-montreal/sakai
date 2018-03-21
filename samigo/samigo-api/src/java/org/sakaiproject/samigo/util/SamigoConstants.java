@@ -41,6 +41,14 @@ public class SamigoConstants {
     public static final     String      EVENT_ASSESSMENT_SUBMITTED                          = "sam.assessmentSubmitted";
     public static final     String      EVENT_ASSESSMENT_AUTO_SUBMITTED                     = "sam.assessmentAutoSubmitted";
     public static final     String      EVENT_ASSESSMENT_TIMED_SUBMITTED                    = "sam.assessmentTimedSubmitted";
+    
+    //Assessment manipulation
+    public static final     String      EVENT_ASSESSMENT_REMOVE                             = "sam.assessment.remove";
+    public static final     String      EVENT_ASSESSMENT_UNINDEXITEM                        = "sam.assessment.unindexitem";
+    
+    //Published assessment events
+    public static final     String      EVENT_PUBLISHED_ASSESSMENT_REMOVE                   = "sam.pubassessment.remove";
+    public static final     String      EVENT_PUBLISHED_ASSESSMENT_UNINDEXITEM              = "sam.pubassessment.unindexitem";
 
     /*
      * Notification Types
