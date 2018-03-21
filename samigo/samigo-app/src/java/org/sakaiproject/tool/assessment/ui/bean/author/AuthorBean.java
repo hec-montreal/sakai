@@ -26,7 +26,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -67,6 +71,7 @@ public class AuthorBean implements Serializable
   private ArrayList publishedAssessments;
   private List allAssessments;
   private ArrayList inactivePublishedAssessments;
+  private Map<String, String> groups;
   private SelectItem[] assessmentTemplates;
   private boolean showCompleteAssessment;
   private String totalPoints;
@@ -118,6 +123,9 @@ public class AuthorBean implements Serializable
   private String editPoolName;
   private String editPoolSectionName;
   private String editPoolSectionId;
+
+  private boolean groupFilterEnabled;
+
   /* ------------------------------------ /*
   
   
@@ -220,6 +228,30 @@ public class AuthorBean implements Serializable
 
   public void setAllAssessments(List allAssessments) {
     this.allAssessments = allAssessments;
+
+    if (this.isGroupFilterEnabled()) {
+      Map<String, String> groups = new HashMap<>();
+      for (Object assessment : allAssessments) {
+        if (assessment instanceof AssessmentFacade) {
+          AssessmentFacade assessmentFacade = (AssessmentFacade) assessment;
+          Map<String, String> assessmentGroups = assessmentFacade.getReleaseToGroups();
+          if (assessmentGroups != null) {
+            groups.putAll(assessmentGroups);
+          }
+        }
+
+        if (assessment instanceof PublishedAssessmentFacade) {
+          PublishedAssessmentFacade pubAssessmentFacade = (PublishedAssessmentFacade) assessment;
+          Map<String, String> assessmentGroups = pubAssessmentFacade.getReleaseToGroups();
+          if (assessmentGroups != null) {
+            groups.putAll(assessmentGroups);
+          }
+        }
+      }
+      this.groups = groups.entrySet().stream().sorted(Map.Entry.comparingByValue())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+    }
   }
 
   public List getAllAssessments() {
@@ -233,7 +265,11 @@ public class AuthorBean implements Serializable
   public ArrayList getInactivePublishedAssessments(){
     return inactivePublishedAssessments;
   }
-  
+
+  public Map getGroups(){
+    return this.groups;
+  }
+
   /**
    * do we show the complete asseassement?
    * @return boolean
@@ -907,5 +943,13 @@ public class AuthorBean implements Serializable
 			  context.redirect("discrepancyInData");
 		  } catch (Exception e) {};
 	  }
+  }
+
+  public boolean isGroupFilterEnabled() {
+    return this.groupFilterEnabled;
+  }
+
+  public void setGroupFilterEnabled(boolean groupFilterEnabled) {
+    this.groupFilterEnabled = groupFilterEnabled;
   }
 }

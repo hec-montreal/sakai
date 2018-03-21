@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -1499,8 +1500,9 @@ public void setFeedbackComponentOption(String feedbackComponentOption) {
 	    return this.editPubAnonyGradingRestricted;
 	}
 
-	public void setReleaseToGroupsAsString(String releaseToGroupsAsString){
-		this.releaseToGroupsAsString = releaseToGroupsAsString;
+	public void setReleaseToGroupsAsString(Map<String, String> releaseToGroupsMap){
+		this.releaseToGroupsAsString = releaseToGroupsMap.values().stream()
+			.map(Object::toString).collect(Collectors.joining(", "));
 	}
 
 	public String getReleaseToGroupsAsString() {
