@@ -130,6 +130,7 @@ public class SiteManageGroupSectionRoleHandler {
     public boolean unjoinableOrig = false;
     private int groupsCreated = 0;
     public List<String> pendingGroupTitles = new ArrayList<>();
+    public String filterByGroupId = "";
 
     // Tool session attribute name used to schedule a whole page refresh.
     public static final String ATTR_TOP_REFRESH = "sakai.vppa.top.refresh"; 
@@ -235,6 +236,7 @@ public class SiteManageGroupSectionRoleHandler {
             unjoinableOrig = false;
             pendingGroupTitles.clear();
             resetJoinableSetGroupParams();
+            filterByGroupId = "";
         }
 	}
 
@@ -578,6 +580,7 @@ public class SiteManageGroupSectionRoleHandler {
     	// reset the warning messages
     	resetTargettedMessageList();
     	
+    	filterByGroupId = "";
     	return "cancel";
     }
     
@@ -814,9 +817,14 @@ public class SiteManageGroupSectionRoleHandler {
 	        	M_log.error(this + ".processAddGroup: cannot find site " + site.getId(), e);
 	            return null;
 	        }
-    	}
-        
-        return "success";
+	    }
+	    filterByGroupId = "";
+	    return "success";
+    }
+	
+    public String processFilterGroup () {
+		M_log.debug("Filtering by group " + filterByGroupId);
+		return "filter";
     }
     
     public String processConfirmGroupDelete()
