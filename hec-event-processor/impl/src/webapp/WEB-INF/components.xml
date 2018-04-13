@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<!-- SakaiProxy -->
+	<bean id="ca.hec.SakaiProxy" class="ca.hec.logic.SakaiProxyImpl"
+		init-method="init">
+
+		<!-- API injection -->
+		<property name="securityService" ref="org.sakaiproject.authz.api.SecurityService" />
+		<property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager" />
+		<property name="eventTrackingService" ref="org.sakaiproject.event.api.EventTrackingService" />
+		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
+		<property name="siteService" ref="org.sakaiproject.site.api.SiteService" />
+		<property name="threadLocalManager" ref="org.sakaiproject.thread_local.api.ThreadLocalManager" />
+	</bean>
+
+	<bean id="ca.hec.EventProcessorLogic" class="ca.hec.logic.EventProcessorLogicImpl"
+		init-method="init" destroy-method="destroy">
+		<property name="sakaiProxy" ref="ca.hec.SakaiProxy"></property>
+		<property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager"></property>
+	</bean>
+	
+
+	<bean
+		id="ca.hec.listener.GroupEventProcessor"
+		class="ca.hec.listener.GroupEventProcessor"
+		init-method="init">
+		<property name="eventProcessorLogic" ref="ca.hec.EventProcessorLogic"></property>
+		<property name="sakaiProxy" ref="ca.hec.SakaiProxy"></property>
+	</bean>
+
+</beans>
