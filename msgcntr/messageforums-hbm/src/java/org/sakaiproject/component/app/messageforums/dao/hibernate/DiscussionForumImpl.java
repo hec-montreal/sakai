@@ -39,7 +39,8 @@ public class DiscussionForumImpl extends OpenForumImpl implements DiscussionForu
     private ActorPermissions actorPermissions;
     private int areaindex;
     private Boolean autoMarkThreadsRead;
-    
+    private Boolean restrictPermissionsForGroups;
+
     public int getAreaindex() {
         try {
             return getArea().getDiscussionForums().indexOf(this);
@@ -112,6 +113,14 @@ public class DiscussionForumImpl extends OpenForumImpl implements DiscussionForu
 
 	public void setAutoMarkThreadsRead(Boolean autoMarkThreadsRead) {
 		this.autoMarkThreadsRead = autoMarkThreadsRead;
+	}
+
+	public Boolean getRestrictPermissionsForGroups(){
+		return restrictPermissionsForGroups;
+	}
+
+	public void setRestrictPermissionsForGroups(Boolean restrictPermissionsForGroups) {
+		this.restrictPermissionsForGroups = restrictPermissionsForGroups;
 	}
 
 }
