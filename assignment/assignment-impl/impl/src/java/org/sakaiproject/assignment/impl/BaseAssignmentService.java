@@ -1384,7 +1384,10 @@ public abstract class BaseAssignmentService implements AssignmentService, Entity
 		List<Assignment> visible = new ArrayList<Assignment>();
 		for (Assignment assignment : assignments)
 		{
+		        //PATCH HEC - la ligne ci-dessous est un travail Longsight qui doit être considéré comme une patch HEC
+			//SAK-34101 n'est pas considéré comme une bogue dans sakai 12.x
 			if (assignment != null && (isAvailableOrSubmitted(assignment, userId) || allowAddAssignment(assignment.getContext())))
+			//FIN PATCH HEC
 			{
 				visible.add(assignment);
 			}
