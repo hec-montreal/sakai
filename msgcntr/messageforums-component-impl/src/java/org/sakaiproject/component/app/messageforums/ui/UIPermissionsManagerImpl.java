@@ -241,7 +241,7 @@ public class UIPermissionsManagerImpl implements UIPermissionsManager {
 
   public boolean isInstructorForAllowedGroup(Long objectId, boolean isForum){
 
-    if(objectId == null){
+    if(objectId == null || !isInstructor()){
         return false;
     }
 
@@ -1474,6 +1474,10 @@ public class UIPermissionsManagerImpl implements UIPermissionsManager {
     if (isSuperUser(userId))
     {
       return true;
+    }
+    //if restricted && belongs to group
+    if ((forum != null && forum.getRestrictPermissionsForGroups() && isInstructorForAllowedGroup(forum.getId(), true)) || (topic != null && topic.getRestrictPermissionsForGroups() && isInstructorForAllowedGroup(topic.getId(), false))){
+        return true;
     }
     return false;
   }
