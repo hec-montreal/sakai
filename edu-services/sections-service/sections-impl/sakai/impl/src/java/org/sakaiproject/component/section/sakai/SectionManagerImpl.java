@@ -736,7 +736,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 
 	private String getSectionTaRole(AuthzGroup group) throws RoleConfigurationException {
 		Set roleStrings = group.getRolesIsAllowed(SectionAwareness.TA_MARKER);
-		if(roleStrings.size() != 1) {
+		if(roleStrings.size() <= 0) {
 			if(log.isDebugEnabled()) log.debug("Group " + group +
 				" must have one and only one role with permission " +
 				SectionAwareness.TA_MARKER);
