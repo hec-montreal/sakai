@@ -11,11 +11,15 @@
 	#samigo-create-new-box, #samigo-create-import-box {
 		@extend .bs-callout-primary;
 		border-left-width: 1px;
-		margin-top: 0;
+		margin-top: 20px;
+	}
+
+	#samigo-create-or-box {
+		margin-top: 20px;
 	}
 
 	.samigo-question-callout {
-			border-left: 5px solid $toolBorderColor;
+			border-left: 5px solid $tool-border-color;
 			margin: 2em 0;
 			padding: 1.5em 2.5em 1.5em 1.5em;
 			input[type="checkbox"], input[type="radio"] {
@@ -59,9 +63,29 @@
 			margin: 0 0 0 0.5em;
 		}
 	}
-
+	
+	.matrixSurvey{
+		padding: 0 1em 0 1em;
+	}
+	
+	.feedBackCheck, .feedBackCross{
+		margin-right: 0.2em;
+	}
+	
+	.feedBackCheck{
+		color: $ok-color;
+	}
+	
+	.feedBackCross{
+		color: $error-color;
+	}
+	
+	.feedBackMultipleChoice{
+		width: 2em;
+	}
+	
 	.disabledField{
-		color: darken( $errorcolor, 30% );
+		color: $error-color;
 		text-decoration: line-through;
 	}
 
@@ -71,7 +95,7 @@
 			padding: 0 0 0 0;
 		}
 	}
-	.mcscFixUp > ul{
+	.mcscFixUp > ul,.question-wrapper{
 		list-style: none;
 		padding: 0 0 0 0;
 	}
@@ -120,14 +144,32 @@
 		}
 	}
 	
-	#assessmentSettingsAction .layout-navigation input[type="radio"],
-	#assessmentSettingsAction\:toDefaultGradebook{
+	#assessmentSettingsAction .layout-navigation input[type="radio"]{
 		@media #{$nonPhone}{
 			float:left;
 			& + label {
 				overflow:auto;
 				display:block;
 				margin-left: 1.5em;
+			}
+		}
+	}
+	
+	#assessmentSettingsAction input[type="radio"],
+	#assessmentSettingsAction input[type="checkbox"]{
+		@media #{$tablet}{
+			float:left;
+			& + label {
+				overflow:auto;
+				display:block;
+			}
+		}
+	}
+	
+	#assessmentSettingsAction input[type="checkbox"]{
+		@media #{$tablet}{
+			& + label {
+			margin-left: 1.5em;
 			}
 		}
 	}
@@ -143,4 +185,157 @@
 	#samLiteEntryForm\:data{
 		margin-top: 1.2em;
 	}
+	
+	#templateCreateForm{
+		label[for="templateCreateForm:tempName"]{
+			margin-right: 1em;
+		}
+	}
+	
+	.toolTipLink{
+		color: $link-color;
+		background-color: $link-background-color;
+		text-decoration: underline;
+		cursor: pointer;
+		&:hover{
+			color: $link-hover-color;
+			background-color: $link-hover-background-color;
+			text-decoration:underline;
+		}
+	}
+
+	.ui-autocomplete-input {
+		@extend .form-control;
+
+		width: initial;
+		max-width: initial;
+		display: inline-block;
+	}
+
+	.ui-corner-right {
+		height: 34px;
+		margin-top: -3px;
+		margin-left: -3px;
+	}
+
+	.dataTables_wrapper {
+		.dataTables_length {
+			float: left;
+
+			@media #{$phone}{
+				float: initial;
+			}
+		}
+
+		.dataTables_filter {
+			float: right;
+			text-align: right;
+
+			@media #{$phone}{
+				float: initial;
+				text-align: initial;
+			}
+
+			input {
+				@extend .form-control;
+
+				width: initial;
+				max-width: initial;
+				display: inline-block;
+				margin-left: 6px;
+			}
+		}
+
+		.dataTables_info {
+			clear: both;
+			float: left;
+		}
+
+		.dataTables_paginate {
+			float: right;
+			text-align: right;
+
+			> a.paginate_button {
+				@extend input[type="submit"];
+
+				&.disabled {
+					@extend input[type="submit"][disabled="disabled"];
+				}
+			}
+
+			span {
+				.paginate_button {
+					color: #333 !important;
+
+					@extend button;
+
+					&:hover {
+						color: #333 !important;
+					}
+
+					&.current {
+						@extend .btn-default:active:hover;
+					}
+				}
+
+				a.paginate_button {
+					@extend .btn-default;
+				}
+			}
+
+			.ellipsis {
+				margin-right: 10px;
+			}
+		}
+	}
+
+	.dataTable {
+		thead {
+			.sorting_asc, .sorting_desc {
+				a {
+					position: relative;
+					margin-right: 11px;
+
+					&::after {
+						content: " ";
+						width: 11px;
+						height: 11px;
+						position: absolute;
+						bottom: 2px;
+						right: -14px;
+					}
+				}
+			}
+
+			.sorting_asc {
+				a::after {
+					background: url(/library/image/sakai/sortascending.gif?panel=Main);
+				}
+			}
+
+			.sorting_desc {
+				a::after {
+					background: url(/library/image/sakai/sortdescending.gif?panel=Main);
+				}
+			}
+		}
+	}
+
+	#{'#authorIndexForm\\:remove-selected'} {
+		@extend button;
+
+		&.disabled {
+			@extend input[type="submit"][disabled="disabled"];
+			background: #f3f3f3;
+			border-color: #e7e7e7;
+			color: #717171 !important;
+
+			&:hover {
+				background: #f3f3f3;
+				border-color: #e7e7e7;
+				color: #717171 !important;
+			}
+		}
+	}
+
 }
