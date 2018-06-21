@@ -185,7 +185,11 @@ public class SiteEmailNotificationAnnc extends SiteEmailNotification
 			Site site = siteService.getSite(siteId);
 			//---------ZCII-1649 - Add course title to announcement email
 			rpe = site.getPropertiesEdit();
-			title = rpe.getProperty("title") + " " + site.getTitle() + ")";
+			if (rpe.getProperty("title") != null){
+				title = rpe.getProperty("title") + " (" + site.getTitle() + ")";
+			}else{
+				title = site.getTitle();
+			}
 			//---------End ZCII-1649
 			url = site.getUrl(); // Might have a better URL.
 		}
@@ -334,7 +338,11 @@ public class SiteEmailNotificationAnnc extends SiteEmailNotification
 			Site site = siteService.getSite(siteId);
 			//-------ZCII-1649 - Add course title to announcement email
 			rpe = site.getPropertiesEdit();
-			title = rpe.getProperty("title") + " - (" + site.getTitle() + ")";
+			if (rpe.getProperty("title") != null){
+				title = rpe.getProperty("title") + " (" + site.getTitle() + ")";
+			}else{
+				title = site.getTitle();
+			}
 			//---------ZCII-1649
 		}
 		catch (Exception ignore)
@@ -530,7 +538,11 @@ public class SiteEmailNotificationAnnc extends SiteEmailNotification
 			Site site = siteService.getSite(siteId);
 			//--------ZCII-1649 - Add course title to announcement email
 			rpe = site.getPropertiesEdit();
-			title = rpe.getProperty("title") + " " + site.getTitle() + ")";
+			if (rpe.getProperty("title") != null){
+				title = rpe.getProperty("title") + " (" + site.getTitle() + ")";
+			}else{
+				title = site.getTitle();
+			}
 			//--------End ZCII-1649-------------------------------------
 		}
 		catch (Exception ignore)
