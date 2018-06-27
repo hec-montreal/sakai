@@ -971,6 +971,14 @@ public abstract class BaseSiteService implements SiteService, Observer
 			throw new IdUnusedException(site.getId());
 		}
 
+		
+		// Invalidate the user-site cache.
+		Site cached = getCachedSite(site.getId());
+		if (cached != null ) {
+			clearUserCacheForSite(site);
+		}
+		cacheSite(site);
+
 		try
 		{
 			enableAzgSecurityAdvisor();
@@ -1000,6 +1008,13 @@ public abstract class BaseSiteService implements SiteService, Observer
 		{
 			throw new IdUnusedException(site.getId());
 		}
+
+		// Invalidate the user-site cache.
+		Site cached = getCachedSite(site.getId());
+		if (cached != null ) {
+			clearUserCacheForSite(site);
+		}
+		cacheSite(site);
 
 		try
 		{
@@ -1149,6 +1164,8 @@ public abstract class BaseSiteService implements SiteService, Observer
 				try
 				{
 					authzGroupService().save(group.m_azg);
+					// track it
+					eventTrackingService().post(eventTrackingService().newEvent(SECURE_UPDATE_GROUP_MEMBERSHIP, group.getId(), true));
 				}
 				catch (Exception t)
 				{

@@ -38,6 +38,7 @@ import org.sakaiproject.tool.assessment.facade.PublishedAssessmentFacadeQueries;
 import org.sakaiproject.tool.assessment.services.GradingService;
 import org.sakaiproject.tool.assessment.services.assessment.PublishedAssessmentService;
 import org.sakaiproject.tool.assessment.ui.bean.author.AuthorBean;
+import org.sakaiproject.tool.assessment.ui.bean.authz.AuthorizationBean;
 import org.sakaiproject.tool.assessment.ui.listener.util.ContextUtil;
 
 /**
@@ -59,6 +60,7 @@ public class SortPublishedAssessmentListener
     PublishedAssessmentService publishedAssessmentService = new PublishedAssessmentService();
     AuthorBean author = (AuthorBean) ContextUtil.lookupBean(
                        "author");
+    AuthorizationBean authorization = (AuthorizationBean) ContextUtil.lookupBean("authorization");
 
     processSortInfo(author);
     
@@ -68,7 +70,7 @@ public class SortPublishedAssessmentListener
 
     ArrayList publishedAssessmentList = publishedAssessmentService.getBasicInfoOfAllPublishedAssessments2(
  		   this.getPublishedOrderBy(author), author.isPublishedAscending(), AgentFacade.getCurrentSiteId());
-    authorActionListener.prepareAllPublishedAssessmentsList(author, gradingService, publishedAssessmentList);
+    authorActionListener.prepareAllPublishedAssessmentsList(author, authorization, gradingService, publishedAssessmentList);
     author.setJustPublishedAnAssessment(true);
   }
 

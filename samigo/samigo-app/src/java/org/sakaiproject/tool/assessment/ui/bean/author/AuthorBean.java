@@ -26,6 +26,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -64,7 +69,9 @@ public class AuthorBean implements Serializable
   private ArrayList assessmentTemplateList;
   private ArrayList assessments;
   private ArrayList publishedAssessments;
+  private List allAssessments;
   private ArrayList inactivePublishedAssessments;
+  private Map<String, String> groups;
   private SelectItem[] assessmentTemplates;
   private boolean showCompleteAssessment;
   private String totalPoints;
@@ -116,6 +123,9 @@ public class AuthorBean implements Serializable
   private String editPoolName;
   private String editPoolSectionName;
   private String editPoolSectionId;
+
+  private boolean groupFilterEnabled;
+
   /* ------------------------------------ /*
   
   
@@ -216,6 +226,38 @@ public class AuthorBean implements Serializable
     return publishedAssessments;
   }
 
+  public void setAllAssessments(List allAssessments) {
+    this.allAssessments = allAssessments;
+
+    if (this.isGroupFilterEnabled()) {
+      Map<String, String> groups = new HashMap<>();
+      for (Object assessment : allAssessments) {
+        if (assessment instanceof AssessmentFacade) {
+          AssessmentFacade assessmentFacade = (AssessmentFacade) assessment;
+          Map<String, String> assessmentGroups = assessmentFacade.getReleaseToGroups();
+          if (assessmentGroups != null) {
+            groups.putAll(assessmentGroups);
+          }
+        }
+
+        if (assessment instanceof PublishedAssessmentFacade) {
+          PublishedAssessmentFacade pubAssessmentFacade = (PublishedAssessmentFacade) assessment;
+          Map<String, String> assessmentGroups = pubAssessmentFacade.getReleaseToGroups();
+          if (assessmentGroups != null) {
+            groups.putAll(assessmentGroups);
+          }
+        }
+      }
+      this.groups = groups.entrySet().stream().sorted(Map.Entry.comparingByValue())
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+    }
+  }
+
+  public List getAllAssessments() {
+    return allAssessments;
+  }
+
   public void setInactivePublishedAssessments(ArrayList inactivePublishedAssessments){
     this.inactivePublishedAssessments = inactivePublishedAssessments;
   }
@@ -223,7 +265,11 @@ public class AuthorBean implements Serializable
   public ArrayList getInactivePublishedAssessments(){
     return inactivePublishedAssessments;
   }
-  
+
+  public Map getGroups(){
+    return this.groups;
+  }
+
   /**
    * do we show the complete asseassement?
    * @return boolean
@@ -687,7 +733,6 @@ public class AuthorBean implements Serializable
 	  boolean isDeleteAnyAssessment = authorizationBean.getDeleteAnyAssessment();
 	  boolean isDeleteOwnAssessment = authorizationBean.getDeleteOwnAssessment();
 
-	  pendingActionList1.add(new SelectItem("select", com.getString("action_select")));
 	  if (isEditAnyAssessment || isEditOwnAssessment) {
 		  pendingActionList1.add(new SelectItem("edit_pending", com.getString("edit_action")));
 		  pendingActionList1.add(new SelectItem("preview_pending", com.getString("action_preview")));
@@ -698,9 +743,6 @@ public class AuthorBean implements Serializable
 		  pendingActionList1.add(new SelectItem("publish", com.getString("publish_action")));
 		  pendingActionList1.add(new SelectItem("duplicate", com.getString("action_duplicate")));
 		  pendingActionList1.add(new SelectItem("export", com.getString("export_action")));
-	  }
-	  if (isDeleteAnyAssessment || isDeleteOwnAssessment) {
-		  pendingActionList1.add(new SelectItem("remove_pending", com.getString("remove_action")));
 	  }
 	  return pendingActionList1;
   }
@@ -720,7 +762,6 @@ public class AuthorBean implements Serializable
 	  boolean isDeleteAnyAssessment = authorizationBean.getDeleteAnyAssessment();
 	  boolean isDeleteOwnAssessment = authorizationBean.getDeleteOwnAssessment();
 
-	  pendingActionList2.add(new SelectItem("select", com.getString("action_select")));
 	  if (isEditAnyAssessment || isEditOwnAssessment) {
 		  pendingActionList2.add(new SelectItem("edit_pending", com.getString("edit_action")));
 		  pendingActionList2.add(new SelectItem("preview_pending", com.getString("action_preview")));
@@ -730,9 +771,6 @@ public class AuthorBean implements Serializable
 		  pendingActionList2.add(new SelectItem("settings_pending", com.getString("settings_action")));
 		  pendingActionList2.add(new SelectItem("duplicate", com.getString("action_duplicate")));
 		  pendingActionList2.add(new SelectItem("export", com.getString("export_action")));
-	  }
-	  if (isDeleteAnyAssessment || isDeleteOwnAssessment) {
-		  pendingActionList2.add(new SelectItem("remove_pending", com.getString("remove_action")));
 	  }
 	  return pendingActionList2;
   }
@@ -905,5 +943,13 @@ public class AuthorBean implements Serializable
 			  context.redirect("discrepancyInData");
 		  } catch (Exception e) {};
 	  }
+  }
+
+  public boolean isGroupFilterEnabled() {
+    return this.groupFilterEnabled;
+  }
+
+  public void setGroupFilterEnabled(boolean groupFilterEnabled) {
+    this.groupFilterEnabled = groupFilterEnabled;
   }
 }

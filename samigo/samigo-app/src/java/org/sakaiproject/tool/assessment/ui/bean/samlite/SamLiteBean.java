@@ -16,6 +16,7 @@ import org.sakaiproject.tool.assessment.samlite.api.QuestionGroup;
 import org.sakaiproject.tool.assessment.samlite.api.SamLiteService;
 import org.sakaiproject.tool.assessment.services.assessment.AssessmentService;
 import org.sakaiproject.tool.assessment.ui.bean.author.AuthorBean;
+import org.sakaiproject.tool.assessment.ui.bean.authz.AuthorizationBean;
 import org.sakaiproject.tool.assessment.ui.listener.util.ContextUtil;
 import org.sakaiproject.tool.assessment.util.TextFormat;
 import org.sakaiproject.util.FormattedText;
@@ -36,6 +37,7 @@ public class SamLiteBean implements Serializable {
 	private boolean isVisible = true;
 	
 	private AuthorBean authorBean;
+	private AuthorizationBean authorizationBean;
 
 	private ResourceLoader rb = new ResourceLoader("org.sakaiproject.tool.assessment.bundle.SamLite");
 	
@@ -43,6 +45,10 @@ public class SamLiteBean implements Serializable {
 		this.authorBean = authorBean;
 	}
 	
+	public void setAuthorizationBean(AuthorizationBean authorizationBean) {
+		this.authorizationBean = authorizationBean;
+	}
+
 	private QuestionGroup questionGroup;
 	private SamLiteService samLiteService;
 
@@ -80,7 +86,15 @@ public class SamLiteBean implements Serializable {
 			AssessmentFacade assessmentFacade= (AssessmentFacade) iter.next();
 			assessmentFacade.setTitle(FormattedText.convertFormattedTextToPlaintext(assessmentFacade.getTitle()));
 		}
-	    authorBean.setAssessments(list);
+		List allAssessments = new ArrayList<>();
+		if (authorizationBean.getEditAnyAssessment() || authorizationBean.getEditOwnAssessment()) {
+			allAssessments.addAll(list);
+		}
+		if (authorizationBean.getGradeAnyAssessment() || authorizationBean.getGradeOwnAssessment()) {
+			allAssessments.addAll(authorBean.getPublishedAssessments());
+		}
+		authorBean.setAssessments(list);
+		authorBean.setAllAssessments(allAssessments);
 	}
 	
 	public List getQuestions() {
