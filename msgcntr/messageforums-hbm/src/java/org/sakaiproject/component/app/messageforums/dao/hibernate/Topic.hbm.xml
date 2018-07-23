@@ -170,7 +170,10 @@
 	    </property>        
 	    <property name="hourBeforeResponsesVisible">
 	      <column name="HOUR_BEFORE_RESPONSES_VISIBLE" length="10" not-null="false" />
-	    </property>    
+	    </property>
+	    <property name="restrictPermissionsForGroups">
+	      <column name="RESTRICT_PERMS_FOR_GROUPS" not-null="true" default="0" />
+	    </property>
 	    <!-- 
 	    <many-to-one name="dateRestrictions" column="DATE_RESTRICTIONS"
 	      class="org.sakaiproject.component.app.messageforums.dao.hibernate.DateRestrictionsImpl"

@@ -77,7 +77,7 @@ public class EditPublishedSettingsListener
     
     // #1a - load the assessment
     String assessmentId = (String) FacesContext.getCurrentInstance().
-        getExternalContext().getRequestParameterMap().get("publishedAssessmentId");
+        getExternalContext().getRequestParameterMap().get("publishedId");
     PublishedAssessmentService assessmentService = new PublishedAssessmentService();
     PublishedAssessmentFacade assessment = assessmentService.getSettingsOfPublishedAssessment(
         assessmentId);

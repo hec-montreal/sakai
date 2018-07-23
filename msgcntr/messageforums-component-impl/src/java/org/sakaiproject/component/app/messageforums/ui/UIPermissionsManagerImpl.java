@@ -206,7 +206,13 @@ public class UIPermissionsManagerImpl implements UIPermissionsManager {
       return true;
     }
     if (securityService.unlock(SiteService.SECURE_UPDATE_SITE, getContextSiteId())){
-    	return true;
+      if (!forum.getRestrictPermissionsForGroups()){
+        return true;
+      }
+      //if restricted && belongs to group
+      if(isInstructorForAllowedGroup(forum.getId(), true)){
+        return true;
+      }
     }
     if (forumManager.isForumOwner(forum))
     {
@@ -233,6 +239,34 @@ public class UIPermissionsManagerImpl implements UIPermissionsManager {
     return false;
   }
 
+  public boolean isInstructorForAllowedGroup(Long objectId, boolean isForum){
+
+    if(objectId == null || !isInstructor()){
+        return false;
+    }
+
+    String groupTitle = null;
+    if(isForum){
+      groupTitle = forumManager.getAllowedGroupForRestrictedForum(objectId, PermissionLevelManager.PERMISSION_LEVEL_NAME_CONTRIBUTOR);
+    } else {
+      groupTitle = forumManager.getAllowedGroupForRestrictedTopic(objectId, PermissionLevelManager.PERMISSION_LEVEL_NAME_CONTRIBUTOR);
+    }
+    LOG.debug("Allowed group title {} for object {}", groupTitle, objectId);
+    try {
+      Site site = SiteService.getSite(toolManager.getCurrentPlacement().getContext());
+      Collection groups = getGroupsWithMember(site, getCurrentUserId());
+      for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();) {
+        Group currentGroup = (Group) groupIterator.next();
+        if (currentGroup.getTitle().equals(groupTitle)){
+          return true;
+        }
+      }
+    } catch(Exception e){
+      LOG.error("isInstructorForAllowedGroup error: exception {} in forum {}", e.getMessage(), objectId);
+    }
+    return false;
+  }
+
   /**   
    * @see org.sakaiproject.api.app.messageforums.ui.UIPermissionsManager#isNewTopic(org.sakaiproject.api.app.messageforums.DiscussionForum)
    */
@@ -242,6 +276,11 @@ public class UIPermissionsManagerImpl implements UIPermissionsManager {
     if (isSuperUser())
     {
       return true;
+    }
+    if (securityService.unlock(SiteService.SECURE_UPDATE_SITE, getContextSiteId())){
+      if (forum.getRestrictPermissionsForGroups() && isInstructorForAllowedGroup(forum.getId(), true)){
+        return true;
+      }
     }
     try
     {
@@ -402,7 +441,13 @@ public class UIPermissionsManagerImpl implements UIPermissionsManager {
       return true;
     }
     if (securityService.unlock(userId, SiteService.SECURE_UPDATE_SITE, getContextSiteId())){
-    	return true;
+      if (!forum.getRestrictPermissionsForGroups() && !topic.getRestrictPermissionsForGroups()){
+        return true;
+      }
+      //if restricted && belongs to group
+      if ((forum.getRestrictPermissionsForGroups() && isInstructorForAllowedGroup(forum.getId(), true)) || (topic.getRestrictPermissionsForGroups() && isInstructorForAllowedGroup(topic.getId(), false))){
+        return true;
+      }
     }
     try
     {
@@ -603,10 +648,6 @@ public class UIPermissionsManagerImpl implements UIPermissionsManager {
   
   public boolean isReviseOwn(DiscussionTopic topic, DiscussionForum forum, String userId, String contextId){
     LOG.debug("isReviseOwn(DiscussionTopic {}, DiscussionForum {})", topic, forum);
-    if (checkBaseConditions(topic, forum, userId, contextId))
-    {
-      return true;
-    }
     try
     {
       if (checkBaseConditions(topic, forum,  userId, contextId))
@@ -657,10 +698,6 @@ public class UIPermissionsManagerImpl implements UIPermissionsManager {
   
   public boolean isDeleteAny(DiscussionTopic topic, DiscussionForum forum, String userId, String contextId){
     LOG.debug("isDeleteAny(DiscussionTopic {}, DiscussionForum {})", topic, forum);
-    if (checkBaseConditions(topic, forum, userId, contextId))
-    {
-      return true;
-    }
     try
     {
       if (checkBaseConditions(topic, forum, userId, contextId))
@@ -710,10 +747,6 @@ public class UIPermissionsManagerImpl implements UIPermissionsManager {
   
   public boolean isDeleteOwn(DiscussionTopic topic, DiscussionForum forum, String userId, String contextId){
     LOG.debug("isDeleteOwn(DiscussionTopic {}, DiscussionForum {})", topic, forum);
-    if (checkBaseConditions(topic, forum, userId, contextId))
-    {
-      return true;
-    }
     try
     {
       if (checkBaseConditions(topic, forum, userId, contextId))
@@ -759,20 +792,6 @@ public class UIPermissionsManagerImpl implements UIPermissionsManager {
   public boolean isMarkAsRead(DiscussionTopic topic, DiscussionForum forum)
   {
       LOG.debug("isMarkAsRead(DiscussionTopic {}, DiscussionForum {})", topic, forum);
-    if (checkBaseConditions(topic, forum))
-    {
-      return true;
-    }
-
-    if (topic.getLocked() == null || topic.getLocked().equals(Boolean.TRUE))
-    {
-      LOG.debug("This topic is locked {}", topic);
-      return false;
-    }
-    if (topic.getDraft() == null || topic.getDraft().equals(Boolean.TRUE))
-    {
-      LOG.debug("This topic is at draft stage {}", topic);
-    }
     try
     {
       if (checkBaseConditions(topic, forum))
@@ -834,10 +853,6 @@ public class UIPermissionsManagerImpl implements UIPermissionsManager {
   {
     // NOTE: the forum or topic being locked should not affect a user's ability to moderate,
     // so logic related to the locked status was removed
-    if (checkBaseConditions(null, null, userId, "/site/" + siteId))
-    {
-      return true;
-    }
     try
     {
       if (checkBaseConditions(null, null, userId, "/site/" + siteId))
@@ -1459,6 +1474,10 @@ public class UIPermissionsManagerImpl implements UIPermissionsManager {
     if (isSuperUser(userId))
     {
       return true;
+    }
+    //if restricted && belongs to group
+    if ((forum != null && forum.getRestrictPermissionsForGroups() && isInstructorForAllowedGroup(forum.getId(), true)) || (topic != null && topic.getRestrictPermissionsForGroups() && isInstructorForAllowedGroup(topic.getId(), false))){
+        return true;
     }
     return false;
   }

@@ -386,6 +386,24 @@ public class DiscussionForumBean
   }
 
   /**
+   * Return whether or not the forum will use specific group permissions.
+   */
+  public String getRestrictPermissionsForGroups()
+  {
+	  LOG.debug("getRestrictPermissionsForGroups()");
+	  return Boolean.toString(forum.getRestrictPermissionsForGroups());
+  }
+  
+  /**
+   * Set the restrictPermissionsForGroups setting for the forum.
+   */
+  public void setRestrictPermissionsForGroups(String restrictPermissionsForGroups)
+  {
+	  LOG.debug("setRestrictPermissionsForGroups()");
+	  forum.setRestrictPermissionsForGroups(Boolean.parseBoolean(restrictPermissionsForGroups));
+  }
+
+  /**
    * @return Returns the markForDeletion.
    */
   public boolean isMarkForDeletion()

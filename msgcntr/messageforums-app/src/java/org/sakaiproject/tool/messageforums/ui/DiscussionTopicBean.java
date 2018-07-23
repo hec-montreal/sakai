@@ -1267,5 +1267,21 @@ public class DiscussionTopicBean
 			return formattedOpenDate;
 		}
 	}
-	
+
+	/**
+	 * Return whether or not the topic will use specific group permissions.
+	 */
+	public String getRestrictPermissionsForGroups() {
+		LOG.debug("getRestrictPermissionsForGroups()");
+		return Boolean.toString(topic.getRestrictPermissionsForGroups());
+	}
+
+	/**
+	 * Set the restrictPermissionsForGroups setting for the topic.
+	 */
+	public void setRestrictPermissionsForGroups(String restrictPermissionsForGroups) {
+		LOG.debug("setRestrictPermissionsForGroups()");
+		topic.setRestrictPermissionsForGroups(Boolean.parseBoolean(restrictPermissionsForGroups));
+	}
+
 }

@@ -30,11 +30,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -685,7 +687,7 @@ public class PublishedAssessmentFacadeQueries extends HibernateDaoSupport
 	public PublishedAssessmentFacade getPublishedAssessment(Long assessmentId, boolean withGroupsInfo) {
 		PublishedAssessmentData a = loadPublishedAssessment(assessmentId);
 		a.setSectionSet(getSectionSetForAssessment(a)); // this is making things slow -pbd
-		String releaseToGroups = "";
+		Map releaseToGroups = new HashMap();
 		if (withGroupsInfo) {
 			//TreeMap groupsForSite = getGroupsForSite();
 			
@@ -693,7 +695,7 @@ public class PublishedAssessmentFacadeQueries extends HibernateDaoSupport
             String siteId = getPublishedAssessmentSiteId(assessmentId.toString());
             TreeMap groupsForSite = getGroupsForSite(siteId);
              
-			releaseToGroups = getReleaseToGroupsAsString(groupsForSite, assessmentId);
+			releaseToGroups = getReleaseToGroups(groupsForSite, assessmentId);
 		}
 		
 		PublishedAssessmentFacade f = new PublishedAssessmentFacade(a, releaseToGroups);
@@ -1271,7 +1273,7 @@ public class PublishedAssessmentFacadeQueries extends HibernateDaoSupport
 
 		ArrayList pubList = new ArrayList();
 		TreeMap groupsForSite = null;
-		String releaseToGroups;
+		Map releaseToGroups;
 		String lastModifiedBy = "";
 		AgentFacade agent = null;
 
@@ -1283,7 +1285,7 @@ public class PublishedAssessmentFacadeQueries extends HibernateDaoSupport
 					groupsForSite = getGroupsForSite(siteAgentId);
 				}
 				Long assessmentId = p.getPublishedAssessmentId();
-				releaseToGroups = getReleaseToGroupsAsString(groupsForSite, assessmentId);
+				releaseToGroups = getReleaseToGroups(groupsForSite, assessmentId);
 			}
 			
 
@@ -1352,7 +1354,7 @@ public class PublishedAssessmentFacadeQueries extends HibernateDaoSupport
 
 		ArrayList pubList = new ArrayList();
 		TreeMap groupsForSite = null;
-		String releaseToGroups;
+		Map releaseToGroups;
 		String lastModifiedBy = "";
 		AgentFacade agent = null;
 		for (int i = 0; i < list.size(); i++) {
@@ -1363,7 +1365,7 @@ public class PublishedAssessmentFacadeQueries extends HibernateDaoSupport
 					groupsForSite = getGroupsForSite(siteAgentId);
 				}
 				Long assessmentId = p.getPublishedAssessmentId();
-				releaseToGroups = getReleaseToGroupsAsString(groupsForSite, assessmentId);
+				releaseToGroups = getReleaseToGroups(groupsForSite, assessmentId);
 			}
 
 			agent = new AgentFacade(p.getLastModifiedBy());
@@ -1547,7 +1549,7 @@ public class PublishedAssessmentFacadeQueries extends HibernateDaoSupport
 
 		ArrayList pubList = new ArrayList();
 		TreeMap groupsForSite = null;
-		String releaseToGroups;
+		Map releaseToGroups;
 		String lastModifiedBy = "";
 		AgentFacade agent = null;
 
@@ -1559,7 +1561,7 @@ public class PublishedAssessmentFacadeQueries extends HibernateDaoSupport
 					groupsForSite = getGroupsForSite(siteAgentId);
 				}
 				Long assessmentId = p.getPublishedAssessmentId();
-				releaseToGroups = getReleaseToGroupsAsString(groupsForSite, assessmentId);
+				releaseToGroups = getReleaseToGroups(groupsForSite, assessmentId);
 			}
 			
 
@@ -2741,41 +2743,27 @@ public class PublishedAssessmentFacadeQueries extends HibernateDaoSupport
 	 * @param assessmentId
 	 * @return
 	 */
-	private String getReleaseToGroupsAsString(TreeMap groupsForSite, Long assessmentId) {
-		 List releaseToGroups = new ArrayList();
-		 String releaseToGroupsAsString = null;
-	     AuthzQueriesFacadeAPI authz = PersistenceService.getInstance().getAuthzQueriesFacade();
-		 List authorizations = authz.getAuthorizationByFunctionAndQualifier("TAKE_PUBLISHED_ASSESSMENT", assessmentId.toString());
-		 if (authorizations != null && authorizations.size()>0) {
-			 Iterator authsIter = authorizations.iterator();
-			 while (authsIter.hasNext()) {
-				 AuthorizationData ad = (AuthorizationData) authsIter.next();
-				 Object group = groupsForSite.get(ad.getAgentIdString());
-				 if (group != null) {
-					 releaseToGroups.add(group);
-				 }
-			 }			 
-			 Collections.sort(releaseToGroups);
-			 StringBuilder releaseToGroupsAsStringbuf = new StringBuilder();
-			  
-			  if (releaseToGroups != null && releaseToGroups.size()!=0 ) {
-				 String lastGroup = (String) releaseToGroups.get(releaseToGroups.size()-1);
-				 Iterator releaseToGroupsIter = releaseToGroups.iterator();
-				 while (releaseToGroupsIter.hasNext()) {
-					 String group = (String) releaseToGroupsIter.next();
-					 //releaseToGroupsAsString += group;
-					 releaseToGroupsAsStringbuf.append(group);
-					 if (!group.equals(lastGroup) ) {
-						 //releaseToGroupsAsString += ", ";
-						 releaseToGroupsAsStringbuf.append(", ");
-
-					 }
-				 }
-			 }
-			 releaseToGroupsAsString = releaseToGroupsAsStringbuf.toString();
-		 }
-		 
-		 return releaseToGroupsAsString;
+	private Map<String, String> getReleaseToGroups(Map groupsForSite, Long assessmentId) {
+		Map<String, String> releaseToGroups = new HashMap();
+		AuthzQueriesFacadeAPI authz = PersistenceService.getInstance().getAuthzQueriesFacade();
+		List authorizations = authz.getAuthorizationByFunctionAndQualifier("TAKE_PUBLISHED_ASSESSMENT", assessmentId.toString());
+		if (authorizations != null && authorizations.size()>0) {
+			Iterator authsIter = authorizations.iterator();
+			while (authsIter.hasNext()) {
+				AuthorizationData ad = (AuthorizationData) authsIter.next();
+				if (groupsForSite.containsKey(ad.getAgentIdString())) {
+					String group = groupsForSite.get(ad.getAgentIdString()).toString();
+					if (group != null) {
+						releaseToGroups.put(ad.getAgentIdString(), group);
+					}
+				}
+			}
+			releaseToGroups.entrySet().stream()
+				.sorted(Map.Entry.comparingByValue())
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+				(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+		}
+		return releaseToGroups;
 	}
 	
 	/**

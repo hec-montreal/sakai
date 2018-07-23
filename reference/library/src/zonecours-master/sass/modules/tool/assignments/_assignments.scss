@@ -5,7 +5,7 @@
 		position: absolute;
 	}
 	.assignment-pager {
-		max-width: 350px;
+		max-width: 370px;
 		text-align: center;
 		.panel-heading {
 			padding: 5px 10px;
@@ -114,4 +114,17 @@
 			padding: 0.5em 0 0.5em 2.5em;
 		}
 	}
+
+	#groupTable, #filterByGroupDiv{
+		button.multiselect-clear-filter{
+			padding: 6px 12px;
+			font-size: 14px;
+			line-height: 1.42857143;
+			background-color: #eee;
+		}
+		button.multiselect.dropdown-toggle.btn.btn-default {
+			color: $text-color !important;
+		}
+	}
+
 }

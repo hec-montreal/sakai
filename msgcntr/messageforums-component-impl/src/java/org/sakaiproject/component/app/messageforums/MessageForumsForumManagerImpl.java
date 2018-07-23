@@ -773,6 +773,7 @@ public class MessageForumsForumManagerImpl extends HibernateDaoSupport implement
         forum.setModerated(Boolean.FALSE);
         forum.setPostFirst(Boolean.FALSE);
         forum.setAutoMarkThreadsRead(DEFAULT_AUTO_MARK_READ);
+        forum.setRestrictPermissionsForGroups(Boolean.FALSE);
         LOG.debug("createDiscussionForum executed");
         return forum;
     }
@@ -947,6 +948,7 @@ public class MessageForumsForumManagerImpl extends HibernateDaoSupport implement
         topic.setPostAnonymous(Boolean.FALSE);
         topic.setRevealIDsToRoles(Boolean.FALSE);
         topic.setAutoMarkThreadsRead(forum.getAutoMarkThreadsRead());
+        topic.setRestrictPermissionsForGroups(Boolean.FALSE);
         LOG.debug("createDiscussionForumTopic executed");
         return topic;
     }
@@ -1634,6 +1636,28 @@ public class MessageForumsForumManagerImpl extends HibernateDaoSupport implement
 			return countRows > 0 ? true : false;
 		}
 
-		
+		public String getAllowedGroupForRestrictedTopic(final Long topicId, final String permissionName) {
+			if (topicId == null) {
+				throw new IllegalArgumentException("Null Argument");
+			}
+			HibernateCallback<String> hcb = session -> (String) session
+				.getNamedQuery("findAllowedGroupInTopic")
+				.setLong("id", topicId)
+				.setString("permissionLevelName", permissionName)
+				.uniqueResult();
+			return getHibernateTemplate().execute(hcb);
+		}
+
+		public String getAllowedGroupForRestrictedForum(final Long forumId, final String permissionName) {
+			if (forumId == null) {
+				throw new IllegalArgumentException("Null Argument");
+			}
+			HibernateCallback<String> hcb = session -> (String) session
+				.getNamedQuery("findAllowedGroupInForum")
+				.setLong("id", forumId)
+				.setString("permissionLevelName", permissionName)
+				.uniqueResult();
+			return getHibernateTemplate().execute(hcb);
+		}
 
 }

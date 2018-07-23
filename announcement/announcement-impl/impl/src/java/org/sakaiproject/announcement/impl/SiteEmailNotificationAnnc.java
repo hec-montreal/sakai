@@ -38,6 +38,7 @@ import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.event.api.Event;
 import org.sakaiproject.event.api.Notification;
@@ -176,10 +177,20 @@ public class SiteEmailNotificationAnnc extends SiteEmailNotification
 		// get a site title
 		String title = siteId;
 		String url = ServerConfigurationService.getPortalUrl()+ "/site/"+ siteId;
+		//-----ZCII-1649 - Add course title to announcement email
+		ResourcePropertiesEdit rpe;
+		//-----End ZCII-1649------------------------------------
 		try
 		{
 			Site site = siteService.getSite(siteId);
-			title = site.getTitle();
+			//---------ZCII-1649 - Add course title to announcement email
+			rpe = site.getPropertiesEdit();
+			if (rpe.getProperty("title") != null){
+				title = rpe.getProperty("title") + " (" + site.getTitle() + ")";
+			}else{
+				title = site.getTitle();
+			}
+			//---------End ZCII-1649
 			url = site.getUrl(); // Might have a better URL.
 		}
 		catch (Exception ignore)
@@ -319,10 +330,20 @@ public class SiteEmailNotificationAnnc extends SiteEmailNotification
 
 		// get a site title
 		String title = siteId;
+		//----ZCII-1649 - Add course title to announcement email
+		ResourcePropertiesEdit rpe;
+		//----ZCII-1649
 		try
 		{
 			Site site = siteService.getSite(siteId);
-			title = site.getTitle();
+			//-------ZCII-1649 - Add course title to announcement email
+			rpe = site.getPropertiesEdit();
+			if (rpe.getProperty("title") != null){
+				title = rpe.getProperty("title") + " (" + site.getTitle() + ")";
+			}else{
+				title = site.getTitle();
+			}
+			//---------ZCII-1649
 		}
 		catch (Exception ignore)
 		{
@@ -509,10 +530,20 @@ public class SiteEmailNotificationAnnc extends SiteEmailNotification
 
 		// get a site title
 		String title = siteId;
+		//-----ZCII-1649 - Add course title to announcement email
+		ResourcePropertiesEdit rpe;
+		//-----End ZCII-1649------------------------------------
 		try
 		{
 			Site site = siteService.getSite(siteId);
-			title = site.getTitle();
+			//--------ZCII-1649 - Add course title to announcement email
+			rpe = site.getPropertiesEdit();
+			if (rpe.getProperty("title") != null){
+				title = rpe.getProperty("title") + " (" + site.getTitle() + ")";
+			}else{
+				title = site.getTitle();
+			}
+			//--------End ZCII-1649-------------------------------------
 		}
 		catch (Exception ignore)
 		{

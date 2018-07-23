@@ -131,6 +131,7 @@
         		<module>opensyllabus</module>
 			<module>compilatio</module>  
 		<module>tenjin</module>
+		<module>hec-event-processor</module>
           </modules>
         </profile>
         <profile>
