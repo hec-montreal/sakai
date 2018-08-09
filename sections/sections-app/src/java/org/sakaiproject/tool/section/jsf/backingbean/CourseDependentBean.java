@@ -31,7 +31,6 @@ import javax.faces.context.FacesContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.jsf.util.LocaleUtil;
 import org.sakaiproject.section.api.SectionManager;
 import org.sakaiproject.section.api.SectionManager.ExternalIntegrationConfig;
@@ -124,10 +123,7 @@ public class CourseDependentBean extends InitializableBean implements Serializab
 		return getCourseBean().authz.isSectionManagementAllowed(getUserUid(), getSiteContext());
 	}
 	public boolean isSectionOptionsManagementEnabled() {
-		if (ServerConfigurationService.getBoolean("section.info.modify.options", true))
-			return getCourseBean().authz.isSectionOptionsManagementAllowed(getUserUid(), getSiteContext());
-		else
-			return false;
+		return getCourseBean().authz.isSectionOptionsManagementAllowed(getUserUid(), getSiteContext());
 	}
 	public boolean isSectionEnrollmentMangementEnabled() {
 		return getCourseBean().authz.isSectionEnrollmentMangementAllowed(getUserUid(), getSiteContext());
