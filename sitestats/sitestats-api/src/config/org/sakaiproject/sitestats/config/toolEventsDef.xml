@@ -24,6 +24,7 @@
 		toolId="sakai.tenjin"
 		selected="true">
 		<event eventId="tenjin.read" selected="true"/>
+		<event eventId="tenjin.delete" selected="true"/>
 		<eventParserTip for="contextId" separator="/" index="3"/>
 	</tool>
 			
