@@ -20,11 +20,18 @@
 
 
 	<!-- tenjin -->
-	<tool 
-		toolId="sakai.tenjin"
-		selected="true">
+	<tool toolId="sakai.tenjin" selected="true">
 		<event eventId="tenjin.read" selected="true"/>
-		<event eventId="tenjin.delete" selected="true"/>
+		<event eventId="tenjin.create" selected="false"/>
+		<event eventId="tenjin.delete" selected="false"/>
+		<event eventId="tenjin.duplicate" selected="false"/>
+		<event eventId="tenjin.delete" selected="false"/>
+		<event eventId="tenjin.publish" selected="false"/>
+		<event eventId="tenjin.unpublish" selected="false"/>
+		<event eventId="tenjin.edit" selected="false"/>
+		<event eventId="tenjin.title_edit" selected="false"/>
+		<event eventId="tenjin.section_edit" selected="false"/>
+		<event eventId="tenjin.permissions_edit" selected="false"/>
 		<eventParserTip for="contextId" separator="/" index="3"/>
 	</tool>
 			
