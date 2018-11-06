@@ -38,7 +38,7 @@
 		id="ca.hec.listener.LoginProcessor" class="ca.hec.listener.LoginProcessor"
 		init-method="init">
 		<property name="eventProcessorLogic" ref="ca.hec.EventProcessorLogic"></property>
-		<property name="sessionManager" ref="org.sakaiproject.tool.api.SessionManager"></property>
+		<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService"></property>
 	</bean>
 
 </beans>

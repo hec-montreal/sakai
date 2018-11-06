@@ -18,7 +18,7 @@ import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.event.api.Event;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
-import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.user.api.UserDirectoryService;
 
 public class LoginProcessor implements EventProcessor {
 
@@ -28,7 +28,7 @@ public class LoginProcessor implements EventProcessor {
 
 	@Setter protected EventProcessorLogic eventProcessorLogic;
 
-	@Setter protected SessionManager sessionManager;
+	@Setter protected UserDirectoryService userDirectoryService;
 
 	public String getEventIdentifer() {
 		return EVENT_ID;
@@ -44,10 +44,12 @@ public class LoginProcessor implements EventProcessor {
 		DateFormat df =
 				new SimpleDateFormat("dd/MM/yyyy 'at' HH:mm");
 
-		String userEid = sessionManager.getCurrentSession().getUserEid();
-		if (userEid != null) {
-			logger.info("user [" + userEid + "] login " + df.format(new Date()));
-		} 
+		try {
+			String userEid = userDirectoryService.getUserEid(event.getUserId());
+			if (userEid != null) {
+				logger.info("user [" + userEid + "] login " + df.format(new Date()));
+			} 
+		} catch (Exception e) {}
 	}
 
 	public void init() {
