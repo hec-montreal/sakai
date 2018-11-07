@@ -49,7 +49,9 @@ public class LoginProcessor implements EventProcessor {
 			if (userEid != null) {
 				logger.info("user [" + userEid + "] login " + df.format(new Date()));
 			} 
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			logger.error("Failed to get user eid");
+		}
 	}
 
 	public void init() {
