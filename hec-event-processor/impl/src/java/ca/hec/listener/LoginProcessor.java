@@ -55,6 +55,7 @@ public class LoginProcessor implements EventProcessor {
 	}
 
 	public void init() {
+		logger.info("** init LoginProcessor **");
 		this.eventProcessorLogic.registerEventProcessor(EVENT_ID, this);
 	}
 }
