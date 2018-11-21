@@ -1,7 +1,7 @@
 (function() {
 	var urlHome = "/portal";
 	var useMockMessage = false;
-	var spinner;
+	var dialogVisible = false;
 
 	// Execute get request
 	var get = function(url, callback) {
@@ -12,23 +12,37 @@
 		}
 	};
 
+	// Show dialog
+	var showDialog = function (title, body) {
+		dialogVisible = true;
+
+		$('.dialog .title').html(title);
+		$('.dialog .body').html(body);
+
+		$('body').css('overflow', 'hidden');
+
+		$('.dialog-mask').fadeIn();
+		$('.dialog-host').fadeIn();
+	};
+
+	var closeDialog = function () {
+		dialogVisible = false;
+
+		$('body').css('overflow', 'visible');
+
+		$('.dialog-mask').hide();
+		$('.dialog-host').hide();
+	};
+
 	// Message d'acceuil
 	var getMessage = function() {
 		get("/direct/announcement/motd.json?n=1&" + new Date().getTime(), function(data) {
+			console.log(data);
+
 			if (data && data.announcement_collection.length > 0) {
 				var announcement = data.announcement_collection[0];
 
-				$("#dialog").html(announcement.body);
-				$("#dialog").attr('title', announcement.title);
-				$("#dialog").dialog({
-					position: {
-						my: "center center",
-						at: "right-175 top+135",
-						of: window
-					},
-
-					closeText: "Fermer"
-				});
+				showDialog(announcement.title, announcement.body);
 			}
 		});
 	};
@@ -49,45 +63,49 @@
 		window.location.replace(urlHome);
 	};
 
-	// Affiche le login
-	var showLogin = function() {
-		if (spinner) {
-			spinner.stop();
-		}
-
-		$("#loading").hide();
-		$("#loginform").fadeIn();
-	};
-
-	// Init le loading
-	var initLoading = function() {
-		spinner = new Spinner({
-			lines: 12,
-			top: "16%",
-			color: "#fff",
-			scale: 2
-		}).spin(document.getElementById("spinner"));
+	var showLogin = function () {
+		$('.loading').hide();
+		$('.login').fadeIn();
 	};
 
 	// Mock un message
 	var mockMessage = function() {
+		var body = 'This is a sample message. ';
+
+		for(var i = 0; i < 5; i++) {
+			body += body;
+		}
+
 		return {
 			announcement_collection: [{
-				body: "Some message body",
-				title: "Some message title"
+				body: body,
+				title: 'Une annonce'
 			}]
 		};
 	};
 
 	// Page init
 	var init = function() {
-		initLoading();
-
 		getMessage();
 
 		checkSession();
 	};
 
-	init();
+	$(document).ready(function () {
+		$('.dialog .close').click(function () {
+			closeDialog();
+		});
 
+		$(document).keyup(function (e) {
+			if(e.key === 'Escape') {
+				if(dialogVisible) {
+					closeDialog();
+				}
+			}
+		});
+
+		init();
+	});	
+
+	window.showDialog = showDialog;
 })();

@@ -1,86 +1,102 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=ISO-5589-1"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
 
-		<link href="res/css/jquery-ui.min.css" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/fonts.css" type="text/css" rel="stylesheet" media="all"/>
 		<link href="res/css/index.css" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/mobile.css" type="text/css" rel="stylesheet" media="all"/>
 
 		<title>ZoneCours - Home</title>
 
-		<script src="res/js/lib/jquery-1.10.2.min.js"></script>
-		<script src="res/js/lib/jquery-ui.min.js"></script>
-		<script src="res/js/lib/jquery.placeholder.min.js"></script>
-		<script src="res/js/lib/spin.min.js"></script>
+		<script src="/res/js/lib/jquery-1.10.2.min.js"></script>
+
+		<script src="/res/js/index.js"></script>
 	</head>
 
 	<body>
-		<div id="dialog">
+		<div class="dialog-mask" style="display: none;"></div>
+
+		<div class="dialog-host" style="display: none;">
+			<div class="dialog">
+				<div class="title">
+
+				</div>
+
+				<div class="body">
+					
+				</div>
+
+				<div class="controls">
+					<button class="close" type="button">Close</button>
+				</div>
+			</div>
 		</div>
 
- 		<div id="index-content">
- 			<div id="title">
-				<p id="main">ZoneCours</p>
-				<p id="tagline">LEARN &bull; COLLABORATE &bull; CREATE</p>
- 			</div>
+		<div class="host">
+			<div class="box">
+				<div class="photo"></div>
 
- 			<div id="loading">
- 				<div id="spinner"></div>
- 			</div>
+				<div class="form">
+					<div class="brand">
+						<img class="logo" src="res/images/logo-hec.gif" alt="HEC" />
 
- 			<form id="loginform" method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded" style="display: none;">
- 				<div id="loginformcontent">
- 	 				<p>
-	 					<input name="eid" id="eid" type="text" size="24" placeholder="User ID"/>
-	 				</p>
-	 				<p>
-	 					<input id="pw" type="password" name="pw" size="24" placeholder="Password"/>
-	 				</p>
-	 				<input id="submit" type="submit" name="submit" value=""/>
-	 				<p>
-	 					<a id="connexion-problem-link" href="/connexionInfo-en.html" target="_blank">Cannot access your account ?</a>
-	 				</p>
- 				</div>
- 			</form>
+						<div class="separator"></div>
+						
+						<div class="title">
+							<span>Zone</span>
+							<span class="dark">Cours</span>
+						</div>
+
+						<div class="clear-fix"></div>
+
+						<div class="words dark">
+							<div>Learn</div>
+							<div>Collaborate</div>
+							<div>Create</div>
+						</div>
+					</div>
+
+					<form method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded">
+						<div class="login">
+							<div>
+								<input name="eid" type="text" placeholder="Username" />
+							</div>
+
+							<div>
+								<input name="pw" type="password" placeholder="Password" autocomplete="new-password" />
+							</div>
+
+							<div>
+								<div class="problem">
+									<a href="/connexionInfo-en.html">Cannot access your account ?</a>
+								</div>
+
+								<div class="do-login">
+									<button type="submit">Login</button>
+								</div>
+							</div>
+						</div>
+
+						<div class="loading">
+							<img src="/res/images/loading.gif" alt="Loading" />
+						</div>
+					</form>
+				</div>
+
+				<div class="clear-fix"></div>
+			</div>
+
+			<div class="links">
+				<div>
+					<a href="http://www.hec.ca/en">HEC Montréal</a>
+					<a href="http://www.hec.ca/en/course/">Course portal</a>
+					<a href="https://confluence.hec.ca:8443/display/NouveauCours/Aide+de+ZoneCours">Help</a>
+					<a href="https://enligne.hec.ca/psp/GAPET/HEL/HRMS/?cmd=login&languageCd=ENG/">HEC en ligne</a>
+					<a href="/index.html">Français</a>
+				</div>
+			</div>
 		</div>
-
-		<div id="index-footer">
-			<ul>
-				<li>
-					<a target="blank" href="http://www.hec.ca/en/">HEC MONTR&Eacute;AL</a>
-				</li>
-				<li>
-					<a target="blank" href="http://www.hec.ca/en/course/">COURSE PORTAL</a>
-				</li>
-				<li>
-					<a target="blank" href="https://confluence.hec.ca:8443/display/NouveauCours/Aide+de+ZoneCours">HELP</a>
-				</li>
-				<li>
-					<a target="blank" href="https://enligne.hec.ca/psp/GAPET/HEL/HRMS/?cmd=login&languageCd=ENG/">HEC EN LIGNE</a>
-				</li>
-				<li>
-					<a href="/" title="version fran�aise">FRAN&Ccedil;AIS</a>
-				</li>
-			</ul>
-		</div>
-		
-		<!-- Google Analytics ? -->
-		<script>
-			var _gaq = _gaq || [];
-			_gaq.push(['_setAccount', 'UA-2831257-12']);
-			_gaq.push(['_trackPageview']);
-
-			(function() {
-				var ga = document.createElement('script');
-				ga.type = 'text/javascript';
-				ga.async = true;
-				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-				var s = document.getElementsByTagName('script')[0];
-				s.parentNode.insertBefore(ga, s);
-			})();
-		</script>
-		<!-- End Google Analytics ? -->
-
-		<script src="res/js/index.js"></script>
 	</body>
 </html>
