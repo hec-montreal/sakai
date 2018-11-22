@@ -120,7 +120,7 @@
         		<module>webservices</module>
         		<module>evaluation</module>
         		<module>sdata</module>
-        		<!-- <module>via</module> -->
+        		<module>via</module>
         		<module>hec-commons-utils</module>
         		<module>hec-course-archive</module>
         		<module>hec-public-portal-manager</module>
