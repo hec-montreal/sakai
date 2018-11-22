@@ -1,7 +1,6 @@
 (function() {
 	var urlHome = "/portal";
 	var useMockMessage = false;
-	var dialogVisible = false;
 
 	// Execute get request
 	var get = function(url, callback) {
@@ -13,25 +12,10 @@
 	};
 
 	// Show dialog
-	var showDialog = function (title, body) {
-		dialogVisible = true;
-
-		$('.dialog .title').html(title);
-		$('.dialog .body').html(body);
-
-		$('body').css('overflow', 'hidden');
-
-		$('.dialog-mask').fadeIn();
-		$('.dialog-host').fadeIn();
-	};
-
-	var closeDialog = function () {
-		dialogVisible = false;
-
-		$('body').css('overflow', 'visible');
-
-		$('.dialog-mask').hide();
-		$('.dialog-host').hide();
+	var showMessage = function (title, body) {
+		$('.message .title').html(title);
+		$('.message .body').html(body);
+		$('.message').show();
 	};
 
 	// Message d'acceuil
@@ -42,7 +26,7 @@
 			if (data && data.announcement_collection.length > 0) {
 				var announcement = data.announcement_collection[0];
 
-				showDialog(announcement.title, announcement.body);
+				showMessage(announcement.title, announcement.body);
 			}
 		});
 	};
@@ -92,20 +76,8 @@
 	};
 
 	$(document).ready(function () {
-		$('.dialog .close').click(function () {
-			closeDialog();
-		});
-
-		$(document).keyup(function (e) {
-			if(e.key === 'Escape') {
-				if(dialogVisible) {
-					closeDialog();
-				}
-			}
-		});
-
 		init();
 	});	
 
-	window.showDialog = showDialog;
+	window.showMessage = showMessage;
 })();
