@@ -21,8 +21,6 @@
 	// Message d'acceuil
 	var getMessage = function() {
 		get("/direct/announcement/motd.json?n=1&" + new Date().getTime(), function(data) {
-			console.log(data);
-
 			if (data && data.announcement_collection.length > 0) {
 				var announcement = data.announcement_collection[0];
 
