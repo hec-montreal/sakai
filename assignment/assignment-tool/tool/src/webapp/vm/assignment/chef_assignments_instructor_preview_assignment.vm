@@ -55,7 +55,7 @@
 								</tr>
 								<tr>
 									<th>
-										$tlang.getString("gen.due")
+										$tlang.getString("gen.due.header")
 									</th>
 									<td>
 										$value_DueDate.toStringLocalFull()
@@ -207,7 +207,7 @@
 					<table class="itemSummary" summary="$tlang.getString("gen.viewasstablesummary")">
 						<tr>
 							<th>
-								$tlang.getString("gen.due")
+								$tlang.getString("gen.due.header")
 							</th>
 							<td>
 								$value_DueDate.toStringLocalFull()<br />

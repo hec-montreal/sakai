@@ -1936,6 +1936,7 @@ public class AssignmentAction extends PagedResourceActionII
 				if (s.getTimeSubmitted() != null)
 				{
 					context.put("submit_time", s.getTimeSubmitted().toStringLocalFull());
+					context.put("is_late_submission", s.getTimeSubmitted().after(currentAssignment.getDropDeadTime()));
 				}
 				List attachments = s.getSubmittedAttachments();
 				if (attachments != null && attachments.size()>0)
