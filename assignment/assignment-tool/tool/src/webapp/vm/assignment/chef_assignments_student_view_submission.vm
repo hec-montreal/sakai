@@ -160,7 +160,7 @@ $(document).ready(function(){
 				</tr>
 				<tr>
 					<th>
-						$tlang.getString("gen.due")
+						$tlang.getString("gen.due.header")
 					</th>
 					#set($allowUpdateAssignment=$!service.allowUpdateAssignment($assignment.Reference))
 					<td>

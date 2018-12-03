@@ -2866,8 +2866,12 @@ public abstract class BaseAssignmentService implements AssignmentService, Entity
 		// submit time
 		buffer.append(rb.getString("submission.id") + " " + s.getId() + newline);
 		
-		// submit time 
-		buffer.append(rb.getString("noti.submit.time") + " " + s.getTimeSubmitted().toStringLocalFull() + newline + newline);
+		// submit time
+		String submitTimeLabel = rb.getString("noti.submit.time");
+		if (s.getTimeSubmitted().after(s.getAssignment().getDropDeadTime())) {
+			submitTimeLabel = rb.getString("noti.latesubmit.time");
+		}
+		buffer.append(submitTimeLabel + " " + s.getTimeSubmitted().toStringLocalFull() + newline + newline);
 		
 		// submit text
 		String text = StringUtils.trimToNull(s.getSubmittedText());
