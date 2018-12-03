@@ -59,7 +59,7 @@
 			</tr>
 			<tr> 
 				<th>
-					$tlang.getString("gen.due")
+					$tlang.getString("gen.due.header")
 				</th>
 				<td>
 					$assignment.DueTime.toStringLocalFull()
@@ -280,7 +280,7 @@
 				<table class ="itemSummary" cellspacing="0" cellpadding ="0" summary="$tlang.getString("gen.viewasstablesummary")">
 					<tr>
 						<th>
-							$tlang.getString("gen.due")
+							$tlang.getString("gen.due.header")
 						</th>
 						<td>
 							$!assignment.getDueTime().toStringLocalFull()
