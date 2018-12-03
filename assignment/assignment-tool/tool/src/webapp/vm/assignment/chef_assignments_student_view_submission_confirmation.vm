@@ -106,7 +106,11 @@
 			 ##submit time
 				<tr>
 					<th>
+					#if ($is_late_submission)
+						$tlang.getString('noti.latesubmit.time')
+					#else
 						$tlang.getString('noti.submit.time')
+					#end
 					</th>
 					<td>
 						$!submit_time
