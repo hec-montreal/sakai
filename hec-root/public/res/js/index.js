@@ -71,6 +71,12 @@
 		getMessage();
 
 		checkSession();
+
+		// Choose a picture at random
+		var picId = Math.floor(Math.random() * 4) + 1;
+		var url = '/access/content/public/login-' + picId + '.png';
+
+		$('.photo').css('background-image', 'url(' + url + ')');
 	};
 
 	$(document).ready(function () {
