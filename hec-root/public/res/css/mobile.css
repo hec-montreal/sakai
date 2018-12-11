@@ -1,3 +1,14 @@
+/* Laptop */
+@media all and (max-width: 1300px) {
+	.host {
+		width: 80%;
+		position: static;
+		margin-top: 20px;
+		height: 600px;
+	}
+}
+
+/* Mobile */
 @media all and (max-width: 1200px) {
 	.host {
 		width: 90%;
