@@ -1,6 +1,7 @@
 (function() {
 	var urlHome = "/portal";
 	var useMockMessage = false;
+	var photoCount = 4;
 
 	// Execute get request
 	var get = function(url, callback) {
@@ -73,7 +74,7 @@
 		checkSession();
 
 		// Choose a picture at random
-		var picId = Math.floor(Math.random() * 4) + 1;
+		var picId = Math.floor(Math.random() * photoCount) + 1;
 		var url = '/access/content/public/login-' + picId + '.png';
 
 		$('.photo').css('background-image', 'url(' + url + ')');
