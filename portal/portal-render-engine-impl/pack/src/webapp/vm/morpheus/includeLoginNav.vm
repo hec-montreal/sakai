@@ -135,7 +135,7 @@
                                     #end ## END of IF (${tabsSites.tutorial})
 
                                     <li class="Mrphs-userNav__submenuitem Mrphs-userNav__submenuitem-indented">
-                                        <a id="codeOfConductLink" role="menuitem" href="#" onclick="startCodeOfConduct({'codeOfConductTitle': '${rloader.sit_code_of_conduct}','userLocale' : '$!{locale}'});" class="Mrphs-userNav__submenuitem--tutorial">${rloader.sit_code_of_conduct}</a></span></li>
+                                        <a id="codeOfConductLink" role="menuitem" href="#" onclick="showCodeOfConduct({'userLocale' : '$!{locale}'});" class="Mrphs-userNav__submenuitem--tutorial">${rloader.sit_code_of_conduct}</a></span></li>
                                     </li>
 
                             #end ## END of IF (${site.isMyWorkspace})

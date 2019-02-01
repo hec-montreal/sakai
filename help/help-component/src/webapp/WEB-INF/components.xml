@@ -134,7 +134,7 @@
         </bean>
         
     <bean id="org.sakaiproject.api.app.help.CodeOfConductEntityProvider"
-            class="org.sakaiproject.component.app.help.CodeOfConductEntityProviderImpl">
+            class="org.sakaiproject.component.app.help.CodeOfConductEntityProviderImpl" init-method="init">
         <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService" />
         <property name="preferencesService" ref="org.sakaiproject.user.api.PreferencesService" />
         <property name="dataSource" ref="javax.sql.DataSource" />

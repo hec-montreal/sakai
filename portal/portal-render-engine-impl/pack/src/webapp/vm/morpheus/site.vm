@@ -125,14 +125,14 @@
         <script src="${pageScriptPath}jquery/qtip/tutorial.js$!{portalCDNQuery}"></script>
 
         #if ( $tutorial && $loggedIn )
-            <script>$(document).ready(function(){startTutorial({'showTutorialLocationOnHide': 'true'});});</script>
+            <!-- <script>$(document).ready(function(){startTutorial({'showTutorialLocationOnHide': 'true'});});</script> -->
         #end ## END of IF ( $tutorial && $loggedIn )
 
         <!-- Code of conduct -->
         <script src="/library/skin/morpheus-default/js/custom/code-of-conduct.js"></script>
 
         #if ( $loggedIn )
-            <script type="text/javascript" language="JavaScript">$(document).ready(function(){firstShowCodeOfConductPage({'codeOfConductTitle': '${rloader.sit_code_of_conduct}','userLocale' : '$!{locale}', 'tutorial': '$!tutorial','showTutorialLocationOnHide': 'true' });});</script>
+            <script type="text/javascript" language="JavaScript">$(document).ready(function(){ showCodeOfConduct({'checkHasUserAccepted': true, 'userLocale' : '$!{locale}', 'tutorial': '$!tutorial','showTutorialLocationOnHide': 'true' });});</script>
         #end
         <!-- End Code of conduct -->
 

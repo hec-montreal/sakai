@@ -30,8 +30,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvider, AutoRegisterEntityProvider, RESTful
 {
 	protected final Log log = LogFactory.getLog(getClass());
-	private ResourceLoader msgs = new ResourceLoader("CodeOfConductMessages");
-	private static PropertiesConfiguration otherLangProp;
+
+	private static String titleFr;
+	private static String bodyFr;
+	private static String titleEn;
+	private static String bodyEn;
 
 	private UserDirectoryService userDirectoryService;
 
@@ -54,6 +57,39 @@ public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvi
 		this.jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 
+	private void init() {
+		URL url;
+		PropertiesConfiguration properties;
+		try
+		{
+			url = getClass().getClassLoader().getResource("CodeOfConductMessages.properties");
+			properties = new PropertiesConfiguration();
+			properties.setListDelimiter('?');
+			properties.load(url);
+			titleEn = (String) properties.getProperty("codeOfConduct.title");
+			bodyEn = (String) properties.getProperty("codeOfConduct.body");
+		}
+		catch (ConfigurationException e)
+		{
+			log.error("Can not load the english version of the code of conduct");
+		}
+
+		try
+		{
+			url = getClass().getClassLoader().getResource("CodeOfConductMessages_fr_CA.properties");
+			properties = new PropertiesConfiguration();
+			properties.setListDelimiter('?');
+			properties.load(url);
+			titleFr = (String) properties.getProperty("codeOfConduct.title");
+			bodyFr = (String) properties.getProperty("codeOfConduct.body");
+		}
+		catch (ConfigurationException e)
+		{
+			log.error("Can not load the french version of the code of conduct");
+		}
+
+    }
+
 	@Override
 	public String getEntityPrefix()
 	{
@@ -70,11 +106,7 @@ public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvi
 		if (userId == null || userId.isEmpty())
 			throw new SecurityException("You must be logged in to perform this request.");
 
-		if (hasUserAccepted(userId))
-		{
-			throw new IllegalArgumentException("User has already accepted the code of conduct.");
-		}
-		else
+		if (!hasUserAccepted(userId))
 		{
 			jdbcTemplate.update("insert into CODE_OF_CONDUCT values (?,?)", new Object[] { userId, new java.util.Date(System.currentTimeMillis()) });
 		}
@@ -122,29 +154,12 @@ public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvi
 		String currentUserId = userDirectoryService.getCurrentUser().getId();
 
 		String type = userDirectoryService.getCurrentUser().getType();
-		valuesMap.put("type", type);
-		Locale currentUserLocale = preferencesService.getLocale(currentUserId);
-		URL url;
-		if ((currentUserLocale == null) || currentUserLocale.equals(Locale.CANADA_FRENCH))
-			url = getClass().getClassLoader().getResource("CodeOfConductMessages.properties");
-		else
-			url = getClass().getClassLoader().getResource("CodeOfConductMessages_fr_CA.properties");
-		try
-		{
+		valuesMap.put("userType", type);
 
-			otherLangProp = new PropertiesConfiguration();
-			otherLangProp.setListDelimiter('?');
-			otherLangProp.load(url);
-			valuesMap.put("otherVersionTitle", otherLangProp.getProperty("codeOfConduct.title"));
-			valuesMap.put("otherVersionContent", otherLangProp.getProperty("codeOfConduct.body"));
-
-		}
-		catch (ConfigurationException e)
-		{
-			log.error("Can not load the other version of the code of conduct");
-		}
-		valuesMap.put("title", msgs.get("codeOfConduct.title"));
-		valuesMap.put("content", msgs.get("codeOfConduct.body"));
+		valuesMap.put("titleEn", titleEn);
+		valuesMap.put("bodyEn", bodyEn);
+		valuesMap.put("titleFr", titleFr);
+		valuesMap.put("bodyFr", bodyFr);
 
 		return valuesMap;
 	}
