@@ -48,8 +48,8 @@ function closeDialog() {
     }
 }
 
-async function retrieveCodeOfConduct(locale, tutorial, showTutorialLocationOnHide) {
-    await $.getJSON('/direct/code_of_conduct/code_of_conduct.json?' + new Date().getTime(), function(response){
+function retrieveCodeOfConduct(locale, tutorial, showTutorialLocationOnHide) {
+    return $.getJSON('/direct/code_of_conduct/code_of_conduct.json?' + new Date().getTime(), function(response){
         sessionStorage.setItem('titleEn', response.data.titleEn);
         sessionStorage.setItem('titleFr', response.data.titleFr);
         sessionStorage.setItem('bodyEn', response.data.bodyEn);
@@ -57,30 +57,27 @@ async function retrieveCodeOfConduct(locale, tutorial, showTutorialLocationOnHid
         sessionStorage.setItem('hasUserAccepted', response.data.hasUserAccepted);
         sessionStorage.setItem('userType', response.data.userType);
     });
-    return;
 }
 
-async function showCodeOfConduct(opts){
+function showCodeOfConduct(opts){    
     if (!sessionStorage.getItem('hasUserAccepted')) {
-        await retrieveCodeOfConduct();
+        retrieveCodeOfConduct().then(function () {
+            if (!opts.checkHasUserAccepted || (sessionStorage.getItem('hasUserAccepted') === 'false' && sessionStorage.getItem('userType') === 'student')) {
+                showDialog(opts.userLocale);
+            }
+            else if (opts.tutorial === 'true') {
+                startTutorial(opts.showTutorialLocationOnHide);
+            }
+        });
     }
-
-    if (opts.checkHasUserAccepted && (sessionStorage.getItem('hasUserAccepted') === 'true' || sessionStorage.getItem('userType') !== 'student')) {
-        if (opts.tutorial === 'true') {
-            startTutorial(opts.showTutorialLocationOnHide);
+    else {
+        if (!opts.checkHasUserAccepted || (sessionStorage.getItem('hasUserAccepted') === 'false' && sessionStorage.getItem('userType') === 'student')) {            
+            showDialog(opts.userLocale);
         }
-        return;
     }
-
+    
     if (opts.tutorial === 'true') {
         // show tutorial when closing code of conduct
         sessionStorage.setItem('showTutorialLocationOnHide', opts.showTutorialLocationOnHide);
-    }
-
-    if (opts.userLocale === 'fr-CA') {
-        showDialog(sessionStorage.getItem('titleFr'), sessionStorage.getItem('bodyFr'));
-    }
-    else {
-        showDialog(sessionStorage.getItem('titleEn'), sessionStorage.getItem('bodyEn'));
     }
 }
