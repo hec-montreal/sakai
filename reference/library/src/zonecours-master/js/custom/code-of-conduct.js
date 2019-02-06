@@ -1,9 +1,17 @@
-function showDialog(title, dialogContent) {
+function showDialog(locale) {
 	var dialogWidth = $(window).width()*0.8;
 	var dialogHeight = $(window).height()*0.8;
 	var height = dialogHeight -100;
 
-    $('div#codeOfConduct').html(dialogContent);
+    if (locale === 'fr-CA') {
+        title = sessionStorage.getItem('titleFr');
+        $('div#codeOfConduct').html(sessionStorage.getItem('bodyFr'));
+    }
+    else {
+        title = sessionStorage.getItem('titleEn');
+        $('div#codeOfConduct').html(sessionStorage.getItem('bodyEn'));
+    }
+
     $('div#codeOfConduct').dialog({
         title: title,
         open: function (event, ui) {
