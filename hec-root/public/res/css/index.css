@@ -92,10 +92,6 @@ button:hover {
 	padding-top: 100px;
 }
 
-.brand img {
-	width: 100%;
-}
-
 .brand .title {
 	font-family: 'din-bold', 'arial';
 	height: 100px;
@@ -130,7 +126,7 @@ button:hover {
 }
 
 .login > div {
-	width: 67%;
+	width: 68%;
 	margin: auto;
 	margin-bottom: 40px;
 }
@@ -138,7 +134,7 @@ button:hover {
 .login input {
 	width: 100%;
 	font-family: 'din-regular', 'arial';
-	font-size: 1.4em;
+	font-size: 1.1em;
 	border: 0;
 	border-bottom: 1px solid #777;
 	color: #777;
@@ -181,6 +177,10 @@ button:hover {
 	color: #fff;
 	text-decoration: none;
 	text-transform: uppercase;
+}
+
+.links a:hover {
+	color: #009fdf;
 }
 
 .links > div {

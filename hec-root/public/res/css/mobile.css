@@ -32,6 +32,10 @@
 		padding: 20px 10px 0 10px;
 	}
 
+	.brand img {
+		width: 100%;
+	}
+
 	.logo {
 		width: 50px;
 		height: 50px;
@@ -59,7 +63,7 @@
 	}
 
 	.login {
-		padding: 0 10px 0 10px;
+		padding: 0 15px 0 15px;
 	}
 
 	.login > div {
@@ -68,10 +72,6 @@
 
 	.problem {
 		padding-top: 0;
-	}
-
-	.problem a {
-		font-size: 1.2em;
 	}
 
 	.do-login {
@@ -84,7 +84,7 @@
 
 	.links a {
 		display: block;
-		padding-bottom: 10px;
+		padding-bottom: 20px;
 	}
 }
 
