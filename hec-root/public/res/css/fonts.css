@@ -1,0 +1,48 @@
+@font-face {
+	font-family: "hec-icons";
+	src: url("./fonts/hec-icons.eot");
+	/* IE9 Compat Modes */
+	src: url("./fonts/hec-icons.eot?#iefix") format("embedded-opentype"),
+		url("./fonts/hec-icons.woff") format("woff"),
+		url("./fonts/hec-icons.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: "din";
+	src: url("./fonts/din-1451-eng.eot");
+	/* IE9 Compat Modes */
+	src: url("./fonts/din-1451-eng.eot?#iefix") format("embedded-opentype"),
+		url("./fonts/din-1451-eng.woff2") format("woff2"),
+		url("./fonts/din-1451-eng.woff") format("woff"),
+		url("./fonts/din-1451-eng.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: "din-cond";
+	src: url("./fonts/din-cond-med.eot");
+	/* IE9 Compat Modes */
+	src: url("./fonts/din-cond-med.eot?#iefix") format("embedded-opentype"),
+		url("./fonts/din-cond-med.woff2") format("woff2"),
+		url("./fonts/din-cond-med.woff") format("woff"),
+		url("./fonts/din-cond-med.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: "din-regular";
+	src: url("./fonts/din-regular.eot");
+	/* IE9 Compat Modes */
+	src: url("./fonts/din-regular.eot?#iefix") format("embedded-opentype"),
+		url("./fonts/din-regular.woff2") format("woff2"),
+		url("./fonts/din-regular.woff") format("woff"),
+		url("./fonts/din-regular.ttf") format("truetype");
+}
+
+@font-face {
+	font-family: "din-bold";
+	src: url("./fonts/din-bold.eot");
+	/* IE9 Compat Modes */
+	src: url("./fonts/din-bold.eot?#iefix") format("embedded-opentype"),
+		url("./fonts/din-bold.woff2") format("woff2"),
+		url("./fonts/din-bold.woff") format("woff"),
+		url("./fonts/din-bold.ttf") format("truetype");
+}

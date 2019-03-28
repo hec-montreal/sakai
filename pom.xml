@@ -118,7 +118,8 @@
                 <module>web</module>
                 <module>webcomponents</module>
                 <module>webjars</module>
-                <module>webservices</module>
+		<module>webservices</module>
+		<module>hec-root</module>
             </modules>
         </profile>
         <profile>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
+
+		<link href="res/css/fonts.css?_cb=1" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/index.css?_cb=1" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/mobile.css?_cb=1" type="text/css" rel="stylesheet" media="all"/>
+
+		<title>ZoneCours - Home</title>
+
+		<script src="/res/js/lib/jquery-1.10.2.min.js"></script>
+
+		<script src="/res/js/index.js?_cb=1"></script>
+	</head>
+
+	<body>
+		<div class="message" style="display: none;">
+			<div class="title"></div>
+			<div class="body"></div>
+		</div>
+
+		<div class="host">
+			<div class="box">
+				<div class="photo"></div>
+
+				<div class="form">
+					<div class="brand">
+						<img src="res/images/logo-full.png" alt="HEC Montr&eacute;al" />
+
+						<div class="clear-fix"></div>
+
+						<div class="words dark">
+							<div>Learn</div>
+							<div>Collaborate</div>
+							<div>Create</div>
+						</div>
+					</div>
+
+					<form method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded">
+						<div class="login">
+							<div>
+								<input name="eid" type="text" placeholder="Username" />
+							</div>
+
+							<div>
+								<input name="pw" type="password" placeholder="Password" autocomplete="new-password" />
+							</div>
+
+							<div>
+								<div class="problem">
+									<a href="/connexionInfo-en.html">Cannot access your account ?</a>
+								</div>
+
+								<div class="do-login">
+									<button type="submit">Login</button>
+								</div>
+							</div>
+						</div>
+
+						<div class="loading">
+							<img src="/res/images/loading.gif" alt="Loading" />
+						</div>
+					</form>
+				</div>
+
+				<div class="clear-fix"></div>
+			</div>
+
+			<div class="links">
+				<div>
+					<a href="http://www.hec.ca/en">HEC Montr&eacute;al</a>
+					<a href="http://www.hec.ca/en/course/">Course portal</a>
+					<a href="https://enligne.hec.ca/psp/GAPET/HEL/HRMS/?cmd=login&languageCd=ENG/">HEC en ligne</a>
+					<a href="https://confluence.hec.ca:8443/display/CS/How+to+change+the+language+of+ZoneCours">Help</a>
+					<a href="/index.html">Fran&ccedil;ais</a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Google Analytics ? -->
+		<script>
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-2831257-12']);
+			_gaq.push(['_trackPageview']);
+			(function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+		</script>
+		<!-- End Google Analytics ? -->
+	</body>
+</html>
