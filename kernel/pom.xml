@@ -346,6 +346,37 @@
     </plugins>
   </reporting>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>javax.jcr</groupId>
+        <artifactId>jcr</artifactId>
+        <version>1.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-core</artifactId>
+        <version>1.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-api</artifactId>
+        <version>1.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-jcr-commons</artifactId>
+        <version>1.4</version>
+        </dependency>
+      <dependency>
+        <groupId>org.apache.jackrabbit</groupId>
+        <artifactId>jackrabbit-jcr-tests</artifactId>
+        <version>1.4</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <build>
     <!-- remap kernel dirs to the standard maven dir structure -->
     <sourceDirectory>src/main/java</sourceDirectory>
