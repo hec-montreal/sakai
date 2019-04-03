@@ -120,6 +120,7 @@
                 <module>webjars</module>
 		<module>webservices</module>
 		<module>hec-root</module>
+		<module>sdata</module>
             </modules>
         </profile>
         <profile>
