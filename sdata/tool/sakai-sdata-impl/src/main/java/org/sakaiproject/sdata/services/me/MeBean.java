@@ -160,7 +160,7 @@ public class MeBean implements ServiceDefinition
 			}
 			try
 			{
-				map.put("createdTime", user.getCreatedTime().toStringLocalFull());
+				map.put("createdTime", user.getCreatedDate().toLocaleString());
 			}
 			catch (NullPointerException npe)
 			{
