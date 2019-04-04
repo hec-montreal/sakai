@@ -11,9 +11,11 @@
 			Caching is done centrally in the UserDirectoryService.callCache -->
 		
 		<!-- Required. Host name or address of your LDAP server -->
+		<!--
 		<property name="ldapHost">
 			<value>ldap.university.edu</value>
 		</property>
+		-->
 
 		<!-- Optional. LDAP connection port. Typically defaults to 
 			JLDAPDirectoryProvider.DEFAULT_LDAP_PORT (389). Secured
@@ -64,14 +66,14 @@
 
 		<!-- Optional. Indicate if connection allocation should
 			implicitly bind as ${ldapUser}. Defaults to false -->
-		<!-- property name="autoBind">
-			<value>false</value>
-		</property -->
+		<property name="autoBind">
+			<value>true</value>
+		</property>
 
 		<!-- Optional, but usually specified. Base DN for directory searches. -->
-		<!--  property name="basePath">
-			<value>attr=value,attr=value,attr=value</value>
-		</property -->
+		<property name="basePath">
+			<value>ou=people,o=hec.ca</value>
+		</property>
 
 		<!-- Optional. Indicate if connections should follow
 			referrals. Defaults to  
@@ -184,7 +186,7 @@
 		<!-- Optional. If you don't provide an eidValidator the system
 		defaults to allowing searches on any EID, including empty
 		and null Strings. -->
-		<property name="eidValidator">
+		<!-- property name="eidValidator">
 			<bean class="edu.amc.sakai.user.RegexpBlacklistEidValidator">
 				<property name="regexpFlags">
 					<bean id="java.util.regex.Pattern.CASE_INSENSITIVE"
@@ -193,13 +195,13 @@
 				<property name="eidBlacklist">
 					<list>
 						<value>null</value>
-						<!--value>nobody</value-->
-						<!--value>adversary</value-->
+						<value>nobody</value>
+						<value>adversary</value>
 					</list>
 				</property>
 			</bean>
 		</property>
-		<property name="searchAliases"><value>false</value></property>
+		<property name="searchAliases"><value>false</value></property -->
 		
 	</bean>
 			
@@ -215,19 +217,19 @@
 		names expected by the application. Values are physical LDAP
 		attribute names. If not specified or empty, defaults to
 		AttributeMappingConstants.DEFAULT_ATTR_MAPPINGS. -->
-		<!-- property name="attributeMappings">
+		<property name="attributeMappings">
 			<map>
-				<entry key="aid"><value>krb5PrincipalName</value></entry>
-				<entry key="login"><value>cn</value></entry>         
-				<entry key="firstName"><value>givenName</value></entry> 
-				<entry key="preferredFirstName"><value>preferredName</value></entry>
-				<entry key="lastName"><value>sn</value></entry> 
-				<entry key="email"><value>email</value></entry>  
-				<entry key="groupMembership"><value>groupMembership</value></entry>   
-				<entry key="jpegPhoto"><value>jpegPhoto</value></entry>   
+				<entry key="login"><value>cn</value></entry>
+				<entry key="firstName"><value>givenName</value></entry>
+				<entry key="lastName"><value>sn</value></entry>
+				<entry key="email"><value>mail</value></entry>
+				<entry key="posteActif"><value>posteActif</value></entry>
+				<entry key="ldaplanguage"><value>language</value></entry>
+				<entry key="statut"><value>statut</value></entry>
+				<entry key="etude"><value>etude</value></entry>
 			</map>
-		</property -->
-		
+		</property>
+
 		<!-- If any of the values need manipulating with message formats they can be set here. -->
 		<!-- property name="valueMappings">
 			<map>
@@ -239,8 +241,8 @@
 		on LDAP attributes. Defaults to an instance of EmptyStringUserTypeMapper -->
 		<property name="userTypeMapper">
 			<!-- Select one of the following beans -->
-			<ref bean="edu.amc.sakai.user.EmptyStringUserTypeMapper" />
-			<!-- ref bean="edu.amc.sakai.user.EntryAttributeToUserTypeMapper" /-->
+			<!-- ref bean="edu.amc.sakai.user.EmptyStringUserTypeMapper" /-->
+			<ref bean="edu.amc.sakai.user.EntryAttributeToUserTypeMapper" />
 			<!-- ref bean="edu.amc.sakai.user.EntryContainerRdnToUserTypeMapper" /-->
 			<!-- ref bean="edu.amc.sakai.user.StringUserTypeMapper" /-->
 		</property>
@@ -275,38 +277,96 @@
 		types by simply passing attribute values through a map with
 		configurable "miss" behavior. -->
 	<bean id="edu.amc.sakai.user.EntryAttributeToUserTypeMapper"
-		class="edu.amc.sakai.user.EntryAttributeToUserTypeMapper">
-		
+		class="org.sakaiquebec.opensyllabus.HecEntryAttributeToUserTypeMapper"
+		init-method="init">
+
 		<!-- Optional. If not present or empty, behavior is
 		determined by the value of returnLiteralAttributeValueIfNoMapping
 		(see below). -->
-		<!-- property name="attributeValueToSakaiUserTypeMap">
+		<property name="attributeValueToSakaiUserTypeMap">
 			<map>
-				<entry key="faculty"><value>faculty</value></entry> 
-				<entry key="students"><value>student</value></entry> 
+				<!-- INSTRUCTOR  -->
+				<entry key="AE0001"><value>instructor</value></entry>
+				<entry key="CAP001"><value>instructor</value></entry>
+				<entry key="CAP002"><value>instructor</value></entry>
+				<entry key="CAP003"><value>instructor</value></entry>
+				<entry key="CAP004"><value>instructor</value></entry>
+				<entry key="CAP005"><value>instructor</value></entry>
+				<entry key="CAP006"><value>instructor</value></entry>
+				<entry key="CAP007"><value>instructor</value></entry>
+				<entry key="CAP008"><value>instructor</value></entry>
+				<entry key="CAP009"><value>instructor</value></entry>
+				<entry key="CAP010"><value>instructor</value></entry>
+				<entry key="CAS001"><value>instructor</value></entry>
+				<entry key="CAS002"><value>instructor</value></entry>
+				<entry key="CAS003"><value>instructor</value></entry>
+				<entry key="CF0001"><value>instructor</value></entry>
+				<entry key="PLC001"><value>instructor</value></entry>
+				<entry key="PLC006"><value>instructor</value></entry>
+				<entry key="PR0000"><value>instructor</value></entry>
+				<entry key="PR0001"><value>instructor</value></entry>
+				<entry key="PR0002"><value>instructor</value></entry>
+				<entry key="PR0003"><value>instructor</value></entry>
+				<entry key="PR0004"><value>instructor</value></entry>
+				<entry key="PR0005"><value>instructor</value></entry>
+				<entry key="PR0006"><value>instructor</value></entry>
+				<entry key="PR0007"><value>instructor</value></entry>
+				<entry key="PR0008"><value>instructor</value></entry>
+				<entry key="PR0009"><value>instructor</value></entry>
+				<entry key="PR0010"><value>instructor</value></entry>
+				<entry key="PR0011"><value>instructor</value></entry>
+				<entry key="PR0012"><value>instructor</value></entry>
+				<entry key="PR0013"><value>instructor</value></entry>
+				<entry key="PR0014"><value>instructor</value></entry>
+				<entry key="PROFAS"><value>instructor</value></entry>
+				<entry key="PROFEM"><value>instructor</value></entry>
+				<entry key="PROFHO"><value>instructor</value></entry>
+				<entry key="CC0001"><value>instructor</value></entry>
+				<entry key="CC0002"><value>instructor</value></entry>
+				<!-- SECRETARY  -->
+				<entry key="BU0034"><value>secretary</value></entry>
+				<entry key="BU0040"><value>secretary</value></entry>
+				<entry key="BU0044"><value>secretary</value></entry>
+				<entry key="BU0045"><value>secretary</value></entry>
+				<entry key="BU0046"><value>secretary</value></entry>
+				<entry key="BU0050"><value>secretary</value></entry>
+				<entry key="BU0051"><value>secretary</value></entry>
+				<entry key="BU0053"><value>secretary</value></entry>
+				<entry key="BU0054"><value>secretary</value></entry>
+				<entry key="BU0072"><value>secretary</value></entry>
+				<entry key="BU0078"><value>secretary</value></entry>
+				<entry key="BU0079"><value>secretary</value></entry>
+				<entry key="BU0088"><value>secretary</value></entry>
+				<entry key="BU0093"><value>secretary</value></entry>
+
 			</map>
-		</property -->
-				
+		</property>
+
 		<!-- Required. The logical name of the LDAP attribute which
-		defines Sakai users' types. Value should be a key into the 
-		attribute mappings associated with this LdapAttributeMapper 
+		defines Sakai users' types. Value should be a key into the
+		attribute mappings associated with this LdapAttributeMapper
 		instance. -->
 		<property name="logicalAttributeName">
-			<value>groupMembership</value>
+			<value>statut</value>
 		</property>
-				
+
 		<!-- Optional. Defaults to false -->
-		<!--  property name="returnLiteralAttributeValueIfNoMapping">
+		<property name="returnLiteralAttributeValueIfNoMapping">
 			<value>false</value>
-		</property -->
-				
+		</property>
+
 		<!-- Optional. Only considered if returnLiteralAttributeValueIfNoMapping
 			is false. Defaults to null. -->
-		<!--  property name="defaultSakaiUserType">
-			<null />
-		</property -->
-		
-	</bean>
+		<property name="defaultSakaiUserType">
+			<value>student</value>
+		</property>
+
+		<!-- ZCII-827 : inject datasource for accessing database -->
+    		<property name="dataSource" ref="javax.sql.DataSource" />
+
+    		<property name="memoryService" ref="org.sakaiproject.memory.api.MemoryService" />
+
+    	</bean>
 	
 	<!-- EntryContainerRdnToUserTypeMapper calculates Sakai user
 		types by filtering a user entry's most-local RDN through the

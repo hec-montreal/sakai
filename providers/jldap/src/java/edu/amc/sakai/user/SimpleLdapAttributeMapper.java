@@ -285,6 +285,23 @@ public class SimpleLdapAttributeMapper implements LdapAttributeMapper {
     protected void mapLdapAttributeOntoUserData(LDAPAttribute attribute, 
             LdapUserData userData, String logicalAttrName) {
         
+    	// ZCII-1568 : Il nous faut acces a tout les valeurs pour l'attribut "etude"
+    	if (logicalAttrName.equals("etude")) {
+        	String[] attrValue = attribute.getStringValueArray();
+        	String values = "";
+        	for (int i = 0; i < attrValue.length; i++)
+        	{
+        		if (values.length() != 0)
+        			values += ",";
+
+        		values += attrValue[i];
+        	}
+
+            userData.setProperty(logicalAttrName, values);
+            return;
+    	}
+    	// end ZCII-1568
+
         String attrValue = attribute.getStringValue();
         MessageFormat format = valueMappings.get(logicalAttrName);
         if (format != null && attrValue != null) {
