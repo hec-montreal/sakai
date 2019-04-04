@@ -101,6 +101,11 @@ public abstract class BaseSiteService implements SiteService, Observer
 	private ResourceLoader rb = null;
 	// protected ResourceLoader rb = new ResourceLoader("site-impl");
 
+	/** ZCII-1564 - Properties used in getSite() method To set the right site template for students according to their LDAP language  */
+	private static final String LDAP_ETUDE_PROPERTY = "etude";
+	private static final String TYPE_STUDENT = "student";
+	/** End ZCII-1564  */
+
 	/** Storage manager for this service. */
 	private Storage m_storage = null;
 
@@ -765,7 +770,63 @@ public abstract class BaseSiteService implements SiteService, Observer
 				try
 				{
 					User user = userDirectoryService().getUser(sessionManager().getCurrentSessionUserId());
-					template = (BaseSite) getDefinedSite(USER_SITE_TEMPLATE + "." + user.getType());
+
+					/**
+					 * ZCII-1564 - We set the right site template for students
+					 * according to their LDAP program
+					 */
+					if (TYPE_STUDENT.equals(user.getType())) {
+						String etudeProperty = user.getProperties().getProperty(LDAP_ETUDE_PROPERTY);
+
+						if (etudeProperty != null) {
+							String[] etudePropertiesArray = etudeProperty.split(",");
+
+							// il peut y avoir plusieurs attributs "etude" dans LDAP
+							// on choisi le premier qui a un I a la fin (pour inscrit)
+							String[] firstRegisteredProgram = null;
+
+							for(int i = 0; i < etudePropertiesArray.length; i++) {
+								firstRegisteredProgram = etudePropertiesArray[i].split("\\|");
+
+								if (firstRegisteredProgram[2].equals("I")) {
+									/**
+									 * ZCII-1624, ZCII-1781, ZCII-1750 -
+									* add student to program site if it exists (Espace BAA, Espace MBA, Espace PREPA, etc)
+									*/
+
+									String programSiteId =
+											serverConfigurationService().getString("espace." + firstRegisteredProgram[0].toLowerCase() + ".siteId");
+
+									if (programSiteId != null && siteExists(programSiteId)){
+										authzGroupService().joinGroup("/site/" + programSiteId, "access");
+									}
+
+									/** End ZCII-1624 */
+
+									break;
+								}
+
+								// vider la variable si l'etudiant n'est pas inscrit dans le programme
+								firstRegisteredProgram = null;
+							}
+
+							if (firstRegisteredProgram != null && siteExists(USER_SITE_TEMPLATE +
+												"." + TYPE_STUDENT +
+												"." + firstRegisteredProgram[0].toLowerCase())) {
+								template =
+										(BaseSite) getDefinedSite(USER_SITE_TEMPLATE +
+												"." + TYPE_STUDENT +
+												"." + firstRegisteredProgram[0].toLowerCase());
+							}
+						}
+					}
+					/** End ZCII-1564 */
+
+					// get the template for the user type
+					if (template == null && user != null){
+						template =
+							(BaseSite) getDefinedSite(USER_SITE_TEMPLATE + "." + user.getType());
+					}
 				}
 				catch (Exception t)
 				{
