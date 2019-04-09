@@ -48,6 +48,8 @@ import org.sakaiproject.component.locales.SakaiLocales;
 import org.sakaiproject.thread_local.api.ThreadLocalManager;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.util.SakaiProperties;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.user.api.PreferencesService;
 
 /**
  * <p>
@@ -312,6 +314,18 @@ public class BasicConfigurationService implements ServerConfigurationService, Ap
      */
     public String getHelpUrl(String helpContext)
     {
+        //
+        // Personnalisation pour rediriger vers l'aide de confluence en fr_CA
+        //
+        PreferencesService preferencesService = (PreferencesService) ComponentManager.get(PreferencesService.class);
+        Locale locale = preferencesService.getLocale(sessionManager.getCurrentSessionUserId());
+        if (Locale.CANADA_FRENCH.equals(locale) && helpContext == null) {
+            return "https://confluence.hec.ca:8443/display/NouveauCours/Aide+de+ZoneCours";
+        }
+        //
+        // fin personnalisation
+        //
+
         String rv = getPortalUrl() + getConfig("helpPath", "/help") + "/main"; //(String) properties.get("helpPath") + "/main";
         if (helpContext != null)
         {
