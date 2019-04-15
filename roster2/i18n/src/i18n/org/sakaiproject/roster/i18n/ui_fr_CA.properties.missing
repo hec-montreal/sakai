@@ -1,0 +1,57 @@
+Missing fr_CA translations
+
+member_group_all_option = Multiple...
+print_roster_tooltip = Print this page
+export_roster_tooltip = Export this roster
+roster_hide_pictures = Hide Photos
+picture_source_group = Photo Source
+layout_group = Layout
+roster_card_view = Cards
+roster_photo_view = Photo Grid
+roster_spreadsheet_view = List
+facet_userProperties = User Properties
+facet_roster = Roster
+permissions_user_properties= View participant's properties
+screenreader_comboBox = To operate the combo box, first press Alt+Down Arrow to open it, and then use the up and down arrow keys to scroll through the options.
+
+Missing from new version, present in old fr_CA
+
+navbar_print_tooltip = Imprimer cette page
+title_overview = Vue d'ensemble
+title_missing_participants_link = 
+pick_group_instruction = Choisissez un groupe
+title_group_membership = Abonnement de groupe
+navbar_export_tooltip = Exporter cette liste
+profile_connection_accept = Accepter la demande de contact
+participants_post_msg = participants:
+title_msg = Pour ajouter ou supprimer des participants de la liste d'\u00E9tudiants, allez \u00E0 l'outil Administration du site
+navbar_export = Exporter
+roster_section_sep_line = ----------------------
+navbar_pics = Images
+profile_connection_self = c'est vous!
+navbar_pics_tooltip = Vue des participants avec images
+facet_sections = Sections ou groupes
+profile_connection_remove = Retirer le contact
+no_participants_msg = Il n'y a pas de participants dans cette liste d'\u00E9tudiants.
+show_profile = Voir le profil de ce participant
+profile_connection_add = Ajouter un contact
+navbar_group_membership = Adh\u00E9sion au groupe
+title_missing_participants = Pourquoi certains \u00E9tudiants inscrits sont-ils absents de ma liste d'\u00E9tudiants ?
+navbar_group_membership_tooltip = Voir les participants du site organis\u00E9s par groupe
+title_status = Statut d'inscription
+view_single = Voir dans une seule colonne
+section_filter_post = Participants
+facet_connected_status = Contacts
+navbar_print = Imprimer
+title_msg_groups = Pour ajouter ou supprimer des participants des groupes, allez \u00C3\u00A0 l'outil Administration du site.
+loading_wait = Chargement...
+enrollment_status_filter = Afficher les participants dans
+section_filter_pre = Afficher
+participants_msg = Nombre de participants:
+enrollments_currently_displaying = Affiche pr\u00E9sentement {0} {1} \u00E9tudiants
+title_pictures = Images
+participants_pre_msg = Affich\u00E9 actuellement
+roster_show_names = Montrer les nom
+view_table = Voir dans le tableau
+profile_connection_requested = Demande de contact
+no_permission_msg = Vous n'avez pas le droit de voir la liste d'\u00E9tudiants.

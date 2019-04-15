@@ -1,0 +1,12 @@
+Missing fr_CA translations
+
+unauthorized_superuser=You can not become an administrator user.
+unauthorized_da=You can not become a Delegated Access user.
+unauthorized_danoaccess=You can not become a user who isn't a member in one of your Delegated Access sites.
+instructions_da=You can only choose users who are members of one of your Delegated Access sites and who are not Delegated Access users.
+eid=User Id:
+id=Internal Id:
+already_that_user=You are already logged in as user {0}.
+
+Missing from new version, present in old fr_CA
+

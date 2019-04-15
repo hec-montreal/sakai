@@ -1,0 +1,33 @@
+Missing fr_CA translations
+
+archive						= Archiving tools and contents of site {0}:
+archive.import2     		= import from file {0} to site {1} complete. \n
+archive.vm.zip      		= Zip
+archive.button.single		= Import/Export
+archive.button.download		= Download archives
+archive.vm.import.file		= Import from file
+archive.vm.archive.single 	= Archive and Import (single site)
+archive.vm.archive.batch 	= Archive and Import (batch)
+archive.vm.export.term 		= Export by term
+archive.vm.term				= Select a term
+archive.batch.term.heading.confirm = Confirm batch archive
+archive.batch.term.button.confirm = Archive these sites
+archive.batch.term.button.cancel = Cancel
+archive.batch.term.text.confirm.1 = The following sites were found matching term: <b>{0}</b>. Click \''Archive these sites\'' to begin archiving.
+archive.batch.term.text.nosites = No sites were found matching term: <b>{0}</b>
+archive.batch.term.text.missingterm	= Please choose a term to run a batch archive
+archive.batch.term.text.statusmessage.start = Archiving <b>{0}</b> sites for term: <b>{1}</b>. {2}% complete.
+archive.batch.term.text.statusmessage.update = Archiving <b>{0}</b> sites for term: <b>{1}</b>. {2} sites archived. {3}% complete.
+archive.batch.term.text.statusmessage.complete = Archived <b>{0}</b> sites for term: <b>{1}</b>. Refresh to continue.
+archive.download.heading = Download archives
+archive.download.site = Site details
+archive.download.date = Date archived
+archive.download.size = Size
+archive.download.hash = Hash <small>(SHA-1)</small>
+archive.download.auth = Archive download is limited to administrators.
+archive.download.none = No archives are available to download at this time.
+
+Missing from new version, present in old fr_CA
+
+archive.vm.archive = Archiver et importer
+archive.button.nonbatch = Importation/Exportation autre que par lots
