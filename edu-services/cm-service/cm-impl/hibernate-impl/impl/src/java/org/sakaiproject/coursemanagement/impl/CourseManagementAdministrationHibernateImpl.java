@@ -27,17 +27,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
-
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.hibernate4.HibernateCallback;
-import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
-
+import org.sakaiproject.coursemanagement.api.AcademicCareer;
 import org.sakaiproject.coursemanagement.api.AcademicSession;
 import org.sakaiproject.coursemanagement.api.CanonicalCourse;
 import org.sakaiproject.coursemanagement.api.CourseManagementAdministration;
@@ -52,6 +46,11 @@ import org.sakaiproject.coursemanagement.api.SectionCategory;
 import org.sakaiproject.coursemanagement.api.exception.IdExistsException;
 import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
 import org.sakaiproject.coursemanagement.impl.facade.Authentication;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.hibernate4.HibernateCallback;
+import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Manipulates course and enrollment data stored in sakai's local hibernate tables.
@@ -215,10 +214,10 @@ public class CourseManagementAdministrationHibernateImpl extends
 	}
 
 	public CourseOffering createCourseOffering(String eid, String title, String description,
-			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate) throws IdExistsException {
+			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate, String lang, String career, String credits, String requirements) throws IdExistsException {
 		AcademicSession as = (AcademicSession)getObjectByEid(academicSessionEid, AcademicSessionCmImpl.class.getName());
 		CanonicalCourse cc = (CanonicalCourse)getObjectByEid(canonicalCourseEid, CanonicalCourseCmImpl.class.getName());
-		CourseOfferingCmImpl co = new CourseOfferingCmImpl(eid, title, description, status, as, cc, startDate, endDate);
+		CourseOfferingCmImpl co = new CourseOfferingCmImpl(eid, title, description, status, as, cc, startDate, endDate, lang, career, credits, requirements);
 		co.setCreatedBy(authn.getUserEid());
 		co.setCreatedDate(new Date());
 		try {
@@ -349,40 +348,51 @@ public class CourseManagementAdministrationHibernateImpl extends
 	}
 
 	public Section createSection(String eid, String title, String description, String category,
-		String parentSectionEid, String courseOfferingEid, String enrollmentSetEid) throws IdExistsException {
+				 String parentSectionEid, String courseOfferingEid, String enrollmentSetEid, String lang,
+				 String typeEvaluation) throws IdExistsException {
 		
-		// The objects related to this section
-		Section parent = null;
-		CourseOffering co = null;
-		EnrollmentSet es = null;
-                Integer maxSize = null;
-
-		// Get the enrollment set, if needed
-		if(courseOfferingEid != null) {
-			co = (CourseOffering)getObjectByEid(courseOfferingEid, CourseOfferingCmImpl.class.getName());
-		}
-
-		// Get the parent section, if needed
-		if(parentSectionEid != null) {
-			parent = (Section)getObjectByEid(parentSectionEid, SectionCmImpl.class.getName());
-		}
-		
-		// Get the enrollment set, if needed
-		if(enrollmentSetEid != null) {
-			es = (EnrollmentSet)getObjectByEid(enrollmentSetEid, EnrollmentSetCmImpl.class.getName());
-		}
-
-		SectionCmImpl section = new SectionCmImpl(eid, title, description, category, parent, co, es, maxSize);
-		section.setCreatedBy(authn.getUserEid());
-		section.setCreatedDate(new Date());
-		try {
-			getHibernateTemplate().save(section);
-			return section;
-		} catch (DataIntegrityViolationException dive) {
-			throw new IdExistsException(eid, Section.class.getName());
-		}
+		return createSection(eid, title, description, category,
+			parentSectionEid, courseOfferingEid, enrollmentSetEid, lang,
+			typeEvaluation, null);
 	}
+	
+	public Section createSection(String eid, String title, String description, String category,
+			String parentSectionEid, String courseOfferingEid, String enrollmentSetEid, String lang,
+									 String typeEvaluation, String instructionMode) throws IdExistsException {
+			
+			// The objects related to this section
+			Section parent = null;
+			CourseOffering co = null;
+			EnrollmentSet es = null;
+	                Integer maxSize = null;
 
+			// Get the enrollment set, if needed
+			if(courseOfferingEid != null) {
+				co = (CourseOffering)getObjectByEid(courseOfferingEid, CourseOfferingCmImpl.class.getName());
+			}
+
+			// Get the parent section, if needed
+			if(parentSectionEid != null) {
+				parent = (Section)getObjectByEid(parentSectionEid, SectionCmImpl.class.getName());
+			}
+			
+			// Get the enrollment set, if needed
+			if(enrollmentSetEid != null) {
+				es = (EnrollmentSet)getObjectByEid(enrollmentSetEid, EnrollmentSetCmImpl.class.getName());
+			}
+
+			SectionCmImpl section = new SectionCmImpl(eid, title, description, category, parent, co, es, maxSize, lang,
+					typeEvaluation, instructionMode);
+			section.setCreatedBy(authn.getUserEid());
+			section.setCreatedDate(new Date());
+			try {
+				getHibernateTemplate().save(section);
+				return section;
+			} catch (DataIntegrityViolationException dive) {
+				throw new IdExistsException(eid, Section.class.getName());
+			}
+		}
+	
 	public void updateSection(Section section) {
 		SectionCmImpl sec = (SectionCmImpl)section;
 		sec.setLastModifiedBy(authn.getUserEid());
@@ -705,4 +715,35 @@ public class CourseManagementAdministrationHibernateImpl extends
 		
 	}
 
+	public AcademicCareer createAcademicCareer(String eid, String description,
+		    String description_fr_CA) throws IdExistsException {
+		AcademicCareerCmImpl academicCareer =
+			new AcademicCareerCmImpl(eid, description, description_fr_CA);
+		getHibernateTemplate().save(academicCareer);
+		return academicCareer;
+	    }
+
+	    public void updateAcademicCareer(AcademicCareer academicCareer) {
+		AcademicCareerCmImpl ac = (AcademicCareerCmImpl) academicCareer;
+		getHibernateTemplate().update(ac);
+	    }
+
+	    public void removeAcademicCareer(String eid) {
+		AcademicCareerCmImpl ac =
+			(AcademicCareerCmImpl) getObjectByEid(eid,
+				AcademicCareerCmImpl.class.getName());
+
+		// Remove the course offerings in this academic career
+		List<CourseOffering> courseOfferings =
+			(List<CourseOffering>)getHibernateTemplate()
+				.find("select co from CourseOfferingCmImpl as co where co.academicCareer.eid = ?",
+					eid);
+		for (Iterator<CourseOffering> iter = courseOfferings.iterator(); iter
+			.hasNext();) {
+		    removeCourseOffering(iter.next().getEid());
+		}
+
+		// Remove the academic session itself
+		getHibernateTemplate().delete(ac);
+	    }
 }

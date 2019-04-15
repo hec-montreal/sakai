@@ -29,11 +29,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
-import lombok.extern.slf4j.Slf4j;
-
+import org.sakaiproject.coursemanagement.api.AcademicCareer;
 import org.sakaiproject.coursemanagement.api.AcademicSession;
 import org.sakaiproject.coursemanagement.api.CanonicalCourse;
 import org.sakaiproject.coursemanagement.api.CourseManagementService;
@@ -44,6 +43,8 @@ import org.sakaiproject.coursemanagement.api.EnrollmentSet;
 import org.sakaiproject.coursemanagement.api.Membership;
 import org.sakaiproject.coursemanagement.api.Section;
 import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * <p>
@@ -111,6 +112,54 @@ public class CourseManagementServiceFederatedImpl implements
 		return resultSet;
 	}
 
+	public Set<CourseOffering> findCourseOfferingsByAcadCareerAndAcademicSession(String acadCareer,
+			String academicSessionEid) throws IdNotFoundException {
+		Set<CourseOffering> resultSet = new HashSet<CourseOffering>();
+		int exceptions = 0;
+		for(Iterator implIter = implList.iterator(); implIter.hasNext();) {
+			CourseManagementService cm = (CourseManagementService)implIter.next();
+			Set<CourseOffering> set = null;
+			try {
+				set = cm.findCourseOfferingsByAcadCareerAndAcademicSession(acadCareer, academicSessionEid);
+				if(set != null) {
+					resultSet.addAll(set);
+				}
+			} catch (IdNotFoundException ide) {
+				if(log.isDebugEnabled()) log.debug(cm + " could not find academic career " + acadCareer);
+				exceptions++;
+				continue;
+			}
+		}
+		if(exceptions == implList.size()) {
+			throw new IdNotFoundException("Could not find a CM impl with knowledge of academic session " +
+					academicSessionEid + " and academic career " + acadCareer);
+		}
+		return resultSet;
+	}
+	
+	public Set<CourseOffering> findCourseOfferingsByAcadCareer(String acadCareer) throws IdNotFoundException {
+		Set<CourseOffering> resultSet = new HashSet<CourseOffering>();
+		int exceptions = 0;
+		for(Iterator implIter = implList.iterator(); implIter.hasNext();) {
+			CourseManagementService cm = (CourseManagementService)implIter.next();
+			Set<CourseOffering> set = null;
+			try {
+				set = cm.findCourseOfferingsByAcadCareer(acadCareer);
+				if(set != null) {
+					resultSet.addAll(set);
+				}
+			} catch (IdNotFoundException ide) {
+				if(log.isDebugEnabled()) log.debug(cm + " could not find academic career " + acadCareer);
+				exceptions++;
+				continue;
+			}
+		}
+		if(exceptions == implList.size()) {
+			throw new IdNotFoundException("Could not find a CM impl with knowledge of academic career " + acadCareer);
+		}
+		return resultSet;
+	}
+	
 	public List<CourseSet> findCourseSets(String category) {
 		List<CourseSet> resultSet = new ArrayList<CourseSet>();
 		for(Iterator implIter = implList.iterator(); implIter.hasNext();) {
@@ -177,6 +226,29 @@ public class CourseManagementServiceFederatedImpl implements
 		return resultSet;
 	}
 
+	public Set<Section> findSectionsByCategory(String category) throws IdNotFoundException {
+		Set<Section> resultSet = new HashSet<Section>();
+		int exceptions = 0;
+		for(Iterator implIter = implList.iterator(); implIter.hasNext();) {
+			CourseManagementService cm = (CourseManagementService)implIter.next();
+			Set<Section> set = null;
+			try {
+				set = cm.findSectionsByCategory(category);
+			} catch (IdNotFoundException ide) {
+				exceptions++;
+				if(log.isDebugEnabled()) log.debug(cm + " could not find category " + category);
+			}
+			if(set != null) {
+				resultSet.addAll(set);
+			}
+		}
+		// If none of the impls could find the academic session, throw an IdNotFoundException.
+		if(exceptions == implList.size()) {
+			throw new IdNotFoundException(category, category);
+		}
+		return resultSet;
+	}
+	
 	public Set<Section> findInstructingSections(String userId, String academicSessionEid) throws IdNotFoundException {
 		Set<Section> resultSet = new HashSet<Section>();
 		int exceptions = 0;
@@ -223,6 +295,7 @@ public class CourseManagementServiceFederatedImpl implements
 			}
 		}
 		// The federated list uses the sort provided by the db
+		Collections.sort(resultSet, startDateComparator);
 		return resultSet;
 	}
 
@@ -422,6 +495,7 @@ public class CourseManagementServiceFederatedImpl implements
 			}
 		}
 		// The federated list uses the sort provided by the db
+		Collections.sort(resultSet, startDateComparator);
 		return resultSet;
 	}
 
@@ -653,6 +727,21 @@ public class CourseManagementServiceFederatedImpl implements
 		}
 		return false;
 	}
+	
+	protected static Comparator<AcademicSession> startDateComparator = new Comparator<AcademicSession>() {
+		public int compare(AcademicSession as1, AcademicSession as2) {
+			if(as1.getStartDate() == null && as2.getStartDate() == null) {
+				return 0;
+			}
+			if(as1.getStartDate() == null && as2.getStartDate() != null) {
+				return -1;
+			}
+			if(as1.getStartDate() != null && as2.getStartDate() == null) {
+				return 1;
+			}
+			return as1.getStartDate().compareTo(as2.getStartDate());
+		}
+	};
 
 	public Set<Section> findEnrolledSections(String userId) {
 		Set<Section> resultSet = new HashSet<Section>();
@@ -941,4 +1030,53 @@ public class CourseManagementServiceFederatedImpl implements
 		}
 		return ret;
 	}
+	
+	public List<AcademicCareer> getAcademicCareers() {
+		List<AcademicCareer> resultSet = new ArrayList<AcademicCareer>();
+
+		for (Iterator implIter = implList.iterator(); implIter.hasNext();) {
+		    CourseManagementService cm =
+			    (CourseManagementService) implIter.next();
+		    List<AcademicCareer> list = cm.getAcademicCareers();
+		    if (list != null) {
+			resultSet.addAll(list);
+		    }
+		}
+		return resultSet;
+	    }
+
+	    public AcademicCareer getAcademicCareer(String eid)
+		    throws IdNotFoundException {
+		for (Iterator implIter = implList.iterator(); implIter.hasNext();) {
+		    CourseManagementService cm =
+			    (CourseManagementService) implIter.next();
+		    try {
+			AcademicCareer acadCareer =  cm.getAcademicCareer(eid);
+			if(acadCareer!=null)
+			    return acadCareer;
+		    } catch (IdNotFoundException ide) {
+			if (log.isDebugEnabled())
+			    log.debug(cm + " could not locate academic career " + eid);
+		    }
+		}
+		throw new IdNotFoundException(eid, AcademicSession.class.getName());
+	    }
+
+		public boolean isAcademicCareerDefined(String eid) {
+		for (Iterator implIter = implList.iterator(); implIter.hasNext();) {
+		    CourseManagementService cm =
+			    (CourseManagementService) implIter.next();
+		    try {
+			// If any implementation says that the object exists, it exists!
+			if (cm.isAcademicCareerDefined(eid)) {
+			    return true;
+			}
+		    } catch (UnsupportedOperationException uso) {
+			if (log.isDebugEnabled())
+			    log.debug(cm + " doesn't know whether academic career "
+				    + eid + " exists");
+		    }
+		}
+		return false;
+	    }
 }

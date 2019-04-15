@@ -44,13 +44,17 @@ public class CourseOfferingCmImpl extends CrossListableCmImpl
 	private Set courseSets;
 	private Date startDate;
 	private Date endDate;
+	private String lang;
+	private String academicCareer;
+	private String credits;
+	private String requirements;
 
 	/** A cache of courseSetEids */
 	private Set courseSetEids;
 
 	public CourseOfferingCmImpl() {}
 	
-	public CourseOfferingCmImpl(String eid, String title, String description,String status, AcademicSession academicSession, CanonicalCourse canonicalCourse, Date startDate, Date endDate) {
+	public CourseOfferingCmImpl(String eid, String title, String description,String status, AcademicSession academicSession, CanonicalCourse canonicalCourse, Date startDate, Date endDate, String lang, String career, String credits, String requirements) {
 		this.eid = eid;
 		this.title = title;
 		this.description = description;
@@ -64,6 +68,10 @@ public class CourseOfferingCmImpl extends CrossListableCmImpl
 		}
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.lang = lang;
+		this.academicCareer=career;
+		this.credits=credits;
+		this.requirements=requirements;
 	}
 	
 	public Set getCourseSets() {
@@ -155,5 +163,37 @@ public class CourseOfferingCmImpl extends CrossListableCmImpl
 		}
 
 		return description;
+	}
+	
+	public String getLang() {
+	    return lang;
+	}
+
+	public void setLang(String lang) {
+	    this.lang = lang;
+	}
+
+	public String getAcademicCareer(){
+		return academicCareer;
+	}
+
+	public void setAcademicCareer(String career){
+		this.academicCareer=career;
+	}
+
+	public String getCredits(){
+	    return credits;
+	}
+
+	public void setCredits(String credits){
+	    this.credits=credits;
+	}
+
+	public String getRequirements(){
+	    return requirements;
+	}
+
+	public void setRequirements(String requirements){
+	    this.requirements=requirements;
 	}
 }

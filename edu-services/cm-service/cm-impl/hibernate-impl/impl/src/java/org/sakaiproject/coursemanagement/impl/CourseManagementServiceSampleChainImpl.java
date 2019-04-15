@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.sakaiproject.coursemanagement.api.AcademicCareer;
 import org.sakaiproject.coursemanagement.api.AcademicSession;
 import org.sakaiproject.coursemanagement.api.CanonicalCourse;
 import org.sakaiproject.coursemanagement.api.CourseManagementService;
@@ -51,6 +52,14 @@ public class CourseManagementServiceSampleChainImpl implements CourseManagementS
 		throw new IdNotFoundException(courseSetEid, CourseSet.class.getName());
 	}
 
+	public Set findCourseOfferingsByAcadCareerAndAcademicSession(String acadCareer, String academicSessionEid) throws IdNotFoundException {
+		throw new IdNotFoundException(acadCareer, acadCareer);
+	}
+
+	public Set findCourseOfferingsByAcadCareer(String acadCareer) throws IdNotFoundException {
+			throw new IdNotFoundException(acadCareer, acadCareer);
+	}
+	
 	public List findCourseSets(String category) {
 		return null;
 	}
@@ -71,6 +80,10 @@ public class CourseManagementServiceSampleChainImpl implements CourseManagementS
 		return null;
 	}
 
+	public Set findSectionsByCategory(String category) throws IdNotFoundException {
+		throw new IdNotFoundException(category, category);
+	}
+	
 	public Set findInstructingSections(String userId, String academicSessionEid) throws IdNotFoundException {
 		throw new IdNotFoundException(academicSessionEid, AcademicSession.class.getName());
 	}
@@ -244,5 +257,16 @@ public class CourseManagementServiceSampleChainImpl implements CourseManagementS
 		return null;
 	}
 
+	public List<AcademicCareer> getAcademicCareers() {
+	    return null;
+	}
 
+	public AcademicCareer getAcademicCareer(String eid)
+		throws IdNotFoundException {
+	    return null;
+	}
+
+	public boolean isAcademicCareerDefined(String eid) {
+	    return false;
+	}
 }

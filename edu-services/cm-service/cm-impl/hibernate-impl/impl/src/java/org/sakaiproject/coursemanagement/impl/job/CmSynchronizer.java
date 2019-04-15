@@ -33,14 +33,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.xpath.XPath;
-
 import org.sakaiproject.coursemanagement.api.AcademicSession;
 import org.sakaiproject.coursemanagement.api.CanonicalCourse;
 import org.sakaiproject.coursemanagement.api.CourseManagementAdministration;
@@ -52,6 +49,8 @@ import org.sakaiproject.coursemanagement.api.EnrollmentSet;
 import org.sakaiproject.coursemanagement.api.Meeting;
 import org.sakaiproject.coursemanagement.api.Membership;
 import org.sakaiproject.coursemanagement.api.Section;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Synchronizes the state of the local CourseManagementService with an external
@@ -286,7 +285,11 @@ public abstract class CmSynchronizer {
 		String canonicalCourseEid = element.getChildText("canonical-course-eid");
 		Date startDate = getDate(element.getChildText("start-date"));
 		Date endDate = getDate(element.getChildText("end-date"));
-		return cmAdmin.createCourseOffering(eid, title, description, status, academicSessionEid, canonicalCourseEid, startDate, endDate);
+		String lang = "fr_CA";
+		String career= "MBA";
+		String credits = "3";
+		String requirements="";
+		return cmAdmin.createCourseOffering(eid, title, description, status, academicSessionEid, canonicalCourseEid, startDate, endDate, lang, career, credits, requirements);	
 	}
 
 	protected void updateCourseOfferingMembers(Element membersElement, CourseOffering courseOffering) {
@@ -511,10 +514,16 @@ public abstract class CmSynchronizer {
 		String courseOfferingEid = element.getChildText("course-offering-eid");
 		String enrollmentSetEid = null;
 		String enrollmentSetEidFromXml =  element.getChildText("enrollment-set-eid");
+		String lang = "fr_CA";
+		String instructionMode="";
+		String typeEvaluation = null;
+		
 		if(cmService.isEnrollmentSetDefined(enrollmentSetEidFromXml)) {
 			enrollmentSetEid = enrollmentSetEidFromXml;
 		}
-		return cmAdmin.createSection(eid, title, description, category, parentSectionEid, courseOfferingEid, enrollmentSetEid);
+		
+		return cmAdmin.createSection(eid, title, description, category, parentSectionEid, courseOfferingEid,
+				enrollmentSetEid, lang, typeEvaluation, instructionMode);
 	}
 
 	protected void updateSectionMembers(Element membersElement, Section section) {

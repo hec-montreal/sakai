@@ -40,21 +40,29 @@ public class SectionCmImpl extends AbstractMembershipContainerCmImpl
 	private Section parent;
 	private EnrollmentSet enrollmentSet;
         private Integer maxSize;
+	private String lang;
+	private String typeEvaluation;
+	private String instructionMode;   
+     
 	
 	public SectionCmImpl() {}
 	
-    public SectionCmImpl(String eid, String title, String description, String category, Section parent, CourseOffering courseOffering, EnrollmentSet enrollmentSet, Integer maxSize) {
+	public SectionCmImpl(String eid, String title, String description, String category, Section parent, CourseOffering courseOffering, EnrollmentSet enrollmentSet, Integer maxSize, String lang, String typeEvaluation, String instructionMode) {
 		this.eid = eid;
 		this.title = title;
 		this.description = description;
 		this.category = category;
 		this.parent = parent;
 		this.courseOffering = courseOffering;
+		this.instructionMode = instructionMode;
 		if(courseOffering != null) {
 			this.courseOfferingEid = courseOffering.getEid();
 		}
 		this.enrollmentSet = enrollmentSet;
                 this.maxSize = maxSize;
+                
+        this.lang = lang;
+        this.typeEvaluation = typeEvaluation;
 	}
 
 	public String getCategory() {
@@ -118,5 +126,29 @@ public class SectionCmImpl extends AbstractMembershipContainerCmImpl
 		}
 
 		return description;
+	}
+	
+	public String getLang() {
+	    return lang;
+	}
+
+	public void setLang(String lang) {
+	    this.lang = lang;
+	}
+	
+	public String getTypeEvaluation() {
+	    return typeEvaluation;
+	}
+	
+	public void setTypeEvaluation(String typeEvaluation) {
+	    this.typeEvaluation = typeEvaluation;
+	}
+
+	public String getInstructionMode() {
+		return instructionMode;
+	}
+
+	public void setInstructionMode(String instructionMode) {
+		this.instructionMode = instructionMode;
 	}
 }

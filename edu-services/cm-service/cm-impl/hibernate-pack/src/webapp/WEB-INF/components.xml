@@ -24,6 +24,7 @@
 		class="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappingsImpl">
 		<property name="mappingResources">
 			<list>
+				<value>org/sakaiproject/coursemanagement/impl/AcademicCareerCmImpl.hbm.xml</value>
                 <value>org/sakaiproject/coursemanagement/impl/AcademicSessionCmImpl.hbm.xml</value>
                 <value>org/sakaiproject/coursemanagement/impl/MembershipContainerCmImpl.hbm.xml</value>
                 <value>org/sakaiproject/coursemanagement/impl/CanonicalCourseCmImpl.hbm.xml</value>

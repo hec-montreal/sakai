@@ -30,7 +30,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.Session;
+import org.sakaiproject.coursemanagement.api.AcademicCareer;
 import org.sakaiproject.coursemanagement.api.AcademicSession;
 import org.sakaiproject.coursemanagement.api.CanonicalCourse;
 import org.sakaiproject.coursemanagement.api.CourseManagementService;
@@ -42,8 +45,8 @@ import org.sakaiproject.coursemanagement.api.Membership;
 import org.sakaiproject.coursemanagement.api.Section;
 import org.sakaiproject.coursemanagement.api.SectionCategory;
 import org.sakaiproject.coursemanagement.api.exception.IdNotFoundException;
-import org.springframework.orm.hibernate4.HibernateCallback;
-import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -300,8 +303,6 @@ public class CourseManagementServiceHibernateImpl extends HibernateDaoSupport im
 		return new HashSet<Section>((List<Section>) getHibernateTemplate().findByNamedQueryAndNamedParam(
 				"findEnrolledSections", "userId", userId));
 	}
-
-	
 	
 	public List<CourseOffering> findActiveCourseOfferingsInCanonicalCourse(
 			String eid) {
@@ -335,6 +336,17 @@ public class CourseManagementServiceHibernateImpl extends HibernateDaoSupport im
 		return new HashSet<>(getHibernateTemplate().execute(hc));
 	}
 
+	public Set<Section> findSectionsByCategory(final String category) {
+		HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException {
+				Query q = session.getNamedQuery("findSectionsByCategory");
+				q.setParameter("category", category);
+				return q.list();
+			}
+		};
+		return new HashSet<Section>((List<Section>)getHibernateTemplate().executeFind(hc));
+	}
+	
 	public Set<CourseOffering> findCourseOfferings(final String courseSetEid, final String academicSessionEid) throws IdNotFoundException {
 		HibernateCallback<List<CourseOffering>> hc = session -> {
             Query q = session.getNamedQuery("findCourseOfferingsByCourseSetAndAcademicSession");
@@ -343,6 +355,29 @@ public class CourseManagementServiceHibernateImpl extends HibernateDaoSupport im
             return q.list();
         };
 		return new HashSet<>(getHibernateTemplate().execute(hc));
+	}
+	
+	public Set<CourseOffering> findCourseOfferingsByAcadCareerAndAcademicSession(final String acadCareer, final String academicSessionEid) throws IdNotFoundException {
+		HibernateCallback hc = new HibernateCallback() {
+			public Object doInHibernate(Session session) throws HibernateException {
+				Query q = session.getNamedQuery("findCourseOfferingsByAcadCareerAndAcademicSession");
+				q.setParameter("acadCareer", acadCareer);
+				q.setParameter("academicSessionEid", academicSessionEid);
+				return q.list();
+			}
+		};
+		return new HashSet<CourseOffering>((List<CourseOffering>)getHibernateTemplate().executeFind(hc));
+	}
+
+	public Set<CourseOffering> findCourseOfferingsByAcadCareer(final String acadCareer) throws IdNotFoundException {
+			HibernateCallback hc = new HibernateCallback() {
+				public Object doInHibernate(Session session) throws HibernateException {
+					Query q = session.getNamedQuery("findCourseOfferingsByAcadCareer");
+					q.setParameter("acadCareer", acadCareer);
+					return q.list();
+				}
+			};
+			return new HashSet<CourseOffering>((List<CourseOffering>)getHibernateTemplate().executeFind(hc));
 	}
 
 	public boolean isEmpty(final String courseSetEid) {
@@ -466,6 +501,17 @@ public class CourseManagementServiceHibernateImpl extends HibernateDaoSupport im
 		return map;
 	}
 
+	public List<AcademicCareer> getAcademicCareers() {
+	    return (List<AcademicCareer>)getHibernateTemplate().findByNamedQuery("findAcademicCareers");
+	}
 
+	public AcademicCareer getAcademicCareer(String eid)
+		throws IdNotFoundException {
+	    return (AcademicCareer)getObjectByEid(eid, AcademicCareerCmImpl.class.getName());
+	}
+
+	public boolean isAcademicCareerDefined(String eid) {
+	    return ((Number)getHibernateTemplate().findByNamedQueryAndNamedParam("isAcademicCareerDefined", "eid", eid).get(0)).intValue() == 1;
+	}
 
 }

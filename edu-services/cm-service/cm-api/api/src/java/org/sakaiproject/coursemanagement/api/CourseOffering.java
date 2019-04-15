@@ -104,4 +104,35 @@ public interface CourseOffering {
 	 */
 	public Set<String> getCourseSetEids();
 
+	/**
+	 * Language in witch the course will be presented.
+	 *
+	 * @return
+	 */
+	public String getLang();
+	public void setLang(String lang);
+	
+	/**
+	* Language in witch the course will be presented.
+	*
+	* @return
+	*/
+	public String getAcademicCareer();
+	public void setAcademicCareer(String career);
+
+	/**
+	 * Credits
+	 *
+	 * @return
+	 */
+	public String getCredits();
+	public void setCredits(String credits);
+
+	/**
+	* Requirements for the course
+	*
+	* @return
+	*/
+	public String getRequirements();
+	public void setRequirements(String requirements);
 }

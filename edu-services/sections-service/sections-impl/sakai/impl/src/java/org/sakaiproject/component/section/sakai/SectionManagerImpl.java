@@ -23,6 +23,7 @@ package org.sakaiproject.component.section.sakai;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,12 +32,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.Calendar;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
-
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.authz.api.AuthzPermissionException;
@@ -78,6 +75,8 @@ import org.sakaiproject.thread_local.api.ThreadLocalManager;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * A sakai-based implementation of the Section Management API, using the
@@ -759,7 +758,7 @@ public abstract class SectionManagerImpl implements SectionManager, SiteAdvisor 
 
 	private String getSectionTaRole(AuthzGroup group) throws RoleConfigurationException {
 		Set roleStrings = group.getRolesIsAllowed(SectionAwareness.TA_MARKER);
-		if(roleStrings.size() != 1) {
+		if(roleStrings.size() <= 0) {
 			if(log.isDebugEnabled()) log.debug("Group " + group +
 				" must have one and only one role with permission " +
 				SectionAwareness.TA_MARKER);

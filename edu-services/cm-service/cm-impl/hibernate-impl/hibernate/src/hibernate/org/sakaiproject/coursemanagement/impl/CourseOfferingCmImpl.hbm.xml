@@ -12,7 +12,10 @@
 		<many-to-one name="crossListing" column="CROSS_LISTING" class="org.sakaiproject.coursemanagement.impl.CrossListingCmImpl" />
         <property name="startDate" column="START_DATE" type="date" not-null="false" />
         <property name="endDate" column="END_DATE" type="date" not-null="false" />
-
+		<property name="lang" column="LANG" type="string" />
+		<property name="academicCareer" column="ACAD_CAREER" type="string" />
+		<property name="credits" column="CREDITS" type="string" />
+		<property name="requirements" column="REQUIREMENTS" type="string" length="5000" />
 		<many-to-one name="canonicalCourse" column="CANONICAL_COURSE" index="CM_CO_CANON_COURSE_IDX" class="org.sakaiproject.coursemanagement.impl.CanonicalCourseCmImpl" />
 		<many-to-one name="academicSession" column="ACADEMIC_SESSION" lazy="false" index="CM_CO_ACADEMIC_SESS_IDX" class="org.sakaiproject.coursemanagement.impl.AcademicSessionCmImpl" />
 
@@ -50,9 +53,24 @@
         ]]>
     </query>
     
+    <query name="findCourseOfferingsByAcadCareerAndAcademicSession">
+        <![CDATA[
+        select co from CourseOfferingCmImpl as co where
+        	co.academicCareer=:acadCareer and
+        	co.academicSession.eid = :academicSessionEid 
+        ]]>
+    </query>
+    
+    <query name="findCourseOfferingsByAcadCareer">
+            <![CDATA[
+            select co from CourseOfferingCmImpl as co where
+            	co.academicCareer=:acadCareer
+            ]]>
+    </query>
+    
     <query name="findActiveCourseOfferingsInCanonicalCourse">
-    <![CDATA[from CourseOfferingCmImpl where start_date <= now() 
-    	and end_date>=now() and class_discr='org.sakaiproject.coursemanagement.impl.CourseOfferingCmImpl' 
+    <![CDATA[from CourseOfferingCmImpl where start_date <= sysdate
+    	and end_date>=sysdate and class_discr='org.sakaiproject.coursemanagement.impl.CourseOfferingCmImpl'
     	and canonicalCourse = :canonicalCourse);
     ]]>
     </query>
