@@ -1,0 +1,19 @@
+Missing fr_CA translations
+
+gen.custom.annotatedurl = Customize Instruction Info Display
+gen.tootit.empty = Tool title cannot be empty
+gen.tootit.toolong = Tool title is too long (max 99 characters)
+gen.pagtit.empty = Page title cannot be empty
+gen.pagtit.toolong = Page title is too long (max 99 characters)
+gen.url.empty = URL cannot be empty
+gen.url.invalid = The URL you entered is not valid.
+gen.info.url.toolong = Site Info URL is too long (max 255 characters)
+gen.pixelshid = (in pixels)
+gen.popup.info=Note: Applies only to secure (https://) URLs that allow framing. Most major websites do not allow framing. A non-secure (http://) URL will always open in a new window.
+gen.info.title.message = Home Information Message
+gen.info.maximize = Launch Maximum Width
+gen.trouble.loading = This page seems to have trouble loading.
+dissmiss.page.relaunch.message = Click to dismiss 
+
+Missing from new version, present in old fr_CA
+

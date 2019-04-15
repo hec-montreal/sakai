@@ -1,0 +1,32 @@
+Missing fr_CA translations
+
+section_update_failure_title_too_long=The section name ''{0}'' exceeds the maximum length of {1} characters.
+student_view_switch_sc=(Switch to {0})
+section_add_failure_title_too_long=The section name ''{0}'' exceeds the maximum length of {1} characters.
+confirm=Confirm
+cancel=Cancel
+student_view_already_member_in_category=You are already a member of a section in this category.
+update=Update
+options_manually_manage=Manually Manage
+add=Add
+add_sections=Add Sections
+nav_print=Print
+student_view_join_sc=(Join {0})
+student_view_no_sections_not_available=The section you selected is no longer available. Please choose another section
+You=may only assign a student to one section within each category. If the student is already a member of a section in a category, they wil be removed from that section if you assign them to a new section.
+options_confirmInternal=This change will prevent automatic enrollment updates, are you sure you wish to continue?
+edit_student_over_max_warning_try= You've tried to include {0} students in section {1} students while the maximum size is {2}!
+nav_download=Download
+roster_table_header_ta=Teaching Assistants
+section_close_title=Section Tool Closed
+section_close_desc=This tool is closed. You will be able to access the sections tool at the date and time your faculty specified.
+section_close_opendate=Open Date:
+section_open_info=Close sections tool for students until Open Date:
+section_refresh_info=Refresh the page to see the groups after the due date.
+error_date_format=Error with the Date/Time format
+options_internally_manage_warning=When using an Open Date, you must allow either self registration or self switch.
+
+Missing from new version, present in old fr_CA
+
+javax.faces.component.UIInput.REQUIRED = Cette valeur est obligatoire.
+javax.faces.convert.IntegerConverter.CONVERSION = Veuillez inscrire une valeur num\u00E9rique.

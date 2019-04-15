@@ -1,0 +1,24 @@
+Missing fr_CA translations
+
+bar_input_search_title=Enter User Name, ID or Email Address to Search For.
+internal_user_id=Internal User ID
+user_created_on=Created On
+user_modified_on=Modified On
+combo_user_type_title=Select user type to filter by.
+combo_user_ext_title=Select user authority to filter by.
+user_type_all=All
+user_type_none=(no type)
+user_auth_all=All
+user_auth_internal=Internal
+user_auth_external=External
+set_to_inactive_button=Set Selected to Inactive
+set_to_active_button=Set Selected to Active
+invert_selection=Invert Selection
+select_all=Select All
+deselect_all=Deselect All
+export_selected_to_csv=Export Selected to CSV
+export_selected_to_excel=Export Selected to Excel
+actions_header=Actions
+
+Missing from new version, present in old fr_CA
+

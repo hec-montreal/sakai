@@ -1,0 +1,18 @@
+Missing fr_CA translations
+
+accessibility.tooltip                          = More info on setting
+error.worksite.title.maxLength      = Title length cannot exceed {0} characters. Please provide a shorter title.
+error.worksite.title.htmlStrippedToEmpty = Site title cannot contain HTML. Please provide a valid site title.
+link.other.profile                = {0}'s profile
+profile.gallery.image.alt              = My Pictures
+
+Missing from new version, present in old fr_CA
+
+accessibility.privacy = D\u00E9terminer les personnes autoris\u00E9es \u00E0 afficher telle ou telle partie de votre profil
+text.search.terms = Mots-cl\u00E9s pour recherche
+text.search.byinterest = Centre d'int\u00E9r\u00EAt commun
+text.wall.remove = Supprimer le message de <b>{0}</b> de votre mur?
+accessibility.wall.remove = Supprimer l''article publi\u00E9 par {0} de votre mur?
+button.search = Rechercher
+accessibility.prefs = Pr\u00E9f\u00E9rences de notification par courrier \u00E9lectronique
+text.search.byname = Nom ou adresse de courriel recherch\u00E9

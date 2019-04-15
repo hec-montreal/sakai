@@ -1,0 +1,9 @@
+Missing fr_CA translations
+
+pager_titleFirst=First {0} {1}
+pager_titlePrev=Previous {0} {1}
+pager_titleNext=Next {0} {1}
+pager_titleLast=Last {0} {1}
+
+Missing from new version, present in old fr_CA
+

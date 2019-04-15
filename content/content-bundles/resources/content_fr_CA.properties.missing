@@ -1,0 +1,60 @@
+Missing fr_CA translations
+
+sh.2week = 2 weeks
+sh.3week = 3 weeks
+sh.4week = 4 weeks
+sh.5week = 5 weeks
+dragndrop.length.error = The total length of the path to the file {0} is longer than the limit of {1}, please use   a shorter filename or a shorter folder name.
+copyright.notDefined=Not Applicable or Not Defined
+copyright.requireChoice=Please select a copyright status
+copyright.requireChoice.error=Please choose a valid copyright status. Your selected copyright status cannot be assigned.
+access.hidden=(Hidden)
+resource.is.hidden=This resource/collection is hidden
+
+Missing from new version, present in old fr_CA
+
+dav.graf20b = L'ID de ce site est
+dav.graf20a = Vous \u00EAtes actuellement dans le site
+sort.instruction.input = Vous pouvez \u00E9galement changer les num\u00E9ros de position dans la liste.
+folder2 = Le dossier
+folder1 = Les dossiers
+cpright1 = tous droits r\u00E9serv\u00E9s (c) {0}, {1}
+jan = JAN
+sort.instruct = D\u00E9placer un \u00E9l\u00E9ment dans la liste en cliquant sur la fl\u00E8che sur la gauche ou dans le menu d\u00E9roulant sur la droite. Enregistrez vos modifications avant de quitter la page.
+month.feb = F\u00C9V
+dav.url = Acc\u00E8s WebDAV \u00E0 ce site
+sort.summary = La table contient les items \u00E0 trier. La seconde colonne contient le lien pour d\u00E9placer les items vers le haut. Troisi\u00E8me colonne: lien pour d\u00E9placer vers le bas. Derni\u00E8re colonne: s\u00E9lectionnez pour d\u00E9placer un \u00E9l\u00E9ment vers un endroit sp\u00E9cifique.
+deleteres = La ressource supprim\u00E9e
+sort.movedn = D\u00E9placer vers le bas
+month.jan = JAN
+jun = JUN
+jul = JUL
+may = MAI
+mar = MAR
+access.public = Public
+sort.caption = Liste des ressources \u00E0 trier
+expandall = D\u00E9velopper tout
+dec = D\u00C9C
+month.jun = JUN
+month.jul = JUL
+month.may = MAI
+nov = NOV
+month.mar = MAR
+access.public1 = Visible au public
+aug = AO\u00DB
+sort.moveup = D\u00E9placer vers le haut
+default.copyright = Le statut des droits d'auteur n'est pas encore d\u00E9termin\u00E9.
+month.dec = D\u00C9C
+sep = SEP
+month.nov = NOV
+copyrighttype.new = Utilisez les droits d'auteur ci-dessous.
+oct = OCT
+month.aug = AO\u00DB
+apr = AVR
+month.sep = SEP
+expand.all = D\u00E9velopper tout
+dav.graf22 = Pour acc\u00E9der aux ressources de ce site \u00E0 l'aide d'un client WebDAV, vous utiliserez l'URL suivante:
+dav.graf21 = Chaque site Sakai a un ID de site. L'ID de site pour ce site est indiqu\u00E9 ci-dessus. Vous devez conna\u00EEtre l'ID de site puisqu'il fera partie de l'adresse \u00E0 laquelle vous devrez vous connecter via WebDAV. Chaque site doit \u00EAtre configur\u00E9 comme une connexion WebDAV distincte donc la premi\u00E8re fois que vous vous connecterez \u00E0 un site particulier, vous devrez suivre les instructions ci-dessous.
+month.oct = OCT
+month.apr = AVR
+feb = F\u00C9V

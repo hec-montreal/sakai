@@ -1,0 +1,25 @@
+Missing fr_CA translations
+
+group.locked = Group is locked because of tool usage
+group.role_prefix = Role: 
+group.section_prefix = Section: 
+editgroup.notallowed = This group cannot be edited because it is locked by tool usage.
+editgroup.noteditable = Not editable because it's locked by tool usage
+editgroup.group.locked = You cannot edit a group locked by some tool(s)
+editgroup.group.locked.delete = You cannot remove a group locked by some tool(s)
+deletegroup.notallowed.groups.remove=The following group(s) cannot be removed because are locked by some tool(s): {0}.
+back=Back
+user.not.member.alert={0} is not a member of the site.
+user.unknown=Unknown
+import1.textarea.header = Type or paste in the text box
+import1.textarea.header.file = Or choose a file
+import1.error.no.content = Either the text box should have data in it, or a file should be chosen.
+import1.error.file.type.invalid = The file type must end with .csv
+import1.error.invalid.data.format = Each line must have two values in the order group title then username / email address, the data must be comma separated.
+import2.invalidmemberheading = Invalid user(s)
+import2.newmemberheading = New user(s)
+import2.existmemberheading = Existing user(s)
+
+Missing from new version, present in old fr_CA
+
+import1.error = Le fichier que vous avez t\u00E9l\u00E9vers\u00E9 n'est pas lisible. Veuillez v\u00E9rifier que le fichier est du bon format et r\u00E9essayer.

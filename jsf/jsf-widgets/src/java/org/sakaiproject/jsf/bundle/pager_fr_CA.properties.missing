@@ -1,0 +1,12 @@
+Missing fr_CA translations
+
+
+Missing from new version, present in old fr_CA
+
+pager_textPageSizeAll = Tout
+pager_renderPrev = true
+pager_textStatusZeroItems = Affichage 0 {3}
+pager_renderNext = true
+pager_accesskeys = false
+pager_renderLast = true
+pager_renderFirst = true

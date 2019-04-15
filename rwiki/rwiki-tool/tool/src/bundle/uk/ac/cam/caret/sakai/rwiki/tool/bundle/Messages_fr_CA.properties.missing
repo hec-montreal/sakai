@@ -1,0 +1,48 @@
+Missing fr_CA translations
+
+jsp_add_first_comment = Be the first to comment
+jsp_addcomment = Add Comment
+jsp_comment_gotolink = - Go to comments
+jsp_comment_pages = Comment Pages
+jsp_comment_pages_help = This is a list of pages representing each comment on this page.    \u0009\u0009
+jsp_comment_title = Comments
+jsp_edit_content_label = Edit page content
+jsp_hidden_comment = Hidden comment text
+jsp_hidden_comment_info = Hidden author and date
+jsp_hide_hints = Hide hints
+jsp_history_content_same_as = Content same as V.{0}
+jsp_history_list_caption = List of changes to the page. Column 1: version; column 2: changes author; column 3: date of changes; columm 4; links to compare this with previous and current versions; column 5:link to revert to this version if allowed; column 6:changed since last?; column 7: permissions for this version.
+jsp_history_revert_this_version = Revert to this version
+jsp_history_version_msg = This will cause version V.{0} to become the current version.\\n Are you sure you want to do this?
+jsp_info_breadcrumb = Information for
+jsp_info_outgoing_manylinks = The number of outgoing links on this Wiki page may have reached a system-defined limit, therefore, some of this page's links may not be displayed in this list.
+jsp_no_results_found_for = No results found for 
+jsp_noread_comment = No Read Permission for this comment
+jsp_notification_feeds_help = Alternate views for this page, as well as versions of RSS feeds from it    \u0009\u0009
+jsp_page_diff_added = Added
+jsp_page_diff_key = Key
+jsp_page_diff_vs = vs
+jsp_page_length_alert = Page names in wiki cannot be over 225 characters in length!!!! Please change the name of this page.
+jsp_page_length_alert_title = Sorry, Page Title is Too Long
+jsp_page_length_alert_view = <ul class="message"><li>The page you have started by making a link to it has a title that exceeds the system limits.</li><li>We recommend that you go back to the originating page and edit the link and make it shorter than 200 characters.</li><li> Sorry for the inconvenience!</li></ul>
+jsp_page_perms_help_title = Click to view information    \u0009\u0009
+jsp_page_world_permission = Anyone anywhere
+jsp_page_world_permission_help = Anyone, authenticated or not, can  have the permission to read the page.
+jsp_page_worlddisp_permission = Anyone anywhere
+jsp_page_worlddisp_permission_help = Anyone, authenticated or not, can  have the permission to read the page.
+jsp_public_new = Authenticated users
+jsp_role_permissions_summary = First column: roles, other columns: permissions you can apply to this role.
+jsp_search_close_q = "
+jsp_search_open_q = "
+jsp_search_title = Search results for 
+jsp_show_hints = Show hints
+jsp_table_macro_markup = Title 1|Title 2|Title 3\\nRow 1| contents | contents\\nRow 2| contents | contents\\nRow 3| contents | contents
+jsp_view_current = View Current
+jsp_visited_pages_link = Recently visited
+jsp_wiki_home_sc = page for Wiki
+jsp_wiki_home_title = Wiki Home Page
+jsp_world = Anyone at all
+
+Missing from new version, present in old fr_CA
+
+jsp_printer_friendly = Impression facile

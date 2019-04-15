@@ -1,0 +1,8 @@
+Missing fr_CA translations
+
+org.apache.wicket.mfu.caption.unlimited=Files:
+org.apache.wicket.mfu.caption.limited=Files (maximum ${max}): 
+org.apache.wicket.mfu.delete=Delete
+
+Missing from new version, present in old fr_CA
+

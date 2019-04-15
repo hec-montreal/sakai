@@ -1,0 +1,9 @@
+Missing fr_CA translations
+
+bugreport.bugid = bug-id
+bugreport.recoveryinstructions.reported=To recover from this error please do the following:
+bugreport.session.creationdatetime=:    CreationDateAndTime:
+bugreport.session.lastaccessdatetime=:    LastAccessDateAndTime:
+
+Missing from new version, present in old fr_CA
+

@@ -1,0 +1,54 @@
+Missing fr_CA translations
+
+cdfm_default_template_organize_instruction=It is possible to reorder Forums and Topics by adjusting the numbers. Lower numbers will appear at the top.
+cdfm_forum_notifications=Notifications
+cdfm_allowEmailNotifications=Allow email notifications for new messages
+cdfm_includeContentsInEmails=Include contents of messages in email notifications
+cdfm_button_bar_save_draft=Save Draft
+cdfm_topic_post_before_reading=Post Before Reading
+cdfm_forum_rubric=This forum could be graded using a Rubric.
+cdfm_topic_rubric=This topic could be graded using a Rubric.
+cdfm_subject = Subject
+cdfm_forum_locked = This forum is locked
+perm_identify_anon_authors=Identify Anonymous Authors
+pvt_colon = :
+email.body.noContents=Please log in to {0} to view the contents of this message.
+group_role_desc=[{0}] {1} Role
+move_thread=Move Thread(s)
+rank_threshold_hint=- Enter threshold number -
+rank_assign_filter_site_members=Filter Site Members...
+rank_assign_by_name=By Name:
+rank_assign_in_group=in Group/Section:
+rank_assign_all_groups=All Sections/Groups
+rank_assign_of_role=of role:
+rank_assign_all_roles=All Roles
+rank_assign_title_site_members=Site Members
+rank_assign_showing=showing
+rank_assign_of=of
+rank_assign_site_members=site members
+rank_assign_add_all=Add all
+rank_assign_individuals_to_assign=Individual(s) to be Assigned Rank
+rank_assign_remove_all=Remove all
+rank_assign_recipients_selected=recipients selected
+rank_assign_button_cancel=Cancel
+rank_assign_button_update=Update Individuals
+cdfm_not_selected_topic=You have to select forum and topic where moving thread
+loading_direct_access=Loading message...
+error_direct_access=Error loading message
+recipient_placeholder=Click here to select recipients
+forum_dont_associate_label=Do not use a rubric to grade this forum
+forum_associate_label=Use the following rubric to grade this forum
+topic_dont_associate_label=Do not use a rubric to grade this topic
+topic_associate_label=Use the following rubric to grade this topic
+option_pointsoverride=Adjust individual student scores
+option_hidepoints=Hide point values (feedback only)
+option_studentpreview=Hide Rubric from student
+grading_rubric=Grading Rubric 
+
+Missing from new version, present in old fr_CA
+
+cdfm_message_count_update = Mettre \u00E0 jour le nombre de mots
+cdfm_hide = Masquer 
+cdfm_full_description = Description compl\u00E8te 
+cdfm_view = Voir 
+supprimer = de fa\u00E7on d\u00E9finitive le(s) message(s) suivant(s) ?

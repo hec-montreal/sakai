@@ -1,0 +1,11 @@
+Missing fr_CA translations
+
+syllabus.attachments.list = Attachments:
+event.syllabus.post.new =[ {0} New Posted Syllabus Item  ] {1}
+event.syllabus.post.changed = [ {0} Existing Syllabus Item Changed ] {1}
+event.syllabus.post.delete = [ {0} Posted Syllabus Item Has Been Deleted ] {1}
+event.syllabus.delete =  Syllabus Item - {0} for Site - {1}  has been deleted.
+subject = Subject: {0}
+
+Missing from new version, present in old fr_CA
+

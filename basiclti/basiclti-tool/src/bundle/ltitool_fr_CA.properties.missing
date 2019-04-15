@@ -1,0 +1,43 @@
+Missing fr_CA translations
+
+gen.toggle.priv=Toggle Private Key
+tool.patch.title=Content Item Launch
+tool.patch.body=Since you are placing this tool as a Content Item tool, we have automatically set it so the title and launch URL can be changed.
+content.export.csv=Export to CSV
+content.export.excel=Export to Excel
+content.attribution=Department
+contentitem.generic.title=External Tool
+contentitem.success=Valid Content Items received:
+contentitem.success.none=Did not receive any valid Content Items from the external tool.
+contentitem.success.action=Press 'OK' to install these Content Items in the editor.
+contentitem.failure=One of your returned Content Items had a problem.
+contentitem.failures=Several of your returned Content Items had a problem.
+contentitem.tools=These are searchable sources of External Tools that allow you to search for, select, and configure select tools and/or content to insert into your document.
+contentitem.tools.launch=These are available External Tools that you can insert into your document.
+contentitem.notools=There are no External Tools available to the editor.   These tools can be Application Stores, Applications that are self-configuring, or Learning Object Repositories.
+error.contentitem.missing.url=LTILink Item missing launch url
+error.contentitem.content.insert=Unable to insert ContentItem
+error.contentitem.content.launch=Could not retrieve Launch URL from ContentItem
+error.deeplink.bad=Error in Deep Link Response
+error.deeplink.no.ltilink=Missing ltiResourceLink in Deep Link Response
+success.link.add=Linked
+success.link.remove=Link removed
+error.keygen.fail=Failed to generate PKI key pair
+error.tool.no.encryption.key=This server does not have basiclti.encryption.key set in its sakai.properties.  Until you set this value, LTI secrets will be unencrypted in the database.
+bl_sitetitle=Site Title
+bl_created_at=Added On
+bl_sitecontactname=Site Owner
+bl_sitecontactemail=Site Contact
+bl_toolorder=Order
+select.showall=Show All
+deploy.delete.tool=Delete: 
+deploy.delete.tools=The tools below were installed by this deployment. If you delete these tools, all of the links to these tools in all the sites in this system will also be deleted.  You can delete the deployment without deleting the tools.
+search.sitetitle=Search by Site Title
+searchby=Search by {0}
+lti13_keyset_url=LTI 1.3 Platform OAuth2 Well-Known/KeySet URL (provide to tool)
+lti13_token_url=LTI 1.3 Platform OAuth2 Bearer Token Retrieval URL (provide to tool)
+lti13_oidc_auth=LTI 1.3 Platform OIDC Authentication URL (provide to tool)
+lti13_issuer=LTI 1.3 Issuer for this Platform (provide to tool)
+
+Missing from new version, present in old fr_CA
+

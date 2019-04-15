@@ -1,0 +1,22 @@
+Missing fr_CA translations
+
+presence.list.alert.message      = Alert: {0}
+presence.list.status     = Status
+presence.list.total.withValue      = Total sessions: {0}
+presence.list1.alert.message     = Alert: {0}
+presence.list1.location.value  = at location: {0}
+presence.button.open     = Allow new sessions
+presence.button.close    = Stop new sessions
+presence.session.alert.message   = Alert: {0}
+presence.session.on.server      = {0} on: {1}
+presence.session.total.value   = Total sessions: {0}
+
+Missing from new version, present in old fr_CA
+
+presence.list1.alert = Alerte:
+presence.session.on = le:
+presence.list1.location = \u00E0 l'emplacement:
+presence.session.total = Total des sessions:
+presence.list.total = Total des sessions:
+presence.session.alert = Alerte:
+presence.list.alert = Alerte:

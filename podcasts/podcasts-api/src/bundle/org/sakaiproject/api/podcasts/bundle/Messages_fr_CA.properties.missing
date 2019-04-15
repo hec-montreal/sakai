@@ -1,0 +1,8 @@
+Missing fr_CA translations
+
+permission_directions=Set permissions for Podcasts folder in worksite {0}
+options_site_disabled=Disabled to site is unavailable, this may be because the whole site is already public.
+max_size_exceeded_alert=Alert: The upload size limit of {0} MB has been exceeded.
+
+Missing from new version, present in old fr_CA
+

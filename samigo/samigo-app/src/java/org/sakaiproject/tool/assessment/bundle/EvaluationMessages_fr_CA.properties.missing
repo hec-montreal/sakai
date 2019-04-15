@@ -1,0 +1,21 @@
+Missing fr_CA translations
+
+sub_count=Submissions
+none_above=None of the Above
+rationale=Rationale
+start_time=Start time
+submit_time=Submit time
+q_emi=Extended Matching Items
+q_imq=Hot Spot
+q_cq=Calculated Question
+t_sortSubmissionCount=Sort by Number of Submissions
+alt_sortSubmissionCountAscending= Sort by Number of Submissions in Ascending
+alt_sortSubmissionCountDescending= Sort by Number of Submissions in Descending
+applyGradesDescAvg=to all participants with 0 submissions.
+data_discrepancy_title=Data Discrepancy
+saver=Save
+saverubricgrading = Save Rubric Grading
+
+Missing from new version, present in old fr_CA
+
+score_error = La note n'est pas du bon type.

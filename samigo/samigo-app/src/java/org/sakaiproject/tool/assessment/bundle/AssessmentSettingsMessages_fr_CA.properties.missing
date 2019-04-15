@@ -1,0 +1,52 @@
+Missing fr_CA translations
+
+heading_extended_time=Exceptions to Time Limit and Delivery Date
+late_accept_until=Late submissions accepted until?
+record_average=(The average score will be recorded).
+validateURL=Validate URL
+due_same_as_available=The Due Date cannot be the same as the Available Date.
+due_null_with_retract_date=You need to set a valid Due Date if the assessment has a Late Acceptance Date.
+require_secure_delivery = Require Locked Browser
+extendedTimeNew=Add New Exception
+extendedTimeExisting=Existing Exceptions
+extendedTimeInstruction=You must click the 'Add an Exception' button to add individual exception(s) before saving settings. Any values override the settings on the assessment. Leave the values (dates) blank to match the assessment settings. If you want the student to have a time limit on a timed exam you MUST set the time limit here, a time limit of 0 will result in no limit.
+extendedTimeEdit=Update an Exception
+extendedTimeCancel=Cancel
+header_extendedTime_user=User
+header_extendedTime_group=Group
+header_extendedTime_start_date=Start Date
+header_extendedTime_due_date=Due Date
+header_extendedTime_retract_date=Late Acceptance Date
+header_extendedTime_hours=Hours
+header_extendedTime_minutes=Minutes
+header_extendedTime_delete=Delete
+header_extendedTime_edit=Edit
+extendedTimeUser=Exception for User
+extendedTimeGroup=Exception for Group
+extendedTime_select_User=Select User
+extendedTime_select_group=Select Group
+extendedTime_select_User=Select User
+extendedTime_data_table_title=Extended time entry data table.
+extendedTime_entry_table_title=Add/edit an extended time entry.
+extended_time_user_and_group_set=A user and/or group must be selected for Exceptions to Time Limit and Delivery Date.
+extended_time_due_earlier_than_available=The Due Date cannot be earlier than the Start Date for extended time entry user '{0}' / group '{1}'.
+extended_time_retract_earlier_than_available=The Late Acceptance Date cannot be earlier than the Available Date / Due Date for extended time entry user '{0}' / group '{1}'.
+extended_time_due_same_as_available=The Due Date cannot be the same as the Available Date for extended time entry user '{0}' / group '{1}'.
+extended_time_name_not_found=N/A
+extended_time_duplicate_users=Entries may not be duplicated. Duplicate extended time entries detected for the following users: {0}.
+extended_time_duplicate_groups=Entries may not be duplicated. Duplicate extended time entries detected for the following groups: {0}.
+extended_time_and=&
+multiselect_filterPlaceholder=Search
+multiselect_nonSelectedText=No groups selected
+multiselect_allSelectedText=All the groups are selected
+multiselect_nSelectedText=groups selected
+dont_associate_label=Do not use a rubric to grade this assignment
+associate_label=Use the following rubric to grade this assignment
+option_pointsoverride=Adjust individual student scores
+option_hidepoints=Hide point values (feedback only)
+option_studentpreview=Hide Rubric from student
+grading_rubric=Grading Rubric 
+
+Missing from new version, present in old fr_CA
+
+extendedTimeHeading = Cas d'exceptions

@@ -1,0 +1,11 @@
+Missing fr_CA translations
+
+overview_title_pages_sum=Pages
+th_page=Page
+page_unknown=[nonexistent page]
+lastJobRun_server_time=({0} server time: {1})
+widget_server_time_msg=All dates use the {0} server time zone.
+report_server_time_zone=({0} server time zone)
+
+Missing from new version, present in old fr_CA
+

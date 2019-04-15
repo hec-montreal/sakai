@@ -1,0 +1,54 @@
+Missing fr_CA translations
+
+list.type3 = sites.
+list.notjoinable = Not Joinable
+list.desc.ellipse=...
+list.noterm=n/a
+list.moreinfotooltip=More information on this site
+list.cancel=Cancel
+list.back=Back to Search
+se.any.term = Any Term
+se.sites = Sites
+se.titleSearch.placeholder=e.g. ECON 101 (optional)
+list.join = Join
+list.alreadyMember = (already a member)
+list.joinableButExclude = Yes (contact the instructor)
+join.alreadyMember1 = You are already a member of this site!
+join.alreadyMember2 = Click the link below to navigate there now.
+join.unjoinable =: This site is not joinable; you cannot join this site.
+join.notAllowed =: This site has limited access. You cannot join the site with your current account. Contact the site's owner for more information.
+join.login =: You need to be logged in to join this site. Please log in and try again.
+join.success = Success! You have just joined the site &#148;{0}&#147;. Click the link below to navigate there now!
+join.failPermission = Failed to join the site. You do not have the correct persmissions to join this site.
+join.fail = Failed to join the site. Please contact support.
+join.joinNow = Join Now
+join.notJoinable = No
+join.notFound = Site not found.
+sitegen.siteinfolist.nosd=No short description provided
+sitegen.siteinfolist.nold=No long description provided
+view.label=View
+gen.viewing.phrase=Viewing {0} - {1} of {2} items
+gen.show=Show {0} items...
+gen.previous.pagesize = Previous {0}
+gen.next.pagesize = Next {0}
+gen.select.label = Choose page size
+gen.listnavselect = To operate the combo box, first press Alt+Down Arrow to open it, and then use the up and down arrow keys to scroll through the options.
+gen.first = Go to first
+gen.last = Go to last
+
+Missing from new version, present in old fr_CA
+
+se.complete = Compl\u00E9tez le formulaire ci-dessous pour trouver des sites sp\u00E9cifiques.
+list.show6 = afficher 200 \u00E9l\u00E9ments par page
+list.show5 = afficher 100 \u00E9l\u00E9ments par page
+list.show4 = afficher 50 \u00E9l\u00E9ments par page
+list.show3 = afficher 20 \u00E9l\u00E9ments par page
+list.show2 = afficher 10 \u00E9l\u00E9ments par page
+list.show1 = afficher 5 \u00E9l\u00E9ments par page
+se.term = Session de cours:
+list.desc.more = (Plus)
+list.items = \u00E9l\u00E9ments
+se.type = Type de site:
+list.view = Affichage
+se.instruction = Optionnel: Chercher des sites par le nom du site (ex.: ECON 101) ou le nom du projet.
+list.of = de

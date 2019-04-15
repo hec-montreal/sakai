@@ -1,0 +1,8 @@
+Missing fr_CA translations
+
+poll_select_title_all=Select all
+new_poll_option=Answer option:
+
+Missing from new version, present in old fr_CA
+
+error_tomany_votes.voteCollection.voteCollection = Vous avez s\u00E9lectionn\u00E9 trop d'options (Maximum: {0})

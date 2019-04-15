@@ -1,0 +1,21 @@
+Missing fr_CA translations
+
+sizelimitexceeded=The upload size limit of {0}Mb has been exceeded.
+att.explainfinish = If you have uploaded a new file, provided a URL, or selected an existing item from Resources you can continue.
+att.menu.end		= End of menu
+gen.first       = First
+gen.previous    = Previous
+gen.next        = Next
+gen.last        = Last
+collapseall 	= Collapse All
+sh.close	= Close this folder
+sh.one          = Up one level
+button.add = add
+button.endadd = end add?
+gen.copycomf    = Confirm copyright
+viewing = Viewing
+of = of
+items = items
+
+Missing from new version, present in old fr_CA
+

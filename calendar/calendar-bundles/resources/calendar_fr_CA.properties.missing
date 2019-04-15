@@ -1,0 +1,66 @@
+Missing fr_CA translations
+
+java.merge.title = Display events from sites
+java.view = View
+java.export.title = Generate link for sharing with general public
+java.subscriptions.title = Display events from external calendars
+java.alert.aliasreq = An Alias is required to enable iCal exports.
+java.alert.dupalias = This name has already been used
+java.alert.subsurlinvalid = This URL seems to be invalid. Please, enter a valid URL.
+java.alert.opendate=This assignment is not yet available.
+dateselectionwidget.day = Select day
+dateselectionwidget.month = Select month
+dateselectionwidget.year = Select year
+dateselectionwidget.hour = Select hour
+dateselectionwidget.minute = Select minute
+dateselectionwidget.ampm = Select AM or PM
+gen.assatt = Additional attachments from assignment
+gen.assignmentlink = Assignment Link
+legend.key17 = Formative Assessment
+legend.key18 = Submission Date
+legend.key19 = Tutorial
+legend.key20 = Workshop
+imp.ical = iCalendar
+imp.markall      = Check All?
+imp.unmarkall      = Uncheck All?
+import.outlook.charset=ISO-8859-1
+start.hour = Start hour
+start.minute = Start minute
+start.ampm = Start am or pm
+end.hour = End hour
+end.minute = End minute
+end.ampm = End AM or PM
+view.future = Future events
+viewm.date_format = MMMM yyyy
+viewy.date_format = yyyy
+subs.institutional = Institutional Calendars
+subs.institutional.instruction = This page allows subscription to an external calendar. Unfortunately this feature has some limitations, it
+subs.institutional.instruction.detailed.1 = Does not support all-day events
+subs.institutional.instruction.detailed.2 = Only supports events defined with &lt;VEVENT&gt;
+subs.institutional.instruction.detailed.3 = Does not support re-occurring events
+subs.institutional.instruction.detailed.4 = Does not support events without an end time
+subs.institutional.summary = List of Institutional Calendars
+subs.calendar.url = URL
+subs.user.summary = List of User-specified Calendars
+event.site = Site:
+event.event = Event:
+event.type = Event type:
+event.location = Location:
+event.from = From:
+next=Next
+previous=Previous
+date_format = MMMMM dd, yyyy
+date_link_format =yyyy-MM-dd
+calendar=Represents calendar events.
+calendar.action.site=Retrieve the calendar events for a site. The request url pattern: /direct/calendar/site/{siteId}.{format} Optional query params: firstDate, ISO-8601 yyyy-MM-dd format. Used for filtering. lastDate, ISO-8601 yyyy-MM-dd format. Used for filtering.
+calendar.action.event=Retrieve a calendar event details specified by the site id and event id. The request url pattern: /direct/calendar/event/{siteId}/{eventId}.{format}
+calendar.action.my=Retrieve all my calendar events for all of my sites. The request url pattern: /direct/calendar/my.{format} Optional query params: firstDate, ISO-8601 yyyy-MM-dd format. Used for filtering. lastDate, ISO-8601 yyyy-MM-dd format. Used for filtering.
+set.MWF.fm= {0}/{1}/{2}
+set.TTh.fm={0}/{1}
+set.SMW.fm={0}/{1}/{2}
+set.SMTW.fm={0}/{1}/{2}/{3}
+set.STT.fm={0}/{1}/{2}
+set.MW.fm={0}/{1}
+
+Missing from new version, present in old fr_CA
+

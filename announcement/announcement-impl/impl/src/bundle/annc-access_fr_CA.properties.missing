@@ -1,0 +1,13 @@
+Missing fr_CA translations
+
+from_colon = From:
+date_colon = Date:
+subject_colon = Subject:
+attachments_colon = Attachments:
+
+Missing from new version, present in old fr_CA
+
+attachments = Fichiers joints
+date = Date
+subject = Sujet
+from = De

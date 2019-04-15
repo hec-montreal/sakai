@@ -1,0 +1,13 @@
+Missing fr_CA translations
+
+assessment_deleted=- deleted
+error_begin=Error on Begin Assessment
+error_submit=Error on Submit for Grading
+error_secure_delivery=Secure Delivery Error
+t_sortId=Sort by Id
+alt_sortIdAscending=Sort by Id in Ascending
+alt_sortIdDescending=Sort by Id in Descending
+
+Missing from new version, present in old fr_CA
+
+dotdotdot = ...

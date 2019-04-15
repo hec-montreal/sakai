@@ -1,0 +1,40 @@
+Missing fr_CA translations
+
+description_asi_aut=Description: ASI Author XML Style Sheet: Multimedia Audio
+time_up=Time's up
+time_limit_second=second(s)
+key=Key:
+timeout=Time Expired!
+access_denied=Access Denied
+button_return_to_assessment=Return to Assessment
+unlimited=Unlimited
+begin_assessment_msg_attempt_autosubmit_warn_average=You have already submitted this assessment.  If you start another attempt it will be automatically submitted even if you do not answer all questions.  If you start a new attempt now, your score from this attempt will be averaged with all previous attempts to determine your overall assessment score.  Do you want to begin a new attempt of this assessment?
+begin_assessment_msg_attempt_autosubmit_warn_last=You have already submitted this assessment.  If you start another attempt it will be automatically submitted even if you do not answer all questions.  If you start a new attempt now, your score from this attempt will be recorded as your overall score for this assessment.  Do you want to begin a new attempt of this assessment?
+imagemap_legend1=Hot Spot Items
+imagemap_legend2=Hot Spot Image
+use_form_navigation=Please use the previous and next buttons on the page to navigate.
+fib_sr_explanation = What follows is a fill in the blank question with {0} blanks.
+fib_sr_answer_label_part1 = Blank
+fib_sr_answer_label_part2 = Fill in the blank, read surrounding text.
+fin_sr_explanation = What follows is a numeric fill in the blank question with {0} blanks.
+fin_sr_answer_label_part1 = Blank
+fin_sr_answer_label_part2 = Fill in the blank, read surrounding text.
+calcq_sr_explanation = What follows is a calculated question with {0} blanks.
+calcq_sr_answer_label_part1 = Blank
+calcq_sr_answer_label_part2 = Calculate the answer by read surrounding text.
+savedMessage=Work is being saved.
+subMessage=Work is being submitted.
+alertMessage=#time# remaining.
+closeAlertMessage=Close Alert
+alertTitle=ALERT
+hideMessage=Hide Time Remaining
+showMessage=Show Time Remaining
+timeRemaining=Time Remaining
+
+Missing from new version, present in old fr_CA
+
+begin_assessment = Commencer l'\u00E9valuation
+five_minutes_left3 = NOTE: le temps continuera de s'\u00E9couler m\u00EAme si vous ne fermez pas la fen\u00EAtre
+five_minutes_left2 = Appuyer sur '\u00C9chap' ou cliquer 'X' pour retourner \u00E0 l'\u00E9valuation.
+five_minutes_left1 = Il vous reste 5 minutes pour compl\u00E9ter l'\u00E9valuation.
+button_close_window = Fermer la fen\u00EAtre et sortir

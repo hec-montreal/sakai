@@ -1,0 +1,46 @@
+Missing fr_CA translations
+
+sakai_resources_list.messageActivateActions=To enable the actions, select a folder or content item.
+avail.zipdownload = Download Zip
+versioning.title = Versioning
+versioning.hint = Uploaded items should
+versioning.overwrite = Overwrite existing files
+versioning.newversion = Create new version
+cright.status.all		 = Copyright Status (applies to all files)
+gen.email.disabled = Notifications are disabled for hidden resources
+dropdown.learning_resource_type.2=assignment
+zipdownload.sure=Are you sure to download a zip file with these resources?
+zipdownload.show=Download item(s) confirmation...
+zipdownlad.table=Table holds information about materials selected for downloading. Column headers contain descriptions of contents and links for sorting.
+zipdownload.show1=Download
+zipdownload.maxIndividualSize=File ''{0}'' exceeds the allowed size for a single file ({1} MB)
+zipdownload.maxIndividualSizeInFolder=One file inside folder ''{0}'' exceeds the allowed size for a single file ({1} MB)
+zipdownload.maxTotalSize=The files to download exceed the maximum allowed size ({0} MB)
+label.overwrite.warning=Warning: Existing files will be overwritten.
+overwrite.text=Overwrite existing files
+
+Missing from new version, present in old fr_CA
+
+access.public.noparent = Les resources dans ce dossier sont <strong>de visibilit\u00E9 publique</strong>.
+month.feb = F\u00C9V
+access.public.choice = Ce fichier est <strong> de visibilit\u00E9 publique</strong>.
+month.jan = JAN
+metadata.show = Montrer {0}
+access.public.nochoice = Les resources dans le ''{0}'' dossier sont <strong>de visibilit\u00E9 publique</strong>.
+month.jun = JUN
+month.jul = JUL
+upload.limit = Vous ne pouvez t\u00E9l\u00E9verser que {0} mo \u00E0 chaque fois.  Il se peut que vous ayez \u00E0 t\u00E9l\u00E9verser les plus gros fichiers un \u00E0 la fois.
+month.may = MAI
+month.mar = MAR
+props.select.help = Souvenez-vous de copier le lien URL Ctrl+C ou Option+C. Ce lien ne fait que s\u00E9lectionner le URL.
+avail.hide2 = Cacher ce dossier aux utilisateurs qui ne sont pas administrateur
+avail.hide1 = Cacher cet \u00E9l\u00E9ment aux utilisateurs qui ne sont pas administrateur
+access.public.fldr = Ce dossier et son contenu sont<strong> de visibilit\u00E9 publique</strong>.
+month.dec = D\u00C9C
+month.nov = NOV
+month.aug = AO\u00DB
+month.sep = SEP
+metadata.hide = Cacher {0}
+expand.all = D\u00E9velopper tout
+month.oct = OCT
+month.apr = AVR

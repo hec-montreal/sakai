@@ -1,0 +1,58 @@
+Missing fr_CA translations
+
+java.alert.youpermi.subject = You don't have permissions to create this announcement - {0}
+java.alert.youdelann.ref = you don't have permissions to delete this announcement - {0}
+java.alert.youacc.pes = You don't have permissions to access the message(s) - {0}
+java.alert.nodates = You need to select a Beginning and/or Ending Date when specifying dates!
+java.alert.baddates = You cannot specify an ending date before its release date!
+java.alert.unknown = An unknown error has occurred.
+java.alert.dupalias = This name has already been used
+java.alert.customsize.number = Only {0} announcements can be displayed at a time!
+java.alert.length = The length of alias cannot be greater than 99 characters
+java.youmess.pes = You don't have permissions to access the message(s) - {0}
+gen.alert.message = Alert: {0}
+gen.clearSelections = Clear Selections
+gen.previous.pagesize = Previous {0}
+gen.next.pagesize = Next {0}
+gen.select.label = Choose page size
+gen.assignmentlink = Assignment Link
+gen.includeattachments = This announcement includes attachments
+gen.editdraft.subject = Edit draft announcement {0}
+gen.editann.subject = Edit announcement {0}
+gen.viewann.subject = View announcement {0}
+gen.removeann.subject = Remove announcement {0}
+reorder.instruction.input= You can also edit list order numbers.
+reorder.instruction.general.hidden=Tab into list and hold Control key and use arrow keys to sort.
+reorder.fail.valid.message=A number smaller than # please!
+revise.group.list.toggle=toggle select all
+revise.notify.ver.dateds_future.date = Set to display and be sent on {0}
+revise.notify.ver.dated_future.date = Set to display on {0}
+announcement=Represents announcements for a given site (including merged announcements) or all announcements for a user. Also includes Message Of The Day and public announcements. There are two optional URL parameters available: 'n' to set the total number of announcements returned, and 'd' to set the number of days in the past to retrieve announcements for. If these parameters are not set, they are retrieved from the tool configuration, or the standard defaults of n=3 and d=10 are used. For example /announcements/site/mercury.json?n=20&amp;d=100 will retrieve up to 20 total announcements for up to 100 days ago.
+announcement.action.site=Retrieve the announcements for a site. If you are not logged in, you will only receive the public announcements for this site.
+announcement.action.user=Retrieve the announcements for the current user. If you are not logged in, you will only receive the MOTD announcements.
+announcement.action.motd=Retrieve only the MOTD announcements.
+announcement.action.msg=Retrieve an announcement based on the path used by the announcements service internally, ie /announcement/msg/{siteId}/{channelId}/{announcementId}. Context is normally the site ID and the channelId is normally "main" unless there are multiple channels in a site. For example /announcement/msg/21b1984d-af58-43da-8583-f4adee769aa2/main/5641323b-761a-4a4d-8761-688f4928141b
+announcement.action.message=Retrieve an announcement based on the given siteId and messageId. eg /announcement/message/{siteId}/{msgId}
+motd.title = Message Of The Day
+
+Missing from new version, present in old fr_CA
+
+dateselectionwidget.year = S\u00E9lectionner l'ann\u00E9e
+oct = OCT
+apr = AVR
+dateselectionwidget.minute = S\u00E9lectionner la minute
+jun = JUN
+jul = JUL
+may = MAI
+mar = MAR
+dateselectionwidget.ampm = S\u00E9lectionner AM or PM
+dateselectionwidget.day = S\u00E9lectionner le jour
+feb = FEV
+dec = DEC
+dateselectionwidget.hour = S\u00E9lectionner l'heure
+dateselectionwidget.month = S\u00E9lectionner le mois
+nov = NOV
+calendar.title = S\u00E9lecteur de date
+aug = AOU
+jan = JAN
+sep = SEP

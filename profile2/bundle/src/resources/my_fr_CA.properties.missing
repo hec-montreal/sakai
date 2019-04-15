@@ -1,0 +1,9 @@
+Missing fr_CA translations
+
+my.redirect./{prefix}/profile-view/{userUuid} = Redirects to the profile view for the specified user
+my.redirect./{prefix}/messages/thread/{thread} = Redirects to a specific thread in the messages page for the currently logged in user
+
+Missing from new version, present in old fr_CA
+
+my.redirect./{prefix}/messages/{thread} = Redirige vers un fil de discussion sp\u00E9cifique sur la page des messages de l'utilisateur connect\u00E9.
+my.redirect./{prefix}/profile/{userUuid} = Redirige vers la premi\u00E8re page du profil de l'utilisateur sp\u00E9cifi\u00E9.

@@ -1,0 +1,26 @@
+Missing fr_CA translations
+
+print=Print
+preview_pool_return=Return
+us_p_confirm=Remove Pool Confirmation
+q_mult_sing=Multiple Choice (single correct)
+t_previewPool=Preview Pool
+t_export=Export Pool to excel
+t_print=Print Pool
+t_tags=Tags
+q_question=Question
+q_response=Response
+q_points=Points
+q_discount=Discount
+q_key=key
+q_feedback=Feedback
+q_feedbackCorrect=Correct feedback
+q_feedbackIncorrect=Incorrect feedback
+answer_model=Answer model:
+file_upload=File upload:
+time_allowed_seconds=Time allowed (seconds):
+number_of_tries=Number of tries allowed:
+transfer_pool_user=transfer pool add user
+
+Missing from new version, present in old fr_CA
+

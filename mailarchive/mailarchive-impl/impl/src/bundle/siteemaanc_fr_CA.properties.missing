@@ -1,0 +1,7 @@
+Missing fr_CA translations
+
+automsg1 = This automatic notification message was sent by {0} ({1}) from the {2} site.
+automsg2 = You can modify how you receive notifications at Home > Preferences.
+
+Missing from new version, present in old fr_CA
+

@@ -1,0 +1,13 @@
+Missing fr_CA translations
+
+BlockMacro.01=style: the css style to apply inline
+StyleMacro.0=1,href: (optional) Link to a stylesheet
+StyleMacro.1=2,media: (optional) media type defaults to all.
+StyleMacro.2=Adds a style element, if no href is used, the internal content, otherwise a link to a style sheet is used.
+SiteEmailNotificationRWiki.19=\ Page: 
+PreMacro.1=Renders the contents as-is 
+CommentMacro.0=This is a macro that creates inline comment with callout 
+CommentMacro.1=none
+
+Missing from new version, present in old fr_CA
+

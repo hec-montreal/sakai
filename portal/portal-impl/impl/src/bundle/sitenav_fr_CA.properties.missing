@@ -1,0 +1,42 @@
+Missing fr_CA translations
+
+sit_return = Return to {0}
+sit_academic_bullhorn_title = Academic alerts
+sit_social_bullhorn_title = Social alerts
+sit_quick_links = Quick Links
+sit_quick_links_title = Links to useful services including Sakai and Apereo
+sit_modal_description = Navigate to a site, mark a site as a favorite, or organize favorites
+sit_calendar = Calendar
+sit_connections = My Connections
+sit_star_sites_description=Star sites below to add them to your favorites bar.
+sit_star_sites_with_autofav_description=Star sites below to add them to your favorites bar. New sites will be automatically added to your favorites.
+sit_drag_sites_to_reorder=Click and drag the <i class=\"fa fa-bars\" aria-hidden=\"true\"></i> icon to reorder your favorites. Up to {0} sites can be displayed in your favorites bar.
+sit_no_favorites_selected=You do not have any favorite sites. Star sites in the "My Sites" menu to add them to your favorites.
+sit_autofav_description=Automatically add new sites to your favorites bar:
+sit_favorite_limit_reached=Only the first {0} sites (above) will display in your favorites bar.
+sit_open_menu=open attached menu
+sit_manover = Manage Overview
+rs_menuTooltip = Show View options
+rs_menuExplanation = Visit site as a different role. Role selection will reload page as new role. Use 'Exit View' link to return to normal role.
+moresite_favorites_on = On
+moresite_favorites_off = Off
+site_server_label = Server:
+footer_details_panel_close = Close this panel
+footer_details_panel_label = Server Details Information Panel
+footer_details_panel_description = This panel contains information about the server that can be used for troubleshooting. The panel can include server time, your preferred time, the server name, and the build information.
+pc_video_status_connection_established= Connection established
+pic_changer_title = Change Profile Picture
+pic_changer_upload = Upload
+pic_changer_choose = Choose a file
+pic_changer_save = Save
+pic_changer_cancel = Cancel
+pic_changer_remove = Remove
+pic_changer_remove_error = Error removing image
+pic_changer_upload_error = Error uploading image
+
+Missing from new version, present in old fr_CA
+
+rs_exitRoleSwap = Sortir de la vue
+pda_login = Connexion
+sit_code_of_conduct = Code de conduite
+rs_view = 

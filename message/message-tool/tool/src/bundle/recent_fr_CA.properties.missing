@@ -1,0 +1,34 @@
+Missing fr_CA translations
+
+cus.dis1.tool    = {0} Display
+cus.youare.for = You are currently setting options for {0}.
+cus.numof.items   = Number of {0}
+cus.numof2.item  = Number of characters per {0}
+gen.alert.message = Alert: {0}
+gen.show.sub  = Show {0} subject
+gen.show.bod  = Show {0} body
+
+Missing from new version, present in old fr_CA
+
+cus.youare = Vous \u00EAtes en train de r\u00E9gler les options pour
+cus.selthe = S\u00E9lectionnez les
+gen.show = Afficher
+tit.help = Aide
+cus.list = liste?
+cus.numof2 = Nombre de caract\u00E8res par
+cus.numof = Nombre de
+tit.float = float
+tit.dock = dock
+chat.options = Options de clavardage r\u00E9centes
+cus.howwill = Comment
+tit.reset = R\u00E9initialiser
+gen.alert = Alerte:
+gen.bod = Corps
+gen.sub = sujet
+cus.dis3 = Style
+cus.dis2 = afficher dans le
+recent2 = Messages r\u00E9cents du salon de clavardage principal
+cus.dis1 = Afficher
+recent1 = R\u00E9cent
+cus.frowhi = de quel r\u00E9cent
+cus.willbe = seront affich\u00E9s.

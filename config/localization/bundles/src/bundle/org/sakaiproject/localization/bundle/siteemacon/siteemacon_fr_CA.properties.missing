@@ -1,0 +1,11 @@
+Missing fr_CA translations
+
+anewresDnD.plural = {0} new resources have been added to
+anewres2DnD.plural = {0} resources have been updated in
+db.subj.upd.dnd.toplevel = [ {0} - Top-level Drop Box items changed ]
+db.subj.new.dnd.toplevel = [ {0} - New top-level Drop Box items ]
+db.text.upd.dnd.toplevel = Several items have been updated in the top-level Drop Box in the "{0}" site at {1} ({2})
+db.text.new.dnd.toplevel = New items have been added to the top-level Drop Box in the "{0}" site at {1} ({2})
+
+Missing from new version, present in old fr_CA
+

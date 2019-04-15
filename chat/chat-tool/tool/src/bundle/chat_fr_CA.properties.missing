@@ -1,0 +1,12 @@
+Missing fr_CA translations
+
+missingchannel1 = This room could not be found. It may have been removed by an instructor. Click 
+here = here
+missingchannel2 = \ to go to the main room.
+control.submit = Submit
+messages_unreaded=There are {0} unread messages
+new_messages=New messages
+unreaded=Unread messages
+
+Missing from new version, present in old fr_CA
+

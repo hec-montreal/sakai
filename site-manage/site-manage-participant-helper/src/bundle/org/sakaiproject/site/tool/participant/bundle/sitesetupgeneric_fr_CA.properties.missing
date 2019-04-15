@@ -1,0 +1,8 @@
+Missing fr_CA translations
+
+java.username.multiple = ''{0}'' matches multiple users in record. Please select from the following usernames: {1} 
+java.badcsrftoken=Error encountered when reading the request. Please reset the tool and try again.
+nonOfficialAccount.invalidEmailDomain=Email addresses ending with "{0}" cannot be added as unofficial participants. Please try adding them as an official participant.
+
+Missing from new version, present in old fr_CA
+

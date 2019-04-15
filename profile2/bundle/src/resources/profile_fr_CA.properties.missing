@@ -1,0 +1,7 @@
+Missing fr_CA translations
+
+profile.action.unreadMessagesCount=Return the number of unread messages for a user. Returns a failure (404) if you do not have access to view the count of the user's messages.
+profile.action.incomingConnectionRequests=Return a list of connection requests to a user. Returns an empty list if none and a failure (404) if you do not have access to view the user's connection requests, or the user is invalid.
+
+Missing from new version, present in old fr_CA
+

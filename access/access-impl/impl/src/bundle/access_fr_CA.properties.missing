@@ -1,0 +1,9 @@
+Missing fr_CA translations
+
+gen.copyright.filename = Copyright Restriction Download Warning : {0}
+
+Missing from new version, present in old fr_CA
+
+error.access = L'acc\u00E8s n'est pas pr\u00EAt
+error.thereq = La ressource demand\u00E9e:
+error.isnot = n'est pas disponible actuellement.

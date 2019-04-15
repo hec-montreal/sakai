@@ -1,0 +1,11 @@
+Missing fr_CA translations
+
+gen.back = Back
+gen.info.maximize = Launch Maximum Width
+get.info.notconfig = Not yet configured.
+gen.info.nocustom = There are no settings to customize.
+new.page.launch=Page opened in new window.
+new.page.relaunch=Press to re-launch page.
+
+Missing from new version, present in old fr_CA
+
