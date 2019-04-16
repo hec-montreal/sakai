@@ -121,6 +121,7 @@
 		<module>webservices</module>
 		<module>hec-root</module>
 		<module>sdata</module>
+		<module>opensyllabus</module>
             </modules>
         </profile>
         <profile>
