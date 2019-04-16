@@ -214,6 +214,11 @@ public class CourseManagementAdministrationHibernateImpl extends
 	}
 
 	public CourseOffering createCourseOffering(String eid, String title, String description,
+			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate) throws IdExistsException {
+		return createCourseOffering(eid, title, description, status, academicSessionEid, canonicalCourseEid, startDate, endDate, null, null, null, null);
+	}
+
+	public CourseOffering createCourseOffering(String eid, String title, String description,
 			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate, String lang, String career, String credits, String requirements) throws IdExistsException {
 		AcademicSession as = (AcademicSession)getObjectByEid(academicSessionEid, AcademicSessionCmImpl.class.getName());
 		CanonicalCourse cc = (CanonicalCourse)getObjectByEid(canonicalCourseEid, CanonicalCourseCmImpl.class.getName());
@@ -347,6 +352,13 @@ public class CourseManagementAdministrationHibernateImpl extends
 		}
 	}
 
+	public Section createSection(String eid, String title, String description, String category,
+				 String parentSectionEid, String courseOfferingEid, String enrollmentSetEid) throws IdExistsException {
+
+		return createSection(eid, title, description, category,
+			parentSectionEid, courseOfferingEid, enrollmentSetEid, null, null, null);
+	}
+	
 	public Section createSection(String eid, String title, String description, String category,
 				 String parentSectionEid, String courseOfferingEid, String enrollmentSetEid, String lang,
 				 String typeEvaluation) throws IdExistsException {

@@ -199,6 +199,11 @@ public interface CourseManagementAdministration {
 			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate, String lang, String career, String credits, String requirements)
 			throws IdExistsException;
 
+	// keep old method signature for build
+	public CourseOffering createCourseOffering(String eid, String title, String description,
+			String status, String academicSessionEid, String canonicalCourseEid, Date startDate, Date endDate)
+			throws IdExistsException;
+
 	/**
 	 * Updates an existing CourseOffering.
 	 * 
@@ -330,6 +335,11 @@ public interface CourseManagementAdministration {
 	public Section createSection(String eid, String title, String description,
 			String category, String parentSectionEid, String courseOfferingEid,
 			String enrollmentSetEid, String lang, String typeEvaluation, String instructionMode) throws IdExistsException;
+
+	// keep old method signature for build
+	public Section createSection(String eid, String title, String description,
+			String category, String parentSectionEid, String courseOfferingEid,
+			String enrollmentSetEid) throws IdExistsException;
 
 	/**
 	 * Creates a new Section.
