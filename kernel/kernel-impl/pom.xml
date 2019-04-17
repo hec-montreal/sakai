@@ -385,6 +385,10 @@
       <groupId>org.apache.jackrabbit</groupId>
       <artifactId>jackrabbit-jcr-commons</artifactId>
     </dependency>
+    <dependency>
+      <groupId>poi</groupId>
+      <artifactId>poi</artifactId>
+    </dependency>
   </dependencies>
 
   <profiles>
