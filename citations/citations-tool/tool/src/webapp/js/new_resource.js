@@ -185,7 +185,7 @@ citations_new_resource.processClick = function(successAction) {
 	
 	var requestDisplayName = function() {
 		// TODO: use sakai message in DOM
-		reportInvalidity('Please supply a name for the citation list.');
+		reportInvalidity('Veuillez fournir un titre pour la liste de références.');
 		return;
 	};
 	/*
