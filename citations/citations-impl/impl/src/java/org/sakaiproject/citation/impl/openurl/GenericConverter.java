@@ -207,6 +207,10 @@ public class GenericConverter extends AbstractConverter {
 			citation.setCitationProperty("creator", author);
 		}
 		
+		if (values.containsKey("externalDocID")) {
+			// assume there is only one externalDocID
+			citation.setCitationProperty("m_linkParameters", values.get("externalDocID").get(0)+"{909}");
+		}
 		
 		return citation;
 	}
