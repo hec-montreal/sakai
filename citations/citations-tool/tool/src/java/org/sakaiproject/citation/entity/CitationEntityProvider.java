@@ -142,9 +142,20 @@ public class CitationEntityProvider extends AbstractEntityProvider implements
 					collection.getId(), title, description);
 
 			for (Citation citation : (List<Citation>) collection.getCitations()) {
+
+				Map <String, String> citationProperties = citation.getCitationProperties();
+				// add the urls to the properties
+				if (citation.hasPreferredUrl()) {
+					citationProperties.put("preferredUrl", citation.getCustomUrl(citation.getPreferredUrlId()));
+				} else if (citation.getCustomUrlIds().size() > 0) {
+					List<String> customUrlIds = citation.getCustomUrlIds();
+					citationProperties.put("preferredUrl", citation.getCustomUrl(customUrlIds.get(0)));
+				}
+				citationProperties.put("openUrl", citation.getOpenurl());
+
 				dCollection.addCitation(new DecoratedCitation(
 						citation.getId(), citation.getSchema().getIdentifier(),
-						citation.getCitationProperties()));
+						citationProperties));
 			}
 			return dCollection;
 		} catch (PermissionException e) {
