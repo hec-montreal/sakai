@@ -135,6 +135,12 @@ public interface ConfigurationService
   public String getSiteConfigOpenUrlResolverAddress();
 
   /**
+   * Fetch the URL to the library catalog resolver address
+   * @return the address (domain name or IP)
+   */
+  public String getSiteConfigLibraryUrlResolverAddress();
+
+  /**
    * Fetch the Google base-URL
    * @return the URL
    */

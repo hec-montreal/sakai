@@ -216,6 +216,20 @@ public class ConfigurationService
 	}
 
   /**
+   * Fetch the OpenURL resolver address
+   */
+	public static String getSiteConfigLibraryUrlResolverAddress()
+	{
+		org.sakaiproject.citation.api.ConfigurationService instance = getInstance();
+		if (instance == null)
+		{
+			return null;
+		}
+		return instance.getSiteConfigLibraryUrlResolverAddress();
+	}
+
+
+  /**
    * Fetch the Google base-URL
    */
 	public static String getSiteConfigGoogleBaseUrl()

@@ -134,6 +134,7 @@ public class BaseConfigurationService implements ConfigurationService, Observer
   // openURL parameters -->
     protected String m_openUrlLabel;
     protected String m_openUrlResolverAddress;
+    protected String m_libraryUrlResolverAddress;
 
   // google scholar parameters -->
     protected String m_googleBaseUrl;
@@ -374,6 +375,17 @@ public class BaseConfigurationService implements ConfigurationService, Observer
     String value = getConfigurationParameter("openurl-resolveraddress");
 
     return (value != null) ? value : getOpenUrlResolverAddress();
+  }
+
+  /**
+   * Fetch the URL to the library catalog resolver address
+   *
+   * @return the resolver address (domain name or IP)
+   */
+  public synchronized String getSiteConfigLibraryUrlResolverAddress() {
+	String value = getConfigurationParameter("libraryurl-resolveraddress");
+
+	return (value != null) ? value : getLibraryUrlResolverAddress();
   }
 
   /**
@@ -735,6 +747,7 @@ public class BaseConfigurationService implements ConfigurationService, Observer
 
       saveParameter(document, parameterMap, "openurl-label");
       saveParameter(document, parameterMap, "openurl-resolveraddress");
+      saveParameter(document, parameterMap, "libraryurl-resolveraddress");
 
       saveParameter(document, parameterMap, "provide-direct-url");
       saveParameter(document, parameterMap, "direct-url-prefix");
@@ -1173,6 +1186,20 @@ public class BaseConfigurationService implements ConfigurationService, Observer
   public void setOpenUrlResolverAddress(String openUrlResolverAddress)
   {
     m_openUrlResolverAddress = openUrlResolverAddress;
+  }
+
+  /**
+   * @return the URL to the library catalog resolver address
+   */
+  public String getLibraryUrlResolverAddress() {
+    return m_libraryUrlResolverAddress;
+  }
+
+  /**
+   * @param set the URL to the library catalog  resolver address
+   */
+  public void setLibraryUrlResolverAddress(String libraryUrlResolverAddress) {
+    m_libraryUrlResolverAddress = libraryUrlResolverAddress;
   }
 
   /**

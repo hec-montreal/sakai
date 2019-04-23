@@ -24,6 +24,8 @@ package org.sakaiproject.citation.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.http.HttpServletRequest;
@@ -1211,8 +1213,114 @@ public abstract class BaseCitationService implements CitationService
 			String firstDelimiter = (resolverUrl.indexOf("?") != -1) ? "&" : "?";
 			String openUrlParams  = getOpenurlParameters();
 
-			// return the URL-encoded string
+			// Depending on the citation type, we refer to our library
+			// catalog(books)
+			// to our library SFX (articles and others)
+			String url =
+					m_configService.getSiteConfigLibraryUrlResolverAddress();
+
+			if (url != null) {
+				if ("article".equalsIgnoreCase(m_schema.getIdentifier())) {
 			return resolverUrl + firstDelimiter + openUrlParams;
+				}
+				else {
+					return url + getLibraryUrlParameters();
+				}
+			}
+			else
+				return resolverUrl + openUrlParams;
+		}
+
+		public String getLibraryUrlParameters() {
+		    String parameters = "";
+		    // check citationProperties
+		    if (m_citationProperties == null) {
+			// citation properties do not exist as yet - no OpenUrl
+			return "";
+		    }
+
+		    // the ISBN or ISSN is the unique identifier of the book
+		    // if we have it, it will be enought to create a link
+		    String isn = (String) m_citationProperties.get(Schema.ISN);
+		    String year = (String) m_citationProperties.get(Schema.YEAR);
+
+		    //ZCII-533: If the citation has the property m_linkParameters (record 909) we can build the citation url using this id instead of the isbn
+		    Object m_linkParameters = m_citationProperties.get("m_linkParameters");
+		    String linkParametersString = null;
+
+		    if (m_linkParameters != null) {
+		    	//ZCII-1497: Handle case where multiple m_linkParameters are present in db
+		    	if (m_linkParameters instanceof String) {
+		    		linkParametersString = m_linkParameters.toString();
+		    	} else if (m_linkParameters instanceof Vector) {
+		    		linkParametersString = ((Vector)m_linkParameters).get(0).toString();
+		    	}
+
+		    	if (linkParametersString != null && !linkParametersString.equals(""))
+		    		return linkParametersString;
+			}
+		    //End ZCII-533
+
+		    if (isn != null && isn != "") {
+			parameters = isn;
+			return filterParameters(parameters);
+		    } else {
+			// get first author
+			String author = getFirstAuthor();
+
+			if (author != null)
+			    parameters += author;
+
+			// titles
+			String title = (String) m_citationProperties.get(Schema.TITLE);
+			if (title != null) {
+				//if it's not the first parameter we have to use the AND
+				if (!parameters.equals("")){
+					parameters += " AND ";
+				}
+			    parameters += title.trim();
+			} else {
+			    // want to 'borrow' a title from another field if possible
+			    String sourceTitle =
+				    (String) m_citationProperties
+					    .get(Schema.SOURCE_TITLE);
+			    if (sourceTitle != null && !sourceTitle.trim().equals("")) {
+			    	//if it's not the first parameter we have to use the AND
+					if (!parameters.equals("")){
+						parameters += " AND ";
+					}
+					parameters += sourceTitle;
+			    }
+			    // could add other else ifs for fields to borrow from...
+			}
+
+			if (year != null){
+				//if it's not the first parameter we have to use the AND
+				if (!parameters.equals("")){
+					parameters += " AND ";
+				}
+				parameters += year;
+			}
+
+			return filterParameters(parameters);
+		    }
+		}
+
+		/**
+		 * Method used to filter the parameters og the library url, place here
+		 * any character or string you want removed from the url
+		 *
+		 * @param parameters
+		 * @return
+		 */
+		private String filterParameters(String parameters) {
+		    String filtered = parameters;
+
+		    Pattern pattern =
+			    Pattern.compile("\\(|\\)|\\<|\\>|\\:|\\;|\\{|\\}|\\!|\\?|\\$|\\%|\\&|\\*");
+		    Matcher matcher = pattern.matcher(parameters);
+
+		    return matcher.replaceAll(" ");
 		}
 
 		/*
