@@ -122,6 +122,7 @@
 		<module>hec-root</module>
 		<module>sdata</module>
 		<module>opensyllabus</module>
+		<module>hec-course-archive</module>
             </modules>
         </profile>
         <profile>
