@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<artifactId>base</artifactId>
+		<artifactId>master</artifactId>
 		<groupId>org.sakaiproject</groupId>
 		<version>19.0</version>
-		<relativePath>../pom.xml</relativePath>
+		<relativePath>../master/pom.xml</relativePath>
 	</parent>
 
 	<groupId>org.sakaiproject</groupId>
@@ -208,14 +208,12 @@
 				<version>${sakai.version}</version>
 				<scope>provided</scope>
 			</dependency>
-			<!--
 			<dependency>
 				<groupId>org.sakaiquebec.opensyllabus</groupId>
 				<artifactId>osyl-common-api</artifactId>
 				<version>${sakai.opensyllabus.version}</version>
 				<scope>provided</scope>
 			</dependency>
--->
 		</dependencies>
 	</dependencyManagement>
 
