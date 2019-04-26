@@ -100,7 +100,11 @@
             ## submit time
                 <tr>
                     <th>
-                        $tlang.getString('noti.submit.time')
+                        #if ($is_late_submission)
+                            $tlang.getString('noti.latesubmit.time')
+                        #else
+                            $tlang.getString('noti.submit.time')
+                        #end
                     </th>
                     <td>
                         $!service.getUsersLocalDateTimeString($!submission.DateSubmitted)

@@ -1888,6 +1888,7 @@ public class AssignmentAction extends PagedResourceActionII {
             AssignmentSubmission s = getSubmission(currentAssignmentReference, submitter, "build_student_view_submission_confirmation_context", state);
             if (s != null) {
                 context.put("submission", s);
+                context.put("is_late_submission", s.getDateSubmitted().isAfter(currentAssignment.getDropDeadDate()));
 
                 Map<String, Reference> attachmentReferences = new HashMap<>();
                 s.getAttachments().forEach(r -> attachmentReferences.put(r, entityManager.newReference(r)));

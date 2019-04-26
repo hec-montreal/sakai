@@ -188,7 +188,13 @@ public class EmailUtil {
 
         // submit time
 	String formattedSubDate = assignmentService.getUsersLocalDateTimeString(submission.getDateSubmitted());
-        buffer.append(resourceLoader.getString("noti.submit.time")).append(" ").append(formattedSubDate).append(NEW_LINE).append(NEW_LINE);
+        if (submission.getDateSubmitted().isAfter(assignment.getDropDeadDate())) {
+            buffer.append(resourceLoader.getString("noti.latesubmit.time"));
+        }
+        else {
+            buffer.append(resourceLoader.getString("noti.submit.time"));
+        }
+        buffer.append(" ").append(formattedSubDate).append(NEW_LINE).append(NEW_LINE);
 
         // submit text
         String text = StringUtils.trimToNull(submission.getSubmittedText());
