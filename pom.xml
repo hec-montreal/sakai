@@ -121,6 +121,7 @@
 		<module>webservices</module>
 		<module>hec-root</module>
 		<module>sdata</module>
+		<module>hec-commons-utils</module>
 		<module>opensyllabus</module>
 		<module>hec-course-archive</module>
             </modules>
