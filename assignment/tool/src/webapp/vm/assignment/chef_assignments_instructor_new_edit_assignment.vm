@@ -759,6 +759,7 @@
 				#else
 					<div id="reviewServiceOptions" style="display:none" class="indnt3">
 				#end
+					<!-- ZCII-2925, ZCII-3632: Compilatio- Bloquer la possibilité de donner accès aux résultats aux étudiants.
 					<div class="checkbox">
 						<label for="$name_AllowStudentView">
 						#if ($!value_AllowStudentView.equals("true"))
@@ -769,6 +770,7 @@
 							$tlang.getString("review.allow")
 						</label>
 					</div>
+					-->
 
 					<!-- Start TII custom options -->
 					#if($reviewServiceProviderId == $turnitinProviderId)

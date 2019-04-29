@@ -11605,6 +11605,8 @@ public class AssignmentAction extends PagedResourceActionII {
         // make the honor pledge not include as the default
         state.setAttribute(NEW_ASSIGNMENT_CHECK_ADD_HONOR_PLEDGE, Boolean.TRUE);
 
+        state.setAttribute(NEW_ASSIGNMENT_USE_REVIEW_SERVICE, Boolean.TRUE);
+
         state.setAttribute(NEW_ASSIGNMENT_ADD_TO_GRADEBOOK, GRADEBOOK_INTEGRATION_NO);
 
         state.setAttribute(NEW_ASSIGNMENT_ATTACHMENT, entityManager.newReferenceList());
