@@ -125,6 +125,7 @@
 		<module>opensyllabus</module>
 		<module>hec-course-archive</module>
 		<module>tenjin</module>
+		<module>hec-quartz-jobs</module>
             </modules>
         </profile>
         <profile>
