@@ -122,6 +122,7 @@
 		<module>hec-root</module>
 		<module>sdata</module>
 		<module>hec-commons-utils</module>
+		<module>opensyllabus</module>
 		<module>hec-course-archive</module>
 		<module>tenjin</module>
 		<module>hec-quartz-jobs</module>
