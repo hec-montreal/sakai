@@ -71,19 +71,37 @@
 
                     #macro( displaySite $site )
                         <li role="presentation" class="fav-sites-entry #if (${site.isCurrentSite})is-selected #end #if (${site.isMyWorkspace})my-workspace #end">
+                           	#if (${site.fullTitle} == ${site.hecTitle})
+								#set ($tooltip = "${site.fullTitle}")
+							#else
+								#set ($tooltip = "${site.fullTitle}: ${site.hecTitle}")
+							#end
+                            
                             #if (!${site.isMyWorkspace})
                             	<a class="site-favorite-btn" data-site-id="${site.siteId}" href="javascript:void(0);"></a>
                             #end
 							
                             <div class="fav-title #if (${site.isMyWorkspace}) fav-title-myworkspace #end">
                             	<a href="${site.siteUrl}" title="${site.siteTitle}">
-                                    #if (${site.isMyWorkspace})
-                                        <span class="fa fa-home" aria-hidden="true"></span><span class="fullTitle">${rloader.sit_mywor}</span>
-                                    #elseif ( ( ${tabDisplayLabel} == 2 ) && ( ${site.shortDescription} ) )
-                                        <span class="fullTitle">${site.shortDescription}</span>
-                                    #else
-                                        <span class="fullTitle">${site.siteTitleTrunc}</span>
-                                    #end
+									#if (${site.isMyWorkspace})
+										<i class="fa fa-home icon-sakai"></i><span class="fullTitle">${rloader.sit_mywor}</span>
+ 				                	#elseif (${isUserStudent})
+	                                    #if ( ( ${tabDisplayLabel} == 2 ) && ( ${site.shortDescription} ) )
+	             			              	<a href="${site.siteUrl}" title="$tooltip">
+	                                        <span class="fullTitle">${site.hecTitle}</span>
+	                                    #else
+	             						 	<a href="${site.siteUrl}" title="$tooltip">
+	                                        <span class="fullTitle">${site.hecTitle}</span>
+	                                    #end
+	                               #else
+		                               #if ( ( ${tabDisplayLabel} == 2 ) && ( ${site.shortDescription} ) )
+	             			              	<a href="${site.siteUrl}" title="$tooltip">
+	                                        <span class="fullTitle">${site.shortDescription}</span>
+	                                    #else
+	             						 	<a href="${site.siteUrl}" title="$tooltip">
+	                                        <span class="fullTitle">${site.siteTitle}</span>
+	                                    #end
+	                               #end	
                                 </a>
                             </div>
                             <a href="#" id="${site.siteId}" class="toolMenus" aria-haspopup="true" aria-label="${site.siteTitleTrunc} - ${rloader.sit_open_menu}">

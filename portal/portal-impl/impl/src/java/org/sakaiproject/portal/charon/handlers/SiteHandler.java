@@ -24,13 +24,13 @@ package org.sakaiproject.portal.charon.handlers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,45 +39,46 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.cover.SecurityService;
-import org.sakaiproject.thread_local.cover.ThreadLocalManager;
-import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.event.api.Event;
 import org.sakaiproject.event.cover.EventTrackingService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.portal.api.Portal;
-import org.sakaiproject.portal.api.PortalService;
 import org.sakaiproject.portal.api.PortalHandlerException;
 import org.sakaiproject.portal.api.PortalRenderContext;
+import org.sakaiproject.portal.api.PortalService;
 import org.sakaiproject.portal.api.SiteView;
 import org.sakaiproject.portal.api.StoredState;
 import org.sakaiproject.portal.charon.site.AllSitesViewImpl;
 import org.sakaiproject.portal.charon.site.PortalSiteHelperImpl;
+import org.sakaiproject.portal.util.ByteArrayServletResponse;
+import org.sakaiproject.portal.util.ToolUtils;
+import org.sakaiproject.portal.util.URLUtils;
 import org.sakaiproject.presence.api.PresenceService;
-import org.sakaiproject.tool.api.Tool;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.thread_local.cover.ThreadLocalManager;
+import org.sakaiproject.tool.api.ActiveTool;
 import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolException;
+import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.ActiveToolManager;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.user.api.Preferences;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.PreferencesService;
 import org.sakaiproject.user.cover.UserDirectoryService;
-import org.sakaiproject.tool.api.ActiveTool;
-import org.sakaiproject.tool.cover.ActiveToolManager;
-import org.sakaiproject.util.Web;
 import org.sakaiproject.util.ResourceLoader;
-import org.sakaiproject.portal.util.URLUtils;
-import org.sakaiproject.portal.util.ToolUtils;
-import org.sakaiproject.portal.util.ByteArrayServletResponse;
 import org.sakaiproject.util.Validator;
+import org.sakaiproject.util.Web;
+
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -534,6 +535,33 @@ public class SiteHandler extends WorksiteHandler
 			rcontext.put("shortDescription", Web.escapeHtml(site.getShortDescription()));
 		}
 		
+		// ZCII-1137 add hec title (shortened and full length) for the tab
+		ResourceProperties rp = site.getProperties();
+		int siteTitleMaxLength = 25;
+		String titleStr = site.getTitle();
+		String fullTitle = titleStr;
+		String PROP_SITE_TITLE = "title";
+		String hecShortTitle = rp.getProperty(PROP_SITE_TITLE);
+		String hecFullTitle = hecShortTitle;
+
+		if ( hecShortTitle != null )
+		{
+			hecShortTitle = hecShortTitle.trim();
+			if ( hecShortTitle.length() > siteTitleMaxLength && siteTitleMaxLength >= 10 )
+			{
+				hecShortTitle = hecShortTitle.substring(0,siteTitleMaxLength-4) + " ...";
+			}
+			else if ( hecShortTitle.length() > siteTitleMaxLength )
+			{
+				hecShortTitle = hecShortTitle.substring(0,siteTitleMaxLength);
+			}
+			hecShortTitle = hecShortTitle.trim();
+		}
+
+		rcontext.put("hecShortTitle", (hecShortTitle==null) ? Web.escapeHtml(titleStr) : Web.escapeHtml(hecShortTitle));
+		rcontext.put("hecTitle", (hecFullTitle==null) ? Web.escapeHtml(fullTitle) : Web.escapeHtml(hecFullTitle));
+		rcontext.put("isUserSite", SiteService.isUserSite(siteId));
+		
 		if (SiteService.isUserSite(siteId)){
 			rcontext.put("siteTitle", rb.getString("sit_mywor") );
 			rcontext.put("siteTitleTruncated", rb.getString("sit_mywor") );
@@ -913,6 +941,9 @@ public class SiteHandler extends WorksiteHandler
 			siteView.setToolContextPath(null);
 			rcontext.put("tabsSites", siteView.getRenderContextObject());
 
+			// ZCII-1137 add a user type boolean to determine if we should use the site id or title for the tab
+			rcontext.put("isUserStudent", UserDirectoryService.getCurrentUser().getType().equalsIgnoreCase("student"));
+			
 			String cssClass = (siteType != null) ? "siteNavWrap " + siteType
 					: "siteNavWrap";
 
