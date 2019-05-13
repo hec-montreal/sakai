@@ -170,7 +170,7 @@ public class ItemBean
   private boolean forceRanking=false;
   private int relativeWidth=0;
   private boolean newAddToFavorite = false;
-  private String favoriteName="30 character limit";
+  private String favoriteName="limit\u00e9 \u00e0 30 charact\u00e8res";
   private boolean fromFavoriteSelectOneMenu = false;
   private String commentField=RB_AUTHOR_MESSAGES.getString("character_limit");
   private String currentFavorite="1";
