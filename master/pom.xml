@@ -111,6 +111,7 @@
     <!-- Open syllabus -->
     <sakai.opensyllabus.version>19.0</sakai.opensyllabus.version>
     <sakai.edu-services.version>${sakai.version}</sakai.edu-services.version>
+    <sakai.evaluation.version>19-SNAPSHOT</sakai.evaluation.version>
   </properties>
   <distributionManagement>
     <snapshotRepository>
