@@ -33,9 +33,9 @@ $header-font-weight: 700 !default;										// 400 or 700 as you wish
 
 /* Color palette */
 $background-color: 			 #FFFFFF !default;
-$background-color-secondary: #000036 !default;
+$background-color-secondary: #009fdf !default;
 
-$primary-color:    			 #15597e !default;
+$primary-color:    			 #009fdf !default;
 $primary-color-highContrast: darken( $primary-color, 4% ) !default;	// for use of primary on non-white light backgrounds, such as greys
 $primary-color-shadow:			 adjust-hue( $primary-color, 5 ) !default;	// To give primary a darker shadow
 $secondary-color:  			 #F00 !default;
@@ -178,7 +178,7 @@ $sites-nav-menu-item-hover-border-left:     $sites-nav-menu-item-hover-border-to
 $sites-nav-menu-item-selected-background:   $primary-color !default;
 $sites-nav-menu-item-selected-color:        #FFFFFF !default;
 $sites-nav-menu-item-selected-icon-color:   #FFFFFF !default;
-$sites-nav-menu-item-selected-border-color: #326B97 !default;
+$sites-nav-menu-item-selected-border-color: $primary-color !default;
 $sites-nav-menu-item-selected-border-top:   $sites-nav-menu-item-border-thickness solid $sites-nav-menu-item-selected-border-color !default;
 $sites-nav-menu-item-selected-border-right: $sites-nav-menu-item-selected-border-top !default;
 $sites-nav-menu-item-selected-border-bottom:$sites-nav-menu-item-selected-border-top !default;

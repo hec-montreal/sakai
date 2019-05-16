@@ -9,7 +9,7 @@
 	background: $background-color;
 	box-shadow: 0 0 5px rgba( $text-color , 0.25 );
 	.logo{
-		background: $top-header-background url($logo) no-repeat center center;
+		background: $top-header-background url('images/hec/logo.png') no-repeat center center;
 		background-size: $logo-width $logo-height;
 		width: 100%;
 		height: 64px;
@@ -131,4 +131,9 @@
 
 .capsLockOnDisplay {
 	background: $background-color url("images/capsLock.png") no-repeat right;
+}
+
+/* Hide forgotten password */
+#Mrphs-xlogin > fieldset :nth-child(6) {
+	display: none;
 }
