@@ -102,7 +102,7 @@
             }
             if (typeof jQuery.ui == 'undefined') {
                 document.write('\x3Cscript type="text/javascript" src="${pageWebjarsPath}jquery-ui/1.12.1/jquery-ui.min.js$!{portalCDNQuery}">'+'\x3C/script>')
-		document.write('\x3Clink rel="stylesheet" href="${pageWebjarsPath}jquery-ui/1.12.1/jquery-ui.min.css$!{portalCDNQuery}"/>')
+        document.write('\x3Clink rel="stylesheet" href="${pageWebjarsPath}jquery-ui/1.12.1/jquery-ui.min.css$!{portalCDNQuery}"/>')
                 window.console && console.log('Portal adding jQuery UI');
             }
             if (typeof jQuery.ui == 'undefined' || (typeof jQuery.ui.mouse != 'undefined' && typeof jQuery.ui.mouse.prototype._touchStart == 'undefined')) {
@@ -145,6 +145,8 @@
         <script src="${pageScriptPath}jquery/qtip/tutorial.js$!{portalCDNQuery}"></script>
         <script src="${pageWebjarsPath}cropper/4.0.0/dist/cropper.min.js$!{portalCDNQuery}"></script>
 
+        <script type="module" src="/webcomponents/sakai-tool-permissions.js$!{portalCDNQuery}"></script>
+
         <!-- RUBRICS CODE AND MODULES -->
         <script src="/rubrics-service/webcomponents/sakai-rubrics.js$!{portalCDNQuery}"></script>
         <script type="module" src="/rubrics-service/webcomponents/sakai-rubric-student.js$!{portalCDNQuery}"></script>
@@ -158,7 +160,7 @@
         #end ## END of IF ( $tutorial && $loggedIn )
 
         <!-- Code of conduct -->
-        <script src="/library/skin/morpheus-default/js/custom/code-of-conduct.js"></script>
+        <script src="/library/js/custom/code-of-conduct.js"></script>
 
         #if ( $loggedIn )
             <script type="text/javascript" language="JavaScript">$(document).ready(function(){ showCodeOfConduct({'checkHasUserAccepted': true, 'userLocale' : '$!{locale}', 'tutorial': '$!tutorial','showTutorialLocationOnHide': 'true' });});</script>
@@ -220,7 +222,7 @@
     #end
         </script>
 
-		<div id="codeOfConduct"></div>
+        <div id="codeOfConduct"></div>
 
         <!--[if lt IE 9]>
         <script src="${pageSkinRepo}/${pageSkin}/js/ie/sakai.portal.ie.js$!{portalCDNQuery}"></script>
