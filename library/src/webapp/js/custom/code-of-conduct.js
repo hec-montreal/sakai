@@ -3,9 +3,7 @@ function showDialog(locale) {
 	var dialogHeight = $(window).height()*0.8;
 	var height = dialogHeight -100;
 
-    var locale = sakai.locale.userLocale;
-
-    if (locale === 'fr-CA') {
+    if (locale === 'fr_CA') {
         title = sessionStorage.getItem('titleFr');
         $('div#codeOfConduct').html(sessionStorage.getItem('bodyFr'));
     }
@@ -73,7 +71,7 @@ function showCodeOfConduct(opts){
     if (!sessionStorage.getItem('hasUserAccepted')) {
         retrieveCodeOfConduct().then(function () {
             if (!opts.checkHasUserAccepted || (sessionStorage.getItem('hasUserAccepted') === 'false' && sessionStorage.getItem('userType') === 'student')) {
-                showDialog(opts.userLocale);
+                showDialog(sakai.locale.userLocale);
             }
             else if (opts.tutorial === 'true') {
                 startTutorial(opts.showTutorialLocationOnHide);
@@ -82,7 +80,7 @@ function showCodeOfConduct(opts){
     }
     else {
         if (!opts.checkHasUserAccepted || (sessionStorage.getItem('hasUserAccepted') === 'false' && sessionStorage.getItem('userType') === 'student')) {            
-            showDialog(opts.userLocale);
+            showDialog(sakai.locale.userLocale);
         }
     }
     
