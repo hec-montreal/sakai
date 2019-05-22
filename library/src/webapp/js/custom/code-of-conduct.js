@@ -3,6 +3,8 @@ function showDialog(locale) {
 	var dialogHeight = $(window).height()*0.8;
 	var height = dialogHeight -100;
 
+    var locale = sakai.locale.userLocale;
+
     if (locale === 'fr-CA') {
         title = sessionStorage.getItem('titleFr');
         $('div#codeOfConduct').html(sessionStorage.getItem('bodyFr'));
