@@ -23,8 +23,6 @@ package org.sakaiproject.announcement.impl;
 
 import java.util.Iterator;
 import java.util.List;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.sakaiproject.announcement.api.AnnouncementMessage;
@@ -35,15 +33,16 @@ import org.sakaiproject.api.app.scheduler.ScheduledInvocationCommand;
 import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.event.api.Event;
+import org.sakaiproject.event.api.EventTrackingService;
 import org.sakaiproject.event.api.Notification;
 import org.sakaiproject.event.api.NotificationEdit;
 import org.sakaiproject.event.api.NotificationService;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.event.api.EventTrackingService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.message.api.MessageHeader;
 import org.sakaiproject.site.api.Group;
@@ -52,12 +51,15 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.time.api.Time;
 import org.sakaiproject.time.api.TimeService;
 import org.sakaiproject.user.api.User;
-import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.util.EmailNotification;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.SiteEmailNotification;
+
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -179,10 +181,24 @@ public class SiteEmailNotificationAnnc extends SiteEmailNotification
 		// get a site title
 		String title = siteId;
 		String url = ServerConfigurationService.getPortalUrl()+ "/site/"+ siteId;
+		
+		//-----ZCII-1649 - Add course title to announcement email
+		ResourcePropertiesEdit rpe;
+		//-----End ZCII-1649------------------------------------
+		
 		try
 		{
 			Site site = siteService.getSite(siteId);
-			title = site.getTitle();
+			
+			//---------ZCII-1649 - Add course title to announcement email
+			rpe = site.getPropertiesEdit();
+			if (rpe.getProperty("title") != null){
+				title = rpe.getProperty("title") + " (" + site.getTitle() + ")";
+			}else{
+				title = site.getTitle();
+			}
+			//---------End ZCII-1649
+			
 			url = site.getUrl(); // Might have a better URL.
 		}
 		catch (Exception ignore)
@@ -336,17 +352,24 @@ public class SiteEmailNotificationAnnc extends SiteEmailNotification
 		// use either the configured site, or if not configured, the site (context) of the resource
 		String siteId = (getSite() != null) ? getSite() : ref.getContext();
 
+		//----ZCII-1649 - Add course title to announcement email
+		ResourcePropertiesEdit rpe;
+		//----ZCII-1649
+		
 		// get a site title
 		String title = siteId;
 		try
 		{
 			final Site site = siteService.getSite(siteId);
-			boolean shortDescription = ServerConfigurationService.getBoolean("announcement.email.use.short.description", false);
 
-			title = site.getTitle();
-			if(shortDescription && StringUtils.isNotEmpty(site.getShortDescription())) {
-				title = site.getShortDescription();
+			//-------ZCII-1649 - Add course title to announcement email
+			rpe = site.getPropertiesEdit();
+			if (rpe.getProperty("title") != null){
+				title = rpe.getProperty("title") + " (" + site.getTitle() + ")";
+			}else{
+				title = site.getTitle();
 			}
+			//---------ZCII-1649
 		}
 		catch (Exception ignore)
 		{
@@ -541,6 +564,10 @@ public class SiteEmailNotificationAnnc extends SiteEmailNotification
 		// use either the configured site, or if not configured, the site (context) of the resource
 		String siteId = (getSite() != null) ? getSite() : ref.getContext();
 		
+		//-----ZCII-1649 - Add course title to announcement email
+		ResourcePropertiesEdit rpe;
+		//-----End ZCII-1649------------------------------------
+		
 		String url = ServerConfigurationService.getPortalUrl()+ "/site/"+ siteId;
 
 		// get a site title
@@ -548,7 +575,15 @@ public class SiteEmailNotificationAnnc extends SiteEmailNotification
 		try
 		{
 			Site site = siteService.getSite(siteId);
-			title = site.getTitle();
+			
+			//--------ZCII-1649 - Add course title to announcement email
+			rpe = site.getPropertiesEdit();
+			if (rpe.getProperty("title") != null){
+				title = rpe.getProperty("title") + " (" + site.getTitle() + ")";
+			}else{
+				title = site.getTitle();
+			}
+			//--------End ZCII-1649-------------------------------------
 		}
 		catch (Exception ignore)
 		{
