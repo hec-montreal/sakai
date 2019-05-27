@@ -199,7 +199,14 @@
 			#if ($calObj.getContext() != $PortalService.CurrentSiteId )
 				<tr> 
 					<th>$tlang.getString("gen.fromsite")</th>
+					## ZCII-1501 : utiliser la propriété du site
+					#set ($site = $SiteService.getSite($calObj.getContext()))
+					#set ($titleProp = $site.getProperties().getPropertyFormatted("title"))
+					#if ($titleProp.equals(""))
 					<td>$SiteService.getSiteDisplay($calObj.getContext())</td>
+					#else 
+					<td>"$titleProp" ($calObj.getContext())</td>
+					#end
 				</tr>
 			#end
 

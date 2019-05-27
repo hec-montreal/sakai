@@ -1,10 +1,5 @@
 package org.sakaiproject.calendar.impl;
 
-import org.sakaiproject.calendar.impl.readers.Reader;
-import org.sakaiproject.exception.ImportException;
-import org.sakaiproject.util.CalendarEventType;
-import org.sakaiproject.util.ResourceLoader;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -12,6 +7,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.sakaiproject.calendar.impl.readers.Reader;
+import org.sakaiproject.exception.ImportException;
+import org.sakaiproject.util.CalendarEventType;
+import org.sakaiproject.util.ResourceLoader;
 
 class GenericImportRowHandler implements Reader.ReaderImportRowHandler {
 
@@ -57,8 +57,11 @@ class GenericImportRowHandler implements Reader.ReaderImportRowHandler {
             } else {
                 if (frequencyColumn != null && frequencyColumn.equals(column.getColumnHeader())) {
                     mapCellValue = column.getCellValue();
-                } else if (endTimeColumn != null && endTimeColumn.equals(column.getColumnHeader())
-                        || (startTimeColumn != null && startTimeColumn.equals(column.getColumnHeader()))) {
+                }
+                // From zonecours 11.3
+                else if (endTimeColumn != null && endTimeColumn.equals(column.getColumnHeader()) && column.getColumnNumber() == 4
+						|| (startTimeColumn != null && startTimeColumn.equals(column.getColumnHeader()) && column.getColumnNumber() == 2))
+                {
                     boolean success = false;
 
                     try {

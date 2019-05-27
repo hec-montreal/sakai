@@ -38,8 +38,6 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -50,6 +48,9 @@ import org.sakaiproject.calendar.api.CalendarService;
 import org.sakaiproject.calendar.api.ExternalCalendarSubscriptionService;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.entitybroker.EntityBroker;
+import org.sakaiproject.entitybroker.EntityReference;
+import org.sakaiproject.entitybroker.exception.EntityNotFoundException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.site.api.Group;
@@ -64,18 +65,16 @@ import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.user.api.PreferencesService;
 import org.sakaiproject.util.CalendarChannelReferenceMaker;
+import org.sakaiproject.util.CalendarEventType;
 import org.sakaiproject.util.CalendarReferenceToChannelConverter;
 import org.sakaiproject.util.CalendarUtil;
-import org.sakaiproject.util.CalendarEventType;
 import org.sakaiproject.util.EntryProvider;
 import org.sakaiproject.util.MergedList;
 import org.sakaiproject.util.MergedListEntryProviderFixedListWrapper;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.StringUtil;
-import org.sakaiproject.entitybroker.EntityBroker;
-import org.sakaiproject.entitybroker.EntityReference;
-import org.sakaiproject.entitybroker.entityprovider.extension.ActionReturn;
-import org.sakaiproject.entitybroker.exception.EntityNotFoundException;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CalendarBean {
@@ -752,7 +751,10 @@ public class CalendarBean {
 				selectedEvent.setDescription(event.getDescriptionFormatted());
 				selectedEvent.setLocation(event.getLocation());
 				Site site = M_ss.getSite(calendar.getContext());
-				selectedEvent.setSite(site.getTitle());
+				// ZCII-1501 : use title property rather than actual site title.
+				String siteTitle = site.getProperties().getPropertyFormatted("title");
+				selectedEvent.setSite(siteTitle!="" ? siteTitle : site.getTitle());
+			
 				String eventUrl = buildEventUrl(site, event.getReference());
 				selectedEvent.setUrl(eventUrl);
 				selectedEvent.setAttachments(event.getAttachments());

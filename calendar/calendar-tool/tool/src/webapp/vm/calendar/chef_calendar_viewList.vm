@@ -285,7 +285,15 @@
 																	<td>&nbsp;</td>
 																	#set ($siteDisplay = $SiteService.getSiteDisplay($calObj.getContext()))
 																	#set ($leftBrkIndex = $siteDisplay.indexOf('('))
+																	
+																	## ZCII-1501 : utiliser la propriété du site
+																	#set ($site = $SiteService.getSite($calObj.getContext()))
+																	#set ($titleProp = $site.getProperties().getPropertyFormatted("title"))
+																	#if ($titleProp.equals(""))
 																	<td>$tlang.getString('viewl.froms') $siteDisplay.substring(0, $leftBrkIndex)</td>
+																	#else 
+																	<td>$tlang.getString('viewl.froms') "$titleProp"</td>
+																	#end																
 																</tr>
 																#end
 
