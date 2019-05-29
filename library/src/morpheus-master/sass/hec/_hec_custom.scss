@@ -1,5 +1,14 @@
 .Mrphs-mainHeader .Mrphs-headerLogo .Mrphs-headerLogo--institution {
-	background-image: url('images/hec/logo.png')!important;
-	background-size: 167px 35px !important;
-	width: 167px!important;
+	background: #fff no-repeat center center !important;
+	background-image: url('/res/images/logo-full.png')!important;
+	background-size: 250px 53px !important;
+	width: 250px!important;
+}
+
+.Mrphs-mainHeader .Mrphs-headerLogo {
+	background: #fff!important;
+}
+
+.Mrphs-topHeader a {
+	color: #009fdf!important;
 }
