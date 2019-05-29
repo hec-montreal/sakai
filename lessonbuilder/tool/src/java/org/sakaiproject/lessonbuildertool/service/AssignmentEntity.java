@@ -355,6 +355,8 @@ public class AssignmentEntity implements LessonEntity, AssignmentInterface {
 		
 	    groups.add(group.getId());
 
+		edit.setIsGroup(true);
+
 		assignmentService.updateAssignment(edit);
 		doCancel = false;
 		return true;
@@ -602,7 +604,6 @@ public class AssignmentEntity implements LessonEntity, AssignmentInterface {
 
 	String siteId = ToolManager.getCurrentPlacement().getContext();
 	Site site = null;
-	String ref = "/assignment/a/" + siteId + "/" + id;
 
 	try {
 	    site = SiteService.getSite(siteId);
@@ -611,35 +612,22 @@ public class AssignmentEntity implements LessonEntity, AssignmentInterface {
 	    return;
 	}
 
-	Assignment edit = null;
-	
-	try {
-	    edit = assignmentService.getAssignment(ref);
-	} catch (IdUnusedException e) {
-	    log.warn("ID unused ", e);
-	    return;
-	} catch (PermissionException e) {
-	    log.warn(e.getMessage());
-	    return;
-	}
-
+	Assignment edit = assignment;
 	boolean doCancel = true;
 
 	try {
 	    // need this to make sure we always unlock
-	    
 	    if (groups != null && groups.size() > 0) {
-		Set<String> groupObjs = new HashSet<>();
-		
-		for (String groupId : groups) {
-		    Group group = site.getGroup(groupId);
-		    if (group != null) groupObjs.add(group.getId());
-		}
-
-		edit.setGroups(groupObjs);
+			Set<String> groupRefs = new HashSet<>();
+			for (String groupId : groups) {
+				Group group = site.getGroup(groupId);
+				if (group != null) groupRefs.add(group.getReference());
+			}
+			edit.setGroups(groupRefs);
+			edit.setTypeOfAccess(Assignment.Access.GROUP);
 	    } else {
-		edit.setTypeOfAccess(Assignment.Access.SITE);
-		edit.setGroups(new HashSet<>());
+			edit.setTypeOfAccess(Assignment.Access.SITE);
+			edit.setGroups(new HashSet<>());
 	    }
 
 	    assignmentService.updateAssignment(edit);

@@ -22,6 +22,8 @@ package org.sakaiproject.tool.messageforums;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,6 +45,7 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.sakaiproject.api.app.messageforums.Area;
 import org.sakaiproject.api.app.messageforums.Attachment;
@@ -103,6 +106,8 @@ import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.Validator;
 import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -162,26 +167,40 @@ public class PrivateMessagesTool
   /**
    *Dependency Injected 
    */
+  @Setter
   private PrivateMessageManager prtMsgManager;
+  @Setter
   private MessageForumsMessageManager messageManager;
+  @Setter
   private MessageForumsForumManager forumManager;
-  private ErrorMessages errorMessages;
+  @Setter
   private MembershipManager membershipManager;
+  @Getter @Setter
   private SynopticMsgcntrManager synopticMsgcntrManager;
+  @Setter
   private UserPreferencesManager userPreferencesManager;
   
   /** Dependency Injected   */
+  @Setter
   private MessageForumsTypeManager typeManager;
+  @Setter
   private ContentHostingService contentHostingService;
+  @Setter
   private LearningResourceStoreService learningResourceStoreService;
+  @Setter
   private UserDirectoryService userDirectoryService;
+  @Setter
   private SecurityService securityService;
+  @Setter
   private EventTrackingService eventTrackingService;
+  @Setter
   private SiteService siteService;
+  @Setter
   private SessionManager sessionManager;
+  @Setter
   private UserTimeService userTimeService;
+  @Setter
   private ToolManager toolManager;
-
 
 /** Navigation for JSP   */
   public static final String MAIN_PG="main";
@@ -236,104 +255,119 @@ public class PrivateMessagesTool
   private List aggregateList = new ArrayList();
   
   private Area area;
-  private PrivateForum forum;  
+  private PrivateForum forum;
   private List<PrivateTopic> pvtTopics=new ArrayList<PrivateTopic>();
   private List decoratedPvtMsgs;
-  //huxt
-  private String msgNavMode="privateMessages" ;//============
+
+  @Getter @Setter
+  private String msgNavMode="privateMessages" ;
+  @Getter @Setter
   private PrivateMessageDecoratedBean detailMsg ;
   private boolean viewChanged = false;
   
+  @Getter @Setter
   private String currentMsgUuid; //this is the message which is being currently edited/displayed/deleted
+  @Getter @Setter
   private List selectedItems;
   
   private String userName;    //current user
-  private Date time ;       //current time
   
   //delete confirmation screen - single delete 
+  @Getter @Setter
   private boolean deleteConfirm=false ; //used for displaying delete confirmation message in same jsp
+  @Getter @Setter
   private boolean validEmail=true ;
   
   //Compose Screen-webpage
+  @Getter @Setter
   private List selectedComposeToList = new ArrayList();
+  @Getter @Setter
   private List selectedComposeBccList = new ArrayList();
+  @Getter @Setter
   private String composeSendAsPvtMsg=SET_AS_YES; // currently set as Default as change by user is allowed
-  private boolean booleanEmailOut= Boolean.parseBoolean(ServerConfigurationService.getString("mc.messages.ccEmailDefault", "false"));
+  @Getter @Setter
+  private boolean booleanEmailOut = ServerConfigurationService.getBoolean("mc.messages.ccEmailDefault", false);
+  @Getter @Setter
   private String composeSubject ;
+  @Getter @Setter
   private String composeBody;
+  @Getter @Setter
   private String selectedLabel="pvt_priority_normal" ;   //defautl set
+  @Getter @Setter
   private List totalComposeToList = null;
+  @Getter @Setter
   private List totalComposeToBccList = null;
+  @Getter @Setter
   private List totalComposeToListRecipients;
   
   //Delete items - Checkbox display and selection - Multiple delete
+  @Getter @Setter
   private List selectedDeleteItems;
+  @Getter @Setter
   private boolean multiDeleteSuccess;
+  @Getter @Setter
   private String multiDeleteSuccessMsg;
+  @Getter @Setter
   private List totalDisplayItems=new ArrayList();
   
   // Move to folder - Checkbox display and selection - Multiple move to folder
+  @Getter @Setter
   private List selectedMoveToFolderItems;
   
   //reply to 
+  @Getter @Setter
   private String replyToBody;
+  @Getter @Setter
   private String replyToSubject;
-  
-  
-  
-  
-  //forwarding
-  private String forwardBody;
-  private String forwardSubject;
-  
-  
-//reply to all-huxt
 
+  //forwarding
+  @Getter @Setter
+  private String forwardBody;
+  @Getter @Setter
+  private String forwardSubject;
+
+  @Getter @Setter
   private String replyToAllBody;
+  @Getter @Setter
   private String replyToAllSubject;
   
   //Setting Screen
-  private String activatePvtMsg=SET_AS_NO; 
+  @Getter @Setter
+  private String activatePvtMsg=SET_AS_NO;
+  @Getter @Setter
   private String forwardPvtMsg=SET_AS_NO;
+  @Getter @Setter
   private String forwardPvtMsgEmail;
-  private boolean superUser; 
+  private boolean superUser;
+  @Getter @Setter
   private String sendToEmail;
   
   //message header screen
+  @Getter @Setter
   private String searchText="";
+  @Getter @Setter
   private String selectView;
   
   //return to previous page after send msg
+  @Getter @Setter
   private String fromMainOrHp = null;
   
   // for compose, are we coming from main page?
+  @Getter @Setter
   private boolean fromMain;
   
   // Message which will be marked as replied
+  @Getter @Setter
   private PrivateMessage replyingMessage;
-  
-  //////////////////////
-  
+
   //=====================need to be modified to support internationalization - by huxt
   /** The configuration mode, received, sent,delete, case etc ... */
   public static final String STATE_PVTMSG_MODE = "pvtmsg.mode";
   
   private Map courseMemberMap;
-  
-  
-  public static final String SORT_SUBJECT_ASC = "subject_asc";
-  public static final String SORT_SUBJECT_DESC = "subject_desc";
-  public static final String SORT_AUTHOR_ASC = "author_asc";
-  public static final String SORT_AUTHOR_DESC = "author_desc";
-  public static final String SORT_DATE_ASC = "date_asc";
+
   public static final String SORT_DATE_DESC = "date_desc";
-  public static final String SORT_LABEL_ASC = "label_asc";
-  public static final String SORT_LABEL_DESC = "label_desc";
-  public static final String SORT_TO_ASC = "to_asc";
-  public static final String SORT_TO_DESC = "to_desc";
-  public static final String SORT_ATTACHMENT_ASC = "attachment_asc";
-  public static final String SORT_ATTACHMENT_DESC = "attachment_desc";
-  
+
   private boolean selectedComposedlistequalCurrentuser=false;
   
   /** sort member */
@@ -354,7 +388,9 @@ public class PrivateMessagesTool
   private boolean currentSiteHasGroups = false;
   private Boolean displayHiddenGroupsMsg = null;
   
+  @Getter
   private boolean showProfileInfoMsg = false;
+  @Getter
   private boolean showProfileLink = false;
   
   public PrivateMessagesTool()
@@ -362,65 +398,21 @@ public class PrivateMessagesTool
 	  showProfileInfoMsg = ServerConfigurationService.getBoolean("msgcntr.messages.showProfileInfo", true);
 	  showProfileLink = showProfileInfoMsg && ServerConfigurationService.getBoolean("profile2.profile.link.enabled", true);
   }
-  
-  /**
-   * @return
-   */
-  public MessageForumsTypeManager getTypeManager()
-  { 
-    return typeManager;
-  }
 
-
-  /**
-   * @param prtMsgManager
-   */
-  public void setPrtMsgManager(PrivateMessageManager prtMsgManager)
-  {
-    this.prtMsgManager = prtMsgManager;
-  }
-  
-  /**
-   * @param messageManager
-   */
-  public void setMessageManager(MessageForumsMessageManager messageManager)
-  {
-    this.messageManager = messageManager;
-  }
-  
-  /**
-   * @param membershipManager
-   */
-  public void setMembershipManager(MembershipManager membershipManager)
-  {
-    this.membershipManager = membershipManager;
-  }
-
-  
-  /**
-   * @param typeManager
-   */
-  public void setTypeManager(MessageForumsTypeManager typeManager)
-  {
-    this.typeManager = typeManager;
-  }
-
-  public void initializePrivateMessageArea()
-  {           
+  public void initializePrivateMessageArea() {
     /** get area per request */
-	area = prtMsgManager.getPrivateMessageArea();
-    
-    
+    area = prtMsgManager.getPrivateMessageArea();
+
     if (! area.getEnabled() && isMessages()) {
     	area.setEnabled(true);
     }
-    
+
     // reset these in case the allowed recipients (such as hidden groups) was updated
     totalComposeToList = null;
     totalComposeToBccList = null;
     displayHiddenGroupsMsg = null;
     
-    if (getUserId() != null && (getPvtAreaEnabled() || isInstructor() || isEmailPermit())){      
+    if (getUserId() != null && (getPvtAreaEnabled() || isInstructor() || isEmailPermit())){
       PrivateForum pf = prtMsgManager.initializePrivateMessageArea(area, aggregateList);
       pf = prtMsgManager.initializationHelper(pf, area);
       pvtTopics = pf.getTopics();
@@ -432,12 +424,9 @@ public class PrivateMessagesTool
       forwardPvtMsgEmail = pf.getAutoForwardEmail();
       hiddenGroups = new ArrayList<HiddenGroup>();
       if(area != null && area.getHiddenGroups() != null){
-	for(Iterator itor = area.getHiddenGroups().iterator(); itor.hasNext();){
-    	  HiddenGroup group = (HiddenGroup) itor.next();
-    	  hiddenGroups.add(group);
-	}
+          hiddenGroups.addAll(area.getHiddenGroups());
       }
-    } 
+    }
   }
   
   /**
@@ -463,8 +452,7 @@ public class PrivateMessagesTool
     }
 	  return area.getEnabled().booleanValue();
   } 
-  
-  
+
   /**
    * 
    * @return true if a copy of the message is always sent to the recipient email address(es)
@@ -474,8 +462,7 @@ public class PrivateMessagesTool
       if (area == null) {
           initializePrivateMessageArea();
       }
-      
-      
+
       return !isEmailCopyDisabled() && area.getSendToEmail() == Area.EMAIL_COPY_ALWAYS;
   }
   
@@ -492,15 +479,14 @@ public class PrivateMessagesTool
       if (area == null) {
           initializePrivateMessageArea();
       }
-      
+
       return !isEmailCopyDisabled() && area.getSendToEmail() == Area.EMAIL_COPY_OPTIONAL;
   }
-  
-  
+
   public boolean isEmailForwardDisabled(){
 	  return ServerConfigurationService.getBoolean("mc.messages.forwardEmailDisabled", false);
   }
-  
+
   public boolean isShowSettingsLink(){
 	  if(isInstructor()){
 		  //if the site has groups, then show the settings link b/c there
@@ -517,14 +503,13 @@ public class PrivateMessagesTool
 		  return !isEmailForwardDisabled();
 	  }
   }
-  
+
   //Return decorated Forum
   public PrivateForumDecoratedBean getDecoratedForum()
   {      
       PrivateForumDecoratedBean decoratedForum = new PrivateForumDecoratedBean(getForum()) ;
-      
-      
-      /** only load topics/counts if area is enabled */	    	
+
+      /** only load topics/counts if area is enabled */
 	    
       int totalUnreadMessages = 0;
     	  
@@ -540,7 +525,7 @@ public class PrivateMessagesTool
           if (topic != null)
           {
           	
-          	/** filter topics by context and type*/                                                    
+          	/** filter topics by context and type*/
             if (topic.getTypeUuid() != null
             		&& topic.getTypeUuid().equals(typeManager.getUserDefinedPrivateTopicType())
             	  && topic.getContextId() != null && !topic.getContextId().equals(prtMsgManager.getContextId())){
@@ -626,7 +611,7 @@ public class PrivateMessagesTool
 	  }
 
   }
-  
+
   public List getDecoratedPvtMsgs()
   {
   	/** 
@@ -653,108 +638,15 @@ public class PrivateMessagesTool
 						forumManager.getTopicByUuid(getExternalParameterByKey(EXTERNAL_TOPIC_ID)).getTitle() ://"pvtMsgTopicid"
 						getExternalParameterByKey(EXTERNAL_WHICH_TOPIC);
 	}
-	
-  	decoratedPvtMsgs=new ArrayList();
-  	String typeUuid;
-  	
-   	typeUuid = getPrivateMessageTypeFromContext(msgNavMode);//=======Recibidios by huxt
+
+    this.viewChanged = false;
 
   	/** support for sorting */
-  	/* if the view was changed to "All Messages", we want to retain the previous
-  	 * sort setting. Otherwise, the user has selected a different sort setting.
-  	 * Also retain sort setting if user has hit "Check All"
-  	 */
-  	if ((!viewChanged || sortType == null) && !selectAll)
-  	{
-  		String sortColumnParameter = getExternalParameterByKey("sortColumn");
-
-  		if ("subject".equals(sortColumnParameter)){  		  		
-  			sortType = (SORT_SUBJECT_ASC.equals(sortType)) ? SORT_SUBJECT_DESC : SORT_SUBJECT_ASC;  			 		
-  		}
-  		else if ("author".equals(sortColumnParameter)){  		  		
-  			sortType = (SORT_AUTHOR_ASC.equals(sortType)) ? SORT_AUTHOR_DESC : SORT_AUTHOR_ASC;  			 		
-  		}
-  		else if ("date".equals(sortColumnParameter)){  		  		
-  			sortType = (SORT_DATE_ASC.equals(sortType)) ? SORT_DATE_DESC : SORT_DATE_ASC;  			 		
-  		}
-  		else if ("label".equals(sortColumnParameter)){  		  		
-  			sortType = (SORT_LABEL_ASC.equals(sortType)) ? SORT_LABEL_DESC : SORT_LABEL_ASC;  			 		
-  		}
-  		else if ("to".equals(sortColumnParameter)){  		  		
-  			sortType = (SORT_TO_ASC.equals(sortType)) ? SORT_TO_DESC : SORT_TO_ASC;  			 		
-  		}
-  		else if ("attachment".equals(sortColumnParameter)){  		  		
-  			sortType = (SORT_ATTACHMENT_ASC.equals(sortType)) ? SORT_ATTACHMENT_DESC : SORT_ATTACHMENT_ASC;  			 		
-  		}
-  		else{
-  			sortType = SORT_DATE_DESC;
-  		}
-  	}
-
-  	viewChanged = false; 
-    
-    /** add support for sorting */
-    if (SORT_SUBJECT_ASC.equals(sortType)){
-    	decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_SUBJECT,
-          PrivateMessageManager.SORT_ASC);
-    }
-    else if (SORT_SUBJECT_DESC.equals(sortType)){
-    	decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_SUBJECT,
-          PrivateMessageManager.SORT_DESC);
-    }
-    else if (SORT_AUTHOR_ASC.equals(sortType)){
-    	decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_AUTHOR,
-          PrivateMessageManager.SORT_ASC);
-    }        
-    else if (SORT_AUTHOR_DESC.equals(sortType)){
-    	decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_AUTHOR,
-          PrivateMessageManager.SORT_DESC);
-    }
-    else if (SORT_DATE_ASC.equals(sortType)){
-    	decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_DATE,
-          PrivateMessageManager.SORT_ASC);
-    }        
-    else if (SORT_DATE_DESC.equals(sortType)){
-    	decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_DATE,
-          PrivateMessageManager.SORT_DESC);
-    }
-    else if (SORT_LABEL_ASC.equals(sortType)){
-    	decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_LABEL,
-          PrivateMessageManager.SORT_ASC);
-    }        
-    else if (SORT_LABEL_DESC.equals(sortType)){
-    	decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_LABEL,
-          PrivateMessageManager.SORT_DESC);
-    }
-    else if (SORT_TO_ASC.equals(sortType)){
-        // the recipient list is stored as a CLOB in Oracle, so we cannot use the
-    	// db query to obtain the sorted list - cannot order by CLOB
-    	/*decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_TO,
-          PrivateMessageManager.SORT_ASC);*/
-    	decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_DATE,
-    	          PrivateMessageManager.SORT_ASC);
-    	Collections.sort(decoratedPvtMsgs, PrivateMessageImpl.RECIPIENT_LIST_COMPARATOR_ASC);
-    }        
-    else if (SORT_TO_DESC.equals(sortType)){
-    	// the recipient list is stored as a CLOB in Oracle, so we cannot use the
-    	// db query to obtain the sorted list - cannot order by CLOB
-    	/*decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_TO,
-          PrivateMessageManager.SORT_DESC);*/
-    	decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_DATE,
-    	          PrivateMessageManager.SORT_ASC);
-    	Collections.sort(decoratedPvtMsgs, PrivateMessageImpl.RECIPIENT_LIST_COMPARATOR_DESC);
-    }        
-    else if (SORT_ATTACHMENT_ASC.equals(sortType)){
-    	decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_ATTACHMENT,
-          PrivateMessageManager.SORT_ASC);
-    }        
-    else if (SORT_ATTACHMENT_DESC.equals(sortType)){
-    	decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_ATTACHMENT,
-          PrivateMessageManager.SORT_DESC);
-    }
-    
-    
-    decoratedPvtMsgs = createDecoratedDisplay(decoratedPvtMsgs);    
+  	/* The sorting is done in the client side using datatables */
+    decoratedPvtMsgs=new ArrayList();
+    String typeUuid = getPrivateMessageTypeFromContext(msgNavMode);
+    decoratedPvtMsgs = prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_DATE, PrivateMessageManager.SORT_DESC);
+    decoratedPvtMsgs = createDecoratedDisplay(decoratedPvtMsgs);
 
     //pre/next message
     if(decoratedPvtMsgs != null )
@@ -768,147 +660,23 @@ public class PrivateMessagesTool
   private void setMessageBeanPreNextStatus()
   {
 	  List tempMsgs = decoratedPvtMsgs;
-      for(int i=0; i<tempMsgs.size(); i++)
-      {
-        PrivateMessageDecoratedBean dmb = (PrivateMessageDecoratedBean)tempMsgs.get(i);
-        if(i==0)
-        {
-          dmb.setHasPre(false);
-          if(i==(tempMsgs.size()-1))
-          {
+
+      for(PrivateMessageDecoratedBean dmb : (List<PrivateMessageDecoratedBean>) decoratedPvtMsgs) {
+
+        //The first element of the list
+        if(dmb.equals(decoratedPvtMsgs.get(0))) {
+              dmb.setHasPre(false);
+              //If the list only contains one element
+              dmb.setHasNext((decoratedPvtMsgs.size() == 1) ? false : true);
+        //The last element of the list
+        } else if(dmb.equals(decoratedPvtMsgs.get(decoratedPvtMsgs.size() - 1))) {
+              dmb.setHasPre(true);
               dmb.setHasNext(false);
-          }
-          else
-          {
+        } else {
               dmb.setHasNext(true);
-          }
-        }
-        else if(i==(tempMsgs.size()-1))
-        {
-          dmb.setHasPre(true);
-          dmb.setHasNext(false);
-        }
-        else
-        {
-          dmb.setHasNext(true);
-          dmb.setHasPre(true);
+              dmb.setHasPre(true);
         }
       }
-  }
-
-  public void setDecoratedPvtMsgs(List displayPvtMsgs)
-  {
-    this.decoratedPvtMsgs=displayPvtMsgs;
-  }
-  
-  public String getMsgNavMode() 
-  {
-    return msgNavMode ;
-  }
- 
-  public PrivateMessageDecoratedBean getDetailMsg()
-  {
-    return detailMsg ;
-  }
-
-  public void setDetailMsg(PrivateMessageDecoratedBean detailMsg)
-  {    
-    this.detailMsg = detailMsg;
-  }
-
-  public String getCurrentMsgUuid()
-  {
-    return currentMsgUuid;
-  }
-  
-  public void setCurrentMsgUuid(String currentMsgUuid)
-  {
-    this.currentMsgUuid = currentMsgUuid;
-  }
-
-  public List getSelectedItems()
-  {
-    return selectedItems;
-  }
-  
-  public void setSelectedItems(List selectedItems)
-  {
-    this.selectedItems=selectedItems ;
-  }
-  
-  public boolean isDeleteConfirm()
-  {
-    return deleteConfirm;
-  }
-
-  public void setDeleteConfirm(boolean deleteConfirm)
-  {
-    this.deleteConfirm = deleteConfirm;
-  }
-
- 
-  public boolean isValidEmail()
-  {
-    return validEmail;
-  }
-  public void setValidEmail(boolean validEmail)
-  {
-    this.validEmail = validEmail;
-  }
-  
-  //Deleted page - checkbox display and selection
-  public List getSelectedDeleteItems()
-  {
-    return selectedDeleteItems;
-  }
-  public List getTotalDisplayItems()
-  {
-    return totalDisplayItems;
-  }
-  public void setTotalDisplayItems(List totalDisplayItems)
-  {
-    this.totalDisplayItems = totalDisplayItems;
-  }
-  public void setSelectedDeleteItems(List selectedDeleteItems)
-  {
-    this.selectedDeleteItems = selectedDeleteItems;
-  }
-
-  //Compose Getter and Setter
-  public String getComposeBody()
-  {
-    return composeBody;
-  }
-  
-  public void setComposeBody(String composeBody)
-  {
-    this.composeBody = composeBody;
-  }
-
-  public String getSelectedLabel()
-  {
-    return selectedLabel;
-  }
-  
-  public void setSelectedLabel(String selectedLabel)
-  {
-    this.selectedLabel = selectedLabel;
-  }
-  
-  public boolean getBooleanEmailOut() {
-	  return booleanEmailOut;
-  }
-  
-  public void setBooleanEmailOut(boolean booleanEmailOut) {
-	  this.booleanEmailOut= booleanEmailOut;
-  }
-  
-  public PrivateMessage getReplyingMessage() {
-	  return replyingMessage;
-  }
-  
-  public void setReplyingMessage(PrivateMessage replyingMessage) {
-	  this.replyingMessage = replyingMessage;
   }
   
   /**
@@ -920,7 +688,7 @@ public class PrivateMessagesTool
   public boolean isSendEmail() {
       boolean sendEmail;
       if (isEmailCopyAlways() ||
-              (isEmailCopyOptional() && getBooleanEmailOut())) {
+              (isEmailCopyOptional() && this.isBooleanEmailOut())) {
           sendEmail = true;
       } else {
           sendEmail = false;
@@ -929,52 +697,7 @@ public class PrivateMessagesTool
       return sendEmail;
   }
 
-  public String getComposeSendAsPvtMsg()
-  {
-    return composeSendAsPvtMsg;
-  }
-
-  public void setComposeSendAsPvtMsg(String composeSendAsPvtMsg)
-  {
-    this.composeSendAsPvtMsg = composeSendAsPvtMsg;
-  }
-
-  public String getComposeSubject()
-  {
-    return composeSubject;
-  }
-
-  public void setComposeSubject(String composeSubject)
-  {
-    this.composeSubject = composeSubject;
-  }
-
-  public void setSelectedComposeToList(List selectedComposeToList)
-  {
-    this.selectedComposeToList = selectedComposeToList;
-  }
-  
-  public void setSelectedComposeBccList(List selectedComposeBccList)
-  {
-	  this.selectedComposeBccList = selectedComposeBccList;
-  }
-  
-  public void setTotalComposeToList(List totalComposeToList)
-  {
-    this.totalComposeToList = totalComposeToList;
-  }
-  
-  public List getSelectedComposeToList()
-  {
-    return selectedComposeToList;
-  }
-  
-  public List getSelectedComposeBccList()
-  {
-	  return selectedComposeBccList;
-  }
-
-  private String getSiteTitle(){	  
+  private String getSiteTitle(){
 	  try {
 		return siteService.getSite(toolManager.getCurrentPlacement().getContext()).getTitle();
 	} catch (IdUnusedException e) {
@@ -999,8 +722,7 @@ public class PrivateMessagesTool
       }
 
       List<SelectItem> selectItemList = new ArrayList<SelectItem>();
-      for (Iterator i = totalComposeToList.iterator(); i.hasNext();) {
-          MembershipItem item = (MembershipItem) i.next();
+      for (MembershipItem item : (List<MembershipItem>) totalComposeToList) {
           selectItemList.add(new SelectItem(item.getId(), item.getName()));
       }
 
@@ -1013,8 +735,7 @@ public class PrivateMessagesTool
       }
 
       List<SelectItem> selectItemList = new ArrayList<SelectItem>();
-      for (Iterator i = totalComposeToBccList.iterator(); i.hasNext();) {
-          MembershipItem item = (MembershipItem) i.next();
+      for (MembershipItem item : (List<MembershipItem>) totalComposeToBccList) {
           selectItemList.add(new SelectItem(item.getId(), item.getName()));
       }
 
@@ -1038,8 +759,7 @@ public class PrivateMessagesTool
       
       List<SelectItem> selectItemList = new ArrayList<SelectItem>();
       // we need to filter out the hidden groups since they will only appear as recipients in the bcc list
-      for (Iterator i = members.iterator(); i.hasNext();) {
-          MembershipItem item = (MembershipItem) i.next();
+      for (MembershipItem item : (List<MembershipItem>) members) {
           if (hiddenGroupIds != null && item.getGroup() != null && hiddenGroupIds.contains(item.getGroup().getTitle())) {
               // hidden groups only appear in the bcc list
               totalComposeToBccList.add(item);
@@ -1054,7 +774,7 @@ public class PrivateMessagesTool
       if (displayHiddenGroupsMsg == null) {
           displayHiddenGroupsMsg = hiddenGroups != null && !hiddenGroups.isEmpty() && prtMsgManager.isAllowToViewHiddenGroups();
       }
-      
+
       return displayHiddenGroupsMsg;
   }
   
@@ -1062,8 +782,7 @@ public class PrivateMessagesTool
 	  List<String> returnList = new ArrayList<String>();
 	  
 	  if(hiddenGroups != null){
-		  for(Iterator itor = hiddenGroups.iterator(); itor.hasNext();){
-	    	  HiddenGroup group = (HiddenGroup) itor.next();
+		  for(HiddenGroup group : (Set<HiddenGroup>) hiddenGroups ) {
 	    	  returnList.add(group.getGroupId());
 		  }
 	  }
@@ -1122,84 +841,6 @@ public class PrivateMessagesTool
   public TimeZone getUserTimeZone() {
 	  return userPreferencesManager.getTimeZone();
   }
-  
-  //Reply time
-  public Date getTime()
-  {
-    return new Date();
-  }
-  //Reply to page
-  public String getReplyToBody() {
-    return replyToBody;
-  }
-  public void setReplyToBody(String replyToBody) {
-    this.replyToBody=replyToBody;
-  }
-  public String getReplyToSubject()
-  {
-    return replyToSubject;
-  }
-  public void setReplyToSubject(String replyToSubject)
-  {
-    this.replyToSubject = replyToSubject;
-  }
-  
-  // Forward a message
-  public String getForwardBody() {
-    return forwardBody;
-  }
-  public void setForwardBody(String forwardBody) {
-    this.forwardBody=forwardBody;
-  }
-  public String getForwardSubject()
-  {
-    return forwardSubject;
-  }
-  public void setForwardSubject(String forwardSubject)
-  {
-    this.forwardSubject = forwardSubject;
-  }
-  
-
-
-  //message header Getter 
-  public String getSearchText()
-  {
-    return searchText ;
-  }
-  public void setSearchText(String searchText)
-  {
-    this.searchText=searchText;
-  }
-  public String getSelectView() 
-  {
-    return selectView ;
-  }
-  public void setSelectView(String selectView)
-  {
-    this.selectView=selectView ;
-  }
-  
-  public boolean isMultiDeleteSuccess() 
-  {
-	return multiDeleteSuccess;
-  }
-
-  public void setMultiDeleteSuccess(boolean multiDeleteSuccess) 
-  {
-	this.multiDeleteSuccess = multiDeleteSuccess;
-  }
-
-
-  public String getMultiDeleteSuccessMsg() 
-  {
-	return multiDeleteSuccessMsg;
-  }
-
-  public void setMultiDeleteSuccessMsg(String multiDeleteSuccessMsg) 
-  {
-	this.multiDeleteSuccessMsg = multiDeleteSuccessMsg;
-  }
 
 public boolean isFromMain() {
 	return fromMain;
@@ -1208,14 +849,6 @@ public boolean isFromMain() {
 public String getServerUrl() {
     return ServerConfigurationService.getServerUrl();
  }
-
-public boolean getShowProfileInfoMsg() {
-    return showProfileInfoMsg;
-}
-
-public boolean getShowProfileLink() {
-	return showProfileLink;
-}
 
 public void processChangeSelectView(ValueChangeEvent eve)
   {
@@ -1245,23 +878,15 @@ public void processChangeSelectView(ValueChangeEvent eve)
 
 	  if(searcModeOn)
 	  {
-		  for(int i=0; i<searchPvtMsgs.size(); i++)
-		  {
-			  msgsList.add((PrivateMessageDecoratedBean)searchPvtMsgs.get(i));
-		  }
+		  msgsList.addAll(searchPvtMsgs);
 		  searchPvtMsgs.clear();
 	  }else
 	  {
 		  // always start with the decorated pm in ascending date order
 		  String typeUuid = getPrivateMessageTypeFromContext(msgNavMode);
-		  decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_DATE,
-		          PrivateMessageManager.SORT_ASC);
+		  decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_DATE, PrivateMessageManager.SORT_ASC);
 		  decoratedPvtMsgs = createDecoratedDisplay(decoratedPvtMsgs);
-		  
-		  for(int i=0; i<decoratedPvtMsgs.size(); i++)
-		  {
-			  msgsList.add((PrivateMessageDecoratedBean)decoratedPvtMsgs.get(i));
-		  }   
+		  msgsList.addAll(decoratedPvtMsgs);
 		  decoratedPvtMsgs.clear();
 	  }
 
@@ -1272,30 +897,29 @@ public void processChangeSelectView(ValueChangeEvent eve)
 		  // Using this HashSet to ensure that each message is only processed once
 		  // preventing a logic loop that can cause a memory leak. 
 		  HashSet messageIds = new HashSet<Long>();
-		  for(int i=0; i<msgsList.size(); i++)
-		  {
-			  long msgId = ((PrivateMessageDecoratedBean)msgsList.get(i)).getMsg().getId();
+		  for(PrivateMessageDecoratedBean pmdb : (List<PrivateMessageDecoratedBean>) msgsList) {
+
+			  long msgId = pmdb.getMsg().getId();
 			  if (!messageIds.contains(msgId)) {
 				  messageIds.add(msgId);
-				  tempMsgsList.add((PrivateMessageDecoratedBean)msgsList.get(i));
+				  tempMsgsList.add(pmdb);
 			  }
 		  }
+
 		  Iterator iter = tempMsgsList.iterator();
 		  while(iter.hasNext())
 		  {
 			  List allRelatedMsgs = messageManager.getAllRelatedMsgs(
 					  ((PrivateMessageDecoratedBean)iter.next()).getMsg().getId());
 			  List currentRelatedMsgs = new ArrayList();
-			  if(allRelatedMsgs != null && allRelatedMsgs.size()>0)
+			  if(allRelatedMsgs != null && !allRelatedMsgs.isEmpty())
 			  {
 				  Long msgId = ((Message)allRelatedMsgs.get(0)).getId();
 				  PrivateMessage pvtMsg= (PrivateMessage) prtMsgManager.getMessageById(msgId);
 				  PrivateMessageDecoratedBean pdb = new PrivateMessageDecoratedBean(pvtMsg);
 				  pdb.setDepth(-1);
 				  boolean firstEleAdded = false;
-				  for(int i=0; i<msgsList.size(); i++)
-				  {
-					  PrivateMessageDecoratedBean tempPMDB = (PrivateMessageDecoratedBean)msgsList.get(i);
+				  for(PrivateMessageDecoratedBean tempPMDB : (List<PrivateMessageDecoratedBean>) msgsList) {
 					  if (tempPMDB.getMsg().getId().equals(pdb.getMsg().getId()))
 					  {
 						  tempPMDB.setDepth(0);
@@ -1308,17 +932,18 @@ public void processChangeSelectView(ValueChangeEvent eve)
 				  if(!firstEleAdded)
 					  recursiveGetThreadedMsgsFromList(msgsList, allRelatedMsgs, currentRelatedMsgs, pdb);
 			  }
-			  for(int i=0; i<currentRelatedMsgs.size(); i++)
-			  {
+
+			  for(PrivateMessageDecoratedBean currentRelatedMsg : (List<PrivateMessageDecoratedBean>) currentRelatedMsgs) {
+
 				  if(searcModeOn)
 				  {
-					  searchPvtMsgs.add((PrivateMessageDecoratedBean)currentRelatedMsgs.get(i));
+					  searchPvtMsgs.add(currentRelatedMsg);
 				  }else
 				  {
-					  decoratedPvtMsgs.add((PrivateMessageDecoratedBean)currentRelatedMsgs.get(i));
+					  decoratedPvtMsgs.add(currentRelatedMsg);
 				  }
 
-				  tempMsgsList.remove((PrivateMessageDecoratedBean)currentRelatedMsgs.get(i));
+				  tempMsgsList.remove(currentRelatedMsg);
 			  }
 
 			  iter = tempMsgsList.iterator();
@@ -1333,18 +958,15 @@ public void processChangeSelectView(ValueChangeEvent eve)
   		List allRelatedMsgs, List returnList,
       PrivateMessageDecoratedBean currentMsg)
   {
-    for (int i = 0; i < allRelatedMsgs.size(); i++)
-    {
-      Long msgId = ((Message)allRelatedMsgs.get(i)).getId();
+    for (Message msg : (List<Message>) allRelatedMsgs) {
+      Long msgId = msg.getId();
 	  PrivateMessage pvtMsg= (PrivateMessage) prtMsgManager.getMessageById(msgId);
 	  PrivateMessageDecoratedBean thisMsgBean = new PrivateMessageDecoratedBean(pvtMsg);
 
       Message thisMsg = thisMsgBean.getMsg();
       boolean existedInCurrentUserList = false;
-      for(int j=0; j< msgsList.size(); j++)
-      {
-      	PrivateMessageDecoratedBean currentUserBean = 
-      		(PrivateMessageDecoratedBean)msgsList.get(j);
+      for(PrivateMessageDecoratedBean currentUserBean : (List<PrivateMessageDecoratedBean>) msgsList){
+
         if (thisMsg.getInReplyTo() != null
             && thisMsg.getInReplyTo().getId().equals(
                 currentMsg.getMsg().getId())
@@ -1379,25 +1001,11 @@ public void processChangeSelectView(ValueChangeEvent eve)
    * called when any topic like Received/Sent/Deleted clicked
    * @return - pvtMsg
    */
+  @Getter @Setter
   private String selectedTopicTitle="";
+  @Getter @Setter
   private String selectedTopicId="";
-  public String getSelectedTopicTitle()
-  {
-    return selectedTopicTitle ;
-  }
-  public void setSelectedTopicTitle(String selectedTopicTitle) 
-  {
-    this.selectedTopicTitle=selectedTopicTitle;
-  }
-  public String getSelectedTopicId()
-  {
-    return selectedTopicId;
-  }
-  public void setSelectedTopicId(String selectedTopicId)
-  {
-    this.selectedTopicId=selectedTopicId;    
-  }
-  
+
   public String processActionHome()
   {
     log.debug("processActionHome()");
@@ -1409,8 +1017,8 @@ public void processChangeSelectView(ValueChangeEvent eve)
   }  
   public String processActionPrivateMessages()
   {
-    log.debug("processActionPrivateMessages()");                    
-    msgNavMode = "privateMessages";            
+    log.debug("processActionPrivateMessages()");
+    msgNavMode = "privateMessages";
     multiDeleteSuccess = false;
     if (searchPvtMsgs != null) 
     	searchPvtMsgs.clear();
@@ -1496,7 +1104,7 @@ public void processChangeSelectView(ValueChangeEvent eve)
     log.debug("processPvtMsgTopic()");
     
     /** reset sort type */
-    sortType = SORT_DATE_DESC;    
+    sortType = SORT_DATE_DESC;
     
     setSelectedTopicId(getExternalParameterByKey(EXTERNAL_TOPIC_ID));
    	selectedTopic = new PrivateTopicDecoratedBean(forumManager.getTopicByUuid(getExternalParameterByKey(EXTERNAL_TOPIC_ID)));
@@ -1549,7 +1157,7 @@ public void processChangeSelectView(ValueChangeEvent eve)
 	  
 	  //go to compose page
 	  setFromMainOrHp();
-	  fromMain = ("".equals(msgNavMode)) || ("privateMessages".equals(msgNavMode));
+	  fromMain = (StringUtils.isEmpty(msgNavMode)) || ("privateMessages".equals(msgNavMode));
 	  log.debug("processPvtMsgDraft()");
 	  return PVTMSG_COMPOSE;
   }
@@ -1565,9 +1173,8 @@ public void processChangeSelectView(ValueChangeEvent eve)
     String msgId=getExternalParameterByKey("current_msg_detail");
     setCurrentMsgUuid(msgId) ; 
     //retrive the detail for this message with currentMessageId    
-    for (Iterator iter = decoratedPvtMsgs.iterator(); iter.hasNext();)
-    {
-      PrivateMessageDecoratedBean dMsg= (PrivateMessageDecoratedBean) iter.next();
+    for (PrivateMessageDecoratedBean dMsg : (List<PrivateMessageDecoratedBean>) decoratedPvtMsgs){
+
       if (dMsg.getMsg().getId().equals(Long.valueOf(msgId)))
       {
     	  
@@ -1584,20 +1191,14 @@ public void processChangeSelectView(ValueChangeEvent eve)
         setDetailMsgCount++;
         
         List recLs= initPrivateMessage.getRecipients();
-        for (Iterator iterator = recLs.iterator(); iterator.hasNext();)
-        {
-          PrivateMessageRecipient element = (PrivateMessageRecipient) iterator.next();
-          if (element != null)
-          {
-            if((element.getRead().booleanValue()) || (element.getUserId().equals(getUserId())) )
-            {
-             getDetailMsg().setHasRead(true) ;
-            }
+        for (PrivateMessageRecipient element : (List<PrivateMessageRecipient>) recLs) {
+          if (element != null && (element.getRead().booleanValue()) || (element.getUserId().equals(getUserId()))) {
+              getDetailMsg().setHasRead(true);
           }
         }
         if(dMsg.getMsg().getCreatedBy().equals(getUserId())){
         	//need to display all users who received the message if the user create the message
-        	this.getDetailMsg().getMsg().setRecipientsAsTextBcc(dMsg.getMsg().getRecipientsAsTextBcc());        	
+        	this.getDetailMsg().getMsg().setRecipientsAsTextBcc(dMsg.getMsg().getRecipientsAsTextBcc());
         }else{
         	//otherwise, hide the BCC information
         	this.getDetailMsg().getMsg().setRecipientsAsTextBcc("");
@@ -1611,11 +1212,9 @@ public void processChangeSelectView(ValueChangeEvent eve)
     //prev/next message 
     if(decoratedPvtMsgs != null)
     {
-      for(int i=0; i<decoratedPvtMsgs.size(); i++)
-      {
-        PrivateMessageDecoratedBean thisDmb = (PrivateMessageDecoratedBean)decoratedPvtMsgs.get(i);
-        if(((PrivateMessageDecoratedBean)decoratedPvtMsgs.get(i)).getMsg().getId().toString().equals(msgId))
-        {
+      for(PrivateMessageDecoratedBean thisDmb : (List<PrivateMessageDecoratedBean>) decoratedPvtMsgs){
+
+        if(msgId.equals(thisDmb.getMsg().getId().toString())) {
           detailMsg.setDepth(thisDmb.getDepth());
           detailMsg.setHasNext(thisDmb.getHasNext());
           detailMsg.setHasPre(thisDmb.getHasPre());
@@ -1690,9 +1289,8 @@ public void processChangeSelectView(ValueChangeEvent eve)
     }
     
     List attachList = getDetailMsg().getAttachList();
-    if (attachList != null && attachList.size() > 0) {
-    	for (Iterator attachIter = attachList.iterator(); attachIter.hasNext();) {
-    		DecoratedAttachment decoAttach = (DecoratedAttachment) attachIter.next();
+    if (attachList != null && !attachList.isEmpty()) {
+    	for (DecoratedAttachment decoAttach : (List<DecoratedAttachment>) attachList) {
     		if (decoAttach != null) {
     			replyText.append("<span style=\"font-style:italic;\">");
     			replyText.append(getResourceBundleString("pvt_msg_["));
@@ -1751,8 +1349,7 @@ public void processChangeSelectView(ValueChangeEvent eve)
 	    if (attachList != null && attachList.size() > 0) {
 	    	forwardedText.append(getResourceBundleString("pvt_msg_fwd_attachments") + "<br />");
 	    	forwardedText.append("<ul style=\"list-style-type:none;margin:0;padding:0;padding-left:0.5em;\">");
-	    	for (Iterator attachIter = attachList.iterator(); attachIter.hasNext();) {
-	    		DecoratedAttachment decoAttach = (DecoratedAttachment) attachIter.next();
+	    	for (DecoratedAttachment decoAttach : (List<DecoratedAttachment>) attachList ) {
 	    		if (decoAttach != null) {
 	    			forwardedText.append("<li>");
 	    			// It seems like there must be a better way to do the attachment image...
@@ -1793,20 +1390,7 @@ public void processChangeSelectView(ValueChangeEvent eve)
 
 	    return MESSAGE_FORWARD_PG;
 	  }
-	
-  
-//how many letters k in string a  a= "fdh,jlg,jds,lgjd"  k=","
-private   int   getNum(char letter,   String   a)
-{  
-	int   j=0;  
-	for(int   i=0;   i<a.length();   i++){  
-		if(a.charAt(i)==(letter)){  //s.charAt(j) == 'x'
-		j++;  
-		}  
-	}  
-	return   j;  
-}   
-/////////////modified by hu2@iupui.edu  begin
+
   //function: add Reply All Tools
 
   /**
@@ -1864,8 +1448,7 @@ private   int   getNum(char letter,   String   a)
 	    
 	    List attachList = getDetailMsg().getAttachList();
 	    if (attachList != null && attachList.size() > 0) {
-	    	for (Iterator attachIter = attachList.iterator(); attachIter.hasNext();) {
-	    		DecoratedAttachment decoAttach = (DecoratedAttachment) attachIter.next();
+	    	for (DecoratedAttachment decoAttach : (List<DecoratedAttachment>) attachList ) {
 	    		if (decoAttach != null) {
 	    			replyallText.append("<span style=\"font-style:italic;\">");
 	    			replyallText.append(getResourceBundleString("pvt_msg_["));
@@ -1881,20 +1464,19 @@ private   int   getNum(char letter,   String   a)
 	    String msgautherString=getDetailMsg().getAuthor();
 	    String msgCClistString=getDetailMsg().getRecipientsAsText();
 	    
-	    //remove the auther in Cc string 	    
+	    //remove the auther in Cc string
 	    if(msgCClistString.length()>=msgautherString.length())
 	    {
-	    String msgCClistStringwithoutAuthor = msgCClistString;	   
+	    String msgCClistStringwithoutAuthor = msgCClistString;
 	    
 	    String currentUserasAuther = getUserName();
-	    char letter=';';
-	    int  n=getNum(letter,msgCClistStringwithoutAuthor);
+	    int n = StringUtils.countMatches(msgCClistStringwithoutAuthor, ";");
 	    
 	    int numberofAuther=0;
 	    
 	    if(n==0)
 	    {numberofAuther=1;}
-	    else if(n>=1)	    	
+	    else if(n>=1)
 	    { numberofAuther=n+1;}//add the end ";"
 	    String[] ccSS = new String[numberofAuther];
 	    ccSS=msgCClistStringwithoutAuthor.split(";");
@@ -2017,12 +1599,11 @@ private   int   getNum(char letter,   String   a)
 	  attachments.clear();
 	  oldAttachments.clear();
     setFromMainOrHp();
-    fromMain = ("".equals(msgNavMode)) || ("privateMessages".equals(msgNavMode));
+    fromMain = (StringUtils.isEmpty(msgNavMode)) || ("privateMessages".equals(msgNavMode));
     log.debug("processPvtMsgCompose()");
     return PVTMSG_COMPOSE;
   }
-  
-  
+
   public String processPvtMsgComposeCancel()
   {
     log.debug("processPvtMsgComposeCancel()");
@@ -2055,7 +1636,7 @@ private   int   getNum(char letter,   String   a)
   
   public String processPvtMsgPreview(){
 	  
-	  if(!hasValue(getComposeSubject()))
+	  if(StringUtils.isEmpty(getComposeSubject()))
 	  {
 		  setErrorMessage(getResourceBundleString(MISSING_SUBJECT));
 		  return null;
@@ -2098,7 +1679,7 @@ private   int   getNum(char letter,   String   a)
           
     log.debug("processPvtMsgSend()");
     
-    if(!hasValue(getComposeSubject()))
+    if(StringUtils.isEmpty(getComposeSubject()))
     {
       setErrorMessage(getResourceBundleString(MISSING_SUBJECT));
       return null;
@@ -2148,8 +1729,7 @@ private   int   getNum(char letter,   String   a)
 	Event event = eventTrackingService.newEvent(DiscussionForumService.EVENT_MESSAGES_ADD, getEventMessage(pMsg), null, true, NotificationService.NOTI_OPTIONAL, statement);
     eventTrackingService.post(event);
     
-    if(fromMainOrHp != null && !"".equals(fromMainOrHp))
-    {
+    if(StringUtils.isNotEmpty(fromMainOrHp)) {
     	String tmpBackPage = fromMainOrHp;
     	fromMainOrHp = "";
     	return tmpBackPage;
@@ -2218,21 +1798,12 @@ private   int   getNum(char letter,   String   a)
    */
   public String processPvtMsgSaveDraft() {
     log.debug("processPvtMsgSaveDraft()");
-    if(!hasValue(getComposeSubject()))
+    if(StringUtils.isEmpty(getComposeSubject()))
     {
       setErrorMessage(getResourceBundleString(MISSING_SUBJECT_DRAFT));
       return null ;
     }
-//    if(!hasValue(getComposeBody()) )
-//    {
-//      setErrorMessage("Please enter message body for this compose message.");
-//      return null ;
-//    }
-//    if(getSelectedComposeToList().size()<1)
-//    {
-//      setErrorMessage(getResourceBundleString(SELECT_MSG_RECIPIENT));
-//      return null ;
-//    }
+
     PrivateMessage dMsg = null;
     if(getDetailMsg() != null && getDetailMsg().getMsg() != null && getDetailMsg().getMsg().getDraft()){
     	dMsg =constructMessage(true, getDetailMsg().getMsg()) ;
@@ -2330,11 +1901,11 @@ private   int   getNum(char letter,   String   a)
     	  }
       }
 
-      if (! "".equals(sendToString.toString())) {
+      if (StringUtils.isNotEmpty(sendToString.toString())) {
     	  sendToString.delete(sendToString.length()-2, sendToString.length()); //remove last comma and space
       }
       
-      if ("".equals(sendToHiddenString.toString())) {
+      if (StringUtils.isEmpty(sendToHiddenString.toString())) {
     	  aMsg.setRecipientsAsText(sendToString.toString());
       }
       else {
@@ -2342,11 +1913,11 @@ private   int   getNum(char letter,   String   a)
     	  aMsg.setRecipientsAsText(sendToString.toString() + " " + PrivateMessage.HIDDEN_RECIPIENTS_START + sendToHiddenString.toString() + PrivateMessage.HIDDEN_RECIPIENTS_END);
       }
       //clean up sendToBccString
-      if (! "".equals(sendToBccString.toString())) {
+      if (StringUtils.isNotEmpty(sendToBccString.toString())) {
     	  sendToBccString.delete(sendToBccString.length()-2, sendToBccString.length()); //remove last comma and space
       }
 
-      if ("".equals(sendToBccHiddenString.toString())) {
+      if (StringUtils.isEmpty(sendToBccHiddenString.toString())) {
     	  aMsg.setRecipientsAsTextBcc(sendToBccString.toString());
       }
       else {
@@ -2356,9 +1927,8 @@ private   int   getNum(char letter,   String   a)
 
     }
     //Add attachments
-    for(int i=0; i<attachments.size(); i++)
-    {
-      prtMsgManager.addAttachToPvtMsg(aMsg, ((DecoratedAttachment)attachments.get(i)).getAttachment());         
+    for(DecoratedAttachment attachment : (List<DecoratedAttachment>) attachments) {
+      prtMsgManager.addAttachToPvtMsg(aMsg, attachment.getAttachment());
     }    
     if(clearAttachments){
     	//clear
@@ -2366,42 +1936,10 @@ private   int   getNum(char letter,   String   a)
     	oldAttachments.clear();
     }
     
-    return aMsg;    
+    return aMsg;
   }
   ///////////////////// Previous/Next topic and message on Detail message page
-  /**
-   * Set Previous and Next message details with each PrivateMessageDecoratedBean
-   */
-  public void setPrevNextMessageDetails()
-  {
-    List tempMsgs = decoratedPvtMsgs;
-    for(int i=0; i<tempMsgs.size(); i++)
-    {
-      PrivateMessageDecoratedBean dmb = (PrivateMessageDecoratedBean)tempMsgs.get(i);
-      if(i==0)
-      {
-        dmb.setHasPre(false);
-        if(i==(tempMsgs.size()-1))
-        {
-            dmb.setHasNext(false);
-        }
-        else
-        {
-            dmb.setHasNext(true);
-        }
-      }
-      else if(i==(tempMsgs.size()-1))
-      {
-        dmb.setHasPre(true);
-        dmb.setHasNext(false);
-      }
-      else
-      {
-        dmb.setHasNext(true);
-        dmb.setHasPre(true);
-      }
-    }
-  }
+
   
   /**
    * processDisplayPreviousMsg()
@@ -2409,7 +1947,8 @@ private   int   getNum(char letter,   String   a)
    */
   public String processDisplayPreviousMsg()
   {
-    List tempMsgs = getDecoratedPvtMsgs(); // all messages
+
+	List tempMsgs = getDecoratedPvtMsgs(); // all messages
     int currentMsgPosition = -1;
     if(tempMsgs != null)
     {
@@ -2438,9 +1977,7 @@ private   int   getNum(char letter,   String   a)
       setDetailMsgCount++;
       
       List recLs= initPrivateMessage.getRecipients();
-      for (Iterator iterator = recLs.iterator(); iterator.hasNext();)
-      {
-        PrivateMessageRecipient element = (PrivateMessageRecipient) iterator.next();
+      for (PrivateMessageRecipient element : (List<PrivateMessageRecipient>) recLs) {
         if (element != null)
         {
           if((element.getRead().booleanValue()) || (element.getUserId().equals(getUserId())) )
@@ -2474,7 +2011,8 @@ private   int   getNum(char letter,   String   a)
    */    
   public String processDisplayNextMsg()
   {
-    List tempMsgs = getDecoratedPvtMsgs();
+
+	List tempMsgs = getDecoratedPvtMsgs();
     int currentMsgPosition = -1;
     if(tempMsgs != null)
     {
@@ -2500,9 +2038,7 @@ private   int   getNum(char letter,   String   a)
       setDetailMsgCount++;
       
       List recLs= initPrivateMessage.getRecipients();
-      for (Iterator iterator = recLs.iterator(); iterator.hasNext();)
-      {
-        PrivateMessageRecipient element = (PrivateMessageRecipient) iterator.next();
+      for (PrivateMessageRecipient element : (List<PrivateMessageRecipient>) recLs) {
         if (element != null)
         {
           if((element.getRead().booleanValue()) || (element.getUserId().equals(getUserId())) )
@@ -2529,28 +2065,10 @@ private   int   getNum(char letter,   String   a)
     eventTrackingService.post(event);
     return null;
   }
-  
-  
+
   /////////////////////////////////////     DISPLAY NEXT/PREVIOUS TOPIC     //////////////////////////////////  
+  @Getter @Setter
   private PrivateTopicDecoratedBean selectedTopic;
-  
-  /**
-   * @return Returns the selectedTopic.
-   */
-  public PrivateTopicDecoratedBean getSelectedTopic()
-  {
-    return selectedTopic;
-  }
-
-
-  /**
-   * @param selectedTopic The selectedTopic to set.
-   */
-  public void setSelectedTopic(PrivateTopicDecoratedBean selectedTopic)
-  {
-    this.selectedTopic = selectedTopic;
-  }
-
 
   /**
    * Add prev and next topic UUID value and booleans for display of links
@@ -2561,8 +2079,6 @@ private   int   getNum(char letter,   String   a)
     for (int i = 0; i < pvtTopics.size(); i++)
     {
       Topic el = (Topic)pvtTopics.get(i);
-      
-      
       if(el.getTitle().equals(msgNavMode))
       {
         setSelectedTopic(new PrivateTopicDecoratedBean(el)) ;
@@ -2625,7 +2141,7 @@ private   int   getNum(char letter,   String   a)
   public String processDisplayPreviousTopic() {
 	multiDeleteSuccess = false;
     String prevTopicTitle = getExternalParameterByKey("previousTopicTitle");
-    if(hasValue(prevTopicTitle))
+    if(StringUtils.isNotEmpty(prevTopicTitle))
     {
       msgNavMode=prevTopicTitle;
       
@@ -2633,8 +2149,7 @@ private   int   getNum(char letter,   String   a)
       
       String typeUuid = getPrivateMessageTypeFromContext(msgNavMode);        
       
-      decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_DATE,
-          PrivateMessageManager.SORT_DESC);
+      decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_DATE, PrivateMessageManager.SORT_DESC);
       
       decoratedPvtMsgs = createDecoratedDisplay(decoratedPvtMsgs);
       
@@ -2646,7 +2161,7 @@ private   int   getNum(char letter,   String   a)
       //set prev/next Topic
       setPrevNextTopicDetails(msgNavMode);
       //set prev/next message
-      setPrevNextMessageDetails();
+      setMessageBeanPreNextStatus();
       
       if (searchPvtMsgs != null)
       {
@@ -2664,15 +2179,14 @@ private   int   getNum(char letter,   String   a)
   { 
 	multiDeleteSuccess = false;
     String nextTitle = getExternalParameterByKey("nextTopicTitle");
-    if(hasValue(nextTitle))
+    if(StringUtils.isNotEmpty(nextTitle))
     {
       msgNavMode=nextTitle;
       decoratedPvtMsgs=new ArrayList() ;
       
       String typeUuid = getPrivateMessageTypeFromContext(msgNavMode);        
       
-      decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_DATE,
-          PrivateMessageManager.SORT_DESC);
+      decoratedPvtMsgs= prtMsgManager.getMessagesByType(typeUuid, PrivateMessageManager.SORT_COLUMN_DATE, PrivateMessageManager.SORT_DESC);
       
       decoratedPvtMsgs = createDecoratedDisplay(decoratedPvtMsgs);
       
@@ -2684,7 +2198,7 @@ private   int   getNum(char letter,   String   a)
       //set prev/next Topic
       setPrevNextTopicDetails(msgNavMode);
       //set prev/next message
-      setPrevNextMessageDetails();
+      setMessageBeanPreNextStatus();
       
       if (searchPvtMsgs != null)
       {
@@ -2696,10 +2210,6 @@ private   int   getNum(char letter,   String   a)
     return null;
   }
 /////////////////////////////////////     DISPLAY NEXT/PREVIOUS TOPIC     //////////////////////////////////
-    
-  
-  
-  //////////////////////////////////////////////////////////
   /**
    * @param externalTopicId
    * @return
@@ -2800,16 +2310,14 @@ private   int   getNum(char letter,   String   a)
     
     	//PrivateMessage currentMessage = getDetailMsg().getMsg() ;
     	//by default add user who sent original message    
-    	for (Iterator i = totalComposeToList.iterator(); i.hasNext();) {      
-    		MembershipItem membershipItem = (MembershipItem) i.next();                
-
+    	for (MembershipItem membershipItem : (List<MembershipItem>) totalComposeToList) {
     		if (membershipItem.getUser() != null && membershipItem.getUser().getId().equals(currentMessage.getCreatedBy())) {
     			selectedComposeToList.add(membershipItem.getId());
     		}
     	}
 
     	
-    	if(!hasValue(getReplyToSubject()))
+    	if(StringUtils.isEmpty(getReplyToSubject()))
     	{
     		if(isDraft){
     			setErrorMessage(getResourceBundleString(MISSING_SUBJECT_DRAFT));
@@ -2894,11 +2402,11 @@ private   int   getNum(char letter,   String   a)
     	}
 
     	//clean sendToString
-    	if (! "".equals(sendToString.toString())) {
+    	if (StringUtils.isNotEmpty(sendToString.toString())) {
     		sendToString.delete(sendToString.length()-2, sendToString.length()); //remove last comma and space
     	}
 
-    	if ("".equals(sendToHiddenString.toString())) {
+    	if (StringUtils.isEmpty(sendToHiddenString.toString())) {
     		rrepMsg.setRecipientsAsText(sendToString.toString());
     	}
     	else {
@@ -2908,11 +2416,11 @@ private   int   getNum(char letter,   String   a)
 
     	//clean sendToBccString
     	//clean sendToString
-    	if (! "".equals(sendToBccString.toString())) {
+    	if (StringUtils.isNotEmpty(sendToBccString.toString())) {
     		sendToBccString.delete(sendToBccString.length()-2, sendToBccString.length()); //remove last comma and space
     	}
 
-    	if ("".equals(sendToBccHiddenString.toString())) {
+    	if (StringUtils.isEmpty(sendToBccHiddenString.toString())) {
     		rrepMsg.setRecipientsAsTextBcc(sendToBccString.toString());
     	}
     	else {
@@ -2921,10 +2429,9 @@ private   int   getNum(char letter,   String   a)
     	}  
     	
     	//Add attachments
-    	for(int i=0; i<allAttachments.size(); i++)
-    	{
-    		prtMsgManager.addAttachToPvtMsg(rrepMsg, ((DecoratedAttachment)allAttachments.get(i)).getAttachment());         
-    	}            
+    	for(DecoratedAttachment attachment : (List<DecoratedAttachment>) allAttachments) {
+    		prtMsgManager.addAttachToPvtMsg(rrepMsg, attachment.getAttachment());
+    	}
 
     	return rrepMsg;
     	
@@ -3006,7 +2513,7 @@ private   int   getNum(char letter,   String   a)
 			 return null ;
 		 }
 	 }
-	 if(!hasValue(getForwardSubject()))
+	 if(StringUtils.isEmpty(getForwardSubject()))
 	 {
 		 if(isDraft){
 			 setErrorMessage(getResourceBundleString(MISSING_SUBJECT_DRAFT));
@@ -3083,11 +2590,11 @@ private   int   getNum(char letter,   String   a)
     	}
 
     	//clean sendToString
-    	if (! "".equals(sendToString.toString())) {
+    	if (StringUtils.isNotEmpty(sendToString.toString())) {
     		sendToString.delete(sendToString.length()-2, sendToString.length()); //remove last comma and space
     	}
 
-    	if ("".equals(sendToHiddenString.toString())) {
+    	if (StringUtils.isEmpty(sendToHiddenString.toString())) {
     		rrepMsg.setRecipientsAsText(sendToString.toString());
     	}
     	else {
@@ -3096,11 +2603,11 @@ private   int   getNum(char letter,   String   a)
     	}       	      
     	
     	//clean sendToBccString
-    	if (! "".equals(sendToBccString.toString())) {
+    	if (StringUtils.isNotEmpty(sendToBccString.toString())) {
     		sendToBccString.delete(sendToBccString.length()-2, sendToBccString.length()); //remove last comma and space
     	}
 
-    	if ("".equals(sendToBccHiddenString.toString())) {
+    	if (StringUtils.isEmpty(sendToBccHiddenString.toString())) {
     		rrepMsg.setRecipientsAsTextBcc(sendToBccString.toString());
     	}
     	else {
@@ -3209,8 +2716,7 @@ private   int   getNum(char letter,   String   a)
 
 	  //Select Forward Recipients
 	  
-	  if(!hasValue(getForwardSubject()))
-	  {
+	  if(StringUtils.isEmpty(getForwardSubject())) {
 		  if(isDraft){
 			  setErrorMessage(getResourceBundleString(MISSING_SUBJECT_DRAFT));
 		  }else{
@@ -3258,10 +2764,7 @@ private   int   getNum(char letter,   String   a)
 	  Map<User, Boolean> returnSet = new HashMap<User, Boolean>();
 	  StringBuffer sendToStringreplyall = new StringBuffer();
 
-	  Iterator iter = tmpRecipList.iterator();
-	  while (iter.hasNext())
-	  {
-		  PrivateMessageRecipient tmpPMR = (PrivateMessageRecipient)iter.next();
+	  for (PrivateMessageRecipient tmpPMR : (List<PrivateMessageRecipient>) tmpRecipList) {
 		  User replyrecipientaddtmp=null;
 		  try {
 			  replyrecipientaddtmp = userDirectoryService.getUser(tmpPMR.getUserId());
@@ -3281,7 +2784,7 @@ private   int   getNum(char letter,   String   a)
 		  }
 	  }
 
-	  if(currentMessage.getRecipientsAsText() != null && !"".equals(currentMessage.getRecipientsAsText())){
+	  if(currentMessage.getRecipientsAsText() != null && StringUtils.isNotEmpty(currentMessage.getRecipientsAsText())){
 		  sendToStringreplyall.append(currentMessage.getRecipientsAsText()).append("; ");
 	  }
 	  if(returnSet.isEmpty()) {
@@ -3350,11 +2853,11 @@ private   int   getNum(char letter,   String   a)
 	  }
 
 	  //clean sendToString
-	  if (! "".equals(sendToString.toString()) && sendToString.length() >= 2) {
+	  if (StringUtils.isNotEmpty(sendToString.toString()) && sendToString.length() >= 2) {
 		  sendToString.delete(sendToString.length()-2, sendToString.length()); //remove last comma and space
 	  }
 
-	  if ("".equals(sendToHiddenString.toString())) {
+	  if (StringUtils.isEmpty(sendToHiddenString.toString())) {
 		  rrepMsg.setRecipientsAsText(sendToString.toString());
 	  }
 	  else {
@@ -3363,11 +2866,11 @@ private   int   getNum(char letter,   String   a)
 	  }
 
 	  //clean sendToBccString
-	  if (! "".equals(sendToBccString.toString()) && sendToBccString.length() >= 2) {
+	  if (StringUtils.isNotEmpty(sendToBccString.toString()) && sendToBccString.length() >= 2) {
 		  sendToBccString.delete(sendToBccString.length()-2, sendToBccString.length()); //remove last comma and space
 	  }
 
-	  if ("".equals(sendToBccHiddenString.toString())) {
+	  if (StringUtils.isEmpty(sendToBccHiddenString.toString())) {
 		  rrepMsg.setRecipientsAsTextBcc(sendToBccString.toString());
 	  }
 	  else {
@@ -3378,8 +2881,7 @@ private   int   getNum(char letter,   String   a)
 	  //Add selected users to reply all list
 
 	  Map<User, Boolean> recipients = getRecipients();
-	  for (Iterator<Entry<User, Boolean>> i = recipients.entrySet().iterator(); i.hasNext();){
-		  Entry<User, Boolean> entrySet = (Entry<User, Boolean>) i.next();
+	  for (Entry<User, Boolean> entrySet : recipients.entrySet()){
 		  if(!returnSet.containsKey(entrySet.getKey())){
 			  returnSet.put(entrySet.getKey(), entrySet.getValue());
 		  }
@@ -3419,13 +2921,9 @@ private   int   getNum(char letter,   String   a)
 	 {
 		 return false;
 	 }
-	 
-	 Iterator iter = list.iterator();
-	 	 
-	   User tmpuser=null;
-	   while(iter.hasNext()){
 
-			 PrivateMessageRecipient tmpPMR = (PrivateMessageRecipient)iter.next();
+	   for(PrivateMessageRecipient tmpPMR : (List<PrivateMessageRecipient>)list) {
+
 		 	User replyrecipientaddtmp=null;
 				try {
 					replyrecipientaddtmp = userDirectoryService.getUser(tmpPMR.getUserId());
@@ -3442,9 +2940,8 @@ private   int   getNum(char letter,   String   a)
 		   }
 	   }
 	   return isContain;
-	  	   
   }
-		
+
   /**
    * process from Compose screen
    * @return - pvtMsg
@@ -3470,14 +2967,10 @@ private   int   getNum(char letter,   String   a)
     log.debug("processPvtMsgEmptyDelete()");
     
     List delSelLs=new ArrayList() ;
-    //this.setDisplayPvtMsgs(getDisplayPvtMsgs());    
-    for (Iterator iter = this.decoratedPvtMsgs.iterator(); iter.hasNext();)
-    {
-      PrivateMessageDecoratedBean element = (PrivateMessageDecoratedBean) iter.next();
-      if(element.getIsSelected())
-      {
-        delSelLs.add(element);
-      }      
+    for (PrivateMessageDecoratedBean element : (List<PrivateMessageDecoratedBean>) this.decoratedPvtMsgs) {
+      if(element.getIsSelected()) {
+         delSelLs.add(element);
+      }
     }
     this.setSelectedDeleteItems(delSelLs);
     if(delSelLs.size()<1)
@@ -3496,9 +2989,8 @@ private   int   getNum(char letter,   String   a)
     log.debug("processPvtMsgMultiDelete()");
   
     boolean deleted = false;
-    for (Iterator iter = getSelectedDeleteItems().iterator(); iter.hasNext();)
-    {
-      PrivateMessage element = ((PrivateMessageDecoratedBean) iter.next()).getMsg();
+    for (PrivateMessageDecoratedBean privateMessageDecoratedBean : (List<PrivateMessageDecoratedBean>) getSelectedDeleteItems()) {
+      PrivateMessage element = privateMessageDecoratedBean.getMsg();
       if (element != null) 
       {
     	deleted = true;
@@ -3536,22 +3028,10 @@ private   int   getNum(char letter,   String   a)
   
   
   ///////////////////////////       Process Select All       ///////////////////////////////
+  @Getter @Setter
   private boolean selectAll = false;  
+  @Getter @Setter
   private int numberChecked = 0; // to cover case where user selectes check all
-  
-  public boolean isSelectAll()
-  {
-    return selectAll;
-  }
-  public void setSelectAll(boolean selectAll)
-  {
-    this.selectAll = selectAll;
-  }
-
-  public int getNumberChecked() 
-  {
-	return numberChecked;
-  }
 
   /**
    * process isSelected for all decorated messages
@@ -3657,8 +3137,7 @@ private   int   getNum(char letter,   String   a)
   
   public ArrayList getPrepareRemoveAttach()
   {
-    if((removeAttachId != null) && (!"".equals(removeAttachId)))
-    {
+    if(StringUtils.isNotEmpty(removeAttachId)) {
       prepareRemoveAttach.add(prtMsgManager.getPvtMsgAttachment(Long.valueOf(removeAttachId)));
     }
     
@@ -3700,7 +3179,7 @@ private   int   getNum(char letter,   String   a)
     while(itr.hasNext())
     {
       Entry<Object, String> entry = itr.next();
-    	Object key = entry.getKey();
+      Object key = entry.getKey();
       if( key instanceof String)
       {
         String name =  (String)key;
@@ -3714,8 +3193,7 @@ private   int   getNum(char letter,   String   a)
       }
     }
     
-    if ((attachId != null) && (!"".equals(attachId)))
-    {
+    if (StringUtils.isNotEmpty(attachId)) {
       for (int i = 0; i < attachments.size(); i++)
       {
         if (attachId.equalsIgnoreCase(((DecoratedAttachment) attachments.get(i)).getAttachment()
@@ -3726,7 +3204,7 @@ private   int   getNum(char letter,   String   a)
         }
       }
     }
-    
+
     return null ;
   }
  
@@ -3758,8 +3236,7 @@ private   int   getNum(char letter,   String   a)
       }
     }
     
-    if ((attachId != null) && (!"".equals(attachId)))
-    {
+    if (StringUtils.isNotEmpty(attachId)) {
       for (int i = 0; i < allAttachments.size(); i++)
       {
         if (attachId.equalsIgnoreCase(((DecoratedAttachment) allAttachments.get(i)).getAttachment()
@@ -3770,7 +3247,6 @@ private   int   getNum(char letter,   String   a)
         }
       }
     }
-    
     return null ;
   }
   
@@ -3817,42 +3293,7 @@ private   int   getNum(char letter,   String   a)
     prepareRemoveAttach.clear();
     return COMPOSE_MSG_PG ;
   }
-  
 
-  ////////////  SETTINGS        //////////////////////////////
-  //Setting Getter and Setter
-  public String getActivatePvtMsg()
-  {
-    return activatePvtMsg;
-  }
-  public void setActivatePvtMsg(String activatePvtMsg)
-  {
-    this.activatePvtMsg = activatePvtMsg;
-  }
-  public String getForwardPvtMsg()
-  {
-    return forwardPvtMsg;
-  }
-  public void setForwardPvtMsg(String forwardPvtMsg)
-  {
-    this.forwardPvtMsg = forwardPvtMsg;
-  }
-  public String getForwardPvtMsgEmail()
-  {
-    return forwardPvtMsgEmail;
-  }
-  public void setForwardPvtMsgEmail(String forwardPvtMsgEmail)
-  {
-    this.forwardPvtMsgEmail = forwardPvtMsgEmail;
-  }
-  
-  public String getSendToEmail() {
-      return this.sendToEmail;
-  }
-  public void setSendToEmail(String sendToEmail) {
-      this.sendToEmail = sendToEmail;
-  }
-  
   public boolean getSuperUser()
   {
     superUser=securityService.isSuperUser();
@@ -3867,12 +3308,7 @@ private   int   getNum(char letter,   String   a)
   public boolean isEmailPermit() {
 	  return prtMsgManager.isEmailPermit();
   }
-  
-  public void setSuperUser(boolean superUser)
-  {
-    this.superUser = superUser;
-  }
-  
+
   public String processPvtMsgOrganize()
   {
     log.debug("processPvtMsgOrganize()");
@@ -3900,7 +3336,7 @@ private   int   getNum(char letter,   String   a)
     
     /** block executes when changing value to "no" */
     if (SET_AS_YES.equals(forwardPvtMsg)){
-      setForwardPvtMsgEmail(null);      
+      setForwardPvtMsgEmail(null);
     }       
     if (SET_AS_NO.equals(forwardPvtMsg)){
       setValidEmail(true);
@@ -3938,8 +3374,7 @@ private   int   getNum(char letter,   String   a)
           setErrorMessage(getResourceBundleString("pvt_send_to_email_invalid"));
           return null;
       }
-      
-      
+
       Boolean formAutoForward = (SET_AS_YES.equals(forward)) ? Boolean.TRUE : Boolean.FALSE;            
       forum.setAutoForward(formAutoForward);
       if (Boolean.TRUE.equals(formAutoForward)){
@@ -3960,38 +3395,19 @@ private   int   getNum(char letter,   String   a)
     	  return MESSAGE_HOME_PG;
       }
     }
-    
   }
-  
 
   ///////////////////   FOLDER SETTINGS         ///////////////////////
+  @Getter @Setter
   private String addFolder;
   private boolean ismutable;
+  @Getter @Setter
   private int totalMsgInFolder;
-  public String getAddFolder()
-  {
-    return addFolder ;    
-  }
-  public void setAddFolder(String addFolder)
-  {
-    this.addFolder=addFolder;
-  }
-  
+
   public boolean getIsmutable()
   {
     return prtMsgManager.isMutableTopicFolder(getSelectedTopicId());
   }
-  
-  public int getTotalMsgInFolder()
-  {
-    return totalMsgInFolder;
-  }
-
-  public void setTotalMsgInFolder(int totalMsgInFolder)
-  {
-    this.totalMsgInFolder = totalMsgInFolder;
-  }
-
 
   //navigated from header pagecome from Header page 
   public String processPvtMsgFolderSettings() {
@@ -4075,8 +3491,7 @@ private   int   getNum(char letter,   String   a)
     String createFolder=getAddFolder() ;   
     StringBuilder alertMsg = new StringBuilder();
     createFolder = FormattedText.processFormattedText(createFolder, alertMsg);
-    if(createFolder == null || createFolder.trim().length() == 0)
-    {
+    if(StringUtils.isEmpty(createFolder)) {
     	setErrorMessage(getResourceBundleString(ENTER_FOLDER_NAME));
       	return null ;
     } else if((PVTMSG_MODE_RECEIVED.toLowerCase()).equals(createFolder.toLowerCase().trim()) || (PVTMSG_MODE_SENT.toLowerCase()).equals(createFolder.toLowerCase().trim())|| 
@@ -4120,7 +3535,7 @@ private   int   getNum(char letter,   String   a)
     
     String newTopicTitle = this.getSelectedNewTopicTitle(); 
     
-    if(!hasValue(newTopicTitle))
+    if(StringUtils.isEmpty(newTopicTitle))
     {
       setErrorMessage(getResourceBundleString(FOLDER_NAME_BLANK));
       return REVISE_FOLDER_PG;
@@ -4143,16 +3558,11 @@ private   int   getNum(char letter,   String   a)
       //rename topic in commons -- as messages are linked through commons type
       //TODO - what if more than one type objects are returned-- We need to switch from title
       String newTypeUuid = typeManager.renameCustomTopicType(selectedTopicTitle, newTopicTitle);
-      for(int i=0; i<tmpMsgList.size(); i++)
-      {
-      	PrivateMessage tmpPM = (PrivateMessage) tmpMsgList.get(i);
+      for(PrivateMessage tmpPM : (List<PrivateMessage>) tmpMsgList) {
       	List tmpRecipList = tmpPM.getRecipients();
       	tmpPM.setTypeUuid(newTypeUuid);
       	String currentUserId = sessionManager.getCurrentSessionUserId();
-      	Iterator iter = tmpRecipList.iterator();
-      	while(iter.hasNext())
-      	{
-      		PrivateMessageRecipient tmpPMR = (PrivateMessageRecipient) iter.next();
+      	for(PrivateMessageRecipient tmpPMR : (List<PrivateMessageRecipient>) tmpRecipList) {
       		if(tmpPMR != null && tmpPMR.getUserId().equals(currentUserId))
       		{
       			tmpPMR.setTypeUuid(newTypeUuid);
@@ -4175,11 +3585,8 @@ private   int   getNum(char letter,   String   a)
     
     //delete the messages
     String typeUuid = getPrivateMessageTypeFromContext(selectedTopicTitle);
-    List allPvtMsgs= prtMsgManager.getMessagesByType(typeUuid,PrivateMessageManager.SORT_COLUMN_DATE,
-        PrivateMessageManager.SORT_DESC);
-    for (Iterator iter = allPvtMsgs.iterator(); iter.hasNext();)
-    {
-      PrivateMessage element = (PrivateMessage) iter.next();
+    List allPvtMsgs= prtMsgManager.getMessagesByType(typeUuid,PrivateMessageManager.SORT_COLUMN_DATE, PrivateMessageManager.SORT_DESC);
+    for (PrivateMessage element : (List<PrivateMessage>) allPvtMsgs) {
       prtMsgManager.deletePrivateMessage(element, typeUuid);
     }
     return processPvtMsgReturnToMainOrHp();
@@ -4238,7 +3645,7 @@ private   int   getNum(char letter,   String   a)
   
   public String getMoveToTopic()
   {
-    if(hasValue(moveToNewTopic))
+    if(StringUtils.isNotEmpty(moveToNewTopic))
     {
       moveToTopic=moveToNewTopic;
     }
@@ -4290,9 +3697,7 @@ private   int   getNum(char letter,   String   a)
     	}
     	else
     	{
-    		for (Iterator movingIter = selectedMoveToFolderItems.iterator(); movingIter.hasNext();)
-    		{
-    			PrivateMessageDecoratedBean decoMessage = (PrivateMessageDecoratedBean) movingIter.next();
+    		for (PrivateMessageDecoratedBean decoMessage : (List<PrivateMessageDecoratedBean>) selectedMoveToFolderItems ) {
 		        final PrivateMessage initPrivateMessage = prtMsgManager.initMessageWithAttachmentsAndRecipients(decoMessage.getMsg());
     			decoMessage = new PrivateMessageDecoratedBean(initPrivateMessage);
     			
@@ -4337,126 +3742,62 @@ private   int   getNum(char letter,   String   a)
   }
   
   ///////////////   SEARCH      ///////////////////////
+  @Setter
   private List searchPvtMsgs;
   public List getSearchPvtMsgs()
   {
-    if(selectView!=null && selectView.equalsIgnoreCase(THREADED_VIEW))
-    {
+    if(selectView!=null && selectView.equalsIgnoreCase(THREADED_VIEW)) {
         this.rearrageTopicMsgsThreaded(true);
     }
     //  If "check all", update the decorated pmb to show selected
-    if (selectAll)
-    {
-    	Iterator searchIter = searchPvtMsgs.iterator();
-    	while (searchIter.hasNext())
-    	{
-    		PrivateMessageDecoratedBean searchMsg = (PrivateMessageDecoratedBean)searchIter.next();
+    if (selectAll) {
+    	for (PrivateMessageDecoratedBean searchMsg : (List<PrivateMessageDecoratedBean>) searchPvtMsgs) {
     		searchMsg.setIsSelected(true);
     	}
-    	
+
     	selectAll = false;
     }
     return searchPvtMsgs;
   }
-  public void setSearchPvtMsgs(List searchPvtMsgs)
-  {
-    this.searchPvtMsgs=searchPvtMsgs ;
-  }
+
   public String processSearch() 
   {
     log.debug("processSearch()");
     multiDeleteSuccess = false;
 
     List newls = new ArrayList() ;
-//    for (Iterator iter = getDecoratedPvtMsgs().iterator(); iter.hasNext();)
-//    {
-//      PrivateMessageDecoratedBean element = (PrivateMessageDecoratedBean) iter.next();
-//      
-//      String message=element.getMsg().getTitle();
-//      String searchText = getSearchText();
-//      //if search on subject is set - default is true
-//      if(searchOnSubject)
-//      {
-//        StringTokenizer st = new StringTokenizer(message);
-//        while (st.hasMoreTokens())
-//        {
-//          if(st.nextToken().matches("(?i).*getSearchText().*")) //matches anywhere 
-//          //if(st.nextToken().equalsIgnoreCase(getSearchText()))            
-//          {
-//            newls.add(element) ;
-//            break;
-//          }
-//        }
-//      }
-//      //is search 
-//      
-//    }
-
-    /**TODO - 
-     * In advance srearch as there can be ANY type of combination like selection of 
-     * ANY 1 or 2 or 3 or 4 or 5 options like - subject, Author By, label, body and date
-     * so all possible cases are taken care off.
-     * This doesn't look nice, but good this is that we are using same method - our backend is cleaner
-     * First - checked if date is selected then purmutation of 4 options
-     * ELSE - permutations of other 4 options
-     */ 
     List tempPvtMsgLs= new ArrayList();
     
-    if(searchOnDate && searchFromDate == null && searchToDate==null)
-    {
+    if(searchOnDate && searchFromDate == null && searchToDate==null) {
        setErrorMessage(getResourceBundleString(MISSING_BEG_END_DATE));
     }
-    
-    if(!hasValue(searchText))
-    {
+
+    if(StringUtils.isEmpty(searchText)) {
        setErrorMessage(getResourceBundleString(ENTER_SEARCH_TEXT));
     }
-    
+
+    if(searchToDate != null){
+        searchToDate = Date.from(searchToDate.toInstant().plus(23, ChronoUnit.HOURS).plus(59, ChronoUnit.MINUTES).plusSeconds(59));
+    }
+
     tempPvtMsgLs= prtMsgManager.searchPvtMsgs(getPrivateMessageTypeFromContext(msgNavMode), 
           getSearchText(), getSearchFromDate(), getSearchToDate(),
           searchOnSubject, searchOnAuthor, searchOnBody, searchOnLabel, searchOnDate) ;
     
     newls= createDecoratedDisplay(tempPvtMsgLs);
-//    
-//    for (Iterator iter = tempPvtMsgLs.iterator(); iter.hasNext();)
-//    {
-//      PrivateMessage element = (PrivateMessage) iter.next();
-//      PrivateMessageDecoratedBean dbean = new PrivateMessageDecoratedBean(element);
-//      
-//      //getRecipients() is filtered for this perticular user i.e. returned list of only one PrivateMessageRecipient object
-//      for (Iterator iterator = element.getRecipients().iterator(); iterator.hasNext();)
-//      {
-//        PrivateMessageRecipient el = (PrivateMessageRecipient) iterator.next();
-//        if (el != null){
-//          if(!el.getRead().booleanValue())
-//          {
-//            dbean.setHasRead(el.getRead().booleanValue());
-//            break;
-//          }
-//        }
-//      }
-//      //Add decorate 'TO' String for sent message
-//      if(PVTMSG_MODE_SENT.equals(msgNavMode))
-//      {
-//        dbean.setSendToStringDecorated(createDecoratedSentToDisplay(dbean)); 
-//      }
-//      newls.add(dbean);     
-//    }
+
     //set threaded view as  false in search 
     selectView="";
-    
-    if(newls.size()>0)
-    {
-      this.setSearchPvtMsgs(newls) ;
-      return SEARCH_RESULT_MESSAGES_PG ;
-    }
-    else 
-      {
+
+    if(!newls.isEmpty()) {
+        this.setSearchPvtMsgs(newls);
+        return SEARCH_RESULT_MESSAGES_PG;
+    } else {
         setErrorMessage(getResourceBundleString(NO_MATCH_FOUND));
         return null;
-      }    
+    }
   }
-  
+
   /**
    * Clear Search text
    */
@@ -4479,72 +3820,21 @@ private   int   getNum(char letter,   String   a)
     
     return DISPLAY_MESSAGES_PG;
   }
-  
-  public boolean searchOnBody=false ;
-  public boolean searchOnSubject=true;  //default is search on Subject
-  public boolean searchOnLabel= false ;
-  public boolean searchOnAuthor=false;
-  public boolean searchOnDate=false;
-  public Date searchFromDate;
-  public Date searchToDate; 
-  
-  public boolean isSearchOnAuthor()
-  {
-    return searchOnAuthor;
-  }
-  public void setSearchOnAuthor(boolean searchOnAuthor)
-  {
-    this.searchOnAuthor = searchOnAuthor;
-  }
-  public boolean isSearchOnBody()
-  {
-    return searchOnBody;
-  }
-  public void setSearchOnBody(boolean searchOnBody)
-  {
-    this.searchOnBody = searchOnBody;
-  }
-  public boolean isSearchOnLabel()
-  {
-    return searchOnLabel;
-  }
-  public void setSearchOnLabel(boolean searchOnLabel)
-  {
-    this.searchOnLabel = searchOnLabel;
-  }
-  public boolean isSearchOnSubject()
-  {
-    return searchOnSubject;
-  }
-  public void setSearchOnSubject(boolean searchOnSubject)
-  {
-    this.searchOnSubject = searchOnSubject;
-  }
-  public boolean isSearchOnDate()
-  {
-    return searchOnDate;
-  }
-  public void setSearchOnDate(boolean searchOnDate)
-  {
-    this.searchOnDate = searchOnDate;
-  }
-  public Date getSearchFromDate()
-  {
-    return searchFromDate;
-  }
-  public void setSearchFromDate(Date searchFromDate)
-  {
-    this.searchFromDate = searchFromDate;
-  }
-  public Date getSearchToDate()
-  {
-    return searchToDate;
-  }
-  public void setSearchToDate(Date searchToDate)
-  {
-    this.searchToDate = searchToDate;
-  }
 
+  @Getter @Setter
+  public boolean searchOnBody=false ;
+  @Getter @Setter
+  public boolean searchOnSubject=true;  //default is search on Subject
+  @Getter @Setter
+  public boolean searchOnLabel= false ;
+  @Getter @Setter
+  public boolean searchOnAuthor=false;
+  @Getter @Setter
+  public boolean searchOnDate=false;
+  @Getter @Setter
+  public Date searchFromDate;
+  @Getter @Setter
+  public Date searchToDate; 
 
   //////////////        HELPER      //////////////////////////////////
   /**
@@ -4568,10 +3858,8 @@ private   int   getNum(char letter,   String   a)
     List decLs= new ArrayList() ;
     numberChecked = 0;
 
-    for (Iterator iter = msg.iterator(); iter.hasNext();)
-    {
-      PrivateMessage element = (PrivateMessage) iter.next();                  
-      
+    for (PrivateMessage element : (List<PrivateMessage>) msg){
+
       PrivateMessageDecoratedBean dbean= new PrivateMessageDecoratedBean(element);
       //if processSelectAll is set, then set isSelected true for all messages,
       if(selectAll)
@@ -4581,19 +3869,14 @@ private   int   getNum(char letter,   String   a)
       }
        
       //getRecipients() is filtered for this particular user i.e. returned list of only one PrivateMessageRecipient object
-      for (Iterator iterator = element.getRecipients().iterator(); iterator.hasNext();)
-      {
-        PrivateMessageRecipient el = (PrivateMessageRecipient) iterator.next();
+      for (PrivateMessageRecipient el : (List<PrivateMessageRecipient>) element.getRecipients()){
+
         if (el != null){
           dbean.setHasRead(el.getRead().booleanValue());
           dbean.setReplied(el.getReplied().booleanValue());
         }
       }
-      //Add decorate 'TO' String for sent message
-      if(PVTMSG_MODE_SENT.equals(msgNavMode))
-      {
-        dbean.setSendToStringDecorated(createDecoratedSentToDisplay(dbean)); 
-      }
+        dbean.setSendToStringDecorated(createDecoratedSentToDisplay(dbean));
 
       decLs.add(dbean) ;
     }
@@ -4643,8 +3926,7 @@ private   int   getNum(char letter,   String   a)
     //names to show up that are BCC'ed, and who don't actually get replies
     returnSet.putAll(composeBccSet);
     //remove all duplicates by doing this first:
-    for (Iterator iterator = composeToSet.keySet().iterator(); iterator.hasNext();) {
-    	User user = (User) iterator.next();
+    for (User user : composeToSet.keySet()) {
     	if(returnSet.containsKey(user)){
     		returnSet.remove(user);
     	}
@@ -4654,14 +3936,12 @@ private   int   getNum(char letter,   String   a)
     
     return returnSet;
   }
-  //=========HUXT BEGIN
-  
+
   private Map<User, Boolean> getRecipientsHelper(List selectedList, List allCourseUsers, boolean bcc){
 
 	  Map<User, Boolean>  returnSet = new HashMap<User, Boolean>();
 
-	  for (Iterator i = selectedList.iterator(); i.hasNext();){
-		  String selectedItem = (String) i.next();
+	  for (String selectedItem : (List<String>) selectedList){
 
 		  /** lookup item in map */
 		  MembershipItem item = (MembershipItem) courseMemberMap.get(selectedItem);
@@ -4670,42 +3950,36 @@ private   int   getNum(char letter,   String   a)
 		  }
 		  else{                              
 			  if (MembershipItem.TYPE_ALL_PARTICIPANTS.equals(item.getType())){
-				  for (Iterator a = allCourseUsers.iterator(); a.hasNext();){
-					  MembershipItem member = (MembershipItem) a.next();            
+				  for (MembershipItem member : (List<MembershipItem>) allCourseUsers){
 					  returnSet.put(member.getUser(), bcc);
 				  }
 				  //if all users have been selected we may as well return and ignore any other entries
 				  return returnSet;
 			  }
 			  else if (MembershipItem.TYPE_ROLE.equals(item.getType())){
-				  for (Iterator r = allCourseUsers.iterator(); r.hasNext();){
-					  MembershipItem member = (MembershipItem) r.next();
+				  for (MembershipItem member : (List<MembershipItem>) allCourseUsers){
 					  if (member.getRole().equals(item.getRole())){
 						  returnSet.put(member.getUser(), bcc);
 					  }
 				  }
 			  }
 			  else if (MembershipItem.TYPE_GROUP.equals(item.getType()) || MembershipItem.TYPE_MYGROUPS.equals(item.getType())){
-				  for (Iterator g = allCourseUsers.iterator(); g.hasNext();){
-					  MembershipItem member = (MembershipItem) g.next();            
+				  for (MembershipItem member : (List<MembershipItem>) allCourseUsers){
 					  Set groupMemberSet = item.getGroup().getMembers();
-					  for (Iterator s = groupMemberSet.iterator(); s.hasNext();){
-						  Member m = (Member) s.next();
+					  for (Member m : (Set<Member>) groupMemberSet){
 						  if (m.getUserId() != null && m.getUserId().equals(member.getUser().getId())){
 							  returnSet.put(member.getUser(), bcc);
 						  }
-					  }            
+					  }
 				  }
 			  }
 			  else if (MembershipItem.TYPE_USER.equals(item.getType()) || MembershipItem.TYPE_MYGROUPMEMBERS.equals(item.getType())){
 				  returnSet.put(item.getUser(), bcc);
 			  }
 			  else if (MembershipItem.TYPE_MYGROUPROLES.equals(item.getType())){
-				  for (Iterator g = allCourseUsers.iterator(); g.hasNext();){
-					  MembershipItem member = (MembershipItem) g.next();            
+				  for (MembershipItem member : (List<MembershipItem>) allCourseUsers){
 					  Set groupMemberSet = item.getGroup().getMembers();
-					  for (Iterator s = groupMemberSet.iterator(); s.hasNext();){
-						  Member m = (Member) s.next();
+					  for (Member m : (Set<Member>) groupMemberSet){
 						  if (m.getUserId() != null && m.getUserId().equals(member.getUser().getId()) && member.getRole().equals(item.getRole())){
 							  returnSet.put(member.getUser(), bcc);
 						  }
@@ -4715,25 +3989,23 @@ private   int   getNum(char letter,   String   a)
 			  else{
 				  log.warn("getRecipients() could not resolve membership type: " + item.getType());
 			  }
-		  }             
+		  }
 	  }
 	  return returnSet;
   }
-  
-  //=========huxt ENG
+
   /**
    * getUserRecipients
    * @param courseMembers
    * @return set of all User objects for course
    */
-  private Set getUserRecipients(Set courseMembers){    
+  private Set getUserRecipients(Set courseMembers){
     Set returnSet = new HashSet();
     
-    for (Iterator i = courseMembers.iterator(); i.hasNext();){
-      MembershipItem item = (MembershipItem) i.next();      
+    for (MembershipItem item : (Set<MembershipItem>) courseMembers) {
         returnSet.add(item.getUser());
-    }    
-    return returnSet;    
+    }
+    return returnSet;
   }
   
   /**
@@ -4745,26 +4017,28 @@ private   int   getNum(char letter,   String   a)
   private Set getUserRecipientsForRole(String roleName, Set courseMembers){    
     Set returnSet = new HashSet();
     
-    for (Iterator i = courseMembers.iterator(); i.hasNext();){
-      MembershipItem item = (MembershipItem) i.next();
+    for (MembershipItem item : (Set<MembershipItem>) courseMembers){
+
       if (item.getRole().getId().equalsIgnoreCase(roleName)){
-        returnSet.add(item.getUser());   
+        returnSet.add(item.getUser());
       }
-    }    
-    return returnSet;    
+    }
+    return returnSet;
   }
       
-  private String getPrivateMessageTypeFromContext(String navMode){    
-    if(PVTMSG_MODE_RECEIVED.equals(navMode))
-        return typeManager.getReceivedPrivateMessageType();
-   	else if(PVTMSG_MODE_SENT.equals(navMode))
-        return typeManager.getSentPrivateMessageType();
-   	else if(PVTMSG_MODE_DELETE.equals(navMode))
-        return typeManager.getDeletedPrivateMessageType(); 
-   	else if (PVTMSG_MODE_DRAFT.equalsIgnoreCase(navMode))
-   		return typeManager.getDraftPrivateMessageType();
-   	else
-   		return typeManager.getCustomTopicType(navMode);    
+  private String getPrivateMessageTypeFromContext(String navMode){
+    switch(navMode){
+        case PVTMSG_MODE_RECEIVED:
+            return typeManager.getReceivedPrivateMessageType();
+        case PVTMSG_MODE_SENT:
+            return typeManager.getSentPrivateMessageType();
+        case PVTMSG_MODE_DELETE:
+            return typeManager.getDeletedPrivateMessageType();
+        case PVTMSG_MODE_DRAFT:
+            return typeManager.getDraftPrivateMessageType();
+        default:
+            return typeManager.getCustomTopicType(navMode);
+    }
   }
 
   //////// GETTER AND SETTER  ///////////////////  
@@ -4800,28 +4074,7 @@ private   int   getNum(char letter,   String   a)
   {
     this.forum = forum;
   }
- 
-// public String processActionAreaSettingEmailFwd()
-// {
-//   
-// }
-  
-  /**
-   * Check String has value, not null
-   * @return boolean
-   */
-  protected boolean hasValue(String eval)
-  {
-    if (eval != null && !"".equals(eval.trim()))
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-  }
-  
+
   /**
    * @param errorMsg
    */
@@ -4846,12 +4099,7 @@ private   int   getNum(char letter,   String   a)
    */
   public boolean getRenderPrivacyAlert()
   {
-   if(ServerConfigurationService.getString(MESSAGECENTER_PRIVACY_TEXT)!=null &&
-       ServerConfigurationService.getString(MESSAGECENTER_PRIVACY_TEXT).trim().length()>0 )
-   {
-     return true;
-   }
-    return false;
+    return StringUtils.isNotEmpty(ServerConfigurationService.getString(MESSAGECENTER_PRIVACY_TEXT, null));
   }
   
   /**
@@ -4876,11 +4124,10 @@ private   int   getNum(char letter,   String   a)
     HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
     
     String servletPath = req.getServletPath();
-    if (servletPath != null){
-      if (servletPath.startsWith("/jsp/main")){
+    if (StringUtils.isNotEmpty(servletPath) && servletPath.startsWith("/jsp/main")){
         return true;
-      }      
     }
+
     return false;
   }
 
@@ -4960,11 +4207,9 @@ private   int   getNum(char letter,   String   a)
 		List pvtMsgList = getPvtMsgListToProcess();
 		boolean msgSelected = false;
 		selectedDeleteItems = new ArrayList();
-		
-		Iterator pvtMsgListIter = pvtMsgList.iterator(); 
-		while (pvtMsgListIter.hasNext())
-		{
-			PrivateMessageDecoratedBean decoMessage = (PrivateMessageDecoratedBean) pvtMsgListIter.next();
+
+		for (PrivateMessageDecoratedBean decoMessage : (List<PrivateMessageDecoratedBean>) pvtMsgList) {
+
 			if(decoMessage.getIsSelected())
 			{
 				msgSelected = true;
@@ -4987,11 +4232,9 @@ private   int   getNum(char letter,   String   a)
 	    List pvtMsgList = getPvtMsgListToProcess();
 	    boolean msgSelected = false;
 	    selectedMoveToFolderItems = new ArrayList();
-	    
-		Iterator pvtMsgListIter = pvtMsgList.iterator(); 
-		while (pvtMsgListIter.hasNext())
-		{
-			PrivateMessageDecoratedBean decoMessage = (PrivateMessageDecoratedBean) pvtMsgListIter.next();
+
+		for (PrivateMessageDecoratedBean decoMessage : (List<PrivateMessageDecoratedBean>) pvtMsgList) {
+
 			if(decoMessage.getIsSelected())
 			{
 				msgSelected = true;
@@ -5036,11 +4279,9 @@ private   int   getNum(char letter,   String   a)
 		List pvtMsgList = getPvtMsgListToProcess();
 		boolean msgSelected = false;
 		boolean searchMode = false;
-		
-		Iterator pvtMsgListIter = pvtMsgList.iterator(); 
-		while (pvtMsgListIter.hasNext())
-		{
-			PrivateMessageDecoratedBean decoMessage = (PrivateMessageDecoratedBean) pvtMsgListIter.next();
+
+		for (PrivateMessageDecoratedBean decoMessage : (List<PrivateMessageDecoratedBean>) pvtMsgList) {
+
 			if(decoMessage.getIsSelected())
 			{
 				msgSelected = true;
@@ -5176,66 +4417,22 @@ private   int   getNum(char letter,   String   a)
 	private String getEventMessage(Object object) {
 	  	String eventMessagePrefix = "";
 	  	final String toolId = toolManager.getCurrentTool().getId();
-		  	
-		if (toolId.equals(DiscussionForumService.MESSAGE_CENTER_ID))
-			eventMessagePrefix = "/messages&Forums/site/";
-		else if (toolId.equals(DiscussionForumService.MESSAGES_TOOL_ID))
-			eventMessagePrefix = "/messages/site/";
-		else
-			eventMessagePrefix = "/forums/site/";
-	  	
+		switch(toolId){
+			case DiscussionForumService.MESSAGE_CENTER_ID:
+				eventMessagePrefix = "/messages&Forums/site/";
+				break;
+			case DiscussionForumService.MESSAGES_TOOL_ID:
+				eventMessagePrefix = "/messages/site/";
+				break;
+			default:
+				eventMessagePrefix = "/forums/site/";
+				break;
+		}
+
 	  	return eventMessagePrefix + toolManager.getCurrentPlacement().getContext() + 
 	  				"/" + object.toString() + "/" + sessionManager.getCurrentSessionUserId();
 	}
 
-	public void setContentHostingService(ContentHostingService contentHostingService) {
-		this.contentHostingService = contentHostingService;
-	}
-
-	public void setLearningResourceStoreService(LearningResourceStoreService learningResourceStoreService) {
-		this.learningResourceStoreService = learningResourceStoreService;
-	}
-	public void setEventTrackingService(EventTrackingService eventTrackingService) {
-		this.eventTrackingService = eventTrackingService;
-	}
-
-	public void setUserDirectoryService(UserDirectoryService userDirectoryService) {
-		this.userDirectoryService = userDirectoryService;
-	}
-
-	public void setUserTimeService(UserTimeService userTimeService) {
-		this.userTimeService = userTimeService;
-	}
-
-	public void setToolManager(ToolManager toolManager) {
-		this.toolManager = toolManager;
-	}
-
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
-	}
-
-	public void setSiteService(SiteService siteService) {
-		this.siteService = siteService;
-	}
-
-	public void setSecurityService(SecurityService securityService) {
-		this.securityService = securityService;
-	}
-
-	public SynopticMsgcntrManager getSynopticMsgcntrManager() {
-		return synopticMsgcntrManager;
-	}
-
-	public void setSynopticMsgcntrManager(
-			SynopticMsgcntrManager synopticMsgcntrManager) {
-		this.synopticMsgcntrManager = synopticMsgcntrManager;
-	}
-	
-	public void setUserPreferencesManager(UserPreferencesManager userPreferencesManager) {
-		this.userPreferencesManager = userPreferencesManager;
-	}
-	
 	public String getMobileSession()
 	{
 		Session session = sessionManager.getCurrentSession();
@@ -5272,16 +4469,14 @@ private   int   getNum(char letter,   String   a)
 
 			groups = sortGroups(groups);
 
-			for (Iterator groupIterator = groups.iterator(); groupIterator.hasNext();)
-			{
-				Group currentGroup = (Group) groupIterator.next();
+			for (Group currentGroup : (List<Group>) groups) {
 				if(!isGroupHidden(currentGroup.getTitle())){
 					nonHiddenGroups.add(new SelectItem(currentGroup.getTitle(), currentGroup.getTitle()));
-				}				
-			}		
+				}
+			}
 		}
 		
-		return nonHiddenGroups;		
+		return nonHiddenGroups;
 	}
 	
 	private boolean isGroupHidden(String groupName){
@@ -5345,7 +4540,7 @@ private   int   getNum(char letter,   String   a)
 	  
 	  public String processActionRemoveHiddenGroup(){
 		  String groupId = getExternalParameterByKey(PARAM_GROUP_ID);
-		  if(groupId != null && !"".equals(PARAM_GROUP_ID)){
+		  if(StringUtils.isNotEmpty(groupId)){
 			  for (HiddenGroup hiddenGroup : getHiddenGroups()) {
 				  if(hiddenGroup.getGroupId().equals(groupId)){
 					  getHiddenGroups().remove(hiddenGroup);

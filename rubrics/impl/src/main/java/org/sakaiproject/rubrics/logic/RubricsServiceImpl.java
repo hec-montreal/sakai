@@ -68,6 +68,8 @@ import org.sakaiproject.entity.api.HttpAccess;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.event.api.EventTrackingService;
+import org.sakaiproject.memory.api.Cache;
+import org.sakaiproject.memory.api.MemoryService;
 import org.sakaiproject.rubrics.logic.model.Criterion;
 import org.sakaiproject.rubrics.logic.model.Evaluation;
 import org.sakaiproject.rubrics.logic.model.Rating;
@@ -154,6 +156,11 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
     @Getter @Setter
     private EntityManager entityManager;
 
+    @Getter @Setter
+    private MemoryService memoryService;
+
+    private Cache<String, Boolean> hasAssociatedRubricCache;
+
     public void init() {
         if (StringUtils.isBlank(serverConfigurationService.getString(RUBRICS_TOKEN_SIGNING_SHARED_SECRET_PROPERTY))) {
             throw new IllegalStateException(String.format("Required deployment property %s was not found. Please " +
@@ -167,6 +174,8 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
         setFunction(RBCS_PERMISSIONS_EDITOR);
         setFunction(RBCS_PERMISSIONS_EVALUEE);
         setFunction(RBCS_PERMISSIONS_ASSOCIATOR);
+
+        hasAssociatedRubricCache = memoryService.<String, Boolean>getCache("org.sakaiproject.rubrics.logic.hasAssociatedRubricCache");
     }
 
     /**
@@ -255,20 +264,24 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
     }
 
 
-    public boolean hasAssociatedRubric(String tool, String id ){
+    public boolean hasAssociatedRubric(String tool, String id ) {
 
-        boolean exists = false;
+        String cacheKey = tool + "#" + id;
+        Boolean isAssociated = hasAssociatedRubricCache.get(cacheKey);
 
-        try {
-
-            Optional<ToolItemRubricAssociation> association = getRubricAssociation(tool, id);
-            exists = association.isPresent();
-
-        }catch (Exception e){
-            log.debug("No previous association or rubrics not answering", e);
+        if (isAssociated != null) {
+            return isAssociated;
+        } else {
+            boolean exists = false;
+            try {
+                Optional<ToolItemRubricAssociation> association = getRubricAssociation(tool, id);
+                exists = association.isPresent();
+                hasAssociatedRubricCache.put(cacheKey, exists);
+            } catch (Exception e){
+                log.debug("No previous association or rubrics not answering", e);
+            }
+            return exists;
         }
-
-        return exists;
     }
 
     /**
@@ -284,18 +297,21 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
         String owner = "";
         String ownerType = "";
         String creatorId = "";
+        Long oldRubricId=null;
         Map <String,Boolean> oldParams = new HashMap<>();
 
         try {
             Optional<Resource<ToolItemRubricAssociation>> associationResource = getRubricAssociationResource(tool, id, null);
+            ToolItemRubricAssociation association = null;
             if (associationResource.isPresent()) {
                 associationHref = associationResource.get().getLink(Link.REL_SELF).getHref();
-                ToolItemRubricAssociation association = associationResource.get().getContent();
+                association = associationResource.get().getContent();
                 created = association.getMetadata().getCreated().toString();
                 owner = association.getMetadata().getOwnerId();
                 ownerType = association.getMetadata().getOwnerType();
                 creatorId = association.getMetadata().getCreatorId();
                 oldParams = association.getParameters();
+                oldRubricId = association.getRubricId();
             }
 
             //we will create a new one or update if the parameter rbcs-associate is true
@@ -311,8 +327,10 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
                 } else {
                     String input = "{\"toolId\" : \""+tool+"\",\"itemId\" : \"" + id + "\",\"rubricId\" : " + params.get(RubricsConstants.RBCS_LIST) + ",\"metadata\" : {\"created\" : \"" + created + /*"\",\"modified\" : \"" + nowTime +*/ "\",\"ownerId\" : \"" + owner +
 					"\",\"ownerType\" : \"" + ownerType + "\",\"creatorId\" : \"" + creatorId + "\"},\"parameters\" : {" + setConfigurationParameters(params,oldParams) + "}}";
-                    log.debug("Existing association update" + input);
-                    deleteRubricEvaluationsForAssociation(associationHref, tool);
+                    log.debug("Existing association update " + input);
+                    if(Long.valueOf(params.get(RubricsConstants.RBCS_LIST)) != oldRubricId){
+                        deleteRubricEvaluationsForAssociation(associationHref, tool);
+                    }
                     String resultPut = putRubricResource(associationHref, input, tool);
                     //update the actual one.
                     log.debug("resultPUT: " +  resultPut);
@@ -322,6 +340,9 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
                 if (associationHref !=null) {
                     deleteRubricEvaluationsForAssociation(associationHref, tool);
                     deleteRubricResource(associationHref,tool,null);
+                    if (association != null) {
+                        hasAssociatedRubricCache.remove(association.getToolId() + "#" + association.getItemId());
+                    }
                 }
             }
 
@@ -791,6 +812,7 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
 				String associationHref = associationResource.getLink(Link.REL_SELF).getHref();
 				deleteRubricEvaluationsForAssociation(associationHref, toolId);
 				deleteRubricResource(associationHref, toolId, null);
+				hasAssociatedRubricCache.remove(toolId + "#" + itemId);
 			}
         } catch (Exception e) {
             log.warn("Error deleting rubric association for id {} : {}", itemId, e.getMessage());
@@ -818,6 +840,8 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
                 String associationHref = associationResource.get().getLink(Link.REL_SELF).getHref();
                 deleteRubricEvaluationsForAssociation(associationHref, tool);
                 deleteRubricResource(associationHref, tool, null);
+                ToolItemRubricAssociation association = associationResource.get().getContent();
+                hasAssociatedRubricCache.remove(association.getToolId() + "#" + association.getItemId());
             }
         } catch (Exception e) {
             log.warn("Error deleting rubric association for tool {} and id {} : {}", tool, id, e.getMessage());

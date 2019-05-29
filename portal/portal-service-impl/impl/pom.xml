@@ -5,7 +5,7 @@
     <parent>
         <artifactId>portal</artifactId>
         <groupId>org.sakaiproject.portal</groupId>
-        <version>19.0</version>
+        <version>19.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -36,28 +36,8 @@
             <artifactId>sakai-kernel-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.sakaiproject.announcement</groupId>
-            <artifactId>sakai-announcement-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.sakaiproject.assignment</groupId>
-            <artifactId>sakai-assignment-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.sakaiproject.message</groupId>
-            <artifactId>sakai-message-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.sakaiproject.profile2</groupId>
-            <artifactId>profile2-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.sakaiproject.lessonbuilder</groupId>
             <artifactId>lessonbuilder-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.sakaiproject.commons</groupId>
-            <artifactId>commons-api</artifactId>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -77,8 +57,8 @@
             <artifactId>javax.servlet-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.pluto</groupId>
@@ -104,6 +84,10 @@
 		<dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
+        </dependency>
+		<dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
         </dependency>
     </dependencies>
 

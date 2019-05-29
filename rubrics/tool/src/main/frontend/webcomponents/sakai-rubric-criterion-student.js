@@ -46,10 +46,6 @@ export class SakaiRubricCriterionStudent extends SakaiElement {
   }
 
   get evaluationDetails() { return this._evaluationDetails; }
-  
-  shouldUpdate(changedProperties) {
-    return (this.preview && this.criteria) || this.ready;
-  }
 
   render() {
 
@@ -78,9 +74,8 @@ export class SakaiRubricCriterionStudent extends SakaiElement {
             ${!this.preview ? html`
               <sakai-rubric-student-comment criterion="${JSON.stringify(c)}"></sakai-rubric-student-comment>
               <strong class="points-display ${this.getOverriddenClass(c.pointoverride,c.selectedvalue)}">
-                &nbsp;
                 ${c.selectedvalue}
-                ${!c.selectedRadingId ? "0" : ""}
+                ${!c.selectedRatingId ? "0" : ""}
                 &nbsp;
               </strong>
               ${this.isOverridden(c.pointoverride,c.selectedvalue) ?
@@ -107,13 +102,20 @@ export class SakaiRubricCriterionStudent extends SakaiElement {
 
         if (ed.criterionId === c.id) {
 
-          var ratingItem = c.ratings.filter(r => r.id == ed.selectedRatingId)[0];
-          ratingItem.selected = true;
+          var selectedRatingItem;
+          c.ratings.forEach(r => {
+            if (r.id == ed.selectedRatingId) {
+              r.selected = true;
+              selectedRatingItem = r;
+            } else {
+              r.selected = false;
+            }
+          });
 
-          c.selectedRadingId = ed.selectedRatingId;
+          c.selectedRatingId = ed.selectedRatingId;
           if (ed.pointsAdjusted) {
             c.pointoverride = ed.points;
-            c.selectedvalue = ratingItem.points;
+            c.selectedvalue = selectedRatingItem.points;
           } else {
             c.pointoverride = "";
             c.selectedvalue = ed.points;
@@ -127,13 +129,13 @@ export class SakaiRubricCriterionStudent extends SakaiElement {
     this.updateTotalPoints();
   }
 
-  isOverridden(ovrdvl, selected) {
+  isOverridden(pointoverride, selected) {
 
     if (!this.rubricAssociation.parameters.fineTunePoints) {
       return false;
     }
 
-    if ((ovrdvl || ovrdvl === 0) && (parseInt(ovrdvl) !== parseInt(selected))) {
+    if ((pointoverride || pointoverride === 0) && (parseInt(pointoverride) !== parseInt(selected))) {
       return true;
     } else {
       return false;

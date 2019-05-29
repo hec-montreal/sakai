@@ -75,6 +75,11 @@ import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.StringUtil;
 
 import lombok.extern.slf4j.Slf4j;
+import org.sakaiproject.util.Validator;
+import org.sakaiproject.entitybroker.EntityBroker;
+import org.sakaiproject.entitybroker.EntityReference;
+import org.sakaiproject.entitybroker.entityprovider.extension.ActionReturn;
+import org.sakaiproject.entitybroker.exception.EntityNotFoundException;
 
 @Slf4j
 public class CalendarBean {
@@ -834,8 +839,8 @@ public class CalendarBean {
 			url.append("/directtool/");
 			url.append(tc.getId());
 			url.append("?eventReference=");
-			url.append(eventRef);
-			url.append("&panel=Main&sakai_action=doDescription&sakai.state.reset=true");		
+			url.append(Validator.escapeUrl(eventRef));
+			url.append("&panel=Main&sakai_action=doDescription&sakai.state.reset=true");
 			return url.toString();
 		}else{
 			// no schedule tool in site

@@ -52,6 +52,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -397,6 +399,7 @@ public class SiteAction extends PagedResourceActionII {
     //********************
 
 	private static final String STATE_TOOL_EMAIL_ADDRESS = "toolEmailAddress";
+	private static final String STATE_DUP_SITE_HAS_EMAIL_ARCHIVE = "dupSiteHasEmailArchive";
 
 	private static final String STATE_PROJECT_TOOL_LIST = "projectToolList";
 
@@ -758,7 +761,7 @@ public class SiteAction extends PagedResourceActionII {
 	/** the news tool **/
 	private final static String NEWS_TOOL_ID = "sakai.simple.rss";
 	private final static String NEWS_TOOL_CHANNEL_CONFIG = "javax.portlet-feed_url";
-	private final static String NEWS_TOOL_CHANNEL_CONFIG_VALUE = "https://www.sakaiproject.org/feed";
+	private final static String NEWS_TOOL_CHANNEL_CONFIG_VALUE = "https://www.sakailms.org/blog-feed.xml";
 	
    	private final static String LESSONS_TOOL_ID = "sakai.lessonbuildertool";
 
@@ -807,6 +810,9 @@ public class SiteAction extends PagedResourceActionII {
 	private static final String CONTEXT_HAS_TERMS = "hasTerms";
 	
 	private static final String SAK_PROP_AUTO_FILTER_TERM = "site.setup.autoFilterTerm";
+
+	private static final String SAK_PROP_RM_STLTH_ON_DUP = "site.duplicate.removeStealthTools";
+	private static final boolean SAK_PROP_RM_STLTH_ON_DUP_DEFAULT = false;
 	
 	// state variable for whether any multiple instance tool has been selected
 	private String STATE_MULTIPLE_TOOL_INSTANCE_SELECTED = "state_multiple_tool_instance_selected";
@@ -1533,8 +1539,10 @@ public class SiteAction extends PagedResourceActionII {
 			// If we're in the restore view
 			context.put("showRestore", SiteConstants.SITE_TYPE_DELETED.equals((String) state.getAttribute(STATE_VIEW_SELECTED)));
 
-			if (SecurityService.isSuperUser()) {
+			boolean isSuperUser = SecurityService.isSuperUser();
+			if (isSuperUser) {
 				context.put("superUser", Boolean.TRUE);
+				context.put("canDelSoftDel", Boolean.TRUE);
 			} else {
 				context.put("superUser", Boolean.FALSE);
 			}
@@ -1649,9 +1657,20 @@ public class SiteAction extends PagedResourceActionII {
 			context.put("portalUrl", portalUrl);
 
 			List<Site> allSites = prepPage(state);
-						
 			state.setAttribute(STATE_SITES, allSites);
 			context.put("sites", allSites);
+
+			if (!isSuperUser) {
+				boolean canDelSoftDel = false;
+				for (Site s : allSites) {
+					canDelSoftDel = SecurityService.unlock("site.del.softly.deleted", s.getReference());
+					if (canDelSoftDel) {
+						break;
+					}
+				}
+
+				context.put("canDelSoftDel", canDelSoftDel);
+			}
 
 			context.put("totalPageNumber", Integer.valueOf(totalPageNumber(state)));
 			context.put("searchString", state.getAttribute(STATE_SEARCH));
@@ -2454,10 +2473,6 @@ public class SiteAction extends PagedResourceActionII {
 				if (SiteTypeUtil.isProjectSite(siteType)) {
 					context.put("isProjectSite", Boolean.TRUE);
 				}
-
-				if (StringUtils.trimToNull(siteInfo.iconUrl) != null) {
-					context.put(FORM_ICON_URL, siteInfo.iconUrl);
-				}
 			}
 
 			// about skin and icon selection
@@ -2470,6 +2485,7 @@ public class SiteAction extends PagedResourceActionII {
 			context.put("title", siteInfo.title);
 			context.put(FORM_SITE_URL_BASE, getSiteBaseUrl());
 			context.put(FORM_SITE_ALIAS, siteInfo.getFirstAlias());
+			context.put(FORM_ICON_URL, siteInfo.iconUrl);
 			context.put("description", siteInfo.description);
 			context.put("short_description", siteInfo.short_description);
 			context.put("form_site_contact_name", siteInfo.site_contact_name);
@@ -3123,6 +3139,17 @@ public class SiteAction extends PagedResourceActionII {
 			MenuBuilder.buildMenuForSiteInfo(portlet, data, state, context, site, rb, siteTypeProvider, SiteInfoActiveTab.DUPLICATE_SITE);
 
 			context.put("siteTitle", site.getTitle());
+
+			// Determine if site contains Email Archive tool
+			boolean hasEmailArchive = site.getToolForCommonId("sakai.mailbox") == null ? false : true;
+			if (hasEmailArchive) {
+				context.put("hasEmailArchive", hasEmailArchive);
+				context.put("emailAddress", state.getAttribute(STATE_TOOL_EMAIL_ADDRESS));
+				context.put("serverName", ServerConfigurationService.getServerName());
+				state.setAttribute(STATE_DUP_SITE_HAS_EMAIL_ARCHIVE, hasEmailArchive);
+			}
+			
+
 			String sType = site.getType();
 			if (sType != null && SiteTypeUtil.isCourseSite(sType)) {
 				context.put("isCourseSite", Boolean.TRUE);
@@ -3138,8 +3165,9 @@ public class SiteAction extends PagedResourceActionII {
 				context.put("siteDuplicated", Boolean.FALSE);
 			} else {
 				context.put("siteDuplicated", Boolean.TRUE);
-				context.put("duplicatedName", state
-						.getAttribute(SITE_DUPLICATED_NAME));
+			}
+			if (state.getAttribute(SITE_DUPLICATED_NAME) != null) {
+				context.put("duplicatedName", state.getAttribute(SITE_DUPLICATED_NAME));
 			}
 			context.put( CONTEXT_IS_ADMIN, SecurityService.isSuperUser() );
 			// Add option to also copy ScoringComponent associations
@@ -9726,167 +9754,262 @@ private Map<String,List> getTools(SessionState state, String type, Site site) {
 					    addAlert(state, rb.getString("sitdup.idused") + " ");
 					}
 
-					// duplicated site title is editable; cannot but null/empty after HTML stripping, and cannot exceed max length
-					String titleOrig = params.getString("title");
-					String titleStripped = FormattedText.stripHtmlFromText(titleOrig, true, true);
-					if (isSiteTitleValid(titleOrig, titleStripped, state)) {
-						state.setAttribute(SITE_DUPLICATED_NAME, titleStripped);
+					if (state.getAttribute(STATE_MESSAGE) == null) {
+						// duplicated site title is editable; cannot but null/empty after HTML stripping, and cannot exceed max length
+						String titleOrig = params.getString("title");
+						String titleStripped = FormattedText.stripHtmlFromText(titleOrig, true, true);
+						if (isSiteTitleValid(titleOrig, titleStripped, state)) {
+							state.setAttribute(SITE_DUPLICATED_NAME, titleStripped);
 
-						String newSiteId = null;
-						if (StringUtils.trimToNull(params.getString("newSiteId")) == null) {
-						    newSiteId = IdManager.createUuid();
-						} else{
-						    newSiteId = params.getString("newSiteId");
-						}
-
-						try {
-							String oldSiteId = (String) state
-									.getAttribute(STATE_SITE_INSTANCE_ID);
-							
-							// Retrieve the source site reference to be used in the EventTrackingService
-							// notification of the start/end of a site duplication.
-							String sourceSiteRef = null;
-							try {
-								Site sourceSite = SiteService.getSite(oldSiteId);
-								sourceSiteRef = sourceSite.getReference();
-								
-							} catch (IdUnusedException e) {
-								log.warn(this + ".actionForTemplate; case29: invalid source siteId: "+oldSiteId);
-								return;
+							String newSiteId = null;
+							if (StringUtils.trimToNull(params.getString("newSiteId")) == null) {
+								newSiteId = IdManager.createUuid();
+							} else{
+								newSiteId = params.getString("newSiteId");
 							}
 
-							// SAK-20797
-							long oldSiteQuota = this.getSiteSpecificQuota(oldSiteId);
-
-							Site site = SiteService.addSite(newSiteId,
-									getStateSite(state));
-							
-							// An event for starting the "duplicate site" action
-							EventTrackingService.post(EventTrackingService.newEvent(SiteService.EVENT_SITE_DUPLICATE_START, sourceSiteRef, site.getId(), false, NotificationService.NOTI_OPTIONAL));
-
-							// get the new site icon url
-							if (site.getIconUrl() != null)
-							{
-								site.setIconUrl(siteManageService.transferSiteResource(oldSiteId, newSiteId, site.getIconUrl()));
-							}
-
-							// set title
-							site.setTitle(titleStripped);
-							
-							// SAK-20797 alter quota if required
-							boolean	duplicateQuota = params.getString("dupequota") != null ? params.getBoolean("dupequota") : false;
-							if (duplicateQuota==true) {
-								
-								if (oldSiteQuota > 0) {
-									log.info("Saving quota");
-									try {
-										String collId = m_contentHostingService
-												.getSiteCollection(site.getId());
-
-										ContentCollectionEdit col = m_contentHostingService.editCollection(collId);
-
-										ResourcePropertiesEdit resourceProperties = col.getPropertiesEdit();
-										resourceProperties.addProperty(
-												ResourceProperties.PROP_COLLECTION_BODY_QUOTA,
-												new Long(oldSiteQuota)
-														.toString());
-										m_contentHostingService.commitCollection(col);										
-										
-										
-									} catch (Exception ignore) {
-										log.warn("saveQuota: unable to duplicate site-specific quota for site : "
-												+ site.getId() + " : " + ignore);
-									}
-								}
-							} 
-							
 							try {
-								SiteService.save(site);
+								String oldSiteId = (String) state
+										.getAttribute(STATE_SITE_INSTANCE_ID);
 
-								// import tool content
-								siteManageService.importToolContent(oldSiteId, site, false);
-								
-								String transferScoringData = params.getString("selectScoringData");
-								if(transferScoringData != null && transferScoringData.equals("transferScoringData")) {
-									ScoringService scoringService = (ScoringService)  ComponentManager.get("org.sakaiproject.scoringservice.api.ScoringService");
-									ScoringAgent agent = scoringService.getDefaultScoringAgent();
-									if (agent != null && agent.isEnabled(oldSiteId, null)) {
-										agent.transferScoringComponentAssociations(oldSiteId, site.getId());
-									}
+								// Retrieve the source site reference to be used in the EventTrackingService
+								// notification of the start/end of a site duplication.
+								String sourceSiteRef = null;
+								try {
+									Site sourceSite = SiteService.getSite(oldSiteId);
+									sourceSiteRef = sourceSite.getReference();
+
+								} catch (IdUnusedException e) {
+									log.warn(this + ".actionForTemplate; case29: invalid source siteId: "+oldSiteId);
+									return;
 								}
-	
-								String siteType = site.getType();
-								if (SiteTypeUtil.isCourseSite(siteType)) {
-									// for course site, need to
-									// read in the input for
-									// term information
-									String termId = StringUtils.trimToNull(params
-											.getString("selectTerm"));
-									if (termId != null) {
-										AcademicSession term = cms.getAcademicSession(termId);
-										if (term != null) {
-											ResourcePropertiesEdit rp = site.getPropertiesEdit();
-											rp.addProperty(Site.PROP_SITE_TERM, term.getTitle());
-											rp.addProperty(Site.PROP_SITE_TERM_EID, term.getEid());
 
-											// Need to set STATE_TERM_SELECTED so it shows in the notification email
-											state.setAttribute(STATE_TERM_SELECTED, term);
-										} else {
-											log.warn("termId=" + termId + " not found");
+								// SAK-20797
+								long oldSiteQuota = this.getSiteSpecificQuota(oldSiteId);
+
+								// Create the duplicate site
+								Site site = SiteService.addSite(newSiteId, getStateSite(state));
+								site.setTitle(titleStripped);
+
+								// If the site contains the Email Archive tool, we're going to check for valid/unique email address;
+								// this requires the duplicate site to already exist...
+								if (state.getAttribute(STATE_DUP_SITE_HAS_EMAIL_ARCHIVE) != null) {
+									String newEmailID = StringUtils.trimToNull(params.getString("emailAddress"));
+									if (StringUtils.isBlank(newEmailID)) {
+										addAlert(state, rb.getString("java.emailarchive"));
+										deleteTempDupSiteOnError(site);
+									} else {
+										state.setAttribute(STATE_TOOL_EMAIL_ADDRESS, newEmailID);
+										if (StringUtils.isNotBlank(newEmailID)) {
+											String channelReference = mailArchiveChannelReference(site.getId());
+											if (!Validator.checkEmailLocal(newEmailID)) {
+												addAlert(state, rb.getString("java.theemail"));
+												deleteTempDupSiteOnError(site);
+											} else if (!aliasService.allowSetAlias(newEmailID, channelReference)) {
+												addAlert(state, rb.getString("java.addalias"));
+												deleteTempDupSiteOnError(site);
+											} else {
+												try {
+													// First clear any alias set to the channel
+													aliasService.removeTargetAliases(channelReference);
+
+													// Check to see whether the alias has been used
+													String target = aliasService.getTarget(newEmailID);
+													boolean targetsThisSite = site.getReference().equals(target);
+													if (!targetsThisSite) {
+														addAlert(state, rb.getFormattedMessage("java.emailinuse", new Object[]{newEmailID, ServerConfigurationService.getServerName()}));
+														deleteTempDupSiteOnError(site);
+													}
+												} catch (IdUnusedException ex) {
+													// If aliasService.getTarget() throws this, it's all good: email alias not yet in use, so we set it
+													try {
+														aliasService.setAlias(newEmailID, channelReference);
+													} catch (Exception e) {
+														addAlert(state, rb.getFormattedMessage("unexpectedError", new Object[] {ServerConfigurationService.getString("mail.support")}));
+														deleteTempDupSiteOnError(site);
+													}
+												} catch (Exception ex) {
+													addAlert(state, rb.getFormattedMessage("unexpectedError", new Object[] {ServerConfigurationService.getString("mail.support")}));
+													deleteTempDupSiteOnError(site);
+												}
+											}
 										}
 									}
 								}
-								
-								// save again
-								SiteService.save(site);
-								state.setAttribute(STATE_DUPE_SITE_STATUS_ID, site.getId());
-								state.setAttribute(STATE_DUPE_SITE_URL, site.getUrl());
-								String realm = SiteService.siteReference(site.getId());
-								try 
-								{
-									AuthzGroup realmEdit = authzGroupService.getAuthzGroup(realm);
-									// also remove the provider id attribute if any
-									realmEdit.setProviderGroupId(null);
-									// add current user as the maintainer
-									realmEdit.addMember(UserDirectoryService.getCurrentUser().getId(), site.getMaintainRole(), true, false);
-									
-									authzGroupService.save(realmEdit);
-								} catch (GroupNotDefinedException e) {
-									log.error(this + ".actionForTemplate chef_siteinfo-duplicate: IdUnusedException, not found, or not an AuthzGroup object "+ realm, e);
-									addAlert(state, rb.getString("java.realm"));
-								} catch (AuthzPermissionException e) {
-									addAlert(state, this + rb.getString("java.notaccess"));
-									log.error(this + ".actionForTemplate chef_siteinfo-duplicate: " + rb.getString("java.notaccess"), e);
+
+								if (state.getAttribute(STATE_MESSAGE) == null) {
+									boolean removeStealthToolsFromDup = ServerConfigurationService.getBoolean(SAK_PROP_RM_STLTH_ON_DUP, SAK_PROP_RM_STLTH_ON_DUP_DEFAULT);
+									if (removeStealthToolsFromDup) {
+										List<SitePage> pageList = site.getPages();
+										if (CollectionUtils.isNotEmpty(pageList)) {
+											List<SitePage> rmPageList = new ArrayList<>();
+
+											// Check if each tool is stealthed; if so, queue for removal
+											for (SitePage page : pageList) {
+												List<ToolConfiguration> pageToolList = page.getTools();
+												if (CollectionUtils.isNotEmpty(pageToolList)) {
+													List<ToolConfiguration> rmToolList = new ArrayList<>();
+
+													for (ToolConfiguration toolConf : pageToolList) {
+														Tool tool = toolConf.getTool();
+														String toolId = StringUtils.trimToEmpty(tool.getId());
+
+														if (StringUtils.isNotBlank(toolId) && !notStealthOrHiddenTool(toolId)) {
+															// Found a stealthed tool, queue for removal
+															log.debug("found stealthed tool {}", toolId);
+															rmToolList.add(toolConf);
+														}
+													}
+
+													// Remove stealthed tools from page
+													if (!rmToolList.isEmpty()) {
+														for (ToolConfiguration rmToolConf : rmToolList) {
+															page.removeTool(rmToolConf);
+														}
+
+														if (page.getTools().isEmpty()) {
+															// Queue page for removal if no tools remain
+															log.debug("queueing page for removal: {}", page.getId());
+															rmPageList.add(page);
+														}
+													}
+												}
+											}
+
+											// Remove now-empty pages from site
+											if (!rmPageList.isEmpty()) {
+												for (SitePage rmPage : rmPageList) {
+													log.debug("removing {} from site", rmPage.getId());
+													site.removePage(rmPage);
+												}
+											}
+										}
+									}
+
+									// An event for starting the "duplicate site" action
+									EventTrackingService.post(EventTrackingService.newEvent(SiteService.EVENT_SITE_DUPLICATE_START, sourceSiteRef, site.getId(), false, NotificationService.NOTI_OPTIONAL));
+
+									// get the new site icon url
+									if (site.getIconUrl() != null)
+									{
+										site.setIconUrl(siteManageService.transferSiteResource(oldSiteId, newSiteId, site.getIconUrl()));
+									}
+
+									// SAK-20797 alter quota if required
+									boolean	duplicateQuota = params.getString("dupequota") != null ? params.getBoolean("dupequota") : false;
+									if (duplicateQuota==true) {
+
+										if (oldSiteQuota > 0) {
+											log.info("Saving quota");
+											try {
+												String collId = m_contentHostingService
+														.getSiteCollection(site.getId());
+
+												ContentCollectionEdit col = m_contentHostingService.editCollection(collId);
+
+												ResourcePropertiesEdit resourceProperties = col.getPropertiesEdit();
+												resourceProperties.addProperty(
+														ResourceProperties.PROP_COLLECTION_BODY_QUOTA,
+														new Long(oldSiteQuota)
+																.toString());
+												m_contentHostingService.commitCollection(col);
+
+
+											} catch (Exception ignore) {
+												log.warn("saveQuota: unable to duplicate site-specific quota for site : "
+														+ site.getId() + " : " + ignore);
+											}
+										}
+									}
+
+									try {
+										SiteService.save(site);
+
+										// import tool content
+										siteManageService.importToolContent(oldSiteId, site, false);
+
+										String transferScoringData = params.getString("selectScoringData");
+										if(transferScoringData != null && transferScoringData.equals("transferScoringData")) {
+											ScoringService scoringService = (ScoringService)  ComponentManager.get("org.sakaiproject.scoringservice.api.ScoringService");
+											ScoringAgent agent = scoringService.getDefaultScoringAgent();
+											if (agent != null && agent.isEnabled(oldSiteId, null)) {
+												agent.transferScoringComponentAssociations(oldSiteId, site.getId());
+											}
+										}
+
+										String siteType = site.getType();
+										if (SiteTypeUtil.isCourseSite(siteType)) {
+											// for course site, need to
+											// read in the input for
+											// term information
+											String termId = StringUtils.trimToNull(params
+													.getString("selectTerm"));
+											if (termId != null) {
+												AcademicSession term = cms.getAcademicSession(termId);
+												if (term != null) {
+													ResourcePropertiesEdit rp = site.getPropertiesEdit();
+													rp.addProperty(Site.PROP_SITE_TERM, term.getTitle());
+													rp.addProperty(Site.PROP_SITE_TERM_EID, term.getEid());
+
+													// Need to set STATE_TERM_SELECTED so it shows in the notification email
+													state.setAttribute(STATE_TERM_SELECTED, term);
+												} else {
+													log.warn("termId=" + termId + " not found");
+												}
+											}
+										}
+
+										// save again
+										SiteService.save(site);
+										state.setAttribute(STATE_DUPE_SITE_STATUS_ID, site.getId());
+										state.setAttribute(STATE_DUPE_SITE_URL, site.getUrl());
+										String realm = SiteService.siteReference(site.getId());
+										try
+										{
+											AuthzGroup realmEdit = authzGroupService.getAuthzGroup(realm);
+											// also remove the provider id attribute if any
+											realmEdit.setProviderGroupId(null);
+											// add current user as the maintainer
+											realmEdit.addMember(UserDirectoryService.getCurrentUser().getId(), site.getMaintainRole(), true, false);
+
+											authzGroupService.save(realmEdit);
+										} catch (GroupNotDefinedException e) {
+											log.error(this + ".actionForTemplate chef_siteinfo-duplicate: IdUnusedException, not found, or not an AuthzGroup object "+ realm, e);
+											addAlert(state, rb.getString("java.realm"));
+										} catch (AuthzPermissionException e) {
+											addAlert(state, this + rb.getString("java.notaccess"));
+											log.error(this + ".actionForTemplate chef_siteinfo-duplicate: " + rb.getString("java.notaccess"), e);
+										}
+									} catch (IdUnusedException e) {
+										log.warn(this + " actionForTemplate chef_siteinfo-duplicate:: IdUnusedException when saving " + newSiteId);
+									} catch (PermissionException e) {
+										log.warn(this + " actionForTemplate chef_siteinfo-duplicate:: PermissionException when saving " + newSiteId);
+									}
+
+									// TODO: hard coding this frame id
+									// is fragile, portal dependent, and
+									// needs to be fixed -ggolden
+									// schedulePeerFrameRefresh("sitenav");
+									scheduleTopRefresh();
+
+									// send site notification
+									sendSiteNotification(state, site, null);
+
+									state.setAttribute(SITE_DUPLICATED, Boolean.TRUE);
+
+									// An event for ending the "duplicate site" action
+									EventTrackingService.post(EventTrackingService.newEvent(SiteService.EVENT_SITE_DUPLICATE_END, sourceSiteRef, site.getId(), false, NotificationService.NOTI_OPTIONAL));
 								}
-							} catch (IdUnusedException e) {
-								log.warn(this + " actionForTemplate chef_siteinfo-duplicate:: IdUnusedException when saving " + newSiteId);
+							} catch (IdInvalidException e) {
+								addAlert(state, rb.getString("java.siteinval"));
+								log.error(this + ".actionForTemplate chef_siteinfo-duplicate: " + rb.getString("java.siteinval") + " site id = " + newSiteId, e);
+							} catch (IdUsedException e) {
+								addAlert(state, rb.getString("java.sitebeenused"));
+								log.error(this + ".actionForTemplate chef_siteinfo-duplicate: " + rb.getString("java.sitebeenused") + " site id = " + newSiteId, e);
 							} catch (PermissionException e) {
-								log.warn(this + " actionForTemplate chef_siteinfo-duplicate:: PermissionException when saving " + newSiteId);
+								addAlert(state, rb.getString("java.allowcreate"));
+								log.error(this + ".actionForTemplate chef_siteinfo-duplicate: " + rb.getString("java.allowcreate") + " site id = " + newSiteId, e);
 							}
-
-							// TODO: hard coding this frame id
-							// is fragile, portal dependent, and
-							// needs to be fixed -ggolden
-							// schedulePeerFrameRefresh("sitenav");
-							scheduleTopRefresh();
-							
-							// send site notification
-							sendSiteNotification(state, site, null);
-
-							state.setAttribute(SITE_DUPLICATED, Boolean.TRUE);
-							
-							// An event for ending the "duplicate site" action
-							EventTrackingService.post(EventTrackingService.newEvent(SiteService.EVENT_SITE_DUPLICATE_END, sourceSiteRef, site.getId(), false, NotificationService.NOTI_OPTIONAL));
-
-						} catch (IdInvalidException e) {
-							addAlert(state, rb.getString("java.siteinval"));
-							log.error(this + ".actionForTemplate chef_siteinfo-duplicate: " + rb.getString("java.siteinval") + " site id = " + newSiteId, e);
-						} catch (IdUsedException e) {
-							addAlert(state, rb.getString("java.sitebeenused"));
-							log.error(this + ".actionForTemplate chef_siteinfo-duplicate: " + rb.getString("java.sitebeenused") + " site id = " + newSiteId, e);
-						} catch (PermissionException e) {
-							addAlert(state, rb.getString("java.allowcreate"));
-							log.error(this + ".actionForTemplate chef_siteinfo-duplicate: " + rb.getString("java.allowcreate") + " site id = " + newSiteId, e);
 						}
 					}
 				}
@@ -10102,6 +10225,38 @@ private Map<String,List> getTools(SessionState state, String type, Site site) {
 		}
 
 	}// actionFor Template
+
+	/**
+	 * Responsible for hard deleting a temporary duplicate site. This method
+	 * is called during the duplication routine if an error is produced after
+	 * the duplicate site has been created (some of the functions require the
+	 * site to exist to perform some of the duplication processes, which can
+	 * sometimes result in errors that the user needs to rectify).
+	 *
+	 * @param tempDupSite the temporary duplicate site to be hard deleted in entirety
+	 */
+	private void deleteTempDupSiteOnError(Site tempDupSite) {
+		// We need to remove the duplicated site because errors were thrown
+		try {
+			SecurityAdvisor yesMan = new SecurityAdvisor() {
+				public SecurityAdvice isAllowed(String userId, String function, String reference) {
+					return SecurityAdvice.ALLOWED;
+				}
+			};
+			SecurityService.pushAdvisor(yesMan);
+
+			// Hard delete. Call upon all implementing services to hard delete their own content
+			doHardDelete(tempDupSite.getId());
+			// The service never deletes the site unless its already softly deleted
+			tempDupSite.setSoftlyDeleted(true);
+
+			// Now hard delete the site
+			SiteService.removeSite(tempDupSite);
+		} catch (Exception e) {
+		} finally {
+			SecurityService.popAdvisor();
+		}
+	}
 	
 	/**
 	 * 
@@ -10985,7 +11140,7 @@ private Map<String,List> getTools(SessionState state, String type, Site site) {
 							boolean targetsThisSite = site.getReference().equals(target) ||
 									channelReference.equals(target);
 							if (!(targetsThisSite)) {
-								addAlert(state, rb.getString("java.emailinuse") + " ");
+								addAlert(state, rb.getFormattedMessage("java.emailinuse", new Object[] {alias, ServerConfigurationService.getServerName()}));
 							}
 						} catch (IdUnusedException ee) {
 							try {
@@ -12603,10 +12758,10 @@ private Map<String,List> getTools(SessionState state, String type, Site site) {
 											if (!target.equals(channelReference)) {
 												// the email alias is not used by
 												// current site
-												addAlert(state, rb.getString("java.emailinuse") + " ");
+												addAlert(state, rb.getFormattedMessage("java.emailinuse", new Object[] {emailId, ServerConfigurationService.getServerName()}));
 											}
 										} else {
-											addAlert(state, rb.getString("java.emailinuse") + " ");
+											addAlert(state, rb.getFormattedMessage("java.emailinuse", new Object[] {emailId, ServerConfigurationService.getServerName()}));
 										}
 									}
 								} catch (IdUnusedException ee) {
@@ -13604,7 +13759,7 @@ private Map<String,List> getTools(SessionState state, String type, Site site) {
 			return;
 		}
 		
-		Map map = groupProvider.getGroupRolesForUser(userId);
+		Map<String, String> map = groupProvider.getGroupRolesForUser(userId, academicSessionEid);
 		if (map == null)
 			return;
 
@@ -15142,7 +15297,7 @@ private Map<String,List> getTools(SessionState state, String type, Site site) {
 			} catch (IdUnusedException e) {
 				// Something strange happened, log and notify the user
 				log.debug("Unexpected error: ", e);
-				addAlert(state, rb.getFormattedMessage("site.unjoin.error", new Object[] {ServerConfigurationService.getString("mail.support")}));
+				addAlert(state, rb.getFormattedMessage("unexpectedError", new Object[] {ServerConfigurationService.getString("mail.support")}));
 			} catch (PermissionException e) {
 				// This could occur if the user's role is the maintain role for the site, and unjoining would leave the site without
 				// a user with the maintain role

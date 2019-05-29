@@ -53,12 +53,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -3838,6 +3842,13 @@ public class SimplePageBean {
 	   if (isStudentPage(getCurrentPage())) {
 	       return null;
 	   }
+
+	   //Remove the existing groups from the item cache before assigning the new groups.
+	   if(i != null && StringUtils.isNotEmpty(i.getSakaiId())){
+	       log.info("Removing the item {} assigned groups from the cache.", i.getSakaiId());
+	       groupCache.remove(i.getSakaiId());
+	   }
+
 	   LessonEntity lessonEntity = null;
 	   switch (i.getType()) {
 	   case SimplePageItem.ASSIGNMENT:
@@ -5576,14 +5587,11 @@ public class SimplePageBean {
 			return needed;
 		}
 
-	    // get dummy items for top level pages in site
-
-		List<SimplePageItem> items = simplePageToolDao.findItemsInSite(getCurrentSite().getId());
-		// sorted by SQL
+		final List<SimplePageItem> items = simplePageToolDao.getOrderedTopLevelPageItems(getCurrentSite().getId());
 
 		for (SimplePageItem i : items) {
 			if (i.getSakaiId().equals(currentPageId)) {
-				return needed;  // reached current page. we're done
+				return needed;	// reached current page. we're done
 			}
 			if (i.isRequired() && !isItemComplete(i) && isItemVisible(i))
 				needed.add(i.getName());

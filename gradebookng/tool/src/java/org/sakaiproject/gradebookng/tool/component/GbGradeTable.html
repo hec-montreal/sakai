@@ -23,7 +23,7 @@
                     </span>
                     {else}
                     <span class="gb-flag-not-released" wicket:message="title:label.coursegrade.notreleased">
-                        {if settings.isUserAbleToEditAssessments}
+                        {if settings.isUserAbleToEditAssessments && settings.isShowDisplayCourseGradeToStudentEnabled}
                             <span aria-hidden="true" style="display:none;" class="gb-tooltip-extras">
                                 <div>
                                     <a href="javascript:void(0);" class="gb-gradebook-settings"><wicket:message key="label.coursegrade.editsettings"/></a>
@@ -249,10 +249,10 @@
             </div>
         </script>
         <script id="sectionsCellTemplate" type="text/template">
-            <div class="gb-value">
+            <div class="gb-value gb-section-cell">
               {if sections.length > 0}
               <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-secondary dropdown-toggle gb-section-button" type="button" title="${sections[0]}" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   ${sections[0]}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">

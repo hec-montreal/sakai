@@ -9,7 +9,8 @@ class SakaiRubricStudentButton extends SakaiElement {
 
     super();
 
-    this.hidden = false;
+    this.hidden = true;
+    this.instructor = false;
 
     SakaiRubricsLanguage.loadTranslations().then(result => this.i18nLoaded = result);
   }
@@ -53,7 +54,7 @@ class SakaiRubricStudentButton extends SakaiElement {
 
   showRubric() {
 
-    rubrics.showRubric(undefined, {"tool-id": this.toolId, "entity-id": this.entityId, "evaluated-item-id": this.evaluatedItemId});
+    rubrics.showRubric(undefined, {"tool-id": this.toolId, "entity-id": this.entityId, "evaluated-item-id": this.evaluatedItemId, "instructor": this.instructor});
   }
 
   setHidden() {
@@ -62,7 +63,12 @@ class SakaiRubricStudentButton extends SakaiElement {
     .then(data => {
 
       const association = data._embedded["rubric-associations"][0];
-      this.hidden = association.parameters.hideStudentPreview;
+
+      if (!association) {
+        this.hidden = true;
+      } else {
+        this.hidden = association.parameters.hideStudentPreview && !this.instructor;
+      }
     });
   }
 }

@@ -175,12 +175,12 @@ export class SakaiRubric extends SakaiElement {
     if (this.rubric.metadata.public) {
       this.shareTitle = "Revoke sharing for " + this.rubric.title;
       this.shareTitleKey = "revoke";
-      this.shareIcon = "fa-download";
+      this.shareIcon = "fa-share-square-o fa-flip-horizontal";
     } else {
       this.shareTitle = "Share " + this.rubric.title;
       this.shareTitleKey = "share";
       this.shareicon = "share";
-      this.shareIcon = "fa-upload";
+      this.shareIcon = "fa-share-square-o";
     }
     this.shareValues = this.rubric.title;
   }
@@ -194,6 +194,9 @@ export class SakaiRubric extends SakaiElement {
       this.rubric = data;
       this.dispatchEvent(new SharingChangeEvent());
       this.handleShareLink();
+      var sakaiItemDelete = this.querySelector("sakai-item-delete");
+      sakaiItemDelete.requestUpdate("item", this.rubric);
+      sakaiItemDelete.requestUpdate("rubric", this.rubric);
     }).fail((jqXHR, textStatus, errorThrown) => {
       console.log("Request failed: " + textStatus);
       console.log("Error: " + errorThrown);

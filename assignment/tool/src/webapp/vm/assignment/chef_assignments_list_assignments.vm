@@ -256,7 +256,8 @@
 											token="$!rbcs-token"
 											tool-id="sakai.assignment"
 											evaluated-item-id="$submission.Id"
-											entity-id="$assignment.Id">
+											entity-id="$assignment.Id"
+											instructor="true">
 										</sakai-rubric-student-button>
 										#end
 
@@ -608,7 +609,7 @@
 								</td>
 								<!-- due col -->
 								<td>
-									$!service.getUsersLocalDateTimeString($!assignment.PeerAssessmentPeriodDate)
+									<span class="highlight">$!service.getUsersLocalDateTimeString($!assignment.PeerAssessmentPeriodDate)</span>
 								</td>
 								<!-- the following are empty columns as place holders -->
 								#if ($!allowGradeSubmission)

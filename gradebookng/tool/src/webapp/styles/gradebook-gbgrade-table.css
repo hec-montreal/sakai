@@ -26,6 +26,17 @@
   text-align: left;
   vertical-align: middle;
 }
+#gradeTableWrapper .gb-section-cell {
+  direction: rtl;
+}
+#gradeTableWrapper .gb-section-button {
+  margin: 1px 0px 2px 2px !important;
+  padding: 2px 2px !important;
+  font-size: 12px !important;
+}
+#gradeTableWrapper .gb-student-number-cell .rowHeader {
+  font-size: 12px;
+}
 #gradeTableWrapper .handsontableInputHolder {
   text-align: center;
 }
@@ -79,7 +90,7 @@
 }
 #gradeTableWrapper .handsontable th > .relative,
 #gradeTableWrapper .handsontable td > .relative {
-  padding: 2px 4px;
+  padding: 4px;
 }
 #gradeTableWrapper .handsontable th > .relative > * {
   white-space: normal;
@@ -131,6 +142,8 @@
   display: inline-block;
   cursor: pointer;
   width: calc(100% - 16px);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #gradeTableWrapper .gb-title:hover:after {
   font-family: 'gradebook-icons';

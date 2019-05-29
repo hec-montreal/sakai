@@ -34,6 +34,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import lombok.Setter;
@@ -214,20 +216,21 @@ public class SimplePageToolDaoImpl extends HibernateDaoSupport implements Simple
 	}
 
     // find pseudo-items for top-level pages in site
-	public List<SimplePageItem> findItemsInSite(String siteId) {
-		List<SimplePage> topLevelPages = getTopLevelPages(siteId);
-		
-		List<String> lessonsPageIds = new ArrayList<>();
-		if (topLevelPages != null && !topLevelPages.isEmpty()) {
-		    for (SimplePage lessonsPage : topLevelPages) {
-			String pageId = String.valueOf(lessonsPage.getPageId());
-			lessonsPageIds.add(pageId);
-		    }
-		    List<SimplePageItem> pageItems = findTopLevelPageItemsBySakaiIds(lessonsPageIds);
-		    return pageItems;
-		}
-		return null;
-	}
+    public List<SimplePageItem> findItemsInSite(String siteId) {
+
+        List<SimplePage> topLevelPages = getTopLevelPages(siteId);
+
+        List<String> lessonsPageIds = new ArrayList<>();
+        if (topLevelPages != null && !topLevelPages.isEmpty()) {
+            for (SimplePage lessonsPage : topLevelPages) {
+                String pageId = String.valueOf(lessonsPage.getPageId());
+                lessonsPageIds.add(pageId);
+            }
+            List<SimplePageItem> pageItems = findTopLevelPageItemsBySakaiIds(lessonsPageIds);
+            return pageItems;
+        }
+        return null;
+    }
 
 	public List<SimplePageItem> findDummyItemsInSite(String siteId) {
 	    Object [] fields = new Object[1];
@@ -931,6 +934,16 @@ public class SimplePageToolDaoImpl extends HibernateDaoSupport implements Simple
 		}
 	}
 
+	public List<ToolConfiguration> getSiteTools(String siteId) {
+
+		try {
+			return new ArrayList(siteService.getSite(siteId).getTools(LessonBuilderConstants.TOOL_COMMON_ID));
+		} catch (IdUnusedException iue) {
+			log.warn("{} is not a valid site id", siteId);
+		}
+		return Collections.<ToolConfiguration>emptyList();
+	}
+
 	public String getPageUrl(long pageId) {
 
 		List<SimplePageItem> pageItems = findPageItemsBySakaiId(Long.toString(pageId));
@@ -1060,7 +1073,6 @@ public class SimplePageToolDaoImpl extends HibernateDaoSupport implements Simple
 	public SimplePageItem makeItem(long pageId, int sequence, int type, String sakaiId, String name) {
 		return new SimplePageItemImpl(pageId, sequence, type, sakaiId, name);
 	}
-
 
 	public SimplePageGroup makeGroup(String itemId, String groupId, String groups, String siteId) {
 		return new SimplePageGroupImpl(itemId, groupId, groups, siteId);
@@ -1892,15 +1904,12 @@ public class SimplePageToolDaoImpl extends HibernateDaoSupport implements Simple
 	public List<SimplePage> getTopLevelPages(final String siteId) {
 	    // set of all top level pages, actually the items pointing to them                                                                       
 		try {
-			Site site = siteService.getSite(siteId);
-			List<SitePage> sitePages = site.getOrderedPages();
-			if (sitePages.isEmpty())
+			List<SitePage> sitePages = siteService.getSite(siteId).getOrderedPages();
+			if (sitePages.isEmpty()) {
 				return null;
-
-			List<String> sitePageIds = new ArrayList<>();
-			for (SitePage page : sitePages) {
-				sitePageIds.add(page.getId());
 			}
+
+			final List<String> sitePageIds = sitePages.stream().map(sp -> sp.getId()).collect(Collectors.toList());
 
 			DetachedCriteria d = DetachedCriteria.forClass(SimplePage.class);
 			d.add(Restrictions.in("toolId", sitePageIds));
@@ -1916,4 +1925,29 @@ public class SimplePageToolDaoImpl extends HibernateDaoSupport implements Simple
 		}
 
 	}
+
+    public List<SimplePageItem> getOrderedTopLevelPageItems(String siteId) {
+
+        // The unordered top level items
+        final List<SimplePageItem> tmpSiteItems = findItemsInSite(siteId);
+
+        final List<ToolConfiguration> siteTools = getSiteTools(siteId);
+
+        if (siteTools.size() < 1) {
+            return tmpSiteItems;
+        }
+
+        // build map of all pages, so we can see if any are left over
+        final Map<Long, SimplePage> pageMap = getSitePages(siteId)
+                .stream().collect(Collectors.toMap(SimplePage::getPageId, Function.identity()));
+
+        return siteTools.stream().map(t -> {
+
+            return tmpSiteItems
+                .stream()
+                .filter(spi -> pageMap.get(Long.valueOf(spi.getSakaiId())).getToolId().equals(t.getPageId()))
+                .findAny().orElse(null);
+
+        }).filter(spi -> spi != null).collect(Collectors.toList());
+    }
 }
