@@ -127,6 +127,7 @@
 		<module>hec-course-archive</module>
 		<module>tenjin</module>
 		<module>hec-quartz-jobs</module>
+		<module>hec-providers</module>
             </modules>
         </profile>
         <profile>
