@@ -12,3 +12,37 @@
 .Mrphs-topHeader a {
 	color: #009fdf!important;
 }
+
+/* Icon font */
+@font-face {
+	font-family: 'ZcIconFont';
+	src: url('images/custom/icons/zc-icon-font.eot'); /* IE9 Compat Modes */
+	src: url('images/custom/icons/zc-icon-font.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+		url('images/custom/icons/zc-icon-font.woff') format('woff'), /* Pretty Modern Browsers */
+		url('images/custom/icons/zc-icon-font.ttf')  format('truetype'), /* Safari, Android, iOS */
+}
+
+.icon-sakai--sakai-opensyllabus-tool {
+	font-family: 'ZcIconFont'!important;
+}
+
+.icon-sakai--sakai-opensyllabus-tool:before {
+	content: "\e900";
+}
+
+.icon-sakai--sakai-tenjin {
+	font-family: 'ZcIconFont'!important;
+}
+
+.icon-sakai--sakai-tenjin:before {
+	content: "\e900";
+}
+
+.icon-sakai--sakai-cdm {                                  @extend .fa-pencil-square-o; }
+.icon-sakai--sakai-opensyllabus-manager-tool {            @extend .fa-cogs; }
+.icon-sakai--sakai-hec-public-portal-manager {            @extend .fa-arrows-h; }
+.icon-sakai--sakai-hec-course-archive {                   @extend .fa-history; }
+.icon-sakai--sakai-aat {                                  @extend .fa-paint-brush; }
+.icon-sakai--sakai-rsf-evaluation {                       @extend .fa-check-square-o; }
+.icon-sakai--sakai-via {                                  @extend .fa-comments; }
+.icon-sakai--sakai-tegrity {                              @extend .fa-video-camera; }
