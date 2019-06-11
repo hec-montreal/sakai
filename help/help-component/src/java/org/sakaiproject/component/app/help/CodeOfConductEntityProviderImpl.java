@@ -1,17 +1,19 @@
 package org.sakaiproject.component.app.help;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
+import javax.transaction.Transactional;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.app.help.CodeOfConductEntityProvider;
+import org.sakaiproject.component.app.help.model.CodeOfConductEntryBean;
 import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.AutoRegisterEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.RESTful;
@@ -22,10 +24,9 @@ import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.user.api.PreferencesService;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 
-public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvider, AutoRegisterEntityProvider, RESTful
+public class CodeOfConductEntityProviderImpl extends HibernateDaoSupport implements CodeOfConductEntityProvider, AutoRegisterEntityProvider, RESTful
 {
 	protected final Log log = LogFactory.getLog(getClass());
 
@@ -35,27 +36,9 @@ public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvi
 	private static String bodyEn;
 
 	private UserDirectoryService userDirectoryService;
-
-	public void setUserDirectoryService(UserDirectoryService us)
-	{
-		this.userDirectoryService = us;
-	}
-
 	private PreferencesService preferencesService;
-
-	public void setPreferencesService(PreferencesService ps)
-	{
-		this.preferencesService = ps;
-	}
-
-	private JdbcTemplate jdbcTemplate;
-
-	public void setDataSource(DataSource dataSource)
-	{
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
-	}
-
-	private void init() {
+		
+	public void init() {
 		URL url;
 		PropertiesConfiguration properties;
 		try
@@ -94,6 +77,7 @@ public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvi
 		return ENTITY_PREFIX;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	@Transactional
 	public String createEntity(EntityReference ref, Object entity, Map<String, Object> params)
@@ -106,7 +90,12 @@ public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvi
 
 		if (!hasUserAccepted(userId))
 		{
-			jdbcTemplate.update("insert into CODE_OF_CONDUCT values (?,?)", new Object[] { userId, new java.util.Date(System.currentTimeMillis()) });
+			CodeOfConductEntryBean entry = new CodeOfConductEntryBean();
+			
+			entry.setMatricule(userId);
+			entry.setDate(new Date());
+
+			getHibernateTemplate().save(entry);
 		}
 
 		return userId;
@@ -162,19 +151,11 @@ public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvi
 		return valuesMap;
 	}
 
-	@Transactional
 	private boolean hasUserAccepted(String id)
 	{
-		Integer accepted = jdbcTemplate.queryForObject("select count(*) from CODE_OF_CONDUCT where MATRICULE = ?", Integer.class, new Object[] { id });
+		CodeOfConductEntryBean entry = getHibernateTemplate().get(CodeOfConductEntryBean.class, id);
 		
-		if ((accepted != null ? accepted : 0) > 0)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return entry != null;
 	}
 
 	@Override
@@ -202,5 +183,15 @@ public class CodeOfConductEntityProviderImpl implements CodeOfConductEntityProvi
 	public String[] getHandledInputFormats()
 	{
 		return new String[] { Formats.HTML, Formats.XML, Formats.JSON };
+	}
+	
+	public void setUserDirectoryService(UserDirectoryService us)
+	{
+		this.userDirectoryService = us;
+	}
+
+	public void setPreferencesService(PreferencesService ps)
+	{
+		this.preferencesService = ps;
 	}
 }
