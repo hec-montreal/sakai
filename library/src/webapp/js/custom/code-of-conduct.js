@@ -3,7 +3,9 @@ function showDialog(locale) {
 	var dialogHeight = $(window).height()*0.8;
 	var height = dialogHeight -100;
 
-    if (locale === 'fr_CA') {
+    console.log('Locale: ' + locale);
+
+    if (locale === 'fr_CA' || locale === 'fr-CA') {
         title = sessionStorage.getItem('titleFr');
         $('div#codeOfConduct').html(sessionStorage.getItem('bodyFr'));
     }
@@ -67,11 +69,13 @@ function retrieveCodeOfConduct(locale, tutorial, showTutorialLocationOnHide) {
     });
 }
 
-function showCodeOfConduct(opts){    
+function showCodeOfConduct(opts){
+    var locale = opts.userLocale ? opts.userLocale : sakai.locale.userLocale;
+
     if (!sessionStorage.getItem('hasUserAccepted')) {
         retrieveCodeOfConduct().then(function () {
             if (!opts.checkHasUserAccepted || (sessionStorage.getItem('hasUserAccepted') === 'false' && sessionStorage.getItem('userType') === 'student')) {
-                showDialog(sakai.locale.userLocale);
+                showDialog(locale);
             }
             else if (opts.tutorial === 'true') {
                 startTutorial(opts.showTutorialLocationOnHide);
@@ -80,7 +84,7 @@ function showCodeOfConduct(opts){
     }
     else {
         if (!opts.checkHasUserAccepted || (sessionStorage.getItem('hasUserAccepted') === 'false' && sessionStorage.getItem('userType') === 'student')) {            
-            showDialog(sakai.locale.userLocale);
+            showDialog(locale);
         }
     }
     
