@@ -54,6 +54,12 @@
 	margin-top: 0!important;
 }
 
+/* More space for the left menu */
+#toolMenuWrap {
+	width: 250px!important;
+	min-width: 250px!important;
+}
+
 /* Icon font */
 @font-face {
 	font-family: 'ZcIconFont';
