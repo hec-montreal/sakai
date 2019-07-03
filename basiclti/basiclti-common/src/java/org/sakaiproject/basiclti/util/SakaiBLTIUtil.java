@@ -18,106 +18,91 @@
  */
 package org.sakaiproject.basiclti.util;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import java.util.Properties;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Enumeration;
-import java.util.Objects;
-
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.Key;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.json.simple.JSONObject;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.math3.util.Precision;
 import org.json.simple.JSONArray;
-
-import org.tsugi.jackson.JacksonUtil;
-
-import org.tsugi.basiclti.BasicLTIUtil;
-import org.tsugi.basiclti.BasicLTIConstants;
-
-import org.tsugi.lti2.LTI2Constants;
-import org.tsugi.lti2.LTI2Vars;
-import org.tsugi.lti2.LTI2Caps;
-import org.tsugi.lti2.LTI2Util;
-import org.tsugi.lti2.LTI2Messages;
-import org.tsugi.lti2.ToolProxy;
-import org.tsugi.lti2.ToolProxyBinding;
-import org.tsugi.lti2.ContentItem;
-import org.tsugi.lti2.LTI2Config;
-
+import org.json.simple.JSONObject;
+import org.sakaiproject.api.privacy.PrivacyManager;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.AuthzGroupService;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.api.GroupProvider;
+import org.sakaiproject.authz.api.Member;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.SecurityAdvisor;
+import org.sakaiproject.authz.cover.SecurityService;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.event.cover.UsageSessionService;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.linktool.LinkToolUtil;
 import org.sakaiproject.lti.api.LTIService;
 import org.sakaiproject.lti2.SakaiLTI2Config;
-
-import org.tsugi.lti13.LTI13Util;
-
-import org.tsugi.lti13.objects.LaunchJWT;
-import org.tsugi.lti13.objects.ResourceLink;
-import org.tsugi.lti13.objects.Context;
-import org.tsugi.lti13.objects.ToolPlatform;
-import org.tsugi.lti13.objects.LaunchLIS;
-import org.tsugi.lti13.objects.BasicOutcome;
-
-import io.jsonwebtoken.Jwts;
-import java.net.MalformedURLException;
-
-import java.security.Key;
-import javax.servlet.http.HttpServletResponse;
-
+import org.sakaiproject.portal.util.CSSUtils;
+import org.sakaiproject.portal.util.ToolUtils;
+import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
+import org.sakaiproject.service.gradebook.shared.Assignment;
+import org.sakaiproject.service.gradebook.shared.CommentDefinition;
+import org.sakaiproject.service.gradebook.shared.ConflictingAssignmentNameException;
+import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
+import org.sakaiproject.service.gradebook.shared.GradebookService;
+import org.sakaiproject.site.api.Group;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.event.cover.UsageSessionService;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
-import org.sakaiproject.site.api.ToolConfiguration;
-import org.sakaiproject.tool.api.Placement;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.api.privacy.PrivacyManager;
-import org.sakaiproject.authz.api.AuthzGroupService;
-import org.sakaiproject.authz.api.AuthzGroup;
-import org.sakaiproject.authz.api.GroupProvider;
-import org.sakaiproject.authz.api.Role;
-import org.sakaiproject.authz.api.Member;
-import org.sakaiproject.authz.api.GroupNotDefinedException;
-import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.Web;
-import org.sakaiproject.portal.util.CSSUtils;
-import org.sakaiproject.portal.util.ToolUtils;
-import org.sakaiproject.linktool.LinkToolUtil;
-import org.sakaiproject.authz.api.SecurityAdvisor;
-import org.sakaiproject.authz.cover.SecurityService;
-
-import org.sakaiproject.service.gradebook.shared.GradebookService;
-import org.sakaiproject.service.gradebook.shared.ConflictingAssignmentNameException;
-import org.sakaiproject.service.gradebook.shared.Assignment;
-import org.sakaiproject.service.gradebook.shared.CommentDefinition;
-
-import net.oauth.OAuth;
-import org.apache.commons.lang.StringUtils;
-
-import org.apache.commons.math3.util.Precision;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.service.gradebook.shared.AssessmentNotFoundException;
-import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
+import org.tsugi.basiclti.BasicLTIConstants;
+import org.tsugi.basiclti.BasicLTIUtil;
+import org.tsugi.jackson.JacksonUtil;
 import org.tsugi.lti13.DeepLinkResponse;
 import org.tsugi.lti13.LTI13KeySetUtil;
+import org.tsugi.lti13.LTI13Util;
+import org.tsugi.lti13.objects.BasicOutcome;
+import org.tsugi.lti13.objects.Context;
 import org.tsugi.lti13.objects.DeepLink;
 import org.tsugi.lti13.objects.Endpoint;
+import org.tsugi.lti13.objects.LaunchJWT;
+import org.tsugi.lti13.objects.LaunchLIS;
 import org.tsugi.lti13.objects.NamesAndRoles;
+import org.tsugi.lti13.objects.ResourceLink;
+import org.tsugi.lti13.objects.ToolPlatform;
+import org.tsugi.lti2.ContentItem;
+import org.tsugi.lti2.LTI2Caps;
+import org.tsugi.lti2.LTI2Config;
+import org.tsugi.lti2.LTI2Constants;
+import org.tsugi.lti2.LTI2Messages;
+import org.tsugi.lti2.LTI2Util;
+import org.tsugi.lti2.LTI2Vars;
+import org.tsugi.lti2.ToolProxy;
+import org.tsugi.lti2.ToolProxyBinding;
+
+import io.jsonwebtoken.Jwts;
+import lombok.extern.slf4j.Slf4j;
+import net.oauth.OAuth;
 
 /**
  * Some Sakai Utility code for IMS Basic LTI This is mostly code to support the
@@ -407,16 +392,20 @@ public class SakaiBLTIUtil {
 		}
 	}
 
-	public static boolean sakaiInfo(Properties props, Placement placement, ResourceLoader rb) {
+	public static boolean sakaiInfo(Properties props, Placement placement, ResourceLoader rb, String selectedSection) {
 		log.debug("placement={}", placement.getId());
 		log.debug("placement title={}", placement.getTitle());
 		String context = placement.getContext();
 		log.debug("ContextID={}", context);
 
-		return sakaiInfo(props, context, placement.getId(), rb);
+		return sakaiInfo(props, context, placement.getId(), rb, selectedSection);
 	}
 
 	public static void addSiteInfo(Properties props, Properties lti2subst, Site site) {
+		addSiteInfo(props, lti2subst, site, null);
+	}
+	
+	public static void addSiteInfo(Properties props, Properties lti2subst, Site site, String selectedSection) {
 		if (site != null) {
 			String context_type = site.getType();
 			if (context_type != null && context_type.toLowerCase().contains("course")) {
@@ -426,18 +415,33 @@ public class SakaiBLTIUtil {
 				setProperty(props, BasicLTIConstants.CONTEXT_TYPE, BasicLTIConstants.CONTEXT_TYPE_GROUP);
 				setProperty(lti2subst, LTI2Vars.CONTEXT_TYPE, BasicLTIConstants.CONTEXT_TYPE_GROUP);
 			}
-			setProperty(props, BasicLTIConstants.CONTEXT_ID, site.getId());
-			setProperty(lti2subst, LTI2Vars.COURSESECTION_SOURCEDID, site.getId());
-			setProperty(lti2subst, LTI2Vars.CONTEXT_ID, site.getId());
+			
+			if (selectedSection != null) {
+				setProperty(props, BasicLTIConstants.CONTEXT_ID, site.getId() + "." + selectedSection);
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_SOURCEDID, site.getId() + "." + selectedSection);
+				setProperty(lti2subst, LTI2Vars.CONTEXT_ID, site.getId() + "." + selectedSection);
 
-			setProperty(props, BasicLTIConstants.CONTEXT_LABEL, site.getTitle());
-			setProperty(lti2subst, LTI2Vars.COURSESECTION_LABEL, site.getTitle());
-			setProperty(lti2subst, LTI2Vars.CONTEXT_LABEL, site.getTitle());
+				setProperty(props, BasicLTIConstants.CONTEXT_LABEL, site.getTitle() + "." + selectedSection);
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_LABEL, site.getTitle() + "." + selectedSection);
+				setProperty(lti2subst, LTI2Vars.CONTEXT_LABEL, site.getTitle() + "." + selectedSection);
 
-			setProperty(props, BasicLTIConstants.CONTEXT_TITLE, site.getTitle());
-			setProperty(lti2subst, LTI2Vars.COURSESECTION_LONGDESCRIPTION, site.getTitle());
-			setProperty(lti2subst, LTI2Vars.CONTEXT_TITLE, site.getTitle());
+				setProperty(props, BasicLTIConstants.CONTEXT_TITLE, site.getTitle() + "." + selectedSection);
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_LONGDESCRIPTION, site.getTitle() + "." + selectedSection);
+				setProperty(lti2subst, LTI2Vars.CONTEXT_TITLE, site.getTitle() + "." + selectedSection);				
+			} else {
+				setProperty(props, BasicLTIConstants.CONTEXT_ID, site.getId());
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_SOURCEDID, site.getId());
+				setProperty(lti2subst, LTI2Vars.CONTEXT_ID, site.getId());
 
+				setProperty(props, BasicLTIConstants.CONTEXT_LABEL, site.getTitle());
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_LABEL, site.getTitle());
+				setProperty(lti2subst, LTI2Vars.CONTEXT_LABEL, site.getTitle());
+
+				setProperty(props, BasicLTIConstants.CONTEXT_TITLE, site.getTitle());
+				setProperty(lti2subst, LTI2Vars.COURSESECTION_LONGDESCRIPTION, site.getTitle());
+				setProperty(lti2subst, LTI2Vars.CONTEXT_TITLE, site.getTitle());				
+			}
+			
 			String courseRoster = getExternalRealmId(site.getId());
 			if (courseRoster != null) {
 				setProperty(props, BasicLTIConstants.LIS_COURSE_OFFERING_SOURCEDID, courseRoster);
@@ -580,8 +584,45 @@ public class SakaiBLTIUtil {
 		}
 	}
 
+	public static List<String> getSectionsForCurrentUser(String context) {
+		List<String> sectionsList = new ArrayList<String>();
+		Site site = null;
+		try {
+			site = SiteService.getSite(context);
+		} catch (Exception e) {
+			if(verbosePrint) { System.out.println(("No site/page associated with Launch context="+context)); }
+			return sectionsList;
+		}
+		User user = UserDirectoryService.getCurrentUser();
+		Role userRole = site.getUserRole(user.getId());
+		List<Group> groups = new ArrayList<Group>();
+		Collection<Group> userGroups = site.getGroupsWithMember(user.getId());
+
+		// user can access all sections if he is admin, the sections they are a member of
+		// or finally all sections if they have site.upd on the site's realm
+		if (SecurityService.isSuperUser()) {
+			groups.addAll(site.getGroups());
+		}else if (userRole != null && "Coordinator-Instructor".equalsIgnoreCase(userRole.getId())){
+			groups.addAll(site.getGroups());
+		}
+		else if (userGroups != null && userGroups.size() > 0) {
+			groups.addAll(userGroups);
+		} else if (SecurityService.unlock("site.upd", site.getReference())) {
+			groups.addAll(site.getGroups());
+		}
+
+		// filter out non official groups (user created)
+		for (Group g : groups) {
+			if (g.getProviderGroupId() != null) {
+				sectionsList.add(g.getTitle());
+			}
+		}
+
+		return sectionsList;
+	}
+	
 	// Retrieve the Sakai information about users, etc.
-	public static boolean sakaiInfo(Properties props, String context, String placementId, ResourceLoader rb) {
+	public static boolean sakaiInfo(Properties props, String context, String placementId, ResourceLoader rb, String selectedSection) {
 
 		Site site;
 		try {
@@ -597,7 +638,7 @@ public class SakaiBLTIUtil {
 		Properties config = placement.getConfig();
 		String roleMapProp = toNull(getCorrectProperty(config, "rolemap", placement));
 		addRoleInfo(props, null, context, roleMapProp);
-		addSiteInfo(props, null, site);
+		addSiteInfo(props, null, site, selectedSection);
 
 		// Add Placement Information
 		addPlacementInfo(props, placementId);
@@ -852,7 +893,7 @@ public class SakaiBLTIUtil {
 
 		// Add user, course, etc to the launch parameters
 		Properties launch = new Properties();
-		if (!sakaiInfo(launch, contextId, resourceId, rb)) {
+		if (!sakaiInfo(launch, contextId, resourceId, rb, null)) {
 			return postError("<p>" + getRB(rb, "error.info.resource",
 					"Error, cannot load Sakai information for resource=") + resourceId + ".</p>");
 		}
@@ -1599,9 +1640,14 @@ public class SakaiBLTIUtil {
 		return retval;
 	}
 
+	public static String[] postLaunchHTML(String placementId, ResourceLoader rb)
+	{
+		return postLaunchHTML(placementId, rb, null);
+	}
+	
 	// This must return an HTML message as the [0] in the array
 	// If things are successful - the launch URL is in [1]
-	public static String[] postLaunchHTML(String placementId, ResourceLoader rb) {
+	public static String[] postLaunchHTML(String placementId, ResourceLoader rb, String selectedSection) {
 		if (placementId == null) {
 			return postError("<p>" + getRB(rb, "error.missing", "Error, missing placementId") + "</p>");
 		}
@@ -1612,7 +1658,7 @@ public class SakaiBLTIUtil {
 
 		// Add user, course, etc to the launch parameters
 		Properties ltiProps = new Properties();
-		if (!sakaiInfo(ltiProps, placement, rb)) {
+		if (!sakaiInfo(ltiProps, placement, rb, selectedSection)) {
 			return postError("<p>" + getRB(rb, "error.missing",
 					"Error, cannot load Sakai information for placement=") + placementId + ".</p>");
 		}

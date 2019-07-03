@@ -19,75 +19,64 @@
 
 package org.sakaiproject.portlets;
 
-import org.tsugi.basiclti.BasicLTIUtil;
-
-import java.lang.Integer;
-
-import java.io.PrintWriter;
 import java.io.IOException;
-import java.net.URL;
+import java.io.PrintWriter;
 import java.net.URI;
-import java.util.UUID;
-import java.util.Properties;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Date;
+import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
 
-import javax.portlet.GenericPortlet;
-import javax.portlet.RenderRequest;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
-import javax.portlet.RenderResponse;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletException;
-import javax.portlet.PortletPreferences;
-import javax.portlet.PortletContext;
-import javax.portlet.PortletRequestDispatcher;
+import javax.portlet.GenericPortlet;
 import javax.portlet.PortletConfig;
+import javax.portlet.PortletContext;
+import javax.portlet.PortletException;
 import javax.portlet.PortletMode;
+import javax.portlet.PortletPreferences;
+import javax.portlet.PortletRequest;
+import javax.portlet.PortletRequestDispatcher;
 import javax.portlet.PortletSession;
 import javax.portlet.ReadOnlyException;
-
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
 import javax.servlet.ServletRequest;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.sakaiproject.thread_local.cover.ThreadLocalManager;
-
-import org.sakaiproject.portlet.util.PortletHelper;
-
-// Sakai APIs
-import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.tool.api.Session;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.site.api.ToolConfiguration;
-import org.sakaiproject.tool.api.Placement;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.api.SitePage;
-import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.util.ResourceLoader;
-import org.sakaiproject.util.FormattedText;
-import org.sakaiproject.event.api.Event;
-import org.sakaiproject.event.api.NotificationService;
 //import org.sakaiproject.event.cover.EventTrackingService;
 import org.sakaiproject.basiclti.LocalEventTrackingService;
 import org.sakaiproject.basiclti.util.SakaiBLTIUtil;
 import org.sakaiproject.basiclti.util.SimpleEncryption;
-
+// Sakai APIs
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.event.api.Event;
+import org.sakaiproject.event.api.NotificationService;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.portlet.util.PortletHelper;
 import org.sakaiproject.service.gradebook.shared.Assignment;
-import org.sakaiproject.service.gradebook.shared.AssignmentHasIllegalPointsException;
-import org.sakaiproject.service.gradebook.shared.CategoryDefinition;
-import org.sakaiproject.service.gradebook.shared.GradebookService;
-import org.sakaiproject.service.gradebook.shared.GradebookExternalAssessmentService;
 import org.sakaiproject.service.gradebook.shared.ConflictingAssignmentNameException;
-import org.sakaiproject.service.gradebook.shared.ConflictingExternalIdException;
 import org.sakaiproject.service.gradebook.shared.GradebookNotFoundException;
+import org.sakaiproject.service.gradebook.shared.GradebookService;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.thread_local.cover.ThreadLocalManager;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.util.FormattedText;
+import org.sakaiproject.util.ResourceLoader;
+import org.tsugi.basiclti.BasicLTIUtil;
+
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -223,20 +212,51 @@ public class IMSBLTIPortlet extends GenericPortlet {
 				session.setAttribute("sakai:maximized-url",iframeUrl);
 				log.debug("Setting sakai:maximized-url={}", iframeUrl);
 
+				List<String> sections = new ArrayList<String>();
+				// HEC only use section aware hack if site id contains only one period
+				if (context.indexOf('.') == context.lastIndexOf('.')) {
+					sections.addAll(SakaiBLTIUtil.getSectionsForCurrentUser(context));
+				}
+				
 				if ( "on".equals(newPage) || forcePopup ) {
-					String windowOpen = "window.open('"+iframeUrl+"','BasicLTI');"; 			
-					if ( popupDone == null ) {
+					String windowOpen = null;
+					StringBuffer sectionSelector = null;
+					
+					if (sections.size() > 1) {
+						windowOpen = "window.open('"+iframeUrl+"?sakai.specifiedSection='+document.getElementById('selectSection').value,'BasicLTI');";
+						
+						// build section select element
+						sectionSelector = new StringBuffer();
+						sectionSelector.append("<select id=\"selectSection\">");
+						for(String s : sections) {
+							sectionSelector.append("<option>"+s+"</option>");
+						}
+						sectionSelector.append("</select>");
+					} else if (sections.size() == 1) {
+						windowOpen = "window.open('"+iframeUrl+"?sakai.specifiedSection="+sections.get(0)+"','BasicLTI');";
+					} else {
+						windowOpen = "window.open('"+iframeUrl+"','BasicLTI');";
+					}
+						
+					if ( popupDone == null && sections.size() <= 1) {
 						text.append("<p>\n");
 						text.append("<script type=\"text/javascript\">\n");
 						text.append(windowOpen+"\n");
 						text.append("</script>\n");
 					}
+					
 					String siteName = ServerConfigurationService.getString(SITE_NAME, SAKAI);
 					title = title!=null ? title : rb.getString("tool.name", "your tool");
 					String newPageLaunchText = rb.getFormattedMessage("new.page.launch", new Object[]{FormattedText.escapeHtml(title, false), FormattedText.escapeHtml(siteName, false)});
+					String launchButtonText = rb.getFormattedMessage("new.page.launchButton");
 					text.append(newPageLaunchText);
 					text.append("</p>\n");
-					text.append("<input type=\"submit\" onclick=\""+windowOpen+"\" target=\"BasicLTI\" value=\"Launch " + title + "\"/>");
+
+					if (sections.size() > 1) {
+						text.append(sectionSelector + "&nbsp;");
+					}
+					
+					text.append("<input type=\"submit\" onclick=\""+windowOpen+"\" target=\"BasicLTI\" value=\"" + launchButtonText +" "+ title + "\"/>");
 				} else {
 					if ( "on".equals(maximize) ) {
 						text.append("<script type=\"text/javascript\" language=\"JavaScript\">\n");
@@ -254,6 +274,9 @@ public class IMSBLTIPortlet extends GenericPortlet {
 					text.append("marginheight=\"0\" scrolling=\"auto\"\n");
 					text.append(" allowfullscreen=\"true\" webkitallowfullscreen=\"true\" mozallowfullscreen=\"true\"\n");
 					text.append(" allow=\"camera; microphone\"\n");
+					if (sections.size() == 1) {
+						iframeUrl += "?sakai.specifiedSection=" + sections.get(0);
+					}
 					text.append("src=\""+iframeUrl+"\">\n");
 					text.append(rb.getString("noiframes"));
 					text.append("<br>");
