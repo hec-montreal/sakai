@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+  <bean id="org.sakaiproject.api.app.help.TableOfContents" class="org.sakaiproject.component.app.help.model.TableOfContentsBean">
+    <property name="name">
+      <value>root</value>
+    </property>
+    <property name="categories">
+      <list>
+<!--         <ref bean="aboutHelpUserGuide"/>-->
+        <ref bean="siteInfoUserGuide"/>
+        <ref bean="calendarUserGuide"/>
+        <ref bean="announcementsUserGuide"/> 
+        <ref bean="archiveUserGuide"/>
+        <ref bean="chatUserGuide"/>
+        <ref bean="webContentUserGuide"/>
+        <ref bean="assignmentsUserGuide"/>
+        <ref bean="forumsUserGuide"/>
+        <ref bean="permissionsandRolesUserGuide"/>
+        <ref bean="plandecoursUserGuide"/>
+        <ref bean="pollsUserGuide"/>
+        <ref bean="profileUserGuide"/> 
+        <ref bean="resourcesUserGuide"/>
+        <ref bean="rosterUserGuide"/>
+        <ref bean="testsandQuizzesUserGuide"/>
+        <ref bean="evaluationUserGuide"/>
+        <ref bean="tegrityUserGuide"/>
+        <ref bean="viaUserGuide"/>
+        <ref bean="gradebookGuide"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="siteInfoUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Administration du site</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="administrationDuSiteRedirect"/>
+      </list>
+    </property>
+  </bean> 
+  <bean id="administrationDuSiteRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>administrationDuSiteRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/administration-du-site.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.siteinfo</value>
+    </property>
+  </bean>
+  <bean id="calendarUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Agenda</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="calendrierRedirect"/>
+        <ref bean="agendaRedirect"/>
+      </list>
+    </property>
+  </bean> 
+  <bean id="agendaRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>agendaRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide agenda</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/agenda.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.schedule</value>
+    </property>
+  </bean>
+  <bean id="calendrierRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>calendrierRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide calendrier</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/agenda.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.summary.calendar</value>
+    </property>
+  </bean>
+  <bean id="pollsUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Vote</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="pollsRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="pollsRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>pollsRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/polls.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.poll</value>
+    </property>
+  </bean>
+  <bean id="announcementsUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Annonces</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="announcementsRedirect"/>
+        <ref bean="synopticAnnouncementsRedirect"/>
+      </list>
+    </property>
+  </bean> 
+  <bean id="announcementsRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>announcementsRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/annonces.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.announcements</value>
+    </property>
+  </bean>
+  <bean id="synopticAnnouncementsRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>synopticAnnouncementsRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/annonces.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.synoptic.announcements</value>
+    </property>
+  </bean>
+  <bean id="archiveUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Archives de plan de cours</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="archiveRedirect"/>
+      </list>
+    </property>
+  </bean> 
+  <bean id="archiveRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>archiveRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/archives-de-plan-de-cours.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.hec-course-archive</value>
+    </property>
+  </bean>
+  <bean id="testsandQuizzesUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Tests et Quiz</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="testsandQuizzesRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="testsandQuizzesRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>testsandQuizzesRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/testsquiz.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.samigo</value>
+    </property>
+  </bean>
+  <bean id="chatUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Clavardage</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="clavardageRedirect"/>
+      </list>
+    </property>
+  </bean> 
+  <bean id="clavardageRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>clavardageRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/clavardage.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.chat</value>
+    </property>
+  </bean>
+  <bean id="webContentUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Contenu web</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="contenuWebRedirect"/>
+        <ref bean="contenuWeb2Redirect"/>
+      </list>
+    </property>
+  </bean> 
+  <bean id="contenuWebRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>contenuWebRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/contenu-web.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.iframe</value>
+    </property>
+  </bean>
+  <bean id="contenuWeb2Redirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>contenuWeb2Redirect</value>
+    </property>
+    <property name="name">
+      <value>Aide site</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/contenu-web.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.iframe.site</value>
+    </property>
+  </bean>
+  <bean id="permissionsandRolesUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Droits d'accès et rôles</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="permissionsandRolesRedirect"/>
+      </list>
+    </property>
+  </bean> 
+  <bean id="permissionsandRolesRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>permissionsandRolesRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/droitacces.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.permissionsandRoles</value>
+    </property>
+  </bean>
+     <bean id="forumsUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Forums</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="forumsRedirect"/>
+      </list>
+    </property>
+  </bean> 
+  <bean id="forumsRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>forumsRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/forum.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.forums</value>
+    </property>
+  </bean>
+
+   <bean id="rosterUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Liste d'étudiants</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="rosterRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="rosterRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>rosterRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/listeetudiants.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.site.roster2</value>
+    </property>
+  </bean>
+
+ <bean id="profileUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Profil</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="profileRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="profileRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>profileRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/profil.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.profile2</value>
+    </property>
+  </bean>
+
+ <bean id="assignmentsUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Remise de travaux</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="assignmentsRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="assignmentsRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>assignmentsRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/remisedetravaux.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.assignment</value>
+    </property>
+  </bean>
+
+ <bean id="resourcesUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Ressources</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="resourcesRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="resourcesRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>resourcesRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/ressources.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.resources</value>
+    </property>
+  </bean>
+
+  <bean id="evaluationUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Évaluation de l'enseignement</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="evaluationRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="evaluationRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>evaluationRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/evaluation.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.rsf.evaluation</value>
+    </property>
+  </bean>
+
+  <bean id="tegrityUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Tegrity</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="tegrityRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="tegrityRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>tegrityRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/tegrity.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.tegrity</value>
+    </property>
+  </bean>  
+
+  <bean id="viaUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Via</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="viaRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="viaRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>viaRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/via.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.via</value>
+    </property>
+  </bean>  
+
+  <bean id="plandecoursUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Plan de cours</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="plandecoursRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="plandecoursRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>plandecoursRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/plandecours.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.tenjin</value>
+    </property>
+  </bean>  
+
+  <bean id="gradebookGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+	    <value>Résultats intermédiaires</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="gradebookRedirect"/>
+      </list>
+    </property>
+  </bean>
+  <bean id="gradebookRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>gradebookRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/relevedenotes.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.gradebookng</value>
+    </property>
+  </bean>  
+</beans>
