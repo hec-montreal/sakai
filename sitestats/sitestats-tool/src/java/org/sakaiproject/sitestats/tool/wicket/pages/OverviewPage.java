@@ -18,10 +18,10 @@
  */
 package org.sakaiproject.sitestats.tool.wicket.pages;
 
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.sakaiproject.sitestats.api.StatsManager;
 import org.sakaiproject.sitestats.tool.facade.Locator;
 import org.sakaiproject.sitestats.tool.wicket.components.LastJobRun;
@@ -109,7 +109,21 @@ public class OverviewPage extends BasePage {
 		}else{
 			add(new WebMarkupContainer("resourcesWidget").setRenderBodyOnly(true));
 		}
-        add(new LessonsWidget("lessonsWidget", siteId));
+
+		// Lessons
+		boolean lessonsVisible = false;
+		try {
+			lessonsVisible = statsManager.isEnableLessonsStats() &&
+					(Locator.getFacade().getSiteService().getSite(siteId).getToolForCommonId(StatsManager.LESSONS_TOOLID) != null);
+		}catch (Exception e) {
+			lessonsVisible = false;
+		}
+
+		if (lessonsVisible) {
+			add(new LessonsWidget("lessonsWidget", siteId));
+		}else{
+			add(new WebMarkupContainer("lessonsWidget").setRenderBodyOnly(true));
+		}
 	}
 }
 

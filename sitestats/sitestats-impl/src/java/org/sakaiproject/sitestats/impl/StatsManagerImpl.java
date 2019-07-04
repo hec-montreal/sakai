@@ -34,16 +34,11 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.digester.Digester;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Expression;
-import org.springframework.dao.DataAccessException;
-import org.springframework.orm.hibernate4.HibernateCallback;
-import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
-
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentTypeImageService;
@@ -83,7 +78,6 @@ import org.sakaiproject.sitestats.api.event.EventInfo;
 import org.sakaiproject.sitestats.api.event.EventRegistryService;
 import org.sakaiproject.sitestats.api.event.ToolInfo;
 import org.sakaiproject.sitestats.api.report.ReportDef;
-import org.sakaiproject.sitestats.impl.event.EventRegistryServiceImpl;
 import org.sakaiproject.sitestats.impl.event.EventUtil;
 import org.sakaiproject.sitestats.impl.parser.DigesterUtil;
 import org.sakaiproject.tool.api.SessionManager;
@@ -92,6 +86,11 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.util.ResourceLoader;
+import org.springframework.dao.DataAccessException;
+import org.springframework.orm.hibernate4.HibernateCallback;
+import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Nuno Fernandes
@@ -104,6 +103,7 @@ public class StatsManagerImpl extends HibernateDaoSupport implements StatsManage
 	private Boolean						enableSiteVisits						= null;
 	private Boolean						enableSiteActivity						= null;
 	private Boolean						enableResourceStats						= null;
+	private Boolean						enableLessonsStats						= null;
 	private Boolean						enableSitePresences						= null;
 	private Boolean						visitsInfoAvailable						= null;
 	private boolean						enableServerWideStats					= true;
@@ -190,6 +190,16 @@ public class StatsManagerImpl extends HibernateDaoSupport implements StatsManage
 	}
 	public boolean isEnableResourceStats() {
 		return enableResourceStats;
+	}
+	
+	public void setEnableLessonsStats(Boolean enableLessonsStats) {
+		this.enableResourceStats = enableLessonsStats;
+	}
+	public void setEnableLessonsStats(boolean enableLessonsStats) {
+		this.enableLessonsStats = Boolean.valueOf(enableLessonsStats);
+	}
+	public boolean isEnableLessonsStats() {
+		return enableLessonsStats;
 	}
 	
 	public void setEnableSitePresences(Boolean enableSitePresences) {
@@ -360,6 +370,9 @@ public class StatsManagerImpl extends HibernateDaoSupport implements StatsManage
 		}
 		if(enableResourceStats == null) {
 			enableResourceStats = true;
+		}
+		if(enableLessonsStats == null) {
+			enableLessonsStats = true;
 		}
 		if(enableSitePresences == null) {
 			// turn off, by default
