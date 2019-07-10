@@ -129,6 +129,7 @@
 		<module>hec-quartz-jobs</module>
 		<module>hec-providers</module>
 		<module>hec-event-processor</module>
+		<module>via</module>
             </modules>
         </profile>
         <profile>
