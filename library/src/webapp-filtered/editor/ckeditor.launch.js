@@ -109,7 +109,7 @@ sakai.editor.editors.ckeditor.launch = function(targetId, config, w, h) {
             "attemptsRemaining": Number.MAX_VALUE
         },
         skin: 'moono-lisa',
-        defaultLanguage: 'en',
+        defaultLanguage: 'fr',
         
         // SAK-31829, SAK-33279 Disable functionality in table plugin
         //https://docs.ckeditor.com/#!/guide/dev_disallowed_content-section-how-to-allow-everything-except...
@@ -153,7 +153,6 @@ sakai.editor.editors.ckeditor.launch = function(targetId, config, w, h) {
         ],
         toolbar_Full:
         [
-            ['About'],
             ['Source','-','Templates'],
             // Uncomment the next line and comment the following to enable the default spell checker.
             // Note that it uses spellchecker.net, displays ads and sends content to remote servers without additional setup.
@@ -169,11 +168,11 @@ sakai.editor.editors.ckeditor.launch = function(targetId, config, w, h) {
             ['Link','Unlink','Anchor'],
             (sakai.editor.enableResourceSearch
                 ? ( sakai.editor.contentItemUrl
-                    ? ['ContentItem', 'AudioRecorder','ResourceSearch', 'Image','Movie','Table','HorizontalRule','Smiley','SpecialChar']
-                    : ['AudioRecorder','ResourceSearch', 'Image','Movie','Table','HorizontalRule','Smiley','SpecialChar']
+                    ? ['AudioRecorder', 'ResourceSearch', 'Image','Movie','Table','HorizontalRule','Smiley','SpecialChar']
+                    : ['AudioRecorder', 'ResourceSearch', 'Image','Movie','Table','HorizontalRule','Smiley','SpecialChar']
                   )
 		: ( sakai.editor.contentItemUrl
-                    ? ['ContentItem', 'AudioRecorder', 'Image','Movie','Table','HorizontalRule','Smiley','SpecialChar']
+                    ? ['AudioRecorder', 'Image','Movie','Table','HorizontalRule','Smiley','SpecialChar']
                     : ['AudioRecorder', 'Image','Movie','Table','HorizontalRule','Smiley','SpecialChar']
                   )
             ),
