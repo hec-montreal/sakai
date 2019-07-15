@@ -539,5 +539,7 @@
     <property name="defaultForTool">
       <value>sakai.gradebookng</value>
     </property>
-  </bean>  
+  </bean> 
+  
+  
 </beans>
