@@ -82,23 +82,27 @@
                             #end
 							
                             <div class="fav-title #if (${site.isMyWorkspace}) fav-title-myworkspace #end">
-									#if (${site.isMyWorkspace})
-										<i class="fa fa-home icon-sakai"></i><span class="fullTitle">${rloader.sit_mywor}</span>
- 				                	#elseif (${isUserStudent})
+					#if (${site.isMyWorkspace})
+						<i class="fa fa-home icon-sakai"></i><span class="fullTitle">${rloader.sit_mywor}</span>
+ 		                	#elseif (${isUserStudent})
 	                                    #if ( ( ${tabDisplayLabel} == 2 ) && ( ${site.shortDescription} ) )
-	             			              	<a href="${site.siteUrl}" title="$tooltip">
-	                                        <span class="fullTitle">${site.hecTitle}</span>
+	             			       	<a href="${site.siteUrl}" title="$tooltip">
+	        	                	        <span class="fullTitle">${site.hecTitle}</span>
+						</a>
 	                                    #else
-	             						 	<a href="${site.siteUrl}" title="$tooltip">
-	                                        <span class="fullTitle">${site.hecTitle}</span>
+					 	<a href="${site.siteUrl}" title="$tooltip">
+		                                        <span class="fullTitle">${site.hecTitle}</span>
+						</a>
 	                                    #end
 	                               #else
 		                               #if ( ( ${tabDisplayLabel} == 2 ) && ( ${site.shortDescription} ) )
-	             			              	<a href="${site.siteUrl}" title="$tooltip">
-	                                        <span class="fullTitle">${site.shortDescription}</span>
+	             			        <a href="${site.siteUrl}" title="$tooltip">
+	                                        	<span class="fullTitle">${site.shortDescription}</span>
+						</a>
 	                                    #else
-	             						 	<a href="${site.siteUrl}" title="$tooltip">
-	                                        <span class="fullTitle">${site.siteTitle}</span>
+	             				<a href="${site.siteUrl}" title="$tooltip">
+	                                        	<span class="fullTitle">${site.siteTitle}</span>
+						</a>
 	                                    #end
 	                               #end	
                             </div>
