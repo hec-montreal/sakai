@@ -8,14 +8,14 @@
 	<name>HEC Event Processor</name>
 	<groupId>ca.hec</groupId>
 	<artifactId>hec-event-processor</artifactId>
-	<version>19.1</version>
+	<version>19.2</version>
 
 	<packaging>pom</packaging>
 
 	<parent>
 		<groupId>org.sakaiproject</groupId>
 		<artifactId>master</artifactId>
-		<version>19.1</version>
+		<version>19.2</version>
 		<relativePath>../master/pom.xml</relativePath>
 	</parent>
 	
