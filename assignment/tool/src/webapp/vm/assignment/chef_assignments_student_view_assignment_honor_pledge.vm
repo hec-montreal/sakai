@@ -1,5 +1,5 @@
 <!-- start:  chef_assignments_student_view_assignment_honor_pledge.vm  -->
-<div class="portletBody">
+<div class="portletBody container-fluid">
     #if ($alertMessage)
         <div class="alertMessage">
             <strong>$tlang.getString("gen.alert")</strong>
@@ -23,8 +23,8 @@
                 <input type="submit"
                        accesskey="s"
                        name="eventSubmit_doAccept_assignment_honor_pledge"
-                       value="$tlang.getString("gen.accept")"
-                       aria-label="$tlang.getString("gen.accept")"
+                       value="$tlang.getString("gen.agree")"
+                       aria-label="$tlang.getString("gen.agree")"
                        onclick="SPNR.disableControlsAndSpin( this, null );"
                        class="active"/>
             #end

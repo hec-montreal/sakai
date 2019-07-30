@@ -3212,11 +3212,11 @@ public class AssignmentAction extends PagedResourceActionII {
      */
     protected String build_instructor_grade_submission_context(VelocityPortlet portlet, Context context, RunData data, SessionState state) {
         Assignment.GradeType gradeType = GRADE_TYPE_NONE;
+        Integer scaleFactor = assignmentService.getScaleFactor();
 
         // need to show the alert for grading drafts?
         boolean addGradeDraftAlert = false;
 
-        // assignment
         String assignmentRef = (String) state.getAttribute(GRADE_SUBMISSION_ASSIGNMENT_ID);
         Optional<Assignment> assignment = Optional.ofNullable(getAssignment(assignmentRef, "build_instructor_grade_submission_context", state));
         if (assignment.isPresent()) {
@@ -3224,6 +3224,7 @@ public class AssignmentAction extends PagedResourceActionII {
             context.put("assignment", a);
             context.put("assignmentReference", AssignmentReferenceReckoner.reckoner().assignment(a).reckon().getReference());
             gradeType = a.getTypeOfGrade();
+            scaleFactor = a.getScaleFactor() != null ? a.getScaleFactor() : scaleFactor;
 
             state.setAttribute(NEW_ASSIGNMENT_CHECK_ANONYMOUS_GRADING, assignmentService.assignmentUsesAnonymousGrading(a));
 
@@ -3355,18 +3356,8 @@ public class AssignmentAction extends PagedResourceActionII {
         context.put("value_feedback_comment", state.getAttribute(GRADE_SUBMISSION_FEEDBACK_COMMENT));
         context.put("value_feedback_text", state.getAttribute(GRADE_SUBMISSION_FEEDBACK_TEXT));
         context.put("value_feedback_attachment", state.getAttribute(ATTACHMENTS));
-
-        // SAK-17606
         context.put("value_CheckAnonymousGrading", assignmentService.assignmentUsesAnonymousGrading(assignment.get()));
-
-        // SAK-40938 If we're in grading review mode and the grade entered is bigger than the max, we
-        // should show the grade as entered, not a scaled and formatted version. In other words, the value in
-        // the text input should match the value in the alert message.
-        if (BooleanUtils.isTrue((Boolean) state.getAttribute(GRADE_GREATER_THAN_MAX_ALERT))) {
-            context.put("value_grade", (String) state.getAttribute(GRADE_SUBMISSION_GRADE));
-        } else {
-            context.put("value_grade", state.getAttribute(GRADE_SUBMISSION_GRADE));
-        }
+        context.put("value_grade", displayGrade(state, (String) state.getAttribute(GRADE_SUBMISSION_GRADE), scaleFactor));
 
         context.put("assignment_expand_flag", state.getAttribute(GRADE_SUBMISSION_ASSIGNMENT_EXPAND_FLAG));
 
@@ -11495,7 +11486,7 @@ public class AssignmentAction extends PagedResourceActionII {
 
         // enable the close date by default
         state.setAttribute(NEW_ASSIGNMENT_ENABLECLOSEDATE, Boolean.TRUE);
-        state.setAttribute(NEW_ASSIGNMENT_REMINDER_EMAIL, Boolean.TRUE);
+        state.setAttribute(NEW_ASSIGNMENT_REMINDER_EMAIL, serverConfigurationService.getBoolean("asn.reminder.email.default", true));
 
         // Accept until date is shifted forward by the offset
         Instant tAccept = t.plusSeconds(acceptUntilDateOffset);
@@ -11786,10 +11777,8 @@ public class AssignmentAction extends PagedResourceActionII {
     private Map<Long, String> categoryTable() {
         boolean gradebookExists = isGradebookDefined();
         Map<Long, String> catTable = new HashMap<>();
-        if (gradebookExists) {
-
-            String gradebookUid = toolManager.getCurrentPlacement().getContext();
-
+        String gradebookUid = toolManager.getCurrentPlacement().getContext();
+        if (gradebookExists && gradebookExternalAssessmentService.isCategoriesEnabled(gradebookUid)) {
             List<CategoryDefinition> categoryDefinitions = gradebookService.getCategoryDefinitions(gradebookUid);
 
             catTable.put((long) -1, rb.getString("grading.unassigned"));

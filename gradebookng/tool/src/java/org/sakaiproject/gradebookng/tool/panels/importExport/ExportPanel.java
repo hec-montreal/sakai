@@ -18,8 +18,10 @@ package org.sakaiproject.gradebookng.tool.panels.importExport;
 import com.opencsv.CSVWriter;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -57,6 +59,7 @@ public class ExportPanel extends BasePanel {
 	private static final String IGNORE_COLUMN_PREFIX = "#";
 	private static final String COMMENTS_COLUMN_PREFIX = "*";
 	private static final char CSV_SEMICOLON_SEPARATOR = ';';
+	private static final String BOM = "\uFEFF";
 
 	enum ExportFormat {
 		CSV
@@ -67,6 +70,7 @@ public class ExportPanel extends BasePanel {
 	boolean includeStudentName = true;
 	boolean includeStudentId = true;
 	boolean includeStudentNumber = false;
+	private boolean includeSectionMembership = false;
 	boolean includeStudentDisplayId = false;
 	boolean includeGradeItemScores = true;
 	boolean includeGradeItemComments = true;
@@ -131,6 +135,16 @@ public class ExportPanel extends BasePanel {
 			public boolean isVisible()
 			{
 				return stuNumVisible;
+			}
+		});
+
+		add(new AjaxCheckBox("includeSectionMembership", Model.of(this.includeSectionMembership)) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onUpdate(final AjaxRequestTarget ajaxRequestTarget) {
+				ExportPanel.this.includeSectionMembership = !ExportPanel.this.includeSectionMembership;
+				setDefaultModelObject(ExportPanel.this.includeSectionMembership);
 			}
 		});
 
@@ -272,9 +286,11 @@ public class ExportPanel extends BasePanel {
 			tempFile = File.createTempFile("gradebookTemplate", ".csv");
 
 			//CSV separator is comma unless the comma is the decimal separator, then is ;
-			try (FileWriter fw = new FileWriter(tempFile);
-					CSVWriter csvWriter = new CSVWriter(fw, ".".equals(FormattedText.getDecimalSeparator()) ? CSVWriter.DEFAULT_SEPARATOR : CSV_SEMICOLON_SEPARATOR)) {
+			try (OutputStreamWriter fstream = new OutputStreamWriter(new FileOutputStream(tempFile), StandardCharsets.UTF_8.name())){
 
+				fstream.write(BOM);
+				CSVWriter csvWriter = new CSVWriter(fstream, ".".equals(FormattedText.getDecimalSeparator()) ? CSVWriter.DEFAULT_SEPARATOR : CSV_SEMICOLON_SEPARATOR, CSVWriter.DEFAULT_QUOTE_CHARACTER, CSVWriter.DEFAULT_ESCAPE_CHARACTER, CSVWriter.RFC4180_LINE_END);
+				
 				// Create csv header
 				final List<String> header = new ArrayList<>();
 				if (!isCustomExport || this.includeStudentId) {
@@ -287,7 +303,10 @@ public class ExportPanel extends BasePanel {
 					header.add(String.join(" ", IGNORE_COLUMN_PREFIX, getString("importExport.export.csv.headers.studentDisplayId")));
 				}
 				if (isCustomExport && this.includeStudentNumber) {
-					header.add(String.join(" ", IGNORE_COLUMN_PREFIX, getString("importExport.export.csv.headers.studentNumber")));
+					header.add(String.join(" ", IGNORE_COLUMN_PREFIX, getString("column.header.studentNumber")));
+				}
+				if (isCustomExport && this.includeSectionMembership) {
+					header.add(String.join(" ", IGNORE_COLUMN_PREFIX, getString("column.header.section")));
 				}
 
 				// get list of assignments. this allows us to build the columns and then fetch the grades for each student for each assignment from the map
@@ -362,6 +381,10 @@ public class ExportPanel extends BasePanel {
 					{
 						line.add(studentGradeInfo.getStudentNumber());
 					}
+					List<String> userSections = studentGradeInfo.getSections();
+					if (isCustomExport && this.includeSectionMembership) {
+						line.add((userSections.size() > 0) ? userSections.get(0) : getString("sections.label.none"));
+					}
 					if (!isCustomExport || this.includeGradeItemScores || this.includeGradeItemComments) {
 						assignments.forEach(assignment -> {
 							final GbGradeInfo gradeInfo = studentGradeInfo.getGrades().get(assignment.getId());
@@ -410,6 +433,7 @@ public class ExportPanel extends BasePanel {
 
 					csvWriter.writeNext(line.toArray(new String[] {}));
 				});
+				csvWriter.close();
 			}
 		} catch (final IOException e) {
 			throw new RuntimeException(e);

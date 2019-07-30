@@ -604,8 +604,6 @@ public class ShowPageProducer implements ViewComponentProducer, DefaultView, Nav
 		    return;
 		}
 
-
-
 		// I believe we've now checked all the args for permissions issues. All
 		// other item and
 		// page references are generated here based on the contents of the page
@@ -746,7 +744,8 @@ public class ShowPageProducer implements ViewComponentProducer, DefaultView, Nav
 			else
 			    descrip = messageLocator.getMessage("simplepage.title-descrip");
 
-			UIOutput.make(tofill, "edit-title").decorate(new UIFreeAttributeDecorator("title", descrip));
+			UIComponent edittitlelink = UIInternalLink.makeURL(tofill, "edit-title", "#");
+			edittitlelink.decorate(new UIFreeAttributeDecorator("title", descrip));
 			UIOutput.make(tofill, "edit-title-text", label);
 			UIOutput.make(tofill, "title-descrip-text", descrip);
 
@@ -956,7 +955,9 @@ public class ShowPageProducer implements ViewComponentProducer, DefaultView, Nav
 			
 			// Make sure this is a top level student page
 			if(student != null && pageItem.getGradebookId() != null) {
-				UIOutput.make(tofill, "gradingSpan");
+				if (simplePageBean.getEditPrivs() == 0 && !simplePageBean.getCurrentUserId().equals(currentPage.getOwner())) {
+					UIOutput.make(tofill, "gradingSpan");
+				}
 				UIOutput.make(tofill, "commentsUUID", String.valueOf(student.getId()));
 				UIOutput.make(tofill, "commentPoints", String.valueOf((student.getPoints() != null? student.getPoints() : "")));
 				UIOutput pointsBox = UIOutput.make(tofill, "studentPointsBox");
@@ -1229,7 +1230,8 @@ public class ShowPageProducer implements ViewComponentProducer, DefaultView, Nav
 
 				UIOutput.make(tofill, "startupHelp")
 				    .decorate(new UIFreeAttributeDecorator("src", helpUrl))
-				    .decorate(new UIFreeAttributeDecorator("id", "iframe"));
+				    .decorate(new UIFreeAttributeDecorator("id", "iframe"))
+					.decorate(new UIFreeAttributeDecorator("allow", String.join(";", ServerConfigurationService.getStrings("browser.feature.allow"))));
 				if (!iframeJavascriptDone) {
 				    UIOutput.make(tofill, "iframeJavascript");
 				    iframeJavascriptDone = true;
@@ -1998,7 +2000,8 @@ public class ShowPageProducer implements ViewComponentProducer, DefaultView, Nav
 						    // allowfullscreen="true" allowScriptAccess="always"
 						    // width="640" height="390"></object>
 
-						    item = UIOutput.make(tableRow, "youtubeIFrame");
+						    item = UIOutput.make(tableRow, "youtubeIFrame")
+									.decorate(new UIFreeAttributeDecorator("allow", String.join(";", ServerConfigurationService.getStrings("browser.feature.allow"))));
 						    // youtube seems ok with length and width
 						    if(lengthOk(height)) {
 							    item.decorate(new UIFreeAttributeDecorator("height", height.getOld()));
@@ -2312,7 +2315,9 @@ public class ShowPageProducer implements ViewComponentProducer, DefaultView, Nav
 						} else  {
 						    UIOutput.make(tableRow, "iframe-link-div");
 						    UILink.make(tableRow, "iframe-link-link", messageLocator.getMessage("simplepage.open_new_window"), itemUrl);
-						    item = UIOutput.make(tableRow, "iframe").decorate(new UIFreeAttributeDecorator("src", itemUrl));
+						    item = UIOutput.make(tableRow, "iframe")
+									.decorate(new UIFreeAttributeDecorator("src", itemUrl))
+									.decorate(new UIFreeAttributeDecorator("allow", String.join(";", ServerConfigurationService.getStrings("browser.feature.allow"))));
 						    // if user specifies auto, use Javascript to resize the
 						    // iframe when the
 						    // content changes. This only works for URLs with the
@@ -3864,7 +3869,8 @@ public class ShowPageProducer implements ViewComponentProducer, DefaultView, Nav
 			if (i.getHeight() != null && !i.getHeight().equals(""))
 			    height = i.getHeight().replace("px","");  // just in case
 			
-			UIComponent iframe = UIOutput.make(container, "blti-iframe");
+			UIComponent iframe = UIOutput.make(container, "blti-iframe")
+					.decorate(new UIFreeAttributeDecorator("allow", String.join(";", ServerConfigurationService.getStrings("browser.feature.allow"))));
 			if (lessonEntity != null)
 			    iframe.decorate(new UIFreeAttributeDecorator("src", lessonEntity.getUrl()));
 			
@@ -5067,6 +5073,8 @@ public class ShowPageProducer implements ViewComponentProducer, DefaultView, Nav
 		UIInput.make(form, "open_date_string", "#{simplePageBean.peerEvalOpenDate}");
 		UIOutput.make(form, "open_date_dummy");
 
+		UIOutput.make(form, "peer_eval_due_date_label", messageLocator.getMessage("simplepage.peer-eval.due_date"));
+       
 		UIOutput dueDateField = UIOutput.make(form, "peer_eval_due_date:");
 		UIInput.make(form, "due_date_string", "#{simplePageBean.peerEvalDueDate}");
 		UIOutput.make(form, "due_date_dummy");

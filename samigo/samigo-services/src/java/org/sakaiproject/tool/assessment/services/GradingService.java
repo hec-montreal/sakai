@@ -22,6 +22,7 @@
 package org.sakaiproject.tool.assessment.services;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -988,6 +989,7 @@ public class GradingService
                                totalItems, fibEmiAnswersMap, emiScoresMap, publishedAnswerHash, regrade, calcQuestionAnswerSequence);
         }
         catch (FinFormatException e) {
+        	log.warn("Fin Format Exception while processing response. ", e);
         	autoScore = 0d;
         	if (invalidFINMap != null) {
         		if (invalidFINMap.containsKey(itemId)) {
@@ -1189,7 +1191,7 @@ public class GradingService
       //entry.getValue()[1] = min score
       //entry.getValue()[2] = how many question answers to divide minScore across
       for(Entry<Long, Double[]> entry : minScoreCheck.entrySet()){
-    	  if(entry.getValue()[0] < entry.getValue()[1]){
+    	  if(entry.getValue()[0] <= entry.getValue()[1]){
     		  //reset all scores to 0 since the user didn't get all correct answers
     		  iter = itemGradingSet.iterator();
     		  while(iter.hasNext()){
@@ -1261,14 +1263,13 @@ public class GradingService
   }
 
   private double getTotalAutoScore(Set itemGradingSet){
-    double totalAutoScore =0;
-    Iterator iter = itemGradingSet.iterator();
-    while (iter.hasNext()){
-      ItemGradingData i = (ItemGradingData)iter.next();
-      if (i.getAutoScore()!=null)
-	totalAutoScore += i.getAutoScore();
+    BigDecimal totalAutoScore = BigDecimal.ZERO;
+    for(ItemGradingData itemGradingData : (Set<ItemGradingData>) itemGradingSet){
+        if (itemGradingData.getAutoScore()!=null){
+            totalAutoScore = totalAutoScore.add(new BigDecimal(itemGradingData.getAutoScore()));
+        }
     }
-    return totalAutoScore;
+    return totalAutoScore.doubleValue();
   }
 
   public void notifyGradebookByScoringType(AssessmentGradingData data, PublishedAssessmentIfc pub){
@@ -1342,22 +1343,31 @@ public class GradingService
                     correctAnswers++;
                 }
               }
+
               initScore = getAnswerScore(itemGrading, publishedAnswerHash);
-              if (initScore > 0)
-                autoScore = initScore / correctAnswers;
-              else
-                autoScore = (getTotalCorrectScore(itemGrading, publishedAnswerHash) / correctAnswers) * ((double) -1);
+              BigDecimal initialScore = new BigDecimal(initScore);
+              BigDecimal automaticScore = BigDecimal.ZERO;
+
+              if (initialScore.compareTo(BigDecimal.ZERO) == 1){
+                  automaticScore = initialScore.divide(new BigDecimal(correctAnswers), MathContext.DECIMAL128);
+              } else{
+                  automaticScore = new BigDecimal(getTotalCorrectScore(itemGrading, publishedAnswerHash))
+                      .divide(new BigDecimal(correctAnswers), MathContext.DECIMAL128);
+                  automaticScore = automaticScore.multiply(new BigDecimal(-1.0d), MathContext.DECIMAL128);
+              }
 
               //overridescore?
-              if (itemGrading.getOverrideScore() != null)
-                autoScore += itemGrading.getOverrideScore();
-              if (!totalItems.containsKey(itemId)){
-                totalItems.put(itemId, autoScore);
+              if (itemGrading.getOverrideScore() != null){
+                autoScore = automaticScore.add(new BigDecimal(itemGrading.getOverrideScore())).doubleValue();
               }
-              else{
-                accumelateScore = ((Double)totalItems.get(itemId));
-                accumelateScore += autoScore;
-                totalItems.put(itemId, accumelateScore);
+
+              if (!totalItems.containsKey(itemId)){
+                  totalItems.put(itemId, autoScore);
+              } else{
+                  BigDecimal accumulatedScore = new BigDecimal(((Double)totalItems.get(itemId)));
+                  accumulatedScore = accumulatedScore.add(new BigDecimal(autoScore));
+                  accumelateScore = accumulatedScore.doubleValue();
+                  totalItems.put(itemId, accumelateScore);
               }
               break;
 
@@ -1930,6 +1940,11 @@ Here are the definition and 12 cases I came up with (lydia, 01/2006):
 		  String studentAnswerText = null;
 		  if (data.getAnswerText() != null) {
 			  studentAnswerText = data.getAnswerText().replaceAll("\\s+", "").replace(',','.');    // in Spain, comma is used as a decimal point
+			  //The UI syntax expects a format with curly braces for complex numbers, remove them for the Commons Math library.
+			  if(StringUtils.contains(studentAnswerText, "{") && StringUtils.contains(studentAnswerText, "}")){
+				  studentAnswerText = StringUtils.replace(studentAnswerText, "{", "");
+				  studentAnswerText = StringUtils.replace(studentAnswerText, "}", "");
+			  }
 		  }
 
 		  if (range) {
@@ -1962,6 +1977,11 @@ Here are the definition and 12 cases I came up with (lydia, 01/2006):
 
 			  if (answer != null){ 	 
 		             answer = answer.replaceAll("\\s+", "").replace(',','.');  // in Spain, comma is used as a decimal point 	 
+		             //The UI syntax expects a format with curly braces, remove them for the Commons Math library.
+		             if(StringUtils.contains(answer, "{") && StringUtils.contains(answer, "}")){
+		                 answer = StringUtils.replace(answer, "{", "");
+		                 answer = StringUtils.replace(answer, "}", "");
+		             }
 			  }	 
 		 
 			  try {
@@ -2060,7 +2080,7 @@ Here are the definition and 12 cases I came up with (lydia, 01/2006):
    */
   public Map validate(String value) {
 	  Map map = new HashMap();
-	  if (value == null || value.trim().equals("")) {
+	  if (StringUtils.isEmpty(value)) {
 		  return map;
 	  }
 	  String trimmedValue = value.trim();

@@ -351,6 +351,10 @@ public class SimplePageBean {
     //        SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 	SimpleDateFormat isoDateFormat = getIsoDateFormat();
 	
+        // SAK-41846 - Counters to adjust item sequences when multiple files are added simultaneously
+        private int totalMultimediaFilesToAdd = 0;
+        private int remainingMultimediaFilesToAdd = 0;
+
 	public void setPeerEval(boolean peerEval) {
 		this.peerEval = peerEval;
 	}
@@ -4777,7 +4781,7 @@ public class SimplePageBean {
 		if (order == null) {
 			return "cancel";
 		}
-		
+
 		simplePageToolDao.setRefreshMode();
 
 		fixorder(); // order has to be contiguous or things will break
@@ -5208,20 +5212,19 @@ public class SimplePageBean {
 		
     private boolean arePageItemsComplete(long pageId) {
 
-	int sequence = 1;
-	SimplePageItem i = simplePageToolDao.findNextItemOnPage(pageId, sequence);
+        int sequence = 0;
+        SimplePageItem i = simplePageToolDao.findNextItemOnPage(pageId, sequence);
 
-	while (i != null) {
-	    if (i.isRequired() && !isItemComplete(i) && isItemVisible(i)) 
-		return false; 
+        while (i != null) {
+            if (i.isRequired() && !isItemComplete(i) && isItemVisible(i)) {
+                return false;
+            }
+            sequence++;
+            i = simplePageToolDao.findNextItemOnPage(pageId, sequence);
+        }
 
-	    sequence++; 
-	    i = simplePageToolDao.findNextItemOnPage(pageId, sequence); 
-	}
-
-	return true;
+        return true;
     }
-
 
     // this is called in a loop to see whether items are available. Since computing it can require
     // database transactions, we cache the results
@@ -5512,7 +5515,6 @@ public class SimplePageBean {
 			return true;
 		}
 		
-		
 		List<SimplePageItem> items = getItemsOnPage(Long.valueOf(findItem(itemId).getSakaiId()));
 
 		for (SimplePageItem item : items) {
@@ -5593,8 +5595,9 @@ public class SimplePageBean {
 			if (i.getSakaiId().equals(currentPageId)) {
 				return needed;	// reached current page. we're done
 			}
-			if (i.isRequired() && !isItemComplete(i) && isItemVisible(i))
+			if (i.isRequired() && !isItemComplete(i) && isItemVisible(i)) {
 				needed.add(i.getName());
+			}
 		}
 
 		return needed;
@@ -6273,6 +6276,10 @@ public class SimplePageBean {
 			if (!checkCsrf())
 			    return;
 
+			// SAK-41846 - Initialize counters to keep track of files to add and the item sequence values to adjust
+			totalMultimediaFilesToAdd = multipartMap.size();
+			remainingMultimediaFilesToAdd = totalMultimediaFilesToAdd;
+
 			if (multipartMap.size() > 0) {
 				// 	user specified a file, create it
 				String[] fnames = new String[0];
@@ -6296,6 +6303,10 @@ public class SimplePageBean {
 			log.error(exception.getMessage(), exception);
 		} finally {
 			popAdvisor(advisor);
+
+			// Reset these counters
+			totalMultimediaFilesToAdd = 0;
+			remainingMultimediaFilesToAdd = 0;
 		}
 		
 	}
@@ -6499,8 +6510,18 @@ public class SimplePageBean {
 			// 	otherwise initialize to false
 			if (isMultimedia || itemId == -1)
 				item.setSameWindow(false);
-			
+
 			clearImageSize(item);
+
+			// SAK-41846 - Adjust the sequence if mutliple files are being added simultaneously
+			if (totalMultimediaFilesToAdd > 0) {
+			    int diff = totalMultimediaFilesToAdd - remainingMultimediaFilesToAdd;
+			    if (diff > 0) {
+				item.setSequence(item.getSequence() + diff);
+			    }
+			    remainingMultimediaFilesToAdd--;
+			}
+
 			try {
 			    //		if (itemId == -1)
 			    //		saveItem(item);

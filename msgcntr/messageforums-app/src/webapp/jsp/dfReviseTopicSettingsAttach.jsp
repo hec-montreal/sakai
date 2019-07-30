@@ -114,8 +114,7 @@
 						  <h:outputText value="#{ForumTool.selectedForum.forum.title}" rendered="#{!ForumTool.showForumLinksInNav}"/>
 						  <h:outputText value=" " /><h:outputText value=" / " /><h:outputText value=" " />
 						  <h:outputText value="#{ForumTool.selectedTopic.topic.title}" />
-							<h:outputText value="#{msgs.cdfm_discussion_topic_settings}" />
-			
+		
 						</h3>
 
  			<div class="instruction">
@@ -184,7 +183,6 @@
 				</f:facet>
 							<h:commandLink action="#{ForumTool.processDeleteAttachSetting}" 
 								immediate="true"
-								onfocus="document.forms[0].onsubmit();"
 								title="#{msgs.cdfm_remove}">
 							<h:outputText value="#{msgs.cdfm_remove}"/>
 								<f:param value="#{eachAttach.attachment.attachmentId}" name="dfmsg_current_attach"/>
