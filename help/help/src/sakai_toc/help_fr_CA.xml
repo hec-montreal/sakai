@@ -29,6 +29,7 @@
         <ref bean="gradebookGuide"/>
         <ref bean="preferenceUserGuide"/>
         <ref bean="ltiGuide"/>
+        <ref bean="sectionsUserGuide"/>
       </list>
     </property>
   </bean>
@@ -592,6 +593,32 @@
     </property>
     <property name="defaultForTool">
       <value>sakai.basiclti</value>
+    </property>
+  </bean>
+  
+   <bean id="sectionsUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+      <value>Sections</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="sectionsRedirect"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="sectionsRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>sectionsRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/sections.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.sections</value>
     </property>
   </bean> 
 </beans>
