@@ -28,6 +28,7 @@
         <ref bean="viaUserGuide"/>
         <ref bean="gradebookGuide"/>
         <ref bean="preferenceUserGuide"/>
+        <ref bean="ltiGuide"/>
       </list>
     </property>
   </bean>
@@ -552,7 +553,7 @@
       </list>
     </property>
   </bean>
-  
+
   <bean id="preferenceRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
     <property name="docId">
       <value>preferenceRedirect</value>
@@ -565,6 +566,32 @@
     </property>
     <property name="defaultForTool">
       <value>sakai.preferences</value>
+    </property>
+  </bean> 
+
+  <bean id="ltiGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
+    <property name="name">
+	    <value>Outil externe</value>
+    </property>
+    <property name="resources">
+      <list>
+        <ref bean="ltiRedirect"/>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="ltiRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
+    <property name="docId">
+      <value>ltiRedirect</value>
+    </property>
+    <property name="name">
+      <value>Aide</value>
+    </property>
+    <property name="location">
+      <value>/zonecours_confluence_redirects/basiclti.html</value>
+    </property>
+    <property name="defaultForTool">
+      <value>sakai.basiclti</value>
     </property>
   </bean> 
 </beans>
