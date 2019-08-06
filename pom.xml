@@ -63,8 +63,10 @@
                 <module>delegatedaccess</module>
                 <module>deploy</module>
                 <module>edu-services</module>
-                <module>emailtemplateservice</module>
-                <module>endorsed</module>
+		<module>emailtemplateservice</module>
+		<!--  HEC pas besoin de se module, c'est pour des langues qu'on n'utilise pas (voir le README.txt)
+		<module>endorsed</module>
+		-->
                 <module>entitybroker</module>
                 <module>external-calendaring-service</module>
                 <module>feedback</module>
