@@ -30,7 +30,6 @@
         <ref bean="preferenceUserGuide"/>
         <ref bean="ltiGuide"/>
         <ref bean="sectionsUserGuide"/>
-        <ref bean="forumsUserGuide"/>
         <ref bean="rubricsUserGuide"/>
       </list>
     </property>
@@ -621,32 +620,6 @@
     </property>
     <property name="defaultForTool">
       <value>sakai.sections</value>
-    </property>
-  </bean>
-
-    <bean id="forumsUserGuide" class="org.sakaiproject.component.app.help.model.CategoryBean">
-      <property name="name">
-        <value>Forums</value>
-      </property>
-      <property name="resources">
-        <list>
-          <ref bean="forumsRedirect"/>
-        </list>
-      </property>
-  </bean>
-
-  <bean id="forumsRedirect" class="org.sakaiproject.component.app.help.model.ResourceBean">
-    <property name="docId">
-      <value>forumsRedirect</value>
-    </property>
-    <property name="name">
-      <value>Aide</value>
-    </property>
-    <property name="location">
-      <value>/zonecours_confluence_redirects/forums.html</value>
-    </property>
-    <property name="defaultForTool">
-      <value>sakai.forums</value>
     </property>
   </bean>
 
