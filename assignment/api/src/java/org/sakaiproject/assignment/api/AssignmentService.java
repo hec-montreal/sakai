@@ -23,7 +23,11 @@ package org.sakaiproject.assignment.api;
 
 import java.io.OutputStream;
 import java.time.Instant;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 import org.sakaiproject.assignment.api.model.Assignment;
 import org.sakaiproject.assignment.api.model.AssignmentSubmission;
@@ -644,7 +648,7 @@ public interface AssignmentService extends EntityProducer {
      * @param assignmentId The assignment id
      * @return The url as a String
      */
-    public String getDeepLink(String context, String assignmentId) throws Exception;
+    public String getDeepLink(String context, String assignmentId, String userId) throws Exception;
 
     /**
      * get csv separator for exporting to CSV. It can be a comma or point configured through

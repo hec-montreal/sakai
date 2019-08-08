@@ -15,6 +15,7 @@
  */
 package org.sakaiproject.portal.beans.bullhornhandlers;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,8 +24,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import java.time.Instant;
-
 import javax.inject.Inject;
 
 import org.sakaiproject.assignment.api.AssignmentConstants;
@@ -32,13 +31,11 @@ import org.sakaiproject.assignment.api.AssignmentService;
 import org.sakaiproject.assignment.api.AssignmentServiceConstants;
 import org.sakaiproject.assignment.api.model.Assignment;
 import org.sakaiproject.authz.api.AuthzGroupService;
-import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.event.api.Event;
 import org.sakaiproject.memory.api.Cache;
 import org.sakaiproject.portal.api.BullhornData;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
-
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -71,14 +68,12 @@ public class AddAssignmentBullhornHandler extends AbstractBullhornHandler {
 
         String siteId = pathParts[3];
         String assignmentId = pathParts[pathParts.length - 1];
-        SecurityAdvisor sa = unlock(new String[] {AssignmentServiceConstants.SECURE_ACCESS_ASSIGNMENT, AssignmentServiceConstants.SECURE_ADD_ASSIGNMENT_SUBMISSION});
         try {
             Assignment assignment = assignmentService.getAssignment(assignmentId);
             Instant openTime = assignment.getOpenDate();
             if (openTime == null || openTime.isBefore(Instant.now())) {
                 Site site = siteService.getSite(siteId);
                 String title = assignment.getTitle();
-                String url = assignmentService.getDeepLink(siteId, assignmentId);
                 Set<String> groupIds = assignment.getGroups();
                 Collection<String> groupsUsers = authzGroupService.getAuthzUsersInGroups(groupIds);
 
@@ -89,6 +84,7 @@ public class AddAssignmentBullhornHandler extends AbstractBullhornHandler {
                     //  If this is a grouped assignment, is 'to' in one of the groups?
                     if (groupIds.size() == 0 || groupsUsers.contains(to)) {
                         if (!from.equals(to) && !securityService.isSuperUser(to)) {
+                        	String url = assignmentService.getDeepLink(siteId, assignmentId, to);
                             bhEvents.add(new BullhornData(from, to, siteId, title, url, false));
                             countCache.remove(to);
                         }
@@ -99,8 +95,6 @@ public class AddAssignmentBullhornHandler extends AbstractBullhornHandler {
             }
         } catch (Exception ex) {
             log.error("Failed to find either the assignment or the site", ex);
-        } finally {
-            lock(sa);
         }
 
         return Optional.empty();
