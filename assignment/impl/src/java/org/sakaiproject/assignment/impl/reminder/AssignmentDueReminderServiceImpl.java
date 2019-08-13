@@ -178,7 +178,31 @@ public class AssignmentDueReminderServiceImpl implements AssignmentDueReminderSe
         String replyToStr = getReplyTo(instructors);
         log.debug("Reply to string: " + replyToStr);
 
-        String subject = "Assignment '" + assignmentTitle + "' Due on " + formattedDateDue;
+        //version française temporaire
+        String subject = "Échéance de la remise '" + assignmentTitle + "' le " + formattedDateDue;
+
+        StringBuilder body = new StringBuilder();
+        body.append("Bonjour ");
+        body.append(getUserFirstName(submitter.getUserId()));
+        body.append(",<br />");
+        body.append("<br />");
+        int totalHours = serverConfigurationService.getInt("assignment.reminder.hours", 24);
+        String hoursMod = (totalHours % 24 == 0) ? "." : " et " + (totalHours % 24) + " heures.";
+        String timeText = (totalHours < 25) ? totalHours + " heures." : (totalHours / 24) + " jours" + hoursMod;
+        body.append(String.format("Rappel: L'échéance de l'une de vos remises est dans %s", timeText));
+        body.append("<br />");
+        body.append("<ul>");
+        body.append("<li> Remise   : ").append(assignment.getTitle()).append("</li>");
+        body.append("<li> Échéance : ").append(formattedDateDue).append("</li>");
+        body.append("<li> Cours    : ").append(courseName).append("</li>");
+        body.append("</ul>");
+        body.append("<br />");
+        body.append("Bonne journée!");
+        body.append("<br />");
+        body.append("- ").append(getServiceName());
+
+      
+        /*String subject = "Assignment '" + assignmentTitle + "' Due on " + formattedDateDue;
 
         StringBuilder body = new StringBuilder();
         body.append("Hello ");
@@ -198,7 +222,7 @@ public class AssignmentDueReminderServiceImpl implements AssignmentDueReminderSe
         body.append("<br />");
         body.append("Have a nice day!");
         body.append("<br />");
-        body.append("- ").append(getServiceName());
+        body.append("- ").append(getServiceName());*/
 
         log.debug("Email To: '" + toStr + "' body: " + body.toString());
 
