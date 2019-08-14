@@ -57,7 +57,6 @@ import java.util.Set;
  */
 @Slf4j
 public class AssignmentDueReminderServiceImpl implements AssignmentDueReminderService {
-    private static final String DATE_FORMAT = "MMM dd, yyyy '@' hh:mm aa";
     private List<String> additionalHeaders = new ArrayList<>();
     @Setter
     private EmailService emailService;
@@ -159,8 +158,9 @@ public class AssignmentDueReminderServiceImpl implements AssignmentDueReminderSe
         String courseName = site.getTitle();
 
         Locale locale = new ResourceLoader().getLocale(submitter.getUserId());
+        String dateFormat = rl.getString("email.reminder.dateformat");
         SimpleDateFormat sdf = (locale != null)
-                                    ? new SimpleDateFormat(DATE_FORMAT, locale) : new SimpleDateFormat(DATE_FORMAT);
+                                    ? new SimpleDateFormat(dateFormat, locale) : new SimpleDateFormat(dateFormat);
         Instant dueDate = assignment.getDueDate();
         String formattedDateDue = sdf.format(Date.from(dueDate));
 
