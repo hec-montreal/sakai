@@ -75,6 +75,8 @@ public class AssignmentDueReminderServiceImpl implements AssignmentDueReminderSe
     private SecurityService securityService;
     @Setter
     private ServerConfigurationService serverConfigurationService;
+    @Setter 
+    private ResourceLoader resourceLoader;
 
     public void init() {
         log.debug("AssignmentDueReminderService init()");
@@ -178,51 +180,26 @@ public class AssignmentDueReminderServiceImpl implements AssignmentDueReminderSe
         String replyToStr = getReplyTo(instructors);
         log.debug("Reply to string: " + replyToStr);
 
-        //version française temporaire
-        String subject = "Échéance de la remise '" + assignmentTitle + "' le " + formattedDateDue;
+        String subject = resourceLoader.getFormattedMessage("email.reminder.subject", assignmentTitle, formattedDateDue);
 
         StringBuilder body = new StringBuilder();
-        body.append("Bonjour ");
-        body.append(getUserFirstName(submitter.getUserId()));
+        body.append(resourceLoader.getFormattedMessage("email.reminder.hello", submitter.getUserId()));
         body.append(",<br />");
         body.append("<br />");
-        int totalHours = serverConfigurationService.getInt("assignment.reminder.hours", 24);
-        String hoursMod = (totalHours % 24 == 0) ? "." : " et " + (totalHours % 24) + " heures.";
-        String timeText = (totalHours < 25) ? totalHours + " heures." : (totalHours / 24) + " jours" + hoursMod;
-        body.append(String.format("Rappel: L'échéance de l'une de vos remises est dans %s", timeText));
+        int totalHours = serverConfigurationService.getInt("email.reminder.hours", 24);
+        String hoursMod = (totalHours % 24 == 0) ? "." : resourceLoader.getFormattedMessage("email.reminder.andhours", (totalHours % 24));
+        String timeText = (totalHours < 25) ? resourceLoader.getFormattedMessage("email.reminder.hours", totalHours) : resourceLoader.getFormattedMessage("email.reminder.days", (totalHours / 24)) + " " + hoursMod;
+        body.append(resourceLoader.getFormattedMessage("email.reminder.duewithin", timeText));
         body.append("<br />");
         body.append("<ul>");
-        body.append("<li> Remise   : ").append(assignment.getTitle()).append("</li>");
-        body.append("<li> Échéance : ").append(formattedDateDue).append("</li>");
-        body.append("<li> Cours    : ").append(courseName).append("</li>");
+        body.append("<li> ").append(resourceLoader.getFormattedMessage("email.reminder.assignment", assignment.getTitle())).append("</li>");
+        body.append("<li> ").append(resourceLoader.getFormattedMessage("email.reminder.duedate", formattedDateDue)).append("</li>");
+        body.append("<li> ").append(resourceLoader.getFormattedMessage("email.reminder.class", courseName)).append("</li>");
         body.append("</ul>");
         body.append("<br />");
-        body.append("Bonne journée!");
+        body.append(resourceLoader.getString("email.reminder.niceday"));
         body.append("<br />");
         body.append("- ").append(getServiceName());
-
-      
-        /*String subject = "Assignment '" + assignmentTitle + "' Due on " + formattedDateDue;
-
-        StringBuilder body = new StringBuilder();
-        body.append("Hello ");
-        body.append(getUserFirstName(submitter.getUserId()));
-        body.append(",<br />");
-        body.append("<br />");
-        int totalHours = serverConfigurationService.getInt("assignment.reminder.hours", 24);
-        String hoursMod = (totalHours % 24 == 0) ? "." : " and " + (totalHours % 24) + " hours.";
-        String timeText = (totalHours < 25) ? totalHours + " hours." : (totalHours / 24) + " days" + hoursMod;
-        body.append(String.format("Reminder: An assignment of yours is due within %s", timeText));
-        body.append("<br />");
-        body.append("<ul>");
-        body.append("<li> Assignment : ").append(assignment.getTitle()).append("</li>");
-        body.append("<li> Due        : ").append(formattedDateDue).append("</li>");
-        body.append("<li> Class      : ").append(courseName).append("</li>");
-        body.append("</ul>");
-        body.append("<br />");
-        body.append("Have a nice day!");
-        body.append("<br />");
-        body.append("- ").append(getServiceName());*/
 
         log.debug("Email To: '" + toStr + "' body: " + body.toString());
 
