@@ -75,8 +75,6 @@ public class AssignmentDueReminderServiceImpl implements AssignmentDueReminderSe
     private SecurityService securityService;
     @Setter
     private ServerConfigurationService serverConfigurationService;
-    @Setter 
-    private ResourceLoader resourceLoader;
 
     public void init() {
         log.debug("AssignmentDueReminderService init()");
@@ -151,6 +149,8 @@ public class AssignmentDueReminderServiceImpl implements AssignmentDueReminderSe
     private void sendEmailReminder(Site site, Assignment assignment, Member submitter) {
         log.debug("SendEmailReminder: '" + assignment.getTitle() + "' to " + submitter.getUserDisplayId());
 
+        ResourceLoader rl = new ResourceLoader(submitter.getUserId(), "assignment");
+
         String assignmentTitle = assignment.getTitle();
         if (assignment.getTitle().length() > 11) {
             assignmentTitle = assignment.getTitle().substring(0, 11) + "[...]";
@@ -180,24 +180,24 @@ public class AssignmentDueReminderServiceImpl implements AssignmentDueReminderSe
         String replyToStr = getReplyTo(instructors);
         log.debug("Reply to string: " + replyToStr);
 
-        String subject = resourceLoader.getFormattedMessage("email.reminder.subject", assignmentTitle, formattedDateDue);
+        String subject = rl.getFormattedMessage("email.reminder.subject", assignmentTitle, formattedDateDue);
 
         StringBuilder body = new StringBuilder();
-        body.append(resourceLoader.getFormattedMessage("email.reminder.hello", submitter.getUserId()));
+        body.append(rl.getFormattedMessage("email.reminder.hello", getUserFirstName(submitter.getUserId())));
         body.append(",<br />");
         body.append("<br />");
         int totalHours = serverConfigurationService.getInt("email.reminder.hours", 24);
-        String hoursMod = (totalHours % 24 == 0) ? "." : resourceLoader.getFormattedMessage("email.reminder.andhours", (totalHours % 24));
-        String timeText = (totalHours < 25) ? resourceLoader.getFormattedMessage("email.reminder.hours", totalHours) : resourceLoader.getFormattedMessage("email.reminder.days", (totalHours / 24)) + " " + hoursMod;
-        body.append(resourceLoader.getFormattedMessage("email.reminder.duewithin", timeText));
+        String hoursMod = (totalHours % 24 == 0) ? "." : rl.getFormattedMessage("email.reminder.andhours", (totalHours % 24));
+        String timeText = (totalHours < 25) ? rl.getFormattedMessage("email.reminder.hours", totalHours) : rl.getFormattedMessage("email.reminder.days", (totalHours / 24)) + " " + hoursMod;
+        body.append(rl.getFormattedMessage("email.reminder.duewithin", timeText));
         body.append("<br />");
         body.append("<ul>");
-        body.append("<li> ").append(resourceLoader.getFormattedMessage("email.reminder.assignment", assignment.getTitle())).append("</li>");
-        body.append("<li> ").append(resourceLoader.getFormattedMessage("email.reminder.duedate", formattedDateDue)).append("</li>");
-        body.append("<li> ").append(resourceLoader.getFormattedMessage("email.reminder.class", courseName)).append("</li>");
+        body.append("<li> ").append(rl.getFormattedMessage("email.reminder.assignment", assignment.getTitle())).append("</li>");
+        body.append("<li> ").append(rl.getFormattedMessage("email.reminder.duedate", formattedDateDue)).append("</li>");
+        body.append("<li> ").append(rl.getFormattedMessage("email.reminder.class", courseName)).append("</li>");
         body.append("</ul>");
         body.append("<br />");
-        body.append(resourceLoader.getString("email.reminder.niceday"));
+        body.append(rl.getString("email.reminder.niceday"));
         body.append("<br />");
         body.append("- ").append(getServiceName());
 
