@@ -130,6 +130,9 @@ public class SiteHandler extends WorksiteHandler
 
 	private static final long AUTO_FAVORITES_REFRESH_INTERVAL_MS = 30000;
 
+	// Perso HEC - Hide view as student
+	private static final String HIDE_VIEW_AS_STUDENT_PROP = "portal.hideviewasstudent";
+	
 	public SiteHandler()
 	{
 		setUrlFragment(SiteHandler.URL_FRAGMENT);
@@ -907,7 +910,7 @@ public class SiteHandler extends WorksiteHandler
             	}
 			}
 
-			rcontext.put("viewAsStudentLink", Boolean.valueOf(roleswapcheck)); // this will tell our UI if we want the link for swapping roles to display
+			rcontext.put("viewAsStudentLink", (!ServerConfigurationService.getBoolean(HIDE_VIEW_AS_STUDENT_PROP, false)) && Boolean.valueOf(roleswapcheck)); // this will tell our UI if we want the link for swapping roles to display
 			rcontext.put("roleSwitchState", roleswitchstate); // this will tell our UI if we are in a role swapped state or not
 
 			int tabDisplayLabel = 1;
