@@ -35,6 +35,7 @@ import org.sakaiproject.event.api.NotificationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.user.api.Preferences;
 import org.sakaiproject.user.api.PreferencesService;
@@ -131,9 +132,23 @@ public class AssignmentDueReminderServiceImpl implements AssignmentDueReminderSe
                 };
                 securityService.pushAdvisor(advisor);
                 try {
-                    for (Member member : site.getMembers()) {
-                        if (member.isActive() && assignmentService.canSubmit(assignment, member.getUserId()) && checkEmailPreference(member)) {
-                            sendEmailReminder(site, assignment, member);
+                    Set<Member> members = null;
+                    if (!assignment.getGroups().isEmpty()) {
+                        members = new HashSet<Member>();
+                        for (String groupId : assignment.getGroups()) {
+                            Group group = site.getGroup(groupId);
+                            members.addAll(group.getMembers());
+                        }
+                    }
+                    else {
+                        members = site.getMembers();
+                    }
+
+                    if (members != null) {
+                        for (Member member : members) {
+                            if (member.isActive() && assignmentService.canSubmit(assignment, member.getUserId()) && checkEmailPreference(member)) {
+                                sendEmailReminder(site, assignment, member);
+                            }
                         }
                     }
                 } finally {
