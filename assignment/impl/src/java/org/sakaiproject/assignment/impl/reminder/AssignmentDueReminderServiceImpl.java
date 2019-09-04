@@ -15,6 +15,8 @@
  */
 package org.sakaiproject.assignment.impl.reminder;
 
+import static org.sakaiproject.assignment.api.model.Assignment.Access.GROUP;
+
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -133,7 +135,7 @@ public class AssignmentDueReminderServiceImpl implements AssignmentDueReminderSe
                 securityService.pushAdvisor(advisor);
                 try {
                     Set<Member> members = null;
-                    if (!assignment.getGroups().isEmpty()) {
+                    if (assignment.getTypeOfAccess() == GROUP) {
                         members = new HashSet<Member>();
                         for (String groupId : assignment.getGroups()) {
                             Group group = site.getGroup(groupId);
