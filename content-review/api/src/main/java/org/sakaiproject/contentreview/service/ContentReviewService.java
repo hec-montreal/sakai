@@ -414,4 +414,14 @@ public interface ContentReviewService {
 	 * @param providerId
 	 */
 	public void webhookEvent(HttpServletRequest request, int providerId, Optional<String> customParam);
+
+	/**
+	 * Gets the ContentReviewItem's last error localized for the current user session
+	 */
+	public String getLocalizedLastError(ContentReviewItem item);
+	
+	/**
+	 * Flag to determine whether the service accepts submissions on behalf of users
+	 */
+	public boolean allowSubmissionsOnBehalf();
 }

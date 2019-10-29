@@ -22,7 +22,6 @@ package org.sakaiproject.tool.messageforums;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +36,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.stream.Collectors;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
@@ -45,6 +45,8 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.sakaiproject.api.app.messageforums.Area;
@@ -70,7 +72,6 @@ import org.sakaiproject.authz.api.PermissionsHelper;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.app.messageforums.MembershipItem;
 import org.sakaiproject.component.app.messageforums.dao.hibernate.HiddenGroupImpl;
-import org.sakaiproject.component.app.messageforums.dao.hibernate.PrivateMessageImpl;
 import org.sakaiproject.component.app.messageforums.dao.hibernate.PrivateTopicImpl;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -101,6 +102,7 @@ import org.sakaiproject.tool.messageforums.ui.PrivateTopicDecoratedBean;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.util.DateFormatterUtil;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.Validator;
@@ -163,7 +165,10 @@ public class PrivateMessagesTool
   private static final String MESSAGECENTER_HELPER_TOOL_ID = "sakai.messageforums.helper";
   private static final String MESSAGES_TOOL_ID = "sakai.messages";
   private static final String FORUMS_TOOL_ID = "sakai.forums";
-  
+
+  private static final String HIDDEN_SEARCH_FROM_ISO_DATE = "searchFromDateISO8601";
+  private static final String HIDDEN_SEARCH_TO_ISO_DATE = "searchToDateISO8601";
+
   /**
    *Dependency Injected 
    */
@@ -1279,7 +1284,7 @@ public void processChangeSelectView(ValueChangeEvent eve)
 	replyText.append(getResourceBundleString("pvt_msg_at"));
 	replyText.append(" " +formattedCreateTime);
 	replyText.append(getResourceBundleString("pvt_msg_comma"));
-    replyText.append(" " + pm.getAuthor() + " ");
+    replyText.append(" " + FormattedText.escapeHtml(pm.getAuthor(), false) + " ");
     replyText.append(getResourceBundleString("pvt_msg_wrote")); 
 	replyText.append("</span>");
     	
@@ -1340,7 +1345,7 @@ public void processChangeSelectView(ValueChangeEvent eve)
 	    
 	    // populate replyToBody with the forwarded text
 		forwardedText.append(getResourceBundleString("pvt_msg_fwd_heading") + "<br /><br />" +
-	    	getResourceBundleString("pvt_msg_fwd_authby", new Object[] {pm.getAuthor(), formattedCreateDate}) +  "<br />" +
+	    	getResourceBundleString("pvt_msg_fwd_authby", new Object[] {FormattedText.escapeHtml(pm.getAuthor(), false), formattedCreateDate}) +  "<br />" +
 	    	getResourceBundleString("pvt_msg_fwd_to", new Object[] {pm.getRecipientsAsText()}) + "<br />" +
 	    	getResourceBundleString("pvt_msg_fwd_subject", new Object[] {pm.getTitle()}) + "<br />" +
 	    	getResourceBundleString("pvt_msg_fwd_label", new Object[] {getDetailMsg().getLabel()}) + "<br />");
@@ -1437,7 +1442,7 @@ public void processChangeSelectView(ValueChangeEvent eve)
 		replyallText.append(getResourceBundleString("pvt_msg_at"));
 		replyallText.append(" " +formattedCreateTime);
 		replyallText.append(getResourceBundleString("pvt_msg_comma"));
-		replyallText.append(" " + pm.getAuthor() + " ");
+		replyallText.append(" " + FormattedText.escapeHtml(pm.getAuthor(), false) + " ");
 		replyallText.append(getResourceBundleString("pvt_msg_wrote")); 
 		replyallText.append("</span>");
 	    	
@@ -1825,6 +1830,7 @@ public void processChangeSelectView(ValueChangeEvent eve)
   private String returnDraftPage(){
 	  return processPvtMsgComposeCancel();
   }
+
   // created separate method as to be used with processPvtMsgSend() and processPvtMsgSaveDraft()
   public PrivateMessage constructMessage(boolean clearAttachments, PrivateMessage aMsg)
   {
@@ -1926,10 +1932,19 @@ public void processChangeSelectView(ValueChangeEvent eve)
       }
 
     }
-    //Add attachments
-    for(DecoratedAttachment attachment : (List<DecoratedAttachment>) attachments) {
-      prtMsgManager.addAttachToPvtMsg(aMsg, attachment.getAttachment());
-    }    
+
+    // Remove attachments from the message that are not in the bean
+    for (Attachment attachment : (List<Attachment>) aMsg.getAttachments()) {
+      if (attachments.stream().map(DecoratedAttachment::getAttachment).noneMatch(a -> a.getAttachmentId().equals(attachment.getAttachmentId()))) {
+        prtMsgManager.removePvtMsgAttachment(attachment);
+      }
+    }
+
+    // Add attachments to the message that are in the bean
+    for (DecoratedAttachment decoratedAttachment : attachments) {
+      prtMsgManager.addAttachToPvtMsg(aMsg, decoratedAttachment.getAttachment());
+    }
+
     if(clearAttachments){
     	//clear
     	attachments.clear();
@@ -3047,7 +3062,7 @@ public void processChangeSelectView(ValueChangeEvent eve)
   }
   
   //////////////////////////////   ATTACHMENT PROCESSING        //////////////////////////
-  private ArrayList attachments = new ArrayList();
+  private ArrayList<DecoratedAttachment> attachments = new ArrayList();
   
   private String removeAttachId = null;
   private ArrayList prepareRemoveAttach = new ArrayList();
@@ -3062,22 +3077,13 @@ public void processChangeSelectView(ValueChangeEvent eve)
     if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
         session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) 
     {
-      List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-      if(refs != null && refs.size()>0)
+      final List<Reference> refs = (List<Reference>) session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+      if(CollectionUtils.isNotEmpty(refs))
       {
-        Reference ref = (Reference)refs.get(0);
-        
-        for(int i=0; i<refs.size(); i++)
-        {
-          ref = (Reference) refs.get(i);
+        for(Reference ref : refs) {
           Attachment thisAttach = prtMsgManager.createPvtMsgAttachment(
               ref.getId(), ref.getProperties().getProperty(ref.getProperties().getNamePropDisplayName()));
-          
-          //TODO - remove this as being set for test only  
-          //thisAttach.setPvtMsgAttachId(Long.valueOf(1));
-          
           attachments.add(new DecoratedAttachment(thisAttach));
-          
         }
       }
     }
@@ -3093,30 +3099,18 @@ public void processChangeSelectView(ValueChangeEvent eve)
     if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
         session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) 
     {
-      List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-      if(refs != null && refs.size()>0)
+      final List<Reference> refs = (List<Reference>) session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+      if(CollectionUtils.isNotEmpty(refs))
       {
-        Reference ref = (Reference)refs.get(0);
-        
-        for(int i=0; i<refs.size(); i++)
-        {
-          ref = (Reference) refs.get(i);
+        for(Reference ref : refs) {
           Attachment thisAttach = prtMsgManager.createPvtMsgAttachment(
               ref.getId(), ref.getProperties().getProperty(ref.getProperties().getNamePropDisplayName()));
-          
-          //TODO - remove this as being set for test only
-          //thisAttach.setPvtMsgAttachId(Long.valueOf(1));
           allAttachments.add(new DecoratedAttachment(thisAttach));
         }
       }
     }
     session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
     session.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
-    
-//    if( allAttachments == null || (allAttachments.size()<1))
-//    {
-//      allAttachments.addAll(this.getDetailMsg().getMsg().getAttachments()) ;
-//    }
     return allAttachments;
   }
   
@@ -3167,45 +3161,22 @@ public void processChangeSelectView(ValueChangeEvent eve)
   }
   
   //Process remove attachment 
-  public String processDeleteAttach()
-  {
+  public String processDeleteAttach() {
     log.debug("processDeleteAttach()");
-    
-    ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-    String attachId = null;
-    
-    Map paramMap = context.getRequestParameterMap();
-    Iterator<Entry<Object, String>> itr = paramMap.entrySet().iterator();
-    while(itr.hasNext())
-    {
-      Entry<Object, String> entry = itr.next();
-      Object key = entry.getKey();
-      if( key instanceof String)
-      {
-        String name =  (String)key;
-        int pos = name.lastIndexOf("pvmsg_current_attach");
-        
-        if(pos>=0 && name.length()==pos+"pvmsg_current_attach".length())
-        {
-          attachId = entry.getValue();
-          break;
-        }
-      }
-    }
-    
-    if (StringUtils.isNotEmpty(attachId)) {
-      for (int i = 0; i < attachments.size(); i++)
-      {
-        if (attachId.equalsIgnoreCase(((DecoratedAttachment) attachments.get(i)).getAttachment()
-            .getAttachmentId()))
-        {
-          attachments.remove(i);
-          break;
-        }
-      }
-    }
 
-    return null ;
+    ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+
+    Map<String, String> paramMap = context.getRequestParameterMap();
+
+    if(paramMap != null) {
+        final String attachId = paramMap.entrySet().stream().
+                filter(entry -> entry.getKey().contains("pvmsg_current_attach")).
+                collect(Collectors.collectingAndThen(Collectors.toList(), list -> list.isEmpty() ? null : list.get(0).getValue()));
+        if (StringUtils.isNotEmpty(attachId)) {
+            attachments.removeIf(da -> attachId.equalsIgnoreCase(da.getAttachment().getAttachmentId()));
+        }
+    }
+    return null;
   }
  
   
@@ -3262,7 +3233,7 @@ public void processChangeSelectView(ValueChangeEvent eve)
       
       for(int i=0; i<attachments.size(); i++)
       {
-      	DecoratedAttachment thisAttach = (DecoratedAttachment)attachments.get(i);
+        DecoratedAttachment thisAttach = attachments.get(i);
         if(((Long)thisAttach.getAttachment().getPvtMsgAttachId()).toString().equals(removeAttachId))
         {
           attachments.remove(i);
@@ -3767,7 +3738,20 @@ public void processChangeSelectView(ValueChangeEvent eve)
 
     List newls = new ArrayList() ;
     List tempPvtMsgLs= new ArrayList();
-    
+
+    // If the hidden values contain valid ISO dates set them
+    Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+    String searchFromISODate = params.get(HIDDEN_SEARCH_FROM_ISO_DATE);
+    String searchToISODate = params.get(HIDDEN_SEARCH_TO_ISO_DATE);
+
+    if(DateFormatterUtil.isValidISODate(searchFromISODate)){
+        setSearchFromDate(DateFormatterUtil.parseISODate(searchFromISODate));
+    }
+
+    if(DateFormatterUtil.isValidISODate(searchToISODate)){
+        setSearchToDate(DateFormatterUtil.parseISODate(searchToISODate));
+    }
+
     if(searchOnDate && searchFromDate == null && searchToDate==null) {
        setErrorMessage(getResourceBundleString(MISSING_BEG_END_DATE));
     }
@@ -3817,6 +3801,8 @@ public void processChangeSelectView(ValueChangeEvent eve)
     searchOnDate=false;
     searchFromDate=null;
     searchToDate=null;
+    searchFromDateString=null;
+    searchToDateString=null;
     
     return DISPLAY_MESSAGES_PG;
   }
@@ -3834,7 +3820,11 @@ public void processChangeSelectView(ValueChangeEvent eve)
   @Getter @Setter
   public Date searchFromDate;
   @Getter @Setter
-  public Date searchToDate; 
+  public Date searchToDate;
+  @Getter @Setter
+  public String searchFromDateString;
+  @Getter @Setter
+  public String searchToDateString; 
 
   //////////////        HELPER      //////////////////////////////////
   /**
@@ -4582,5 +4572,9 @@ public void processChangeSelectView(ValueChangeEvent eve)
         descMap.put("en-US", "User sent a private message with subject: " + subject);
         lrsObject.setDescription(descMap);
         return new LRS_Statement(student, verb, lrsObject);
+    }
+
+    public String getAttachmentReadableSize(final String attachmentSize) {
+      return FileUtils.byteCountToDisplaySize(Long.parseLong(attachmentSize));
     }
 }

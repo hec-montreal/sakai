@@ -56,7 +56,6 @@ public class GradeAssignmentBullhornHandler extends AbstractBullhornHandler {
 
         String siteId = pathParts[3];
         String submissionId = pathParts[pathParts.length - 1];
-
         try {
             AssignmentSubmission submission = assignmentService.getSubmission(submissionId);
             if (submission.getGradeReleased()) {

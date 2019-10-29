@@ -84,7 +84,7 @@ public class AddAssignmentBullhornHandler extends AbstractBullhornHandler {
                     //  If this is a grouped assignment, is 'to' in one of the groups?
                     if (groupIds.size() == 0 || groupsUsers.contains(to)) {
                         if (!from.equals(to) && !securityService.isSuperUser(to)) {
-                        	String url = assignmentService.getDeepLink(siteId, assignmentId, to);
+                            String url = assignmentService.getDeepLink(siteId, assignmentId, to);
                             bhEvents.add(new BullhornData(from, to, siteId, title, url, false));
                             countCache.remove(to);
                         }

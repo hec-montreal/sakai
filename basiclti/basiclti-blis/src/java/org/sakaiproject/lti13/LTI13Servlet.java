@@ -426,7 +426,7 @@ public class LTI13Servlet extends HttpServlet {
 			return;
 		}
 
-		Jws<Claims> claims = Jwts.parser().setSigningKey(publicKey).parseClaimsJws(client_assertion);
+		Jws<Claims> claims = Jwts.parser().setAllowedClockSkewSeconds(60).setSigningKey(publicKey).parseClaimsJws(client_assertion);
 
 		if (claims == null) {
 			LTI13Util.return400(response, "Could not verify signature");
@@ -558,8 +558,8 @@ public class LTI13Servlet extends HttpServlet {
 
 		Long scoreGiven = SakaiBLTIUtil.getLongNull(jso.get("scoreGiven"));
 		Long scoreMaximum = SakaiBLTIUtil.getLongNull(jso.get("scoreMaximum"));
-		String userId = (String) jso.get("userId");  // TODO: LTI13 quirk - should be subject
-		String comment = (String) jso.get("comment");
+		String userId = SakaiBLTIUtil.getStringNull(jso.get("userId"));  // TODO: LTI13 quirk - should be subject
+		String comment = SakaiBLTIUtil.getStringNull(jso.get("comment"));
 		log.debug("scoreGivenStr={} scoreMaximumStr={} userId={} comment={}", scoreGiven, scoreMaximum, userId, comment);
 
 		if (scoreGiven == null || userId == null) {

@@ -23,11 +23,7 @@ package org.sakaiproject.assignment.api;
 
 import java.io.OutputStream;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 import org.sakaiproject.assignment.api.model.Assignment;
 import org.sakaiproject.assignment.api.model.AssignmentSubmission;
@@ -552,19 +548,25 @@ public interface AssignmentService extends EntityProducer {
     public String submissionReference(String context, String id, String assignmentId);
 
     /**
-     * Whether a specific user can submit
-     * @param a
-     * @param userId
-     * @return
+     * Whether a specific user can submit to this assignment thereby creating a submission
+     * <p>
+     * Of particular importance is whether <b>userId</b> is <b>blank</b> or <b>not</b>,
+     * a blank userId will perform all security checks against the current user
+     * while a non blank userId will perform all security checks against the specified user.
+     *
+     * @param assignment the Assignment to check for allowing to submit to
+     * @param userId the specified user is checked vs the current user
+     * @return true if the specified user or the current user can submit to the assignment, otherwise false
      */
-    public boolean canSubmit(Assignment a, String userId);
+    public boolean canSubmit(Assignment assignment, String userId);
 
     /**
-     * Whether the current user can submit
-     * @param a
-     * @return
+     * Whether the current user can submit to this assignment thereby creating a submission
+     *
+     * @param assignment the Assignment to check for allowing to submit to
+     * @return true if the current user can submit to the assignment, otherwise false
      */
-    public boolean canSubmit(Assignment a);
+    public boolean canSubmit(Assignment assignment);
 
 
     /**
@@ -646,6 +648,7 @@ public interface AssignmentService extends EntityProducer {
      *
      * @param context      The site id
      * @param assignmentId The assignment id
+     * @param userId       The user id
      * @return The url as a String
      */
     public String getDeepLink(String context, String assignmentId, String userId) throws Exception;
@@ -737,4 +740,12 @@ public interface AssignmentService extends EntityProducer {
     String getUsersLocalDateTimeString(Instant date);
 
     public List<ContentReviewResult> getContentReviewResults(AssignmentSubmission submission);
+
+    /**
+     * Determines whether it is appropriate to display the content review results for a submission. For instance, this will be false if the submission is a draft or if the user doesn't have permission
+     * Note: this doesn't check if content review is enabled in the site / if the associated assignment has content review enabled; it is assumed that this has been handled by the caller.
+     * @param submission
+     * @return true if content review results for the given submission can be displayed.
+     */
+    public boolean isContentReviewVisibleForSubmission(AssignmentSubmission submission);
 }

@@ -17,10 +17,10 @@
   <packaging>pom</packaging>
   <name>Sakai Master</name>
   <description>Corporate POM for the Sakai Open Source Collaborative Learning Environment/Learning Management System</description>
-  <version>19.2</version>
+  <version>19.3</version>
 
   <properties>
-    <sakai.version>19.2</sakai.version>
+    <sakai.version>19.3</sakai.version>
     <!-- Standard dependency versions -->
     <sakai.apache.httpcomponents.httpclient.version>4.1.4</sakai.apache.httpcomponents.httpclient.version>
     <sakai.commons.lang.version>2.6</sakai.commons.lang.version>
@@ -41,7 +41,7 @@
     <sakai.httpclient.version>4.5.5</sakai.httpclient.version>
     <sakai.httpcore.version>4.4.10</sakai.httpcore.version>
     <sakai.httpmime.version>4.5.6</sakai.httpmime.version>
-    <sakai.jackson.version>2.8.11</sakai.jackson.version>
+    <sakai.jackson.version>2.9.10</sakai.jackson.version>
     <sakai.jsoup.version>1.11.2</sakai.jsoup.version>
     <sakai.woodstox.version>5.0.3</sakai.woodstox.version>
     <sakai.stax2.version>3.1.4</sakai.stax2.version>
@@ -109,7 +109,7 @@
     <ckeditor.image2.version>4.11.1</ckeditor.image2.version>
     
     <!-- Open syllabus -->
-    <sakai.opensyllabus.version>19.2</sakai.opensyllabus.version>
+    <sakai.opensyllabus.version>19.3</sakai.opensyllabus.version>
     <sakai.edu-services.version>${sakai.version}</sakai.edu-services.version>
     <sakai.evaluation.version>19-SNAPSHOT</sakai.evaluation.version>
   </properties>
@@ -499,8 +499,7 @@
 	  <dependency>
 		<groupId>com.fasterxml.jackson.core</groupId>
 		<artifactId>jackson-databind</artifactId>
-		<!-- Remove the .1 below on next major rev -->
-		<version>${sakai.jackson.version}.1</version>
+		<version>${sakai.jackson.version}</version>
 		<scope>provided</scope>
 	  </dependency>
 	  <dependency>
@@ -584,6 +583,11 @@
         <groupId>commons-configuration</groupId>
         <artifactId>commons-configuration</artifactId>
         <version>1.10</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-configuration2</artifactId>
+        <version>2.5</version>
       </dependency>
       <dependency>
         <groupId>commons-dbcp</groupId>

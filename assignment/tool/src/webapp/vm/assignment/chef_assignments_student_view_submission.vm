@@ -1,5 +1,7 @@
+#module("/rubrics-service/webcomponents/sakai-rubric-student-preview-button.js")
+
 <!-- start: chef_assignments_student_view_submission.vm  -->
-<script type="text/javascript">
+<script>
 $(document).ready(function(){
     ASN.setupToggleAreas('toggleAnchor', 'toggledContent', false, 'fast');
     $('#submissionFileCount').val(1);
@@ -45,7 +47,7 @@ $(document).ready(function(){
 		#set($closeDate = $submission.CloseDate)
 	#end
 	#set ($submissionType = $assignment.TypeOfSubmission.ordinal())
-	#if ($allowSubmit && !$submission && $closeDate && $currentTime.isAfter($closeDate) )
+	#if ($allowSubmit && !$submission && $closeDate && $currentTime.isAfter($closeDate) && !$!nonElectronicType)
 		<div class="alertMessage">$tlang.getString("stuviewsubm.theclodat")</div><div class="clear"></div>
 	#end
 
@@ -265,8 +267,7 @@ $(document).ready(function(){
 					</div>
 				</div>
 			#end
-			#set($allowStudentViewReport = $assignment.Properties.get("s_view_report")) 
-			#if($!submitted && $!dateSubmitted && $allowReviewService && $assignment.ContentReview && $!allowStudentViewReport.equals('true'))
+			#if($allowReviewService && $assignment.ContentReview && $!submission && $!service.isContentReviewVisibleForSubmission($!submission))
 				<div class="row">
 					<div class="col-lg-4 col-sm-6 col-xs-12">
 						<div class="itemSummaryHeader">$reviewServiceName&nbsp;$tlang.getString("review.report")</div>
@@ -316,7 +317,7 @@ $(document).ready(function(){
 ##					<div class="col-lg-4 col-sm-6 col-xs-12">
 ##						<div class="itemSummaryValue">
 ##							#foreach ($entry in $submission.getSubmissionLog())
-##								$entry<br>
+##								$validator.escapeHtml($entry)<br>
 ##							#end
 ##						</div>
 ##					</div>
@@ -442,7 +443,7 @@ $(document).ready(function(){
 		#if ($returned)
 			<h3>$tlang.getString("gen.resubmission")</h3> 
 		#else
-				<h3>$tlang.getString("gen.submission")</h3> 
+			<h3>$tlang.getString("gen.submission")</h3> 
 		#end	
 
 		#set($notes = [])
@@ -540,7 +541,6 @@ $(document).ready(function(){
 								#set($gusers = $!service.getSortedGroupUsers($group))
 								#foreach ($user in $gusers)
 									$validator.escapeHtml($user.getDisplayName()) ($validator.escapeHtml($user.getDisplayId()))
-									##$!userDirectoryService.getUser($user).getDisplayName()
 									#if ($velocityCount < $gusers.size()),#end
 								#end
 							</span>	
@@ -563,7 +563,7 @@ $(document).ready(function(){
 			#if (!$submissionType != 4 && !$!deleted.equalsIgnoreCase("true") && $!allowAddAssignment && $!allowSubmitByInstructor && $!student) 
 				<h4>$tlang.getString("submitforstudent")</h4>
 				<p class="instruction">
-					$student.getDisplayName()
+					$validator.escapeHtml($student.getDisplayName())
 					<input type="hidden" name="submit_on_behalf_of" id="submit_on_behalf_of" value="$student.id" />		
 				</p>
 			#end
@@ -638,7 +638,7 @@ $(document).ready(function(){
 						#if ($!prevFeedbackText)
 							<h4 id="toggleInline" class="toggleAnchor"><img alt="expand" class="expand" src="/library/image/sakai/expand.gif" /><img alt="collapse" class="collapse" src="/library/image/sakai/collapse.gif" />$tlang.getString("gradingsub.prefeetex3")</h4>
 							<div class="toggledContent inlinecoms">
-								$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackText))
+								$cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackText)
 							</div>
 						#end
 						#*#else
@@ -916,7 +916,7 @@ $(document).ready(function(){
 								$tlang.getString("gradingsub.prefee2")
 							</h4>
 					<div class="toggledContent gencoms">					
-						$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment))</div>
+						$cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment)</div>
 					#end					
 					#parse ("/vm/assignment/chef_assignments_student_view_feedback_attachments.vm")
 					## show previous grading/feedback attachments if any
@@ -1037,7 +1037,7 @@ $(document).ready(function(){
 				#if ($!prevFeedbackText)
 					<h5>$tlang.getString("gradingsub.prefeetex")</h5>
 					<div class="textPanel">
-						$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackText))
+						$cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackText)
 					</div>
 				#end
 				## submitted attachment
@@ -1090,7 +1090,7 @@ $(document).ready(function(){
 					## for returned submission, show the instructor feedback
 					#if ($!prevFeedbackComment && $!prevFeedbackComment.trim().length() > 0)
 						<h5>$tlang.getString("gradingsub.prefee")</h5>
-						<div class="textPanel">$cheffeedbackhelper.showPrevFeedback($cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment))</div>
+						<div class="textPanel">$cheffeedbackhelper.escapeAssignmentFeedback($!prevFeedbackComment)</div>
 					#end
 					#parse ("/vm/assignment/chef_assignments_student_view_feedback_attachments.vm")
 				#end

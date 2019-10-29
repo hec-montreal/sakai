@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.sakaiproject.samigo</groupId>
 		<artifactId>samigo</artifactId>
-		<version>19.2</version>
+		<version>19.3</version>
 	</parent>
     
 	<name>Sakai Samigo Tool (samigo-app)</name>
@@ -153,11 +153,6 @@
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>javax.servlet.jsp-api</artifactId>
 	        <scope>provided</scope>
-        </dependency>
-	    <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <scope>compile</scope>
         </dependency>
 		<dependency>
             <groupId>javax.servlet</groupId>

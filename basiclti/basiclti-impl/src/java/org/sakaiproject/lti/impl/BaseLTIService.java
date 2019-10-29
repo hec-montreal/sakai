@@ -25,13 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-
-import org.sakaiproject.lti.api.LTISubstitutionsFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.component.cover.ComponentManager;
@@ -41,14 +38,17 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.lti.api.LTIExportService.ExportType;
 import org.sakaiproject.lti.api.LTIService;
-import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.lti.api.LTISubstitutionsFilter;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.foorm.SakaiFoorm;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * <p>
@@ -180,10 +180,6 @@ public abstract class BaseLTIService implements LTIService {
 			log.warn("{}=Missing LTIService Translation", str);
 		}
 
-		strings = foorm.checkI18NStrings(LTIService.DEPLOY_MODEL, rb);
-		for (String str : strings) {
-			log.warn("{}=Missing LTIService Translation", str);
-		}
 	}
 
 	/**
@@ -866,37 +862,6 @@ public abstract class BaseLTIService implements LTIService {
 			return new String(rb.getFormattedMessage("error.link.placement.update", new Object[]{key.toString()}));
 		}
 	}
-
-	// The methods for deployment objects
-	public String[] getDeployModel() {
-		return DEPLOY_MODEL;
-	}
-
-	public Object insertDeployDao(Properties newProps) {
-		return insertDeployDao(newProps, null, true, true);
-	}
-
-	public Object updateDeployDao(Long key, Object newProps) {
-		return updateDeployDao(key, newProps, null, true, true);
-	}
-
-	public boolean deleteDeployDao(Long key) {
-		return deleteDeployDao(key, null, true, true);
-	}
-
-	public Map<String, Object> getDeployDao(Long key) {
-		return getDeployDao(key, null, true);
-	}
-
-	public List<Map<String, Object>> getDeploysDao(String search, String order, int first, int last) {
-		return getDeploysDao(search, order, first, last, null, true);
-	}
-
-	public abstract Object insertProxyBindingDao(Properties newProps);
-	public abstract Object updateProxyBindingDao(Long key, Object newProps);
-	public abstract boolean deleteProxyBindingDao(Long key);
-	public abstract Map<String, Object> getProxyBindingDao(Long key);
-	public abstract Map<String, Object> getProxyBindingDao(Long tool_id, String siteId);
 
 	@Override
 	public void registerPropertiesFilter(LTISubstitutionsFilter filter) {

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>basiclti</artifactId>
         <groupId>org.sakaiproject.basiclti</groupId>
-        <version>19.2</version>
+        <version>19.3</version>
     </parent>
     
     <name>Basic LTI Admin Tool (basiclti-tool)</name>
@@ -79,6 +79,10 @@
             <artifactId>nimbus-jose-jwt</artifactId>
             <version>4.3.1</version>
         </dependency>
+        <dependency>
+          <groupId>org.apache.commons</groupId>
+          <artifactId>commons-text</artifactId>
+         </dependency>
     </dependencies>
     
     <build>

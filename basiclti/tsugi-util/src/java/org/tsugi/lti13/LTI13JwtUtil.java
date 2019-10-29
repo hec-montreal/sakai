@@ -28,18 +28,23 @@ public class LTI13JwtUtil {
 
 	public static final String ID_TOKEN = "id_token";
 	public static final String JWT = "JWT";
+
+	// Allowed clock Skew
+	// https://github.com/jwtk/jjwt/blob/master/README.md
+	public static Long leeway = 60L;
+
 	/**
 	 *
 	 */
 	public static String getBodyAsString(String jws, Key key) {
-		return Jwts.parser().setSigningKey(key).parseClaimsJws(jws).getBody().toString();
+		return Jwts.parser().setAllowedClockSkewSeconds(leeway).setSigningKey(key).parseClaimsJws(jws).getBody().toString();
 	}
 
 	/**
 	 *
 	 */
 	public static String getHeaderAsString(String jws, Key key) {
-		return Jwts.parser().setSigningKey(key).parseClaimsJws(jws).getHeader().toString();
+		return Jwts.parser().setAllowedClockSkewSeconds(leeway).setSigningKey(key).parseClaimsJws(jws).getHeader().toString();
 	}
 
 	public static String rawJwtHeader(String encoded) {
@@ -47,7 +52,7 @@ public class LTI13JwtUtil {
 		if (parts.length != 2 && parts.length != 3) {
 			return null;
 		}
-		byte[] bytes = Base64.getDecoder().decode(parts[0]);
+		byte[] bytes = Base64.getUrlDecoder().decode(parts[0]);
 		return new String(bytes);
 	}
 
@@ -66,7 +71,7 @@ public class LTI13JwtUtil {
 		if (parts.length != 2 && parts.length != 3) {
 			return null;
 		}
-		byte[] bytes = Base64.getDecoder().decode(parts[1]);
+		byte[] bytes = Base64.getUrlDecoder().decode(parts[1]);
 		return new String(bytes);
 	}
 

@@ -14,7 +14,7 @@
   <parent>
     <groupId>org.sakaiproject.sitestats</groupId>
     <artifactId>sitestats</artifactId>
-    <version>19.2</version><!-- sitestats.version --> 
+    <version>19.3</version><!-- sitestats.version --> 
   </parent>
   
   <!-- Packaging -->
@@ -103,8 +103,8 @@
 
     <!-- Apache Commons -->
     <dependency>
-        <groupId>commons-lang</groupId>
-        <artifactId>commons-lang</artifactId>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
         </dependency>
     <dependency>
       <groupId>commons-fileupload</groupId>

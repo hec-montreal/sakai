@@ -126,8 +126,7 @@ import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.Validator;
 
 import org.springframework.web.multipart.MultipartFile;
-
-import org.tsugi.lti2.ContentItem;
+import org.tsugi.basiclti.ContentItem;
 
 import uk.org.ponder.messageutil.MessageLocator;
 import uk.org.ponder.rsf.components.UIContainer;
@@ -478,15 +477,17 @@ public class SimplePageBean {
 	public static class UrlItem {
 		public String Url;
 		public String label;
+		public String description;
 		public String fa_icon = null;
 		public Boolean search = Boolean.FALSE;
 		public UrlItem(String Url, String label) {
 			this.Url = Url;
 			this.label = label;
 		}
-		public UrlItem(String Url, String label, String fa_icon, Boolean search) {
+		public UrlItem(String Url, String label, String description, String fa_icon, Boolean search) {
 			this.Url = Url;
 			this.label = label;
+			this.description = description;
 			this.fa_icon = fa_icon;
 			this.search = search;
 		}
@@ -3430,6 +3431,12 @@ public class SimplePageBean {
 			    } else {
 				// no, add new item
 				i = appendItem(selectedBlti, selectedObject.getTitle(), SimplePageItem.BLTI);
+
+				//Copy the LTI tool description to the item description.
+				if(StringUtils.isNotEmpty(description)){
+					i.setDescription(description);
+				}
+
 				BltiInterface blti = (BltiInterface)bltiEntity.getEntity(selectedBlti);
 				if (blti != null) {
 				    int height = blti.frameSize();
