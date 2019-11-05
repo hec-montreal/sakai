@@ -184,10 +184,24 @@ public class AssignmentDueReminderServiceImpl implements AssignmentDueReminderSe
         String headerToStr = getUserDisplayName(submitterUserId) + " <" + toStr + ">";
         String fromStr = "\"" + site.getTitle() + "\" <" + getSetupRequest() + ">";
 
+        // ZCII-3929 : respect group membership for replyTo string
+        Set<Member> members = new HashSet<>();
+        if (assignment.getTypeOfAccess() == GROUP) {
+            for (String groupId : assignment.getGroups()) {
+                Group group = site.getGroup(groupId);
+                members.addAll(group.getMembers());
+            }
+        }
+        else {
+            members.addAll(site.getMembers());
+        }
+
         Set<Member> instructors = new HashSet<>();
-        for (Member member : site.getMembers()) {
-            if (StringUtils.equals(member.getRole().getId(), site.getMaintainRole())) {
+        Set<String> instructorIds = new HashSet<>();
+        for (Member member : members) {
+            if (StringUtils.equals(member.getRole().getId(), site.getMaintainRole()) && !instructorIds.contains(member.getUserId())) {
                 instructors.add(member);
+                instructorIds.add(member.getUserId());
             }
         }
         String replyToStr = getReplyTo(instructors);
