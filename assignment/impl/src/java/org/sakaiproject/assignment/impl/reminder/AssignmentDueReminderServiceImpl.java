@@ -15,6 +15,8 @@
  */
 package org.sakaiproject.assignment.impl.reminder;
 
+import static org.sakaiproject.assignment.api.model.Assignment.Access.GROUP;
+
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +34,7 @@ import org.sakaiproject.event.api.NotificationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.time.api.UserTimeService;
 import org.sakaiproject.tool.api.Session;
@@ -114,11 +117,27 @@ public class AssignmentDueReminderServiceImpl implements AssignmentDueReminderSe
             Assignment assignment = assignmentService.getAssignment(assignmentId);
             Site site = siteService.getSite(assignment.getContext());
 
+            // ZCII-3929 : only send to group members (canSubmit check works, but sends to all
+            // Secretary and Coordinator and Coordinator-Instructor
+            Set<Member> members = new HashSet<Member>();
+            if (assignment.getTypeOfAccess() == GROUP) {
+                for (String groupId : assignment.getGroups()) {
+                    Group group = site.getGroup(groupId);
+                    members.addAll(group.getMembers());
+                }
+            }
+            else {
+                members.addAll(site.getMembers());
+            }
+
             // Do not send reminders if the site is unpublished or softly deleted
             if (site.isPublished() && !site.isSoftlyDeleted()) {
-                for (Member member : site.getMembers()) {
-                    if (member.isActive() && assignmentService.canSubmit(assignment, member.getUserId()) && checkEmailPreference(member)) {
+                // ZCII-3929 without this intructors receive email for every group in group assignment
+                Set<String> alreadySent = new HashSet<String>();
+                for (Member member : members) {
+                    if (member.isActive() && assignmentService.canSubmit(assignment, member.getUserId()) && checkEmailPreference(member) && !alreadySent.contains(member.getUserId())) {
                         sendEmailReminder(site, assignment, member);
+                        alreadySent.add(member.getUserId());
                     }
                 }
             }
