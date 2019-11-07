@@ -8106,6 +8106,10 @@ public class AssignmentAction extends PagedResourceActionII {
             if (newAssignment) {
                 // post new assignment event since it is fully initialized by now
                 eventTrackingService.post(eventTrackingService.newEvent(AssignmentConstants.EVENT_ADD_ASSIGNMENT, assignmentReference, true));
+
+                // call this to initialize the dummy submissions on creation
+                String aRef = AssignmentReferenceReckoner.reckoner().assignment(a).reckon().getReference();
+                assignmentService.getSubmitterMap("false", AssignmentConstants.ALL, null, aRef, a.getContext());
             }
         }
     }
