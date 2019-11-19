@@ -8106,11 +8106,12 @@ public class AssignmentAction extends PagedResourceActionII {
             if (newAssignment) {
                 // post new assignment event since it is fully initialized by now
                 eventTrackingService.post(eventTrackingService.newEvent(AssignmentConstants.EVENT_ADD_ASSIGNMENT, assignmentReference, true));
-
-                // ZCII-3959: call this to initialize the dummy submissions on creation
+            }
+            if (post) {
+                // ZCII-3959: call this to initialize the dummy submissions on publish (post = publish)
                 String aRef = AssignmentReferenceReckoner.reckoner().assignment(a).reckon().getReference();
                 assignmentService.getSubmitterMap("false", AssignmentConstants.ALL, null, aRef, a.getContext());
-		// end perso ZCII-3959
+                // end perso ZCII-3959
             }
         }
     }
