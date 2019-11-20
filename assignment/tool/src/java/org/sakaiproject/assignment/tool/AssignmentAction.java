@@ -12750,6 +12750,14 @@ public class AssignmentAction extends PagedResourceActionII {
             for (Reference attachment : attachments) {
                 if (attachment.getId().equals(removeAttachmentId)) {
                     attachments.remove(attachment);
+                    
+                    String currentAssignmentReference = (String) state.getAttribute(VIEW_SUBMISSION_ASSIGNMENT_REFERENCE);
+                    Assignment assignment = getAssignment(currentAssignmentReference, "doRemove_attachment", state);
+                    
+                    if(assignment.getContentReview()) {
+                    	contentReviewService.removeFromQueue(attachment.getId());
+                    }
+                    
                     // refresh state variable
                     if (MODE_STUDENT_REVIEW_EDIT.equals(mode)) {
                         state.setAttribute(PEER_ATTACHMENTS, attachments);
