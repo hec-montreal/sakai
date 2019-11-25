@@ -8107,6 +8107,12 @@ public class AssignmentAction extends PagedResourceActionII {
                 // post new assignment event since it is fully initialized by now
                 eventTrackingService.post(eventTrackingService.newEvent(AssignmentConstants.EVENT_ADD_ASSIGNMENT, assignmentReference, true));
             }
+            if (post) {
+                // ZCII-3959: call this to initialize the dummy submissions on publish (post = publish)
+                String aRef = AssignmentReferenceReckoner.reckoner().assignment(a).reckon().getReference();
+                assignmentService.getSubmitterMap("false", AssignmentConstants.ALL, null, aRef, a.getContext());
+                // end perso ZCII-3959
+            }
         }
     }
 
@@ -12745,6 +12751,14 @@ public class AssignmentAction extends PagedResourceActionII {
             for (Reference attachment : attachments) {
                 if (attachment.getId().equals(removeAttachmentId)) {
                     attachments.remove(attachment);
+                    
+                    String currentAssignmentReference = (String) state.getAttribute(VIEW_SUBMISSION_ASSIGNMENT_REFERENCE);
+                    Assignment assignment = getAssignment(currentAssignmentReference, "doRemove_attachment", state);
+                    
+                    if(assignment.getContentReview()) {
+                    	contentReviewService.removeFromQueue(attachment.getId());
+                    }
+                    
                     // refresh state variable
                     if (MODE_STUDENT_REVIEW_EDIT.equals(mode)) {
                         state.setAttribute(PEER_ATTACHMENTS, attachments);
