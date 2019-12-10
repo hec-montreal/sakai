@@ -349,6 +349,13 @@ public class SkinnableLogin extends HttpServlet implements Login {
 			try {
 				loginService.authenticate(credentials);
 				String returnUrl = (String) session.getAttribute(Tool.HELPER_DONE_URL);
+
+				if (returnUrl != null && returnUrl.contains("/presence")) {
+					log.info("Ignoring presence returnUrl (" + returnUrl + ")");
+					
+					returnUrl = "/portal";
+				}
+				
 				complete(returnUrl, session, tool, res);
 
 			} catch (LoginException le) {
