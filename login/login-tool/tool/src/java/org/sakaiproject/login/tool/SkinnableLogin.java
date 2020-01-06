@@ -350,6 +350,8 @@ public class SkinnableLogin extends HttpServlet implements Login {
 				loginService.authenticate(credentials);
 				String returnUrl = (String) session.getAttribute(Tool.HELPER_DONE_URL);
 
+				// Perso: Tenter de prévenir un retour au web-service de présence
+				// ZCII-3887
 				if (returnUrl != null && returnUrl.contains("/presence")) {
 					log.info("Ignoring presence returnUrl (" + returnUrl + ")");
 					
