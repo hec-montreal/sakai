@@ -303,6 +303,9 @@ public class DeliveryBean
   private boolean  firstTimeTaking;
   boolean timeExpired = false;
 
+  // edtell customization
+  boolean dataInconsistency = false;
+  
   // Rubrics
   private String rbcsToken;
 
@@ -3325,6 +3328,14 @@ public class DeliveryBean
 		  return "safeToProceed";
     }
   
+
+    // edtell customization
+    if (isDataInconsistency()) {
+    	 setDataInconsistency(false);
+    	 return "discrepancyInData";
+    }
+    // End of edtell customization
+
     GradingService service = new GradingService();
     AssessmentGradingData assessmentGrading=null;
     if (adata!=null){
@@ -4228,6 +4239,16 @@ public class DeliveryBean
       return questionProgressMardPath;
     }
 
+    // edtell customization
+    	public boolean isDataInconsistency() {
+    		return dataInconsistency;
+    	}
+    
+    	public void setDataInconsistency(boolean dataInconsistency) {
+    		this.dataInconsistency = dataInconsistency;
+    	}
+        // End of edtell customization
+    
     public String getRbcsToken() {
       return this.rbcsToken;
     }
