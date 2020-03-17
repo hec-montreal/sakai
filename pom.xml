@@ -132,7 +132,7 @@
 		<module>hec-providers</module>
 		<module>hec-event-processor</module>
 		<module>via</module>
-		<module>scorm</module>
+		<module>scorm-rte/SCORM.2004.3ED.RTE</module>
             </modules>
         </profile>
         <profile>
