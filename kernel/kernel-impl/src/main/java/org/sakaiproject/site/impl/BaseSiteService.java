@@ -780,13 +780,11 @@ public abstract class BaseSiteService implements SiteService, Observer
 
 					/**ZCII-3003: Automatiser l'inscription au site Espace_enseignant	 */
 					if (TYPE_INSTRUCTOR.equalsIgnoreCase(user.getType())) {
-						String postActif = user.getProperties().getProperty(LDAP_POST_ACTIF_PROPERTY);
-						
 						String instructorsSiteId =
 								serverConfigurationService().getString("espace.enseignant.siteId");
 
 						if (instructorsSiteId != null && siteExists(instructorsSiteId)){
-							authzGroupService().joinGroup(instructorsSiteId, "access");
+							authzGroupService().joinGroup("/site/"+instructorsSiteId, "access");
 						}
 					}
 					
