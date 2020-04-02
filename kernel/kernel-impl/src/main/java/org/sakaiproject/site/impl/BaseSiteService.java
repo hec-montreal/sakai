@@ -107,10 +107,7 @@ public abstract class BaseSiteService implements SiteService, Observer
 	/** End ZCII-1564  */
 
 	/**ZCII-3003: Automatiser l'inscription au site Espace_enseignant	 */
-	
-	private static final String LDAP_POST_ACTIF_PROPERTY = "posteActif";
 	private static final String TYPE_INSTRUCTOR = "instructor";
-	
 	/** End ZCII-3003: */
 
 	/** Storage manager for this service. */
