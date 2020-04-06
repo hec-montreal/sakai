@@ -34,6 +34,7 @@ $Id$
     <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
       <head><%= request.getAttribute("html.head") %>
       <title><h:outputText value="#{evaluationMessages.title_question}" /></title>
+      <script type="module" src="/rubrics-service/webcomponents/rubric-association-requirements.js<h:outputText value="#{questionScores.CDNQuery}" />"></script>
       </head>
       <body onload="<%= request.getAttribute("html.body.onload") %>">
 
@@ -815,7 +816,7 @@ $Id$
         </h:commandLink>
      </f:facet>
         <h:outputText value="#{description.submittedDate}">
-         <f:convertDateTime pattern="#{generalMessages.output_date_picker}"/>
+          <f:convertDateTime dateStyle="medium" timeStyle="short" timeZone="#{author.userTimeZone}" />
         </h:outputText>
     </h:column>
 
@@ -832,7 +833,7 @@ $Id$
           </h:commandLink>    
       </f:facet>
         <h:outputText value="#{description.submittedDate}">
-         <f:convertDateTime pattern="#{generalMessages.output_date_picker}"/>
+          <f:convertDateTime dateStyle="medium" timeStyle="short" timeZone="#{author.userTimeZone}" />
         </h:outputText>
     </h:column>    
     
@@ -849,7 +850,7 @@ $Id$
           </h:commandLink>    
       </f:facet>
         <h:outputText value="#{description.submittedDate}">
-         <f:convertDateTime pattern="#{generalMessages.output_date_picker}"/>
+          <f:convertDateTime dateStyle="medium" timeStyle="short" timeZone="#{author.userTimeZone}" />
         </h:outputText>
     </h:column>    
 
@@ -867,7 +868,7 @@ $Id$
         <f:param name="sortAscending" value="true" />
         </h:commandLink>
       </f:facet>
-      <h:inputText value="#{description.totalAutoScore}" size="5" id="qscore" styleClass="adjustedScore#{description.assessmentGradingId}" required="false" onchange="toPoint(this.id);">	  
+      <h:inputText value="#{description.roundedTotalAutoScore}" size="5" id="qscore" styleClass="adjustedScore#{description.assessmentGradingId}.#{questionScores.itemId}" required="false" onchange="toPoint(this.id);">
         <f:validateDoubleRange/>
       </h:inputText>
       <h:message for="qscore" style="color:red"/>
@@ -890,7 +891,7 @@ $Id$
            type="org.sakaiproject.tool.assessment.ui.listener.evaluation.QuestionScoreListener" />
           </h:commandLink>    
       </f:facet>
-	  <h:inputText value="#{description.totalAutoScore}" size="5"  id="qscore2" styleClass="adjustedScore#{description.assessmentGradingId}"  required="false" onchange="toPoint(this.id);">
+	  <h:inputText value="#{description.roundedTotalAutoScore}" size="5" id="qscore2" styleClass="adjustedScore#{description.assessmentGradingId}" required="false" onchange="toPoint(this.id);">
 	  	<f:validateDoubleRange/>
 	  </h:inputText>
 	  <h:message for="qscore2" style="color:red"/>
@@ -912,7 +913,7 @@ $Id$
            type="org.sakaiproject.tool.assessment.ui.listener.evaluation.QuestionScoreListener" />
           </h:commandLink>    
       </f:facet>
-	  <h:inputText value="#{description.totalAutoScore}" size="5"  id="qscore3" styleClass="adjustedScore#{description.assessmentGradingId}" required="false" onchange="toPoint(this.id);">
+	  <h:inputText value="#{description.roundedTotalAutoScore}" size="5" id="qscore3" styleClass="adjustedScore#{description.assessmentGradingId}" required="false" onchange="toPoint(this.id);">
 	  	<f:validateDoubleRange/>
 	  </h:inputText>
 	  <h:message for="qscore2" style="color:red"/>

@@ -22,6 +22,7 @@
 package org.sakaiproject.tool.assessment.ui.bean.author;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,6 +36,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -49,6 +51,7 @@ import org.sakaiproject.tool.assessment.facade.*;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.time.api.UserTimeService;
 import org.sakaiproject.tool.assessment.api.SamigoApiFactory;
 import org.sakaiproject.tool.assessment.data.dao.assessment.ExtendedTime;
 import org.sakaiproject.tool.assessment.data.dao.authz.AuthorizationData;
@@ -85,6 +88,8 @@ import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.FormattedText;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
 
 @Slf4j
 public class PublishedAssessmentSettingsBean
@@ -211,11 +216,18 @@ public class PublishedAssessmentSettingsBean
   private final String HIDDEN_FEEDBACK_DATE_FIELD = "feedbackDateISO8601";
 
   private ResourceLoader assessmentSettingMessages;
-  
+  @Resource(name = "org.sakaiproject.time.api.UserTimeService")
+  private UserTimeService userTimeService;
+
   /*
    * Creates a new AssessmentBean object.
    */
   public PublishedAssessmentSettingsBean() {
+    this(ContextLoader.getCurrentWebApplicationContext());
+  }
+
+  public PublishedAssessmentSettingsBean(WebApplicationContext context) {
+    context.getAutowireCapableBeanFactory().autowireBean(this);
     this.assessmentSettingMessages = new ResourceLoader("org.sakaiproject.tool.assessment.bundle.AssessmentSettingsMessages");
   }
 
@@ -1007,30 +1019,34 @@ public void setFeedbackComponentOption(String feedbackComponentOption) {
    * @return date String "MM-dd-yyyy hh:mm:ss a"
    */
   private String getDisplayFormatFromDate(Date date) {
-    String dateString = "";
-    if (date == null) {
-      return dateString;
-    }
+    if (date == null) return StringUtils.EMPTY;
 
     try {
-      // Do not manipulate the date based on the client browser timezone.
-      dateString = tu.getDisplayDateTime(displayFormat, date, false);
+      return tu.getDisplayDateTime(displayFormat, date);
     }
     catch (Exception ex) {
       // we will leave it as an empty string
       log.warn("Unable to format date.", ex);
     }
-    return dateString;
+    return StringUtils.EMPTY;
   }
 
-  public String getStartDateString()
-  {
-	if (!this.isValidStartDate) {
-		return this.originalStartDateString;
-	}
-	else {
-		return getDisplayFormatFromDate(startDate);
-	}
+  public String getStartDateInClientTimezoneString() {
+    if (!this.isValidStartDate) {
+      return this.originalStartDateString;
+    }
+    else {
+      return userTimeService.dateTimeFormat(startDate, new ResourceLoader().getLocale(), DateFormat.MEDIUM);
+    }
+  }
+
+  public String getStartDateString() {
+    if (!this.isValidStartDate) {
+      return this.originalStartDateString;
+    }
+    else {
+      return getDisplayFormatFromDate(startDate);
+    }
   }
 
   public void setStartDateString(String startDateString)
@@ -1055,14 +1071,22 @@ public void setFeedbackComponentOption(String feedbackComponentOption) {
     }
   }
 
-  public String getDueDateString()
-  {
+  public String getDueDateInClientTimezoneString() {
     if (!this.isValidDueDate) {
-		return this.originalDueDateString;
-	}
-	else {
-		return getDisplayFormatFromDate(dueDate);
-	}	  
+      return this.originalDueDateString;
+    }
+    else {
+      return userTimeService.dateTimeFormat(dueDate, new ResourceLoader().getLocale(), DateFormat.MEDIUM);
+    }
+  }
+
+  public String getDueDateString() {
+    if (!this.isValidDueDate) {
+      return this.originalDueDateString;
+    }
+    else {
+      return getDisplayFormatFromDate(dueDate);
+    }
   }
 
   public void setDueDateString(String dueDateString)
@@ -1119,14 +1143,22 @@ public void setFeedbackComponentOption(String feedbackComponentOption) {
     }
   }
 
-  public String getFeedbackDateString()
-  {
+  public String getFeedbackDateInClientTimezoneString() {
     if (!this.isValidFeedbackDate) {
-		return this.originalFeedbackDateString;
-	}
-	else {
-		return getDisplayFormatFromDate(feedbackDate);
-	}	  	  	  
+      return this.originalFeedbackDateString;
+    }
+    else {
+      return userTimeService.dateTimeFormat(feedbackDate, new ResourceLoader().getLocale(), DateFormat.MEDIUM);
+    }
+  }
+
+  public String getFeedbackDateString() {
+    if (!this.isValidFeedbackDate) {
+      return this.originalFeedbackDateString;
+    }
+    else {
+      return getDisplayFormatFromDate(feedbackDate);
+    }
   }
 
   public void setFeedbackDateString(String feedbackDateString) {
@@ -1647,7 +1679,12 @@ public void setFeedbackComponentOption(String feedbackComponentOption) {
           context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, errorString, null));
       }
       else {
-          this.extendedTime.syncDates();
+          AssessmentAccessControlIfc accessControl = new AssessmentAccessControl();
+          accessControl.setStartDate(this.startDate);
+          accessControl.setDueDate(this.dueDate);
+          accessControl.setLateHandling(Integer.valueOf(this.lateHandling));
+          accessControl.setRetractDate(this.retractDate);
+          this.extendedTime.syncDates(accessControl);
           this.extendedTimes.add(this.extendedTime);
           resetExtendedTime();
       }

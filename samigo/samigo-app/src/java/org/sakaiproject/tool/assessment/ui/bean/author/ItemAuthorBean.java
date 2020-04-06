@@ -42,6 +42,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
@@ -50,6 +52,8 @@ import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 import javax.servlet.ServletContext;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
@@ -70,6 +74,7 @@ import org.sakaiproject.event.cover.NotificationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.portal.util.PortalUtils;
 import org.sakaiproject.rubrics.logic.RubricsConstants;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.AttachmentIfc;
@@ -136,7 +141,7 @@ public class ItemAuthorBean
   private ItemBean currentItem;
   private ItemFacade itemToDelete;
   private ItemFacade itemToPreview;
-  private List attachmentList;
+  @Getter @Setter private List<ItemAttachmentIfc> attachmentList;
   private Set<ItemTagIfc> tagsList;
   private String tagsListToJson;
   private String tagsTempListToJson;
@@ -1120,24 +1125,8 @@ public class ItemAuthorBean
     showFeedbackAuthoring= string;
   }
 
-  public List getAttachmentList() {
-    return attachmentList;
-  }
-
-
-  /**
-   * @param list
-   */
-  public void setAttachmentList(List attachmentList)
-  {
-    this.attachmentList = attachmentList;
-  }
-
-  public boolean getHasAttachment(){
-    if (attachmentList != null && attachmentList.size() >0)
-      return true;
-    else
-      return false;    
+  public boolean getHasAttachment() {
+    return attachmentList != null && attachmentList.size() > 0;
   }
 
   public Set<ItemTagIfc> getTagsList() {
@@ -1274,12 +1263,12 @@ public class ItemAuthorBean
     ToolSession session = SessionManager.getCurrentToolSession();
     if (session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
 
-      Set attachmentSet = new HashSet();
+      Set<ItemAttachmentIfc> attachmentSet = new HashSet<>();
       if (item != null){
         attachmentSet = item.getItemAttachmentSet();
       }
-      Map map = getResourceIdHash(attachmentSet);
-      List newAttachmentList = new ArrayList();
+      Map<String, ItemAttachmentIfc> map = getResourceIdHash(attachmentSet);
+      List<ItemAttachmentIfc> newAttachmentList = new ArrayList<>();
       
       AssessmentService assessmentService = new AssessmentService();
       String protocol = ContextUtil.getProtocol();
@@ -1322,16 +1311,8 @@ public class ItemAuthorBean
     else return item.getItemAttachmentList();
   }
 
-  private Map getResourceIdHash(Set attachmentSet){
-    Map map = new HashMap();
-    if (attachmentSet !=null ){
-      Iterator iter = attachmentSet.iterator();
-      while (iter.hasNext()){
-        ItemAttachmentIfc attach = (ItemAttachmentIfc) iter.next();
-        map.put(attach.getResourceId(), attach);
-      }
-    }
-    return map;
+  private Map<String, ItemAttachmentIfc> getResourceIdHash(Set<ItemAttachmentIfc> attachmentSet) {
+    return attachmentSet.stream().collect(Collectors.toMap(AttachmentIfc::getResourceId, Function.identity()));
   }
 
   private Map resourceHash = new HashMap();
@@ -1627,5 +1608,9 @@ public class ItemAuthorBean
 
     public void setRubricStateDetails(String rubricStateDetails) {
         this.rubricStateDetails = rubricStateDetails;
+    }
+
+    public String getCDNQuery() {
+        return PortalUtils.getCDNQuery();
     }
 }

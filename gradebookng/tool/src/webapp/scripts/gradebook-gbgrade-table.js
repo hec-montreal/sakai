@@ -1,37 +1,52 @@
 GB_HIDDEN_ITEMS_KEY = portal.user.id + "#gradebook#hiddenitems";
 
-GbGradeTable = {};
+GbGradeTable = { _onReadyCallbacks: [] };
 
-let hiddenItems = JSON.parse(sessionStorage.getItem(GB_HIDDEN_ITEMS_KEY));
-
-GbGradeTable._onReadyCallbacks = [];
-
-var addHiddenGbItemsCallback = function () {
+var addHiddenGbItemsCallback = function (hiddenItems) {
 
   GbGradeTable._onReadyCallbacks.push(function () {
 
     hiddenItems.forEach(i => {
-      $(".gb-item-filter :input:checked[value='" + i + "']").trigger("click", [true]);
+
+      $(".gb-filter :input:checked[value='" + i + "']")
+        .attr("data-suppress-update-view-preferences", "true")
+        .trigger("click", [true]);
     });
   });
 };
 
-if (hiddenItems == null) {
+const gbHiddenItems = JSON.parse(sessionStorage.getItem(GB_HIDDEN_ITEMS_KEY));
+if (gbHiddenItems == null) {
   // No hidden items in session storage. Try and get it from server.
-  console.debug("NO hidden items found in session storage. Trying server ...");
+  console.debug("NO hidden items found in session storage. Pulling from server ...");
 
   getViewPreferences("gradebook").then(hiddenItemsString => {
 
     if (hiddenItemsString) {
-      hiddenItems = JSON.parse(hiddenItemsString);
       sessionStorage.setItem(GB_HIDDEN_ITEMS_KEY, hiddenItemsString);
-      addHiddenGbItemsCallback();
+      addHiddenGbItemsCallback(JSON.parse(hiddenItemsString));
     }
   });
 } else {
   console.debug("Hidden items found in session storage.");
-  addHiddenGbItemsCallback();
+  addHiddenGbItemsCallback(gbHiddenItems);
 }
+
+GbGradeTable.updateViewPreferences = function () {
+
+  setTimeout(() => {
+
+    console.debug("Updating view preferences ...");
+
+    let hiddenItems = [];
+    document.querySelectorAll(".gb-filter input:not(:checked)").forEach(el => {
+      hiddenItems.push(el.value);
+    });
+    let hiddenItemsString = JSON.stringify(hiddenItems);
+    sessionStorage.setItem(GB_HIDDEN_ITEMS_KEY, hiddenItemsString);
+    updateViewPreferences("gradebook", hiddenItemsString);
+  });
+};
 
 var sakaiReminder = new SakaiReminder();
 
@@ -282,8 +297,15 @@ GbGradeTable.replaceContents = function (elt, newContents) {
   return elt;
 };
 
+GbGradeTable.isColumnRendered = function(instance, col) {
+  return (instance.view.settings.columns[col] !== undefined);
+};
+
 // This function is called a *lot*, so avoid doing anything too expensive here.
 GbGradeTable.cellRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+  //If col is not rendered, skip cell renderer
+  if (!GbGradeTable.isColumnRendered(instance, col)) return false;
+
   var $td = $(td);
   var index = col - GbGradeTable.FIXED_COLUMN_OFFSET;
   var student = instance.getDataAtCell(row, GbGradeTable.STUDENT_COLUMN_INDEX);
@@ -524,7 +546,7 @@ GbGradeTable.cellRenderer = function (instance, td, row, col, prop, value, cellP
 };
 
 
-GbGradeTable.headerRenderer = function (col, column) {
+GbGradeTable.headerRenderer = function (col, column, $th) {
   if (col < GbGradeTable.getFixedColumns().length) {
     var colDef = GbGradeTable.getFixedColumns()[col];
     return colDef.headerTemplate.process({col: col, settings: GbGradeTable.settings});
@@ -541,6 +563,7 @@ GbGradeTable.headerRenderer = function (col, column) {
   if (column.type === "assignment") {
     return GbGradeTable.templates.assignmentHeader.process(templateData);
   } else if (column.type === "category") {
+    $th.addClass("gb-item-category");
     return GbGradeTable.templates.categoryScoreHeader.process(templateData);
   } else {
     return "Unknown column type for column: " + col + " (" + column.type+ ")";
@@ -596,6 +619,7 @@ GbGradeTable.mergeColumns = function (data, fixedColumns) {
 }
 
 var nextRequestId = 0;
+
 GbGradeTable.ajaxCallbacks = {}
 
 GbGradeTable.ajaxComplete = function (requestId, status, data) {
@@ -684,6 +708,8 @@ GbGradeTable.renderTable = function (elementId, tableData) {
     if (GbGradeTable.settings.isPercentageGradeEntry) {
       outOf.innerHTML = "100%";
     } else if (GbGradeTable.settings.isPointsGradeEntry) {
+      //If col is not rendered, skip begin editing cell
+      if (!GbGradeTable.isColumnRendered(GbGradeTable.instance, col)) return false;
       var assignment = GbGradeTable.instance.view.settings.columns[col]._data_;
       var points = assignment.points;
       outOf.innerHTML = "/" + points;
@@ -740,9 +766,11 @@ GbGradeTable.renderTable = function (elementId, tableData) {
       // Calculate the HTML that we need to show
       var html = '';
       if (col < GbGradeTable.FIXED_COLUMN_OFFSET) {
-        html = GbGradeTable.headerRenderer(col);
+        html = GbGradeTable.headerRenderer(col, $th);
       } else {
-        html = GbGradeTable.headerRenderer(col, this.view.settings.columns[col]._data_);
+        //If col is not rendered, skip header renderer
+        if (!GbGradeTable.isColumnRendered(this, col)) return false;
+        html = GbGradeTable.headerRenderer(col, this.view.settings.columns[col]._data_, $th);
       }
 
       // If we haven't got a cached parse of it, do that now
@@ -778,6 +806,8 @@ GbGradeTable.renderTable = function (elementId, tableData) {
         handle.classList.add("gb-sorted-"+GbGradeTable.currentSortDirection);
       }
 
+      //If col is not rendered, skip afterGetColHeader
+      if (!GbGradeTable.isColumnRendered(this, col)) return false;
       var columnModel = this.view.settings.columns[col]._data_;
 
       // assignment column
@@ -907,6 +937,9 @@ GbGradeTable.renderTable = function (elementId, tableData) {
 
   GbGradeTable.instance.updateSettings({
     cells: function (row, col, prop) {
+      //If col is not rendered, skip cell updatesettings
+      if (!GbGradeTable.isColumnRendered(GbGradeTable.instance, col)) return false;
+
       var cellProperties = {};
 
       var column = GbGradeTable.instance.view.settings.columns[col]._data_;
@@ -968,10 +1001,11 @@ GbGradeTable.renderTable = function (elementId, tableData) {
     // SAK-40644 Hide move left for the leftmost, move right for the rightmost.
     var $header = $link.closest("th.gb-item");
     if ($header.length) {
-      if (!$header.prev("th.gb-item").length) {
+      if (!$header.prev("th.gb-item").length || $header.prev("th").hasClass("gb-item-category")) {
         $dropdownMenu.find(".gb-move-left").hide();
       }
-      if (!$header.next("th.gb-item").length) {
+
+      if (!$header.next("th.gb-item").length || $header.next("th").hasClass("gb-item-category")) {
         $dropdownMenu.find(".gb-move-right").hide();
       }
     }
@@ -1194,6 +1228,8 @@ GbGradeTable.renderTable = function (elementId, tableData) {
       if ($(this).data('assignmentid')) {
         $togglePanel.find('.gb-item-filter :checkbox[value='+$(this).data('assignmentid')+']').trigger('click');
       } else if ($(this).data('categoryid')) {
+        // Skip if column is already not rendered
+        if (!GbGradeTable.isColumnRendered(GbGradeTable.instance, col)) return false;
         var colIndex = GbGradeTable.colForCategoryScore($(this).data('categoryid'));
         var col = GbGradeTable.instance.view.settings.columns[colIndex]._data_;
         $togglePanel.find('.gb-item-category-score-filter :checkbox[value="'+col.categoryName+'"]').trigger('click');
@@ -1215,63 +1251,6 @@ GbGradeTable.renderTable = function (elementId, tableData) {
   GbGradeTable.setupAccessiblityBits();
   GbGradeTable.refreshSummaryLabels();
   GbGradeTable.setupDragAndDrop();
-
-  // Patch HandsonTable getWorkspaceWidth for improved scroll performance on big tables
-  var origGetWorkspaceWidth = WalkontableViewport.prototype.getWorkspaceWidth;
-
-  (function () {
-    var cachedWidth = undefined;
-    WalkontableViewport.prototype.getWorkspaceWidth = function () {
-      var self = this;
-      if (!cachedWidth) {
-        cachedWidth = origGetWorkspaceWidth.bind(self)();
-      }
-
-      return cachedWidth;
-    }
-  }());
-
-  // Patch HandsonTable adjustColumnWidths for improved scroll performance
-  var origAdjustColumnWidths = WalkontableTableRenderer.prototype.adjustColumnWidths;
-
-  (function () {
-    WalkontableTableRenderer.prototype.adjustColumnWidths = function (columnsToRender) {
-      var sourceInstance = this.wot.cloneSource ? this.wot.cloneSource : this.wot;
-      var mainHolder = sourceInstance.wtTable.holder;
-      if (this.wot.cachedScrollbarCompensation === undefined) {
-        this.wot.cachedScrollbarCompensation = 0;
-        if (mainHolder.offsetHeight < mainHolder.scrollHeight) {
-          // NYU: Hacked this!  was getScrollbarWidth();
-          this.wot.cachedScrollbarCompensation = 0;
-        }
-      }
-
-      var scrollbarCompensation = this.wot.cachedScrollbarCompensation;
-
-      this.wot.wtViewport.columnsRenderCalculator.refreshStretching(this.wot.wtViewport.getViewportWidth() - scrollbarCompensation);
-      var rowHeaderWidthSetting = this.wot.getSetting('rowHeaderWidth');
-      if (rowHeaderWidthSetting != null) {
-        for (var i = 0; i < this.rowHeaderCount; i++) {
-          var oldWidth = this.COLGROUP.childNodes[i].style.width;
-          var newWidth = (isNaN(rowHeaderWidthSetting) ? rowHeaderWidthSetting[i] : rowHeaderWidthSetting) + 'px';
-
-          // NYU: Added these conditionals
-          if (oldWidth != newWidth) {
-            this.COLGROUP.childNodes[i].style.width = (isNaN(rowHeaderWidthSetting) ? rowHeaderWidthSetting[i] : rowHeaderWidthSetting) + 'px';
-          }
-        }
-      }
-      for (var renderedColIndex = 0; renderedColIndex < columnsToRender; renderedColIndex++) {
-        var oldWidth = this.COLGROUP.childNodes[renderedColIndex + this.rowHeaderCount].style.width;
-        var width = this.wtTable.getStretchedColumnWidth(this.columnFilter.renderedToSource(renderedColIndex));
-
-        // NYU: Added these conditionals
-        if (oldWidth != width) {
-          this.COLGROUP.childNodes[renderedColIndex + this.rowHeaderCount].style.width = width + 'px';
-        }
-      }
-    }
-  }());
 
   GbGradeTable.runReadyCallbacks();
 };
@@ -1823,43 +1802,46 @@ GbGradeTable.setupToggleGradeItems = function() {
     if ($input.is(":checked")) {
       $label.removeClass("off");
       // show all
-      $input.closest(".gb-item-filter-group").find(".gb-item-filter :input:not(:checked), .gb-item-category-score-filter :input:not(:checked)").trigger("click");
+      $input.closest(".gb-item-filter-group").find(".gb-item-filter :input:not(:checked), .gb-item-category-score-filter :input:not(:checked)")
+        .attr("data-suppress-update-view-preferences", "true")
+        .trigger("click");
     } else {
       $label.addClass("off");
       // hide all
-      $input.closest(".gb-item-filter-group").find(".gb-item-filter :input:checked, .gb-item-category-score-filter :input:checked").trigger("click");
+      $input.closest(".gb-item-filter-group").find(".gb-item-filter :input:checked, .gb-item-category-score-filter :input:checked")
+        .attr("data-suppress-update-view-preferences", "true")
+        .trigger("click");
     }
+
+    GbGradeTable.updateViewPreferences();
 
     updateCategoryFilterState($input);
   };
 
-  function handleGradeItemFilterStateChange(event, suppressRedraw) {
+  function handleGradeFilter(event, type, suppressRedraw) {
+
     var $input = $(event.target);
     var $label = $input.closest("label");
-    var $filter = $input.closest(".gb-item-filter");
+    var $filter = $input.closest(".gb-filter");
 
-    var assignmentId = $input.val();
+    var id = $input.val();
 
-    var column = GbGradeTable.colModelForAssignment(assignmentId);
-
-    let hiddenItems = JSON.parse(sessionStorage.getItem(GB_HIDDEN_ITEMS_KEY)) || [];
+    var column = (type === "assignment") ? GbGradeTable.colModelForAssignment(id) : GbGradeTable.colModelForCategoryScore(id);
 
     if ($input.is(":checked")) {
       $filter.removeClass("off");
       column.hidden = false;
-      hiddenItems.splice(hiddenItems.findIndex(i => i === parseInt(assignmentId)), 1);
     } else {
       $filter.addClass("off");
       column.hidden = true;
-      if (!hiddenItems.includes(parseInt(assignmentId))) {
-        hiddenItems.push(parseInt(assignmentId));
-      }
     }
 
-    var hiddenItemsString = JSON.stringify(hiddenItems);
-    sessionStorage.setItem(GB_HIDDEN_ITEMS_KEY, hiddenItemsString);
-
-    updateViewPreferences("gradebook", hiddenItemsString);
+    if (event.target.dataset.suppressUpdateViewPreferences) {
+      delete event.target.dataset.suppressUpdateViewPreferences;
+      console.debug("View preferences will NOT be updated now but may be later, in one operation.");
+    } else {
+      GbGradeTable.updateViewPreferences();
+    }
 
     updateCategoryFilterState($input);
 
@@ -1869,37 +1851,32 @@ GbGradeTable.setupToggleGradeItems = function() {
   };
 
 
+  function handleGradeItemFilterStateChange(event, suppressRedraw) {
+    handleGradeFilter(event, "assignment", suppressRedraw);
+  };
+
+
   function handleCategoryScoreFilterStateChange(event, suppressRedraw) {
-    var $input = $(event.target);
-    var $label = $input.closest("label");
-    var $filter = $input.closest(".gb-item-category-score-filter");
-
-    var category = $input.val();
-
-    var column = GbGradeTable.colModelForCategoryScore(category);
-
-    if ($input.is(":checked")) {
-      $filter.removeClass("off");
-      column.hidden = false;
-    } else {
-      $filter.addClass("off");
-      column.hidden = true;
-    }
-
-    updateCategoryFilterState($input);
-    if (!suppressRedraw) {
-      GbGradeTable.redrawTable(true);
-    }
+    handleGradeFilter(event, "category", suppressRedraw);
   }
 
-
   function handleShowAll() {
-    $panel.find(".gb-item-filter :input:not(:checked), .gb-item-category-score-filter :input:not(:checked)").trigger("click");
+
+    $panel.find(".gb-item-filter :input:not(:checked), .gb-item-category-score-filter :input:not(:checked)")
+        .attr("data-suppress-update-view-preferences", "true")
+        .trigger("click");
+
+    GbGradeTable.updateViewPreferences();
   };
 
 
   function handleHideAll() {
-    $panel.find(".gb-item-filter :input:checked, .gb-item-category-score-filter :input:checked").trigger("click");
+
+    $panel.find(".gb-item-filter :input:checked, .gb-item-category-score-filter :input:checked")
+        .attr("data-suppress-update-view-preferences", "true")
+        .trigger("click");
+
+    GbGradeTable.updateViewPreferences();
   };
 
 
@@ -1907,15 +1884,22 @@ GbGradeTable.setupToggleGradeItems = function() {
     var $input = $filter.find(":input");
     var $label = $filter.find("label");
 
-    $panel.
-        find(".gb-item-category-filter :input:checked:not([value='"+$input.val()+"'])").
-        trigger("click");
+    $panel.find(".gb-item-category-filter :input:checked:not([value='"+$input.val()+"'])")
+      .attr("data-suppress-update-view-preferences", "true")
+      .trigger("click");
 
     if ($input.is(":not(:checked)")) {
-      $label.trigger("click");
+      $input.attr("data-suppress-update-view-preferences", "true")
+      $label
+        .attr("data-suppress-update-view-preferences", "true")
+        .trigger("click");
     } else {
-      $input.closest(".gb-item-filter-group").find(".gb-item-filter :input:not(:checked), .gb-item-category-score-filter :input:not(:checked)").trigger("click");
+      $input.closest(".gb-item-filter-group").find(".gb-item-filter :input:not(:checked), .gb-item-category-score-filter :input:not(:checked)")
+        .attr("data-suppress-update-view-preferences", "true")
+        .trigger("click");
     }
+
+    GbGradeTable.updateViewPreferences();
   };
 
 
@@ -1924,12 +1908,17 @@ GbGradeTable.setupToggleGradeItems = function() {
     var $label = $filter.find("label");
 
     $panel.
-        find(".gb-item-filter :input:checked:not(#"+$input.attr("id")+"), .gb-item-category-score-filter :input:checked").
-        trigger("click");
+      find(".gb-item-filter :input:checked:not(#"+$input.attr("id")+"), .gb-item-category-score-filter :input:checked")
+        .attr("data-suppress-update-view-preferences", "true")
+        .trigger("click");
 
     if ($input.is(":not(:checked)")) {
-      $label.trigger("click");
+      $label
+        .attr("data-suppress-update-view-preferences", "true")
+        .trigger("click");
     }
+
+    GbGradeTable.updateViewPreferences();
   };
 
 
@@ -1938,12 +1927,17 @@ GbGradeTable.setupToggleGradeItems = function() {
     var $label = $filter.find("label");
 
     $panel.
-        find(".gb-item-filter :input:checked, .gb-item-category-score-filter :input:checked:not(#"+$input.attr("id")+")").
-        trigger("click");
+      find(".gb-item-filter :input:checked, .gb-item-category-score-filter :input:checked:not(#"+$input.attr("id")+")")
+        .attr("data-suppress-update-view-preferences", "true")
+        .trigger("click");
 
     if ($input.is(":not(:checked)")) {
-      $label.trigger("click");
+      $label
+        .attr("data-suppress-update-view-preferences", "true")
+        .trigger("click");
     }
+
+    GbGradeTable.updateViewPreferences();
   };
 
 
@@ -2081,7 +2075,9 @@ GbGradeTable.setupToggleGradeItems = function() {
   $panel.find(".gb-item-filter :input").on("change", handleGradeItemFilterStateChange);
   $panel.find(".gb-item-category-score-filter :input").on("change", handleCategoryScoreFilterStateChange);
 
-  $panel.find(":input:not(:checked)").trigger("change", [SUPPRESS_TABLE_REDRAW]);
+  $panel.find(":input:not(:checked)")
+        .attr("data-suppress-update-view-preferences", "true")
+        .trigger("change", [SUPPRESS_TABLE_REDRAW]);
 
   // setup hidden visual cue clicky
   $(GbGradeTable.instance.rootElement).on("click", ".gb-hidden-column-visual-cue", function(event) {
@@ -2102,14 +2098,20 @@ GbGradeTable.setupToggleGradeItems = function() {
     $.each(columnsAfter, function(i, column) {
       if (!done && column.hidden) {
         if (column.type == "assignment") {
-          $panel.find(".gb-item-filter :input[value='"+column.assignmentId+"']").trigger("click", [SUPPRESS_TABLE_REDRAW]);
+          $panel.find(".gb-item-filter :input[value='"+column.assignmentId+"']")
+            .attr("data-suppress-update-view-preferences", "true")
+            .trigger("click", [SUPPRESS_TABLE_REDRAW]);
         } else {
-          $panel.find(".gb-item-category-score-filter :input[value='"+column.categoryName+"']").trigger("click", [SUPPRESS_TABLE_REDRAW]);
+          $panel.find(".gb-item-category-score-filter :input[value='"+column.categoryName+"']")
+            .attr("data-suppress-update-view-preferences", "true")
+            .trigger("click", [SUPPRESS_TABLE_REDRAW]);
         }
       } else {
         done = true;
       }
     });
+
+    GbGradeTable.updateViewPreferences();
 
     $(this).remove();
     GbGradeTable.redrawTable(true);
@@ -2573,7 +2575,7 @@ GbGradeTable.setupDragAndDrop = function () {
       if (candidateTarget.is(dragTarget) ||
           (candidateTarget.is(dragTarget.prev()) && dropTargetSide == RIGHT_POSITION) ||
           (candidateTarget.is(dragTarget.next()) && dropTargetSide == LEFT_POSITION)) {
-
+          
             /* If our drop target would put us right back where we started,
                don't show the drop indicator. */
             return true;

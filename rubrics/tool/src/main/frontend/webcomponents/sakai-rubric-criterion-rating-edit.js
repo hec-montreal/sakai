@@ -1,5 +1,6 @@
 import {RubricsElement} from "./rubrics-element.js";
 import {html} from "/webcomponents/assets/lit-element/lit-element.js";
+import {ifDefined} from '/webcomponents/assets/lit-html/directives/if-defined.js';
 import {tr} from "./sakai-rubrics-language.js";
 
 export class SakaiRubricCriterionRatingEdit extends RubricsElement {
@@ -9,8 +10,8 @@ export class SakaiRubricCriterionRatingEdit extends RubricsElement {
     return {
       rating: { type: Object },
       criterionId: { attribute: "criterion-id", type: String },
-      minpoints: { type: Number },
-      maxpoints: { type: Number },
+      minpoints: Number,
+      maxpoints:  Number,
     };
   }
 
@@ -47,16 +48,16 @@ export class SakaiRubricCriterionRatingEdit extends RubricsElement {
         <div class="popover-content form">
           <div class="first-row">
               <div class="form-group title">
-                <label for="rating-title"><sr-lang key="rating_title" /></label>
+                <label for="rating-title-${this.rating.id}"><sr-lang key="rating_title" /></label>
                 <input type="text" id="rating-title-${this.rating.id}" class="form-control" .value="${this.rating.title}" maxlength="255">
               </div>
               <div class="form-group points">
-                <label for="rating-points"><sr-lang key="points" /></label>
-                <input type="number" id="rating-points-${this.rating.id}" class="form-control hide-input-arrows" name="quantity" .value="${this.rating.points}" min="${this.minpoints}" max="${this.maxpoints}">
+                <label for="rating-points-${this.rating.id}"><sr-lang key="points" /></label>
+                <input type="number" id="rating-points-${this.rating.id}" class="form-control hide-input-arrows" name="quantity" .value="${this.rating.points}" min="${ifDefined(this.minpoints)}" max="${ifDefined(this.maxpoints)}" />
               </div>
           </div>
           <div class="form-group">
-            <label for=""><sr-lang key="rating_description" /></label>
+            <label for="rating-description-${this.rating.id}"><sr-lang key="rating_description" /></label>
             <textarea name="" id="rating-description-${this.rating.id}" class="form-control">${this.rating.description}</textarea>
           </div>
         </div>

@@ -34,7 +34,7 @@
     <title><h:outputText value="#{deliveryMessages.table_of_contents}" /></title>
     <script type="text/javascript" src="/samigo-app/jsf/widget/hideDivision/hideDivision.js"></script>
     <%@ include file="/jsf/delivery/deliveryjQuery.jsp" %>
-    <h:outputText value="#{delivery.mathJaxHeader}" escape="false" rendered="#{delivery.actionString=='takeAssessmentViaUrl' and delivery.isMathJaxEnabled}"/>
+    <h:outputText value="#{delivery.mathJaxHeader}" escape="false" rendered="#{(delivery.actionString=='takeAssessmentViaUrl' ||  delivery.actionString=='previewAssessment') and delivery.isMathJaxEnabled}"/>
     </head>
     <body onload="<%= request.getAttribute("html.body.onload") %>">
 <!--div class="portletBody"-->
@@ -157,7 +157,6 @@ function saveTime()
 <h:inputHidden id="assessTitle" value="#{delivery.assessmentTitle}" />
 <h:inputHidden id="elapsed" value="#{delivery.timeElapse}" />
 <h:inputHidden id="outoftime" value="#{delivery.timeOutSubmission}"/>
-<h:commandLink id="submitforgrade" action="#{delivery.submitForGrade}" value="" />
 
     <h:messages styleClass="messageSamigo" rendered="#{! empty facesContext.maximumSeverity}" layout="table"/>
     <p style="margin-bottom:0"><h:outputText value="#{deliveryMessages.seeOrHide}" /> </p>

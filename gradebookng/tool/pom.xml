@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.sakaiproject.gradebookng</groupId>
 		<artifactId>gradebookng</artifactId>
-		<version>19.3</version>
+		<version>19.4</version>
 	</parent>
 	<packaging>war</packaging>
 	<dependencies>
@@ -75,13 +75,12 @@
 			<artifactId>sakai-portal-util</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-		</dependency>
-		<!--  TODO migrate to lang3 -->
-		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-text</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-validator</groupId>
@@ -139,9 +138,9 @@
 
 		<!-- Webjars -->
 		<dependency>
-			<groupId>org.webjars.bower</groupId>
+			<groupId>org.webjars</groupId>
 			<artifactId>handsontable</artifactId>
-			<version>0.26.1</version>
+			<version>6.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.webjars</groupId>

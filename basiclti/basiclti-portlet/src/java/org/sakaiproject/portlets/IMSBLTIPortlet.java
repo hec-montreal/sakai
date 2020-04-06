@@ -174,7 +174,6 @@ public class IMSBLTIPortlet extends GenericPortlet {
 
 			// Grab that underlying request to get a GET parameter
 			ServletRequest req = (ServletRequest) ThreadLocalManager.get(CURRENT_HTTP_REQUEST);
-			String popupDone = req.getParameter("sakai.popup");
 
 			PrintWriter out = response.getWriter();
 
@@ -258,12 +257,6 @@ public class IMSBLTIPortlet extends GenericPortlet {
 						windowOpen = "window.open('"+iframeUrl+"','BasicLTI');";
 					}
 
-					if ( popupDone == null && sections.size() <= 1) {
-						text.append("<p>\n");
-						text.append("<script type=\"text/javascript\">\n");
-						text.append(windowOpen+"\n");
-						text.append("</script>\n");
-					}
 					String siteName = ServerConfigurationService.getString(SITE_NAME, SAKAI);
 					title = title!=null ? title : rb.getString("tool.name", "your tool");
 					String newPageLaunchText = rb.getFormattedMessage("new.page.launch", new Object[]{FormattedText.escapeHtml(title, false), FormattedText.escapeHtml(siteName, false)});

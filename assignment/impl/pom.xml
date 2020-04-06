@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.sakaiproject.assignment</groupId>
         <artifactId>assignment</artifactId>
-        <version>19.3</version>
+        <version>19.4</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -156,8 +156,16 @@
             <artifactId>jackson-dataformat-xml</artifactId>
         </dependency>
         <dependency>
+        	<groupId>com.fasterxml.jackson.module</groupId>
+        	<artifactId>jackson-module-parameter-names</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
+        </dependency>
+        <dependency>
+        	<groupId>com.fasterxml.jackson.datatype</groupId>
+        	<artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.woodstox</groupId>

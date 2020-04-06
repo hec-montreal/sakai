@@ -41,9 +41,9 @@ export class SakaiRubricGradingComment extends RubricsElement {
         <div class="arrow"></div>
         <div class="popover-title" style="display: flex;">
           <div style="flex: auto;">
-            <label class="criterion-title" for="">
+            <span class="criterion-title">
               <sr-lang key="comment_for_criterion" values="${JSON.stringify([this.criterion.title])}" />
-            </label>
+            </span>
           </div>
           <div class="buttons" style="flex: 0">
             <button class="btn btn-primary btn-xs done" @click="${this.hideTooltip}"><sr-lang key="done" /></button>
@@ -51,7 +51,7 @@ export class SakaiRubricGradingComment extends RubricsElement {
         </div>
         <div class="popover-content form">
           <div class="form-group">
-            <textarea aria-labelledby="${tr("criterion_comment")}" class="form-control" name="rbcs-${this.evaluatedItemId}-${this.entityId}-criterion-comment-${this.criterion.id}" id="criterion_${this.evaluatedItemId}_${this.entityId}_comment_${this.criterion.id}|${this.randombit}|">${this.criterion.comments}</textarea>
+            <textarea aria-label="${tr("criterion_comment")}" class="form-control" name="rbcs-${this.evaluatedItemId}-${this.entityId}-criterion-comment-${this.criterion.id}" id="criterion_${this.evaluatedItemId}_${this.entityId}_comment_${this.criterion.id}|${this.randombit}|">${this.criterion.comments}</textarea>
           </div>
         </div>
       </div>
@@ -98,7 +98,11 @@ export class SakaiRubricGradingComment extends RubricsElement {
     // hide the edit popover
     this.classList.remove("show-tooltip");
     $(`#criterion-editor-${this.criterion.id}-${this.randombit}`).hide();
+    if (!this.criterion.comments) {
+      this.criterion.comments = "";
+    }
     this.dispatchEvent(new CustomEvent('update-comment', {detail: {evaluatedItemId: this.evaluatedItemId, entityId: this.entityId, criterionId: this.criterion.id, value: this.criterion.comments}, bubbles: true, composed: true}));
+    this.requestUpdate();
   }
 
   setupEditor() {
