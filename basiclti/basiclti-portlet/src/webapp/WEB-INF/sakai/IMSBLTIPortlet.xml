@@ -215,7 +215,7 @@
                 <configuration name="imsti.newpage" value="on" />
                 <configuration name="imsti.maximize" value="off" />
                 <configuration name="imsti.releasename" value="on"/>  
-                <configuration name="imsti.releaseemail" value="off"/>
+                <configuration name="imsti.releaseemail" value="on"/>
                 <configuration name="imsti.allowsettings" value="on"/>
                 <configuration name="imsti.allowroster" value="on"/> 
                 <configuration name="imsti.allowoutcomes" value="on"/> 
