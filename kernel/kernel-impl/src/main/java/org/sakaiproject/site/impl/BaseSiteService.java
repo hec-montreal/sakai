@@ -106,6 +106,10 @@ public abstract class BaseSiteService implements SiteService, Observer
 	private static final String TYPE_STUDENT = "student";
 	/** End ZCII-1564  */
 
+	/**ZCII-3003: Automatiser l'inscription au site Espace_enseignant	 */
+	private static final String TYPE_INSTRUCTOR = "instructor";
+	/** End ZCII-3003: */
+
 	/** Storage manager for this service. */
 	private Storage m_storage = null;
 
@@ -771,6 +775,20 @@ public abstract class BaseSiteService implements SiteService, Observer
 				{
 					User user = userDirectoryService().getUser(sessionManager().getCurrentSessionUserId());
 
+					/**ZCII-3003: Automatiser l'inscription au site Espace_enseignant	 */
+					if (TYPE_INSTRUCTOR.equalsIgnoreCase(user.getType())) {
+						String instructorsSiteId =
+								serverConfigurationService().getString("espace.enseignant.siteId");
+
+						if (instructorsSiteId != null && siteExists(instructorsSiteId)){
+							authzGroupService().joinGroup("/site/"+instructorsSiteId, "access");
+						}
+					}
+					
+					/** End ZCII-3003: */
+
+					
+					
 					/**
 					 * ZCII-1564 - We set the right site template for students
 					 * according to their LDAP program
