@@ -11,8 +11,6 @@ var disabledButtons = [];
 
 // confirm box needs to disable autosave temporarily
 
-var doautosave = true;
-
 //    Links are more difficult, as there isn't a disabled
 // attribute for them. Currently I clear onmouseup and onclick.
 //    I've tried to make this script generic, but if it is
@@ -24,6 +22,16 @@ var doautosave = true;
 var disabledLinks = [];
 
 function GetFormContent(formId, buttonName) {
+
+    try {
+        //If the autosave submits any fill in numeric question, validate it before submitting. Wipe the value if it's incorrect and notify the user.
+        $('.fillInNumericInput').each( function() {
+          validateFinInput(this);
+        });
+    } catch(error) {
+        //Fail silently if this validation fails.
+    }
+
     var theForm = document.getElementById(formId);
     var elements = theForm.elements;
     var pairs = [];
@@ -34,20 +42,21 @@ function GetFormContent(formId, buttonName) {
         pairs.push(encoded);
     }
     for (var i=0; i<elements.length; i++) {
-        var elt = elements[i]
-        var name = elt.name;
+        var elt = elements[i];
+        var eltName = elt.name;
+        if (!eltName) continue;
+
         var type = typeof(elt.type)=='string' ? elt.type.toLowerCase() : '';
         var value = elt.value;
-        var encoded = encodeURIComponent(name)+"="+encodeURIComponent(value);
-	if (type == "submit" && !elt.disabled) {
-	    // save name of buttons we are disabling, and disable
-	    disabledButtons.push(name);
-	    elt.disabled = true;
+        var encoded = encodeURIComponent(eltName) + "=" + encodeURIComponent(value);
+        if (type == "submit" && !elt.disabled) {
+            // save name of buttons we are disabling, and disable
+            disabledButtons.push(eltName);
+            elt.disabled = true;
         }
-        if (type != "submit" &&
-	    !((type == "radio" || type == "checkbox") && !elt.checked)){
-	    pairs.push(encoded);
-  	}
+        else if (type != "submit" && !((type == "radio" || type == "checkbox") && !elt.checked)) {
+            pairs.push(encoded);
+        }
     }
     // save attributes and disable links
     disabledLinks = [];
@@ -64,8 +73,6 @@ function GetFormContent(formId, buttonName) {
     return pairs.join("&");
 }
 
-var counter = 0
-
 function SaveFormContentAsync(toUrl, formId, buttonName, updateVar, updateVar2, repeatMilliseconds, ok ) {
     if (!ok) { 
 		return;
@@ -76,9 +83,6 @@ function SaveFormContentAsync(toUrl, formId, buttonName, updateVar, updateVar2, 
 	}
 
     // asyncronously send form content to toUrl, wait for response, sleep, repeat
-    //    var theStatus = document.getElementById(statusId);
-    counter += 1;
-
     function onready_callback(text) {
 	    // This is an Ajax response. It isn't normally processed.
 	// So if we need anything from it we have to get it.
@@ -109,22 +113,21 @@ function SaveFormContentAsync(toUrl, formId, buttonName, updateVar, updateVar2, 
 	} else {
 	    saveok = false;
 	}
+
 	// Now that we have the updated date, it's safe for the user to do submits.
 	// Reenable any buttons we disabled.
-
 	for (var i=0; i<disabledButtons.length; i++) {
-	    document.forms[0].elements[disabledButtons[i]].disabled=false;
+	    document.forms[formId].elements[disabledButtons[i]].disabled=false;
 	}
 
 	// And links
-
 	for (var i=0; i<disabledLinks.length; i++) {
 	    var item = disabledLinks[i];
 	    var link = document.getElementById(item[0]);
 	    link.onmouseup = item[1];
 	    link.onclick = item[2];
 	}
-	//	theStatus.innerHTML = "count "+counter+" save complete at "+Date();
+
         // wait and then call save form again
 	if (saveok) {
 	    var onTimeout = TimeOutAction(toUrl, formId, buttonName, updateVar, updateVar2, repeatMilliseconds);
@@ -169,7 +172,6 @@ function SaveFormContentAsync(toUrl, formId, buttonName, updateVar, updateVar2, 
         // when the request is done the scope of the function can be garbage collected...
     }
 
-    if (doautosave && counter > 1) {
       var payload = GetFormContent(formId, buttonName);
 
       $.ajax({ method: "POST", url: toUrl, data: payload }, function () {
@@ -182,12 +184,6 @@ function SaveFormContentAsync(toUrl, formId, buttonName, updateVar, updateVar2, 
           $("#autosave-failed-warning").show();
           onready_callback("");
         });
-
-    } else {
-	//alert("first time" + 	    document.forms[0].elements['takeAssessmentForm:lastSubmittedDate1'].value);
-        var onTimeout = TimeOutAction(toUrl, formId, buttonName, updateVar, updateVar2, repeatMilliseconds);
-        setTimeout(onTimeout, repeatMilliseconds);
-    }
 
     // onready_callback called on request response.
 }

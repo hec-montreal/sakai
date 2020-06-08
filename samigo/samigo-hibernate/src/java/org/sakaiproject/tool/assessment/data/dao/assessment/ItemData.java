@@ -16,6 +16,7 @@
 package org.sakaiproject.tool.assessment.data.dao.assessment;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,9 +24,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.sakaiproject.tool.assessment.data.dao.shared.TypeD;
@@ -72,7 +79,7 @@ public class ItemData
   private Set<ItemTextIfc> itemTextSet;
   private Set<ItemMetaDataIfc> itemMetaDataSet;
   private Set<ItemFeedbackIfc> itemFeedbackSet;
-  private Set<ItemAttachmentIfc> itemAttachmentSet;
+  @Getter @Setter private Set<ItemAttachmentIfc> itemAttachmentSet;
   private Set<ItemTagIfc> itemTagSet;
   private Double minScore;
   private String hash;
@@ -777,30 +784,14 @@ public ItemData() {}
    return false;
   }
 
-  public Set<ItemAttachmentIfc> getItemAttachmentSet() {
-    return itemAttachmentSet;
-  }
-
-  public void setItemAttachmentSet(Set<ItemAttachmentIfc> itemAttachmentSet) {
-    this.itemAttachmentSet = itemAttachmentSet;
-  }
-
   public List<ItemAttachmentIfc> getItemAttachmentList() {
-    if ( this.itemAttachmentSet == null || this.itemAttachmentSet.isEmpty() ) {
-      return new ArrayList<>();
-    }
-    return new ArrayList<>(this.itemAttachmentSet);
+    return Optional.ofNullable(itemAttachmentSet).map(Collection::stream).orElseGet(Stream::empty).collect(Collectors.toList());
   }
 
   public Map<Long, ItemAttachmentIfc> getItemAttachmentMap() {
-    final Map<Long, ItemAttachmentIfc> map = new HashMap<>();
-    if ( this.itemAttachmentSet == null || this.itemAttachmentSet.isEmpty() ) {
-      return map;
-    }
-    for (ItemAttachmentIfc a : this.itemAttachmentSet) {
-      map.put(a.getAttachmentId(), a);
-    }
-    return map;
+    return Optional.ofNullable(itemAttachmentSet)
+            .map(Collection::stream).orElseGet(Stream::empty)
+            .collect(Collectors.toMap(ItemAttachmentIfc::getAttachmentId, Function.identity()));
   }
 
   public void addItemAttachment(ItemAttachmentIfc attachment) {

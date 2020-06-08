@@ -174,7 +174,6 @@ public class IMSBLTIPortlet extends GenericPortlet {
 
 			// Grab that underlying request to get a GET parameter
 			ServletRequest req = (ServletRequest) ThreadLocalManager.get(CURRENT_HTTP_REQUEST);
-			String popupDone = req.getParameter("sakai.popup");
 
 			PrintWriter out = response.getWriter();
 

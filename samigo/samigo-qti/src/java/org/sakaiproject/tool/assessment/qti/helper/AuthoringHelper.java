@@ -593,7 +593,7 @@ public class AuthoringHelper
 
           while (notUnique)
           {
-            title = exHelper.renameDuplicate(title);
+            title = assessmentService.renameDuplicate(title);
             log.debug("renameDuplicate(title): " + title);
             assessment.setTitle(title);
             notUnique =
@@ -694,8 +694,8 @@ public class AuthoringHelper
           // Item Attachment
           exHelper.makeItemAttachmentSet(item);
           
-          section.addItem(item); // many to one
-          itemService.saveItem(item);
+          item = itemService.saveItem(item);
+          section.addItem(item);
           EventTrackingService.post(EventTrackingService.newEvent(SamigoConstants.EVENT_ASSESSMENT_SAVEITEM, "/sam/" + AgentFacade.getCurrentSiteId() + "/saved itemId=" + item.getItemId().toString(), true));
         } // ... end for each item
         
@@ -800,7 +800,7 @@ public class AuthoringHelper
 
  	          while (!isUnique)
  	          {
- 	        	title = exHelper.renameDuplicate(title);
+ 	        	title = AssessmentService.renameDuplicate(title);
  	            log.debug("renameDuplicate(title): " + title);
  	            questionpool.setTitle(title);
  	            //recheck to confirm that new title is not a dplicate too
@@ -839,7 +839,7 @@ public class AuthoringHelper
                item.setLastModifiedBy(me);
                item.setLastModifiedDate(questionpool.getLastModified());
                item.setStatus(ItemDataIfc.ACTIVE_STATUS);
-               itemService.saveItem(item);
+               item = itemService.saveItem(item);
                EventTrackingService.post(EventTrackingService.newEvent(SamigoConstants.EVENT_ASSESSMENT_SAVEITEM, "/sam/" + AgentFacade.getCurrentSiteId() + "/saved itemId=" + item.getItemId().toString(), true));
                
                QuestionPoolItemData questionPoolItem = new QuestionPoolItemData();
@@ -882,7 +882,7 @@ public class AuthoringHelper
       Item itemXml = new Item(document, QTIVersion.VERSION_1_2);
       exHelper.updateItem(item, itemXml);
       ItemService itemService = new ItemService();
-      itemService.saveItem(item);
+      item = itemService.saveItem(item);
     }
     catch (Exception e)
     {

@@ -17,6 +17,7 @@
 package org.sakaiproject.tool.assessment.ui.bean.author;
 
 import java.io.Serializable;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -50,6 +52,7 @@ import org.sakaiproject.section.api.facade.Role;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.time.api.UserTimeService;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.assessment.api.SamigoApiFactory;
 import org.sakaiproject.tool.assessment.data.dao.assessment.AssessmentAccessControl;
@@ -76,6 +79,8 @@ import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.ResourceLoader;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  *
@@ -215,10 +220,18 @@ public class AssessmentSettingsBean
 
   private ResourceLoader assessmentSettingMessages;
 
+  @Resource(name = "org.sakaiproject.time.api.UserTimeService")
+  private UserTimeService userTimeService;
+
   /*
    * Creates a new AssessmentBean object.
    */
   public AssessmentSettingsBean() {
+      this(ContextLoader.getCurrentWebApplicationContext());
+  }
+
+  public AssessmentSettingsBean(WebApplicationContext context) {
+    context.getAutowireCapableBeanFactory().autowireBean(this);
       this.assessmentSettingMessages = new ResourceLoader("org.sakaiproject.tool.assessment.bundle.AssessmentSettingsMessages");
   }
 
@@ -1079,33 +1092,37 @@ public class AssessmentSettingsBean
    * @return date String "MM-dd-yyyy hh:mm:ss a"
    */
   private String getDisplayFormatFromDate(Date date) {
-    String dateString = "";
-    if (date == null) {
-      return dateString;
-    }
+    if (date == null) return StringUtils.EMPTY;
 
     if (displayFormat == null) {   
     	setDisplayFormat(ContextUtil.getLocalizedString("org.sakaiproject.tool.assessment.bundle.GeneralMessages","output_data_picker_w_sec"));
     }
 
     try {
-      // Do not manipulate the date based on the client browser timezone.
-      dateString = tu.getDisplayDateTime(displayFormat, date, false);
+      return tu.getDisplayDateTime(displayFormat, date);
     }
     catch (Exception ex) {
       // we will leave it as an empty string
       log.warn("Unable to format date.", ex);
     }
-    return dateString;
+    return StringUtils.EMPTY;
   }
 
-  public String getStartDateString()
-  {
+  public String getStartDateInClientTimezoneString() {
+    if (!this.isValidStartDate) {
+      return this.originalStartDateString;
+    }
+    else {
+      return userTimeService.dateTimeFormat(startDate, new ResourceLoader().getLocale(), DateFormat.MEDIUM);
+    }
+  }
+
+  public String getStartDateString() {
 	if (!this.isValidStartDate) {
 		return this.originalStartDateString;
 	}
 	else {
-		return getDisplayFormatFromDate(startDate);
+      return getDisplayFormatFromDate(startDate);
 	}
   }
    
@@ -1131,15 +1148,24 @@ public class AssessmentSettingsBean
     }
   }
 
-  public String getDueDateString()
-  {
+  public String getDueDateInClientTimezoneString() {
+    if (!this.isValidDueDate) {
+      return this.originalDueDateString;
+    }
+    else {
+      return userTimeService.dateTimeFormat(dueDate, new ResourceLoader().getLocale(), DateFormat.MEDIUM);
+    }
+  }
+
+  public String getDueDateString() {
     if (!this.isValidDueDate) {
 		return this.originalDueDateString;
 	}
 	else {
-		return getDisplayFormatFromDate(dueDate);
+      return getDisplayFormatFromDate(dueDate);
 	}	  
   }
+
   public void setDueDateString(String dueDateString)
   {
     if (dueDateString == null || dueDateString.trim().equals("")) {
@@ -1197,8 +1223,16 @@ public class AssessmentSettingsBean
     }
   }
 
-  public String getFeedbackDateString()
-  {
+  public String getFeedbackDateInClientTimezoneString() {
+    if (!this.isValidFeedbackDate) {
+      return this.originalFeedbackDateString;
+    }
+    else {
+      return userTimeService.dateTimeFormat(feedbackDate, new ResourceLoader().getLocale(), DateFormat.MEDIUM);
+    }
+  }
+
+  public String getFeedbackDateString() {
     if (!this.isValidFeedbackDate) {
 		return this.originalFeedbackDateString;
 	}
@@ -1751,7 +1785,12 @@ public class AssessmentSettingsBean
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, errorString, null));
         }
         else {
-            this.extendedTime.syncDates();
+            AssessmentAccessControlIfc accessControl = new AssessmentAccessControl();
+            accessControl.setStartDate(this.startDate);
+            accessControl.setDueDate(this.dueDate);
+            accessControl.setLateHandling(Integer.valueOf(this.lateHandling));
+            accessControl.setRetractDate(this.retractDate);
+            this.extendedTime.syncDates(accessControl);
             this.extendedTimes.add(this.extendedTime);
             resetExtendedTime();
         }

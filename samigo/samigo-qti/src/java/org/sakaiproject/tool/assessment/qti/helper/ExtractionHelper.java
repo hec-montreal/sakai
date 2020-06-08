@@ -127,9 +127,6 @@ public class ExtractionHelper
   
   private String unzipLocation;
 
-  // versioning title string that it will look for/use, followed by a number
-  private static final String VERSION_START = "  - ";
-
   /**
    * @deprecated
    */
@@ -1708,23 +1705,10 @@ public class ExtractionHelper
     }
 
     String createdDate = (String) itemMap.get("createdDate");
-    
+
     item.setInstruction( (String) itemMap.get("instruction"));
-    if (notNullOrEmpty(score))
-    {
-      item.setScore( Double.valueOf(score));
-    }
-    else {
-    	item.setScore(Double.valueOf(0));
-    }
-    
-    if (notNullOrEmpty(discount))
-    {
-    	item.setDiscount(Double.valueOf(discount));
-    }
-    else {
-    	item.setDiscount(Double.valueOf(0));
-    }
+    item.setScore( getValidDouble(score) );
+    item.setDiscount( getValidDouble(discount) );
 
     if (notNullOrEmpty( partialCreditFlag))
     {
@@ -2078,6 +2062,19 @@ public class ExtractionHelper
 		  itemTextSet.add(itemText);
 	  }
 	  item.setItemTextSet(itemTextSet);
+  }
+
+  private double getValidDouble(final String scoreText) {
+    if (StringUtils.isBlank(scoreText)) return 0d;
+
+    try {
+      return Double.valueOf(scoreText);
+    }
+    catch (NumberFormatException e) {
+      log.warn("Tried to parse this double in IMS-QTI extraction: {}", scoreText);
+    }
+
+    return 0d;
   }
 
   private double getCorrectScore(ItemDataIfc item, int answerSize)
@@ -2937,54 +2934,6 @@ public class ExtractionHelper
   {
     return s != null && s.trim().length() > 0 ?
         true : false;
-  }
-
-  /**
-   * Append "  - 2", "  - 3", etc. incrementing as you go.
-   * @param title the original
-   * @return the title with versioning appended
-   */
-  public String renameDuplicate(String title)
-  {
-    if (title==null) title = "";
-
-    String rename = "";
-    int index = title.lastIndexOf(VERSION_START);
-
-    if (index>-1)//if is versioned
-    {
-      String mainPart = "";
-      String versionPart = title.substring(index);
-      if (index > 0)
-      {
-        mainPart = title.substring(0, index);
-      }
-
-      int nindex = index + VERSION_START.length();
-
-      String version = title.substring(nindex);
-
-      int versionNumber = 0;
-      try
-      {
-        versionNumber = Integer.parseInt(version);
-        if (versionNumber < 2) versionNumber = 2;
-        versionPart = VERSION_START + (versionNumber + 1);
-
-        rename = mainPart + versionPart;
-      }
-      catch (NumberFormatException ex)
-      {
-        rename = title + VERSION_START + "2";
-      }
-    }
-    else
-    {
-      rename = title + VERSION_START + "2";
-    }
-
-    return rename;
-
   }
 
   /**
