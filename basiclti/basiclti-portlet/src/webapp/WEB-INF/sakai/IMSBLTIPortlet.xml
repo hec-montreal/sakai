@@ -241,6 +241,56 @@
                 <configuration name="final.allowoutcomes" value="true"/>
                 <configuration name="final.allowlori" value="true"/>
                 <configuration name="final.contentlink" value="true"/>
+	</tool>
+
+        <tool
+                id="sakai.zoom"
+                title="Zoom"
+                description="">
+
+                <configuration name="sakai:portlet-pre-render" value="true" />
+
+                <category name="course" />
+
+                <configuration name="functions.require" />
+
+                <configuration name="imsti.launch"
+                   value="https://applications.zoom.us/lti/rich" />
+                <configuration name="imsti.xml" />
+                <configuration name="imsti.secret" value="DpAFMCJHDWnPlAovSNrMvKYGBHffcsdk59ws" />
+                <configuration name="imsti.key" value="-huQn7HWSdaT7ghXtQNNMw" />
+
+                <configuration name="imsti.pagetitle" value="Zoom"/>
+                <configuration name="imsti.tooltitle" value="Zoom"/>
+                <configuration name="imsti.newpage" value="on" />
+                <configuration name="imsti.maximize" value="off" />
+                <configuration name="imsti.releasename" value="on"/>
+                <configuration name="imsti.releaseemail" value="on"/>
+                <configuration name="imsti.allowsettings" value="on"/>
+                <configuration name="imsti.allowroster" value="on"/>
+                <configuration name="imsti.allowoutcomes" value="on"/>
+                <configuration name="imsti.allowlori" value="on"/>
+                <configuration name="imsti.contentlink" />
+
+                <configuration name="final.launch" value="true"/>
+                <configuration name="final.xml" value="true"/>
+                <configuration name="final.secret" value="true"/>
+                <configuration name="final.key" value="true"/>
+
+                <configuration name="final.pagetitle" value="true"/>
+                <configuration name="final.tooltitle" value="true"/>
+                <configuration name="final.newpage" value="true"/>
+                <configuration name="final.maximize" value="true"/>
+                <configuration name="final.frameheight" value="true"/>
+                <configuration name="final.debug" value="true"/>
+                <configuration name="final.releasename" value="true"/>
+                <configuration name="final.releaseemail" value="true"/>
+                <configuration name="final.custom" value="true"/>
+                <configuration name="final.allowsettings" value="true"/>
+                <configuration name="final.allowroster" value="true"/>
+                <configuration name="final.allowoutcomes" value="true"/>
+                <configuration name="final.allowlori" value="true"/>
+                <configuration name="final.contentlink" value="true"/>
         </tool>
 
         <tool
