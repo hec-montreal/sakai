@@ -1202,6 +1202,7 @@ public abstract class BaseCitationService implements CitationService
 			String doiUrl                = m_serverConfigurationService.getString("citations.doi.url");
 			String doiReplacePrefix      = m_serverConfigurationService.getString("citations.doi.url.replace");
 			String worldcatUrl           = m_serverConfigurationService.getString("citations.worldcat.url");
+			String worldcatSearchUrl     = m_serverConfigurationService.getString("citations.worldcat.searchUrl");
 			String worldcatReplacePrefix = m_serverConfigurationService.getString("citations.worldcat.url.replace");
 
 			String doi = (String) m_citationProperties.get("doi");
@@ -1221,6 +1222,25 @@ public abstract class BaseCitationService implements CitationService
 				return hecUrl;
 
 			}
+
+			// use 909 record if it exists
+			//ZCII-533: If the citation has the property m_linkParameters (record 909) we can build the citation url using this id instead of the isbn
+			Object m_linkParameters = m_citationProperties.get("m_linkParameters");
+			String linkParametersString = null;
+
+			if (m_linkParameters != null) {
+				//ZCII-1497: Handle case where multiple m_linkParameters are present in db
+				if (m_linkParameters instanceof String) {
+					linkParametersString = m_linkParameters.toString();
+				} else if (m_linkParameters instanceof Vector) {
+					linkParametersString = ((Vector)m_linkParameters).get(0).toString();
+				}
+
+				if (linkParametersString != null && !linkParametersString.equals(""))
+					return worldcatSearchUrl + linkParametersString.substring(0, linkParametersString.indexOf("{909}"));
+			}
+			//End ZCII-533
+
 			return "";
 		}
 
