@@ -50,17 +50,9 @@ document.links[newindex].onclick();
 }
 
 function closeWindow() {alert("1"); self.opener=this; self.close(); }
-
-function CloseWin()
-
-{
-window.opener = top ;
-
-window.close();
-}
 </script>
 
-      <body onload="<%= request.getAttribute("html.body.onload") %>">
+<body onload="<%= request.getAttribute("html.body.onload") %>">
       
       <!-- IF A SECURE DELIVERY MODULE HAS BEEN SELECTED, INJECT ITS HTML FRAGMENT (IF ANY) HERE -->
 	  <h:outputText  value="#{delivery.secureDeliveryHTMLFragment}" escape="false" />
@@ -102,10 +94,9 @@ window.close();
 	</div>
 </div>
 
-<div class="table-responsive">
-
 <h:form id="submittedForm">
 
+<div class="table-responsive">
 	<h:outputText id="renderTimeoutMessage" styleClass="messageSamigo3" value="#{deliveryMessages.timeOutSubmission}" rendered="#{delivery.timeOutSubmission=='true'}"/>
 
 <h:messages styleClass="messageSamigo" rendered="#{! empty facesContext.maximumSeverity}" layout="table"/>
@@ -126,7 +117,7 @@ window.close();
 
     <h:outputLabel value="#{deliveryMessages.number_of_sub_remain}" />
     <h:panelGroup>
-	<h:outputText value="#{delivery.submissionsRemaining} #{deliveryMessages.text_out_of} #{delivery.settings.maxAttempts}"
+      <h:outputText value="#{delivery.submissionsRemaining} #{deliveryMessages.text_out_of} #{delivery.settings.maxAttempts}"
           rendered="#{!delivery.settings.unlimitedAttempts}"/>
       <h:outputText value="#{deliveryMessages.unlimited_}"
           rendered="#{delivery.settings.unlimitedAttempts}"/>
@@ -137,8 +128,8 @@ window.close();
 
     <h:outputLabel value="#{deliveryMessages.submission_dttm}" />
     <h:outputText value="#{delivery.submissionDate}">
-        <f:convertDateTime pattern="#{generalMessages.output_data_picker_w_sec}" />
-     </h:outputText>
+        <f:convertDateTime dateStyle="medium" timeStyle="short" timeZone="#{delivery.userTimeZone}" />
+    </h:outputText>
 
     <h:outputLabel value="#{deliveryMessages.final_page}" rendered="#{delivery.url!=null && delivery.url!=''}"/>
     <h:outputLink title="#{deliveryMessages.t_url}" value="#" rendered="#{delivery.url!=null && delivery.url!=''}"
@@ -146,17 +137,18 @@ window.close();
         <h:outputText value="#{delivery.url}" escape="false"/>
     </h:outputLink>
     
-    <h:outputLabel value="<b>#{deliveryMessages.anonymousScore}</b>" rendered="#{delivery.actionString=='takeAssessmentViaUrl' && delivery.anonymousLogin && (delivery.feedbackComponent.showImmediate || delivery.feedbackComponent.showOnSubmission || delivery.feedbackOnDate) && delivery.feedbackComponentOption=='1'}"/>
+    <h:outputLabel value="#{deliveryMessages.anonymousScore}" rendered="#{delivery.actionString=='takeAssessmentViaUrl' && delivery.anonymousLogin && (delivery.feedbackComponent.showImmediate || delivery.feedbackComponent.showOnSubmission || delivery.feedbackOnDate) && delivery.feedbackComponentOption=='1'}"/>
     <h:outputText value="<b>#{delivery.roundedRawScoreViaURL}</b>" rendered="#{delivery.actionString=='takeAssessmentViaUrl' && delivery.anonymousLogin && (delivery.feedbackComponent.showImmediate || delivery.feedbackComponent.showOnSubmission || delivery.feedbackOnDate) && delivery.feedbackComponentOption=='1'}" escape="false"/>
   </h:panelGrid>  
 
 </div>
 
-<p><h:outputText value="#{delivery.receiptEmailSetting} #{deliveryMessages.receiptEmail_changeSetting}" escape="false" /></p>
+<p><h:outputText rendered="#{!delivery.anonymousLogin}" value="#{delivery.receiptEmailSetting} #{deliveryMessages.receiptEmail_changeSetting}" escape="false" /></p>
 
 <div class="tier1">
   <h:panelGrid columns="2" cellpadding="3" cellspacing="3">
-    <h:commandButton type="submit" value="#{deliveryMessages.button_continue}" action="select"
+    <h:commandButton type="submit" value="#{deliveryMessages.button_continue}"
+       onclick="return returnToHostUrl(\"#{delivery.selectURL}\");"
        rendered="#{delivery.actionString=='takeAssessment'}" />
 
     <h:commandButton value="#{deliveryMessages.review_results}" type="button" id="reviewAssessment"

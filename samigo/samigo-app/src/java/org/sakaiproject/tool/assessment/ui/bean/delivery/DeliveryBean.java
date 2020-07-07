@@ -22,7 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -45,15 +46,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.event.cover.EventTrackingService;
 import org.sakaiproject.event.cover.NotificationService;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.portal.util.PortalUtils;
 import org.sakaiproject.samigo.util.SamigoConstants;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.time.api.UserTimeService;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.assessment.api.SamigoApiFactory;
@@ -99,6 +103,7 @@ import org.sakaiproject.tool.assessment.util.ExtendedTimeDeliveryService;
 import org.sakaiproject.tool.assessment.util.MimeTypesLocator;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.ResourceLoader;
 
 /**
@@ -115,7 +120,7 @@ public class DeliveryBean
 {
 
   //SAM-2517
-  private ServerConfigurationService serverConfigurationService;
+  private UserTimeService userTimeService = ComponentManager.get(UserTimeService.class);
   
   private static final String MATHJAX_SRC_PATH_SAKAI_PROP = "portal.mathjax.src.path";
   private static final String MATHJAX_SRC_PATH = ServerConfigurationService.getString(MATHJAX_SRC_PATH_SAKAI_PROP);
@@ -258,10 +263,6 @@ public class DeliveryBean
   // current agent string (if assigned). SAK-1927: esmiley
   private AgentFacade deliveryAgent;
 
-  private String display_dayDateFormat= ContextUtil.getLocalizedString("org.sakaiproject.tool.assessment.bundle.GeneralMessages","output_day_date_no_sec");
-  private SimpleDateFormat dayDisplayFormat = new SimpleDateFormat(display_dayDateFormat, new ResourceLoader().getLocale());
-  private String display_dateFormat= ContextUtil.getLocalizedString("org.sakaiproject.tool.assessment.bundle.GeneralMessages","output_date_no_sec");
-  private SimpleDateFormat displayFormat = new SimpleDateFormat(display_dateFormat, new ResourceLoader().getLocale());
   private boolean noQuestions = false;
 
   // this assessmentGradingId is used to generate seed in getSeed(...) of DeliveryActaionListener.java
@@ -344,6 +345,10 @@ public class DeliveryBean
   public void setItemIndex(int itemIndex)
   {
     this.itemIndex = itemIndex;
+  }
+
+  public TimeZone getUserTimeZone() {
+    return userTimeService.getLocalTimeZone();
   }
 
   /**
@@ -494,22 +499,12 @@ public class DeliveryBean
     return beginTime;
   }
 
-  
   public String getBeginTimeString() {
-	  String beginTimeString = "";
 	    if (beginTime == null) {
-	      return beginTimeString;
+	      return "";
 	    }
 
-	    try {
-	      TimeUtil tu = new TimeUtil();
-	      beginTimeString = tu.getDisplayDateTime(dayDisplayFormat, beginTime, true);
-	    }
-	    catch (Exception ex) {
-	      // we will leave it as an empty string
-	      log.warn("Unable to format date.", ex);
-	    }
-	    return beginTimeString;
+      return userTimeService.dateTimeFormat(beginTime, new ResourceLoader().getLocale(), DateFormat.MEDIUM);
   }
   
   /**
@@ -1049,6 +1044,14 @@ public class DeliveryBean
     return settings;
   }
 
+  public String getAdjustedTimedAssesmentDueDateString () {
+    if (adjustedTimedAssesmentDueDate == null) {
+      return "";
+    }
+
+    return userTimeService.dateTimeFormat(adjustedTimedAssesmentDueDate, new ResourceLoader().getLocale(), DateFormat.MEDIUM);
+  }
+
   /**
    * @param settings
    */
@@ -1110,42 +1113,6 @@ public class DeliveryBean
     return dueDate;
   }
 
-  public String getDueDateString()
-  {
-    String dateString = "";
-    if (dueDate == null) {
-      return dateString;
-    }
-
-    try {
-      TimeUtil tu = new TimeUtil();
-      dateString = tu.getDisplayDateTime(displayFormat, dueDate, true);
-    }
-    catch (Exception ex) {
-      // we will leave it as an empty string
-      log.warn("Unable to format date.", ex);
-    }
-    return dateString;
-  }
-  
-  public String getDayDueDateString()
-  {
-    String dateString = "";
-    if (dueDate == null) {
-      return dateString;
-    }
-
-    try {
-      TimeUtil tu = new TimeUtil();
-      dateString = tu.getDisplayDateTime(dayDisplayFormat, dueDate, true);
-    }
-    catch (Exception ex) {
-      // we will leave it as an empty string
-      log.warn("Unable to format date.", ex);
-    }
-    return dateString;
-  }
-  
   public void setDueDate(java.util.Date dueDate)
   {
     this.dueDate = dueDate;
@@ -1153,23 +1120,6 @@ public class DeliveryBean
   
   public Date getAdjustedTimedAssesmentDueDate() {
 	  return adjustedTimedAssesmentDueDate;
-  }
-  
-  public String getAdjustedTimedAssesmentDueDateString () {
-	  String adjustedTimedAssesmentDueDateString = "";
-	    if (adjustedTimedAssesmentDueDate == null) {
-	      return adjustedTimedAssesmentDueDateString;
-	    }
-
-	    try {
-	      TimeUtil tu = new TimeUtil();
-	      adjustedTimedAssesmentDueDateString = tu.getDisplayDateTime(dayDisplayFormat, adjustedTimedAssesmentDueDate, true);
-	    }
-	    catch (Exception ex) {
-	      // we will leave it as an empty string
-	      log.warn("Unable to format date.", ex);
-	    }
-	    return adjustedTimedAssesmentDueDateString;
   }
   
   public void setAdjustedTimedAssesmentDueDate (Date adjustedTimedAssesmentDueDate) {
@@ -1181,23 +1131,6 @@ public class DeliveryBean
     return isAcceptLateSubmission() ? retractDate : null;
   }
 
-  public String getDayRetractDateString()
-  {
-    if (retractDate == null || !isAcceptLateSubmission()) {
-      return "";
-    }
-
-    try {
-      TimeUtil tu = new TimeUtil();
-      return tu.getDisplayDateTime(dayDisplayFormat, retractDate, true);
-    }
-    catch (Exception ex) {
-      // we will leave it as an empty string
-      log.warn("Unable to format date: {}", retractDate, ex);
-    }
-    return "";
-  }
-  
   public void setRetractDate(java.util.Date retractDate)
   {
     this.retractDate = retractDate;
@@ -1348,24 +1281,6 @@ public class DeliveryBean
   public java.util.Date getSubmissionDate()
   {
     return submissionDate;
-  }
-
-  public String getSubmissionDateString()
-  {
-    String dateString = "";
-    if (submissionDate== null) {
-      return dateString;
-    }
-
-    try {
-      TimeUtil tu = new TimeUtil();
-      dateString = tu.getDisplayDateTime(displayFormat, submissionDate, true);
-    }
-    catch (Exception ex) {
-      // we will leave it as an empty string
-      log.warn("Unable to format date.", ex);
-    }
-    return dateString;
   }
 
   public void setSubmissionDate(java.util.Date submissionDate)
@@ -1746,7 +1661,7 @@ public class DeliveryBean
 	  }
 	  notificationValues.put("assessmentGradingID", local_assessmentGradingID);
 	  notificationValues.put("userID", adata.getAgentId());
-	  notificationValues.put("submissionDate", getSubmissionDateString());
+	  notificationValues.put("submissionDate", getSubmissionDate());
 	  notificationValues.put("publishedAssessmentID", adata.getPublishedAssessmentId());
 	  notificationValues.put("confirmationNumber", confirmation);
 	  
@@ -1883,10 +1798,6 @@ public class DeliveryBean
 
   public String saveAndExit() {
 	  return saveAndExit(true);
-  }
-  
-  public String saveNoCheck() {
-	  return saveAndExit(false);
   }
   
   public String saveAndExit(boolean needToCheck)
@@ -2093,7 +2004,7 @@ public class DeliveryBean
                       "-" +
                       adata.getAgentId() +
                       "-" +
-                      timedAG.getExpirationDate().toString();
+				      timedAG.getExpirationDate().getTime();
                   setConfirmation(confirmation);
                   lastSave = true;
               }
@@ -2423,7 +2334,7 @@ public class DeliveryBean
 		  agentEid= "N/A";
 	  }
 	  eventLogData.setUserEid(agentEid);
-	  eventLogData.setTitle(publishedAssessment.getTitle());
+	  eventLogData.setTitle(FormattedText.convertFormattedTextToPlaintext(publishedAssessment.getTitle()));
 	  String site_id= AgentFacade.getCurrentSiteId();
 	  if(site_id == null) {
 		  //take assessment via url
@@ -2803,24 +2714,6 @@ public class DeliveryBean
     return feedbackDate;
   }
 
-  public String getFeedbackDateString()
-  {
-    String dateString = "";
-    if (feedbackDate== null) {
-      return dateString;
-    }
-
-    try {
-      TimeUtil tu = new TimeUtil();
-      dateString = tu.getDisplayDateTime(displayFormat, feedbackDate, true);
-    }
-    catch (Exception ex) {
-      // we will leave it as an empty string
-      log.warn("Unable to format date.", ex);
-    }
-    return dateString;
-  }
-
   public void setFeedbackDate(java.util.Date feedbackDate)
   {
     this.feedbackDate = feedbackDate;
@@ -2979,13 +2872,17 @@ public class DeliveryBean
     this.siteId = siteId;
   }
 
-  public String getSiteId()
-  {
-    siteId = null;
-    Placement currentPlacement = ToolManager.getCurrentPlacement();
-    if(currentPlacement != null)
-      siteId = currentPlacement.getContext();
-    return siteId;
+  public String getSiteId() {
+
+    if (StringUtils.isNotBlank(siteId)) {
+      return siteId;
+    } else {
+      Placement currentPlacement = ToolManager.getCurrentPlacement();
+      if (currentPlacement != null) {
+        siteId = currentPlacement.getContext();
+      }
+      return siteId;
+    }
   }
 
   public String getAgentAccessString()
@@ -3769,24 +3666,15 @@ public class DeliveryBean
 		
 		return timeLimit;
 	  }
-	  
+
 	  public String getDeadlineString() {
-		  String deadlineString = "";
 		    if (deadline == null) {
-		      return deadlineString;
+		      return "";
 		    }
 
-		    try {
-		      TimeUtil tu = new TimeUtil();
-		      deadlineString = tu.getDisplayDateTime(dayDisplayFormat, deadline, true);
-		    }
-		    catch (Exception ex) {
-		      // we will leave it as an empty string
-		      log.warn("Unable to format date.", ex);
-		    }
-		    return deadlineString;
+		    return userTimeService.dateTimeFormat(deadline, new ResourceLoader().getLocale(), DateFormat.MEDIUM);
 	  }
-	  
+
 	  public Date getDeadline() {
 		  return deadline;
 	  }
@@ -4027,12 +3915,6 @@ public class DeliveryBean
 		  return Boolean.parseBoolean(studentRichText);
 	  } 
 
-	  public void setDisplayFormat()
-	  {
-		  display_dateFormat= ContextUtil.getLocalizedString("org.sakaiproject.tool.assessment.bundle.GeneralMessages","output_date_no_sec");
-		  displayFormat = new SimpleDateFormat(display_dateFormat, new ResourceLoader().getLocale());
-	  }
-
 	  public Integer getScoringType()
 	  {
 	      return scoringType;
@@ -4058,7 +3940,7 @@ public class DeliveryBean
 	  }
 
 	  
-	  public boolean getIsFromPrint()
+	  public boolean isFromPrint()
 	  {
 	    return isFromPrint;
 	  }
@@ -4214,9 +4096,12 @@ public class DeliveryBean
 		  return firstTimeTaking;
 	  }
 	  //SAM-2517
-	  public boolean getIsMathJaxEnabled(){ 
-		  PublishedAssessmentService publishedAssessmentService = new PublishedAssessmentService();
-		  String siteId = publishedAssessmentService.getPublishedAssessmentOwner(Long.parseLong(getAssessmentId()));
+	  public boolean getIsMathJaxEnabled(){
+		  String siteId = AgentFacade.getCurrentSiteId();
+		  if(siteId == null) {
+		    PublishedAssessmentService publishedAssessmentService = new PublishedAssessmentService();
+		    siteId = publishedAssessmentService.getPublishedAssessmentOwner(Long.parseLong(getAssessmentId()));
+		  }
 		  return Boolean.parseBoolean(getCurrentSite(siteId).getProperties().getProperty(Site.PROP_SITE_MATHJAX_ALLOWED));
 	  }
 	  public String getMathJaxHeader(){
@@ -4270,4 +4155,7 @@ public class DeliveryBean
         }
     }
 
+    public String getCDNQuery() {
+        return PortalUtils.getCDNQuery();
+    }
 }

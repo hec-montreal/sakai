@@ -1039,6 +1039,11 @@ public class SakaiBLTIUtil {
 			}
 
 			Properties custom = new Properties();
+
+			String contentCustom = (String) content.get(LTIService.LTI_CUSTOM);
+			contentCustom = adjustCustom(contentCustom);
+			mergeLTI1Custom(custom, contentCustom);
+
 			String toolCustom = (String) tool.get(LTIService.LTI_CUSTOM);
 			toolCustom = adjustCustom(toolCustom);
 			mergeLTI1Custom(custom, toolCustom);
@@ -1539,7 +1544,7 @@ public class SakaiBLTIUtil {
 	ext_ims_lis_memberships_url: http://localhost:8080/imsblis/service/
 	ext_ims_lti_tool_setting_id: c1007fb6345a87cd651785422a2925114d0707fad32c66edb6bfefbf2165819a:::admin:::content:3
 	ext_ims_lti_tool_setting_url: http://localhost:8080/imsblis/service/
-	ext_lms: sakai-19.3
+	ext_lms: sakai-19-SNAPSHOT
 	ext_sakai_academic_session: OTHER
 	ext_sakai_launch_presentation_css_url_list: http://localhost:8080/library/skin/tool_base.css,http://localhost:8080/library/skin/morpheus-default/tool.css?version=49b21ca5
 	ext_sakai_role: maintain
@@ -2105,6 +2110,7 @@ public class SakaiBLTIUtil {
 				retval = retMap;
 			} else if (isDelete) {
 				g.setAssignmentScoreString(siteId, assignmentObject.getId(), user_id, null, "External Outcome");
+				g.setAssignmentScoreComment(siteId, assignmentObject.getId(), user_id, null);
 				log.info("Delete Score site={} assignment={} user_id={}", siteId, assignment, user_id);
 				message = "Result deleted";
 				retval = Boolean.TRUE;
@@ -2194,6 +2200,8 @@ public class SakaiBLTIUtil {
 				retval = retMap;
 			} else if (isDelete) {
 				g.setAssignmentScoreString(siteId, assignmentObject.getId(), user_id, null, "External Outcome");
+				g.setAssignmentScoreComment(siteId, assignmentObject.getId(), user_id, null);
+
 				log.info("Delete Score site={} assignment={} user_id={}", siteId, assignment, user_id);
 				message = "Result deleted";
 				retval = Boolean.TRUE;
@@ -2235,7 +2243,7 @@ public class SakaiBLTIUtil {
 				if (gAssignment.isExternallyMaintained()) {
 					continue;
 				}
-				if (assignment.equals(gAssignment.getName())) {
+				if (assignment.trim().equalsIgnoreCase(gAssignment.getName().trim())) {
 					assignmentObject = gAssignment;
 					break;
 				}
@@ -2423,7 +2431,8 @@ public class SakaiBLTIUtil {
 					}
 				}
 			}
-			retval.setProperty(BASICLTI_PORTLET_ASSIGNMENT, (String) content.get("title"));
+			String aTitle = (String) content.get("title");
+			retval.setProperty(BASICLTI_PORTLET_ASSIGNMENT, aTitle.trim());
 		}
 		return retval;
 	}

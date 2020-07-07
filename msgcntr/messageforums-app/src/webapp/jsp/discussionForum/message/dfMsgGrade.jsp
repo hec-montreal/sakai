@@ -18,11 +18,10 @@
 		<script src="/messageforums-tool/js/messages.js"></script>
 		<script src="/messageforums-tool/js/forum.js"></script>
 		<script>includeWebjarLibrary('ckeditor')</script>
-		<script type="text/javascript">includeWebjarLibrary('awesomplete')</script>
-		<script type="text/javascript" src="/library/js/sakai-reminder.js"></script>
+		<script>includeWebjarLibrary('awesomplete')</script>
+		<script src="/library/js/sakai-reminder.js"></script>
 		<script src="/webcomponents/assets/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-		<script src="/rubrics-service/webcomponents/sakai-rubrics.js"></script>
-		<script type="module" src="/rubrics-service/webcomponents/sakai-rubric-grading.js"></script>
+		<script type="module" src="/rubrics-service/webcomponents/rubric-association-requirements.js<h:outputText value="#{ForumTool.CDNQuery}" />"></script>
   <h:form id="msgForum">
 <!--jsp\discussionForum\message\dfMsgGrade.jsp-->
 
@@ -71,7 +70,6 @@
 		<%	
 		}
 		
-		String stateDetails = forumTool.getRbcsStateDetails();
 		boolean hasAssociatedRubric = forumTool.hasAssociatedRubric();
 		String entityId = forumTool.getRubricAssociationId();
 
@@ -214,13 +212,11 @@
 	
 	<% if (hasAssociatedRubric) { %>
 		<sakai-rubric-grading
-		    token='<h:outputText value="#{ForumTool.rbcsToken}"/>'
+			token='<h:outputText value="#{ForumTool.rbcsToken}"/>'
 			tool-id="sakai.forums"
 			entity-id='<%= entityId %>'
 			evaluated-item-id='<%= rbcsEvaluationId %>'
-			<% if (stateDetails != null && !"".equals(stateDetails)) { %>
-				state-details='<%= stateDetails %>'
-			<%}%>
+			evaluated-item-owner-id='<h:outputText value="#{ForumTool.selectedMessage.message.authorId}" />'
 		></sakai-rubric-grading>
 	<%}%>
 	

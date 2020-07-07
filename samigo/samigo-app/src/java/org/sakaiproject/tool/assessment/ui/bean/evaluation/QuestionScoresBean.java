@@ -41,6 +41,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.util.Precision;
 
 import org.sakaiproject.jsf2.model.PhaseAware;
+import org.sakaiproject.portal.util.PortalUtils;
 import org.sakaiproject.tool.assessment.business.entity.RecordingData;
 import org.sakaiproject.tool.assessment.data.dao.assessment.AssessmentAccessControl;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.PublishedAssessmentIfc;
@@ -155,7 +156,7 @@ public class QuestionScoresBean
   @Getter @Setter
   private Map userIdMap;
   @Getter @Setter
-  private Map agentResultsByItemGradingId;
+  private Map<Long, AgentResults> agentResultsByItemGradingId;
   @Getter @Setter
   private boolean anyItemGradingAttachmentListModified;
   @Getter @Setter
@@ -592,5 +593,9 @@ public void clear(ActionEvent event) {
 
 	public boolean isHasAssociatedRubric() {
 		return hasAssociatedRubric;
+	}
+
+	public String getCDNQuery() {
+		return PortalUtils.getCDNQuery();
 	}
 }

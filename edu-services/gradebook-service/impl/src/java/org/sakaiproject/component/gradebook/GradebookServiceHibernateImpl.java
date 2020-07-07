@@ -444,6 +444,13 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
 
 		gradebook.setCategory_type(gradebookInformation.getCategoryType());
 		gradebook.setGrade_type(gradebookInformation.getGradeType());
+		gradebook.setAssignmentStatsDisplayed(gradebookInformation.isAssignmentStatsDisplayed());
+		gradebook.setCourseGradeStatsDisplayed(gradebookInformation.isCourseGradeStatsDisplayed());
+		gradebook.setAssignmentsDisplayed(gradebookInformation.isDisplayReleasedGradeItemsToStudents());
+		gradebook.setCourseGradeDisplayed(gradebookInformation.isCourseGradeDisplayed());
+		gradebook.setCourseLetterGradeDisplayed(gradebookInformation.isCourseLetterGradeDisplayed());
+		gradebook.setCoursePointsDisplayed(gradebookInformation.isCoursePointsDisplayed());
+		gradebook.setCourseAverageDisplayed(gradebookInformation.isCourseAverageDisplayed());
 
 		updateGradebook(gradebook);
 
@@ -692,85 +699,6 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
 				return null;
 			}
 		});
-	}
-
-	@Override
-	public Map<String, String> getImportCourseGrade(final String gradebookUid) {
-		return getImportCourseGrade(gradebookUid, true, true);
-	}
-
-	@Override
-	public Map<String, String> getImportCourseGrade(final String gradebookUid, final boolean useDefault) {
-		return getImportCourseGrade(gradebookUid, useDefault, true);
-	}
-
-	@Override
-	public Map<String, String> getImportCourseGrade(final String gradebookUid, final boolean useDefault, final boolean mapTheGrades) {
-		final HashMap<String, String> returnMap = new HashMap<>();
-
-		try {
-			// There is a new permission for course grade visibility for TA's as part of GradebookNG.
-			// However the permission cannot be added here as it is not backwards compatible with Gradebook classique
-			// and would mean that all existing permissions need to be updated to add it.
-			// See GradebookNgBusinessService.isCourseGradeVisible.
-			// At some point it should be migrated and a DB conversion performed.
-
-			final Gradebook thisGradebook = getGradebook(gradebookUid);
-
-			final List assignList = getAssignmentsCounted(thisGradebook.getId());
-			boolean nonAssignment = false;
-			if (assignList == null || assignList.size() < 1) {
-				nonAssignment = true;
-			}
-
-			final Long gradebookId = thisGradebook.getId();
-			final CourseGrade courseGrade = getCourseGrade(gradebookId);
-
-			final Map viewableEnrollmentsMap = this.authz.findMatchingEnrollmentsForViewableCourseGrade(gradebookUid,
-					thisGradebook.getCategory_type(), null, null);
-			final Map<String, EnrollmentRecord> enrollmentMap = new HashMap<>();
-
-			final Map<String, EnrollmentRecord> enrollmentMapUid = new HashMap<>();
-			for (final Iterator iter = viewableEnrollmentsMap.keySet().iterator(); iter.hasNext();) {
-				final EnrollmentRecord enr = (EnrollmentRecord) iter.next();
-				enrollmentMap.put(enr.getUser().getUserUid(), enr);
-				enrollmentMapUid.put(enr.getUser().getUserUid(), enr);
-			}
-			final List gradeRecords = getPointsEarnedCourseGradeRecords(courseGrade, enrollmentMap.keySet());
-			for (final Iterator iter = gradeRecords.iterator(); iter.hasNext();) {
-				final CourseGradeRecord gradeRecord = (CourseGradeRecord) iter.next();
-
-				final GradeMapping gradeMap = thisGradebook.getSelectedGradeMapping();
-
-				final EnrollmentRecord enr = enrollmentMapUid.get(gradeRecord.getStudentId());
-				if (enr != null) {
-					// SAK-29243: if we are not mapping grades, we don't want letter grade here
-					if (mapTheGrades && StringUtils.isNotBlank(gradeRecord.getEnteredGrade())) {
-						returnMap.put(enr.getUser().getDisplayId(), gradeRecord.getEnteredGrade());
-					} else {
-						if (!nonAssignment) {
-							Double grade;
-
-							if (useDefault) {
-								grade = gradeRecord.getNonNullAutoCalculatedGrade();
-							} else {
-								grade = gradeRecord.getAutoCalculatedGrade();
-							}
-
-							if (mapTheGrades) {
-								returnMap.put(enr.getUser().getDisplayId(), gradeMap.getMappedGrade(grade));
-							} else {
-								returnMap.put(enr.getUser().getDisplayId(), grade.toString());
-							}
-
-						}
-					}
-				}
-			}
-		} catch (final Exception e) {
-			log.error("Error in getImportCourseGrade", e);
-		}
-		return returnMap;
 	}
 
 	@Override
@@ -1424,7 +1352,7 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
 			}
 		} else if (getAuthz().isUserAbleToViewOwnGrades(gradebookUid)) {
 			// if user is just a student, we need to filter out unreleased items
-			final List allAssigns = getAssignments(gradebook.getId(), null, true);
+			final List allAssigns = getAssignments(gradebook.getId(), sortBy, true);
 			if (allAssigns != null) {
 				for (final Iterator aIter = allAssigns.iterator(); aIter.hasNext();) {
 					final GradebookAssignment assign = (GradebookAssignment) aIter.next();
@@ -3323,8 +3251,8 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
 		if (gradebook.getCategory_type() == GradebookService.CATEGORY_TYPE_WEIGHTED_CATEGORY) {
 			double totalWeight = 0;
 			for (final CategoryDefinition newDef : newCategoryDefinitions) {
-				BigDecimal bg = newDef.getWeight() == null ? null : new BigDecimal(newDef.getWeight());
-				if (bg == null || bg.compareTo(BigDecimal.ZERO) == 0) {
+
+				if (newDef.getWeight() == null) {
 					throw new IllegalArgumentException("No weight specified for a category, but weightings enabled");
 				}
 

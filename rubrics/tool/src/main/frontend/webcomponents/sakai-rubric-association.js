@@ -113,8 +113,11 @@ class SakaiRubricAssociation extends RubricsElement {
 
   getAssociation() {
 
+    let url = `/rubrics-service/rest/rubric-associations/search/by-tool-item-ids?toolId=${this.toolId}`;
+    if (this.entityId) url += `&itemId=${this.entityId}`;
+
     $.ajax({
-      url: `/rubrics-service/rest/rubric-associations/search/by-tool-item-ids?toolId=${this.toolId}&itemId=${this.entityId}`,
+      url: url,
       headers: {"authorization": this.token},
       contentType: "application/json"
     })
@@ -257,16 +260,18 @@ class SakaiRubricAssociation extends RubricsElement {
 
   handleStateDetails() {
 
-    var stateDetails = JSON.parse(unescape(this.stateDetails));
-    this.isAssociated = true;
-    this.selectedRubric = stateDetails.rubric;
-    setTimeout(function() {
+    if (this.stateDetails && this.stateDetails !== "undefined") {
+      var stateDetails = JSON.parse(unescape(this.stateDetails));
+      this.isAssociated = true;
+      this.selectedRubric = stateDetails.rubric;
+      setTimeout(function() {
 
-      for (var i = stateDetails.configs.length - 1; i >= 0; i--) {
-        document.getElementById(stateDetails.configs[i]).checked = true;
-      }
-      this.handleAssociated();
-    }.bind(this));
+        for (var i = stateDetails.configs.length - 1; i >= 0; i--) {
+          document.getElementById(stateDetails.configs[i]).checked = true;
+        }
+        this.handleAssociated();
+      }.bind(this));
+    }
   }
 }
 
