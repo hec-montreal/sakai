@@ -86,6 +86,7 @@ import org.sakaiproject.tool.assessment.ui.listener.util.ContextUtil;
 import org.sakaiproject.tool.assessment.util.TextFormat;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.ResourceLoader;
+import org.springframework.web.client.HttpClientErrorException;
 
 /**
  * <p>Title: Samigo</p>2
@@ -230,9 +231,13 @@ public class PublishAssessmentListener
           PublishedItemData itemData = (PublishedItemData) itemObj;
           EventTrackingService.post(EventTrackingService.newEvent(SamigoConstants.EVENT_PUBLISHED_ASSESSMENT_SAVEITEM, "/sam/" + AgentFacade.getCurrentSiteId() + "/publish, publishedItemId=" + itemData.getItemIdString(), true));
 
-          Optional<ToolItemRubricAssociation> rubricAssociation = rubricsService.getRubricAssociation(RubricsConstants.RBCS_TOOL_SAMIGO, assessmentSettings.getAssessmentId().toString() + "." + itemData.getOriginalItemId().toString());
-          if (rubricAssociation.isPresent()) {
-            rubricsService.saveRubricAssociation(RubricsConstants.RBCS_TOOL_SAMIGO, RubricsConstants.RBCS_PUBLISHED_ASSESSMENT_ENTITY_PREFIX + pub.getPublishedAssessmentId().toString() + "." + itemData.getItemIdString(), rubricAssociation.get().getFormattedAssociation());
+          try {
+            Optional<ToolItemRubricAssociation> rubricAssociation = rubricsService.getRubricAssociation(RubricsConstants.RBCS_TOOL_SAMIGO, assessmentSettings.getAssessmentId().toString() + "." + itemData.getOriginalItemId().toString());
+            if (rubricAssociation.isPresent()) {
+              rubricsService.saveRubricAssociation(RubricsConstants.RBCS_TOOL_SAMIGO, RubricsConstants.RBCS_PUBLISHED_ASSESSMENT_ENTITY_PREFIX + pub.getPublishedAssessmentId().toString() + "." + itemData.getItemIdString(), rubricAssociation.get().getFormattedAssociation());
+            }
+          } catch(HttpClientErrorException hcee) {
+            log.debug("Current user doesn't have permission to get a rubric: {}", hcee.getMessage());
           }
         }
       }
@@ -313,14 +318,6 @@ public class PublishAssessmentListener
 		  String releaseTo) {
 	  TotalScoresBean totalScoresBean = (TotalScoresBean) ContextUtil.lookupBean("totalScores");
 	  
-	  AgentFacade instructor = new AgentFacade();
-	  InternetAddress fromIA = null;
-	  try {
-		  fromIA = new InternetAddress(instructor.getEmail(), instructor.getDisplayName());
-	  } catch (UnsupportedEncodingException e) {
-		  log.warn("UnsupportedEncodingException encountered when constructing instructor's email.");
-	  }
-
 	  boolean groupRelease = AssessmentAccessControlIfc.RELEASE_TO_SELECTED_GROUPS.equals(releaseTo);
 	  if (groupRelease) {
 		  totalScoresBean.setSelectedSectionFilterValue(TotalScoresBean.RELEASED_SECTIONS_GROUPS_SELECT_VALUE);
@@ -333,6 +330,7 @@ public class PublishAssessmentListener
 	  Map useridMap= totalScoresBean.getUserIdMap(TotalScoresBean.CALLED_FROM_NOTIFICATION_LISTENER); 
 	  AgentFacade agent = null;
 
+	  AgentFacade instructor = new AgentFacade();
 	  ArrayList<InternetAddress> toIAList = new ArrayList<>();
 	  try {
 		  toIAList.add(new InternetAddress(instructor.getEmail())); // send one copy to instructor
@@ -364,15 +362,17 @@ public class PublishAssessmentListener
 
 	  String noReplyEmaillAddress =  ServerConfigurationService.getString("setup.request","no-reply@" + ServerConfigurationService.getServerName());
       InternetAddress[] noReply = new InternetAddress[1];
+      InternetAddress from = null;
       try {
-    	  noReply[0] = new InternetAddress(noReplyEmaillAddress);
+          from = new InternetAddress(noReplyEmaillAddress);
+          noReply[0] = from;
       } catch (AddressException e) {
-              log.warn("AddressException encountered when constructing no_reply@serverName email.");
+          log.warn("AddressException encountered when constructing no_reply@serverName email.");
       }
 	  
 	  List<String> headers = new  ArrayList<String>();
 	  headers.add("Content-Type: text/html");
-	  EmailService.sendMail(fromIA, toIA, subject, message, noReply, noReply, headers);
+	  EmailService.sendMail(from, toIA, subject, message, noReply, noReply, headers);
   }
   
   public String getNotificationMessage(PublishRepublishNotificationBean publishRepublishNotification, String title, String releaseTo, String startDateString, String publishedURL, String dueDateString, Integer timedHours, Integer timedMinutes, String unlimitedSubmissions, String submissionsAllowed, String scoringType, String feedbackDelivery, String feedbackDateString){

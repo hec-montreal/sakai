@@ -35,10 +35,12 @@
       <head><%= request.getAttribute("html.head") %>
       <title> <h:outputText value="#{delivery.assessmentTitle}"/> </title>
       <%@ include file="/jsf/delivery/deliveryjQuery.jsp" %>
-      <script type="text/javascript" src="/sakai-editor/editor-bootstrap.js"></script>
-      <script type="text/javascript" src="/sakai-editor/editor.js"></script>
-      <script type="text/javascript" src="/sakai-editor/editor-launch.js"></script>
-      <script type="text/javascript" src="/samigo-app/js/saveForm.js"></script>
+      <script src="/sakai-editor/editor-bootstrap.js"></script>
+      <script src="/sakai-editor/editor.js"></script>
+      <script src="/sakai-editor/editor-launch.js"></script>
+      <script src="/samigo-app/js/saveForm.js"></script>
+      <script src="/samigo-app/js/finInputValidator.js"></script>
+      <script type="module" src="/rubrics-service/webcomponents/rubric-association-requirements.js<h:outputText value="#{questionScores.CDNQuery}" />"></script>
 
     <h:panelGroup rendered="#{delivery.actionString == 'reviewAssessment'}">
       <script>
@@ -46,7 +48,7 @@
       </script>
     </h:panelGroup>
 
-	<h:outputText value="#{delivery.mathJaxHeader}" escape="false" rendered="#{delivery.actionString=='takeAssessmentViaUrl' and delivery.isMathJaxEnabled}"/>
+    <h:outputText value="#{delivery.mathJaxHeader}" escape="false" rendered="#{(delivery.actionString=='takeAssessmentViaUrl' ||  delivery.actionString=='previewAssessment') and delivery.isMathJaxEnabled}"/>
       </head>
 	<body>
 
@@ -354,7 +356,7 @@ document.links[newindex].onclick();
          </sakai-rubric-student>
        </h:panelGroup>
 
-       <h:panelGroup rendered="#{delivery.actionString == 'takeAssessment'}">
+       <h:panelGroup rendered="#{delivery.actionString == 'takeAssessment' || delivery.actionString == 'takeAssessmentViaUrl'}">
            <sakai-rubric-student-preview-button
                 token="<h:outputText value="#{delivery.rbcsToken}" />"
                 tool-id="sakai.samigo"
@@ -439,7 +441,8 @@ document.links[newindex].onclick();
              <h:outputFormat value="#{deliveryMessages.time_left}"><f:param value="#{delivery.minutesLeft}"/><f:param value="#{delivery.secondsLeft}"/></h:outputFormat>
            </div>
            <div role="alert" class="sak-banner-error" style="display: none" id="autosave-failed-warning">
-             <h:outputText value="#{deliveryMessages.autosaveFailed} " />
+             <p><h:outputText value="#{deliveryMessages.autosaveFailed}" escape="false" /></p>
+             <p><h:outputText value="#{deliveryMessages.autosaveFailedDetail}" escape="false" /></p>
            </div>
           
          </div>

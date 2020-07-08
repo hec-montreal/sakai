@@ -26,16 +26,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.Observable;
 import java.util.Observer;
@@ -159,6 +151,7 @@ import net.fortuna.ical4j.model.property.TzId;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.model.property.XProperty;
+import net.fortuna.ical4j.util.MapTimeZoneCache;
 
 /**
  * <p>
@@ -781,6 +774,7 @@ public abstract class BaseCalendarService implements CalendarService, DoubleStor
 		SimpleConfiguration cacheConfig = new SimpleConfiguration(0);
 		cacheConfig.setStatisticsEnabled(true);
 		cache = this.m_memoryService.createCache("org.sakaiproject.calendar.cache", cacheConfig);
+		System.setProperty("net.fortuna.ical4j.timezone.cache.impl", MapTimeZoneCache.class.getName());
 
 		m_eventTrackingService.addObserver(this);
 		pdfExportService = new PDFExportService(m_timeService, rb);
@@ -5294,10 +5288,7 @@ public abstract class BaseCalendarService implements CalendarService, DoubleStor
 			DateTime icalStartDate = new DateTime(event.getRange().firstTime().getTime());
 			
 			long seconds = event.getRange().duration() / 1000;
-			String timeString = "PT" + String.valueOf(seconds) + "S";
-			net.fortuna.ical4j.model.Dur duration = new net.fortuna.ical4j.model.Dur( timeString );
-			
-			VEvent icalEvent = new VEvent(icalStartDate, duration, event.getDisplayName() );
+			VEvent icalEvent = new VEvent(icalStartDate, Duration.ofSeconds(seconds), event.getDisplayName() );
 			
 			net.fortuna.ical4j.model.parameter.TzId tzId = new net.fortuna.ical4j.model.parameter.TzId(getTzIdSafe());
 			icalEvent.getProperty(Property.DTSTART).getParameters().add(tzId);

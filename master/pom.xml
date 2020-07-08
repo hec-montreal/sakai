@@ -17,10 +17,10 @@
   <packaging>pom</packaging>
   <name>Sakai Master</name>
   <description>Corporate POM for the Sakai Open Source Collaborative Learning Environment/Learning Management System</description>
-  <version>19.3</version>
+  <version>19.4</version>
 
   <properties>
-    <sakai.version>19.3</sakai.version>
+    <sakai.version>19.4</sakai.version>
     <!-- Standard dependency versions -->
     <sakai.apache.httpcomponents.httpclient.version>4.1.4</sakai.apache.httpcomponents.httpclient.version>
     <sakai.commons.lang.version>2.6</sakai.commons.lang.version>
@@ -68,7 +68,7 @@
     <sakai.spring.test.artifactId>spring-test</sakai.spring.test.artifactId>
     <sakai.spring.test.version>4.3.19.RELEASE</sakai.spring.test.version>
     <sakai.tika.version>1.20</sakai.tika.version>
-    <sakai.tomcat.version>9.0.21</sakai.tomcat.version>
+    <sakai.tomcat.version>9.0.33</sakai.tomcat.version>
     <sakai.velocity.version>1.6.4</sakai.velocity.version>
     <sakai.xerces.impl.version>2.11.0</sakai.xerces.impl.version>
     <sakai.xerces.api.version>2.6.2</sakai.xerces.api.version>
@@ -101,13 +101,6 @@
     <!-- Default empty unless profile activation -->
     <random-source></random-source>
 
-    <!-- These should only be updated when the webjars version is updated -->
-    <ckeditor.autosave.version>0.18.1</ckeditor.autosave.version>
-    <ckeditor.wordcount.version>1.17.4</ckeditor.wordcount.version>
-    <ckeditor.a11ychecker.version>1.1.1</ckeditor.a11ychecker.version>
-    <ckeditor.balloonpanel.version>4.9.2</ckeditor.balloonpanel.version>
-    <ckeditor.image2.version>4.11.1</ckeditor.image2.version>
-    
     <!-- Open syllabus -->
     <sakai.opensyllabus.version>19.3</sakai.opensyllabus.version>
     <sakai.edu-services.version>${sakai.version}</sakai.edu-services.version>
@@ -224,7 +217,7 @@
     <pluginRepository>
         <id>opencast</id>
         <name>Opencast Repo</name>
-        <url>http://nexus.opencast.org/nexus/content/groups/public</url>
+        <url>https://nexus.opencast.org/nexus/content/groups/public</url>
         <snapshots>
             <enabled>false</enabled>
         </snapshots>
@@ -258,6 +251,22 @@
       </snapshots>
     </repository>
     <repository>
+      <id>repository.spring.release</id>
+      <name>Spring GA Repository</name>
+      <url>https://repo.spring.io/release</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>repository.spring.libs.release</id>
+      <name>Spring Lib Repository</name>
+      <url>https://repo.spring.io/libs-release</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
       <id>sakai-maven2-snapshots</id>
       <name>Sakai Maven Repo</name>
       <layout>default</layout>
@@ -274,7 +283,7 @@
     <repository>
         <id>opencast</id>
         <name>Opencast Repo</name>
-        <url>http://nexus.opencast.org/nexus/content/groups/public</url>
+        <url>https://nexus.opencast.org/nexus/content/groups/public</url>
         <snapshots>
             <enabled>false</enabled>
         </snapshots>
@@ -515,10 +524,27 @@
 		<scope>provided</scope>
 	  </dependency>
       <dependency>
+        <groupId>com.fasterxml.jackson.module</groupId>
+        <artifactId>jackson-module-parameter-names</artifactId>
+        <version>${sakai.jackson.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jdk8</artifactId>
+        <version>${sakai.jackson.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
         <groupId>com.fasterxml.jackson.datatype</groupId>
         <artifactId>jackson-datatype-jsr310</artifactId>
         <version>${sakai.jackson.version}</version>
         <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.module</groupId>
+        <artifactId>jackson-modules-java8</artifactId>
+        <version>${sakai.jackson.version}</version>
       </dependency>
       <dependency>
         <groupId>com.fasterxml.jackson.module</groupId>
@@ -848,7 +874,7 @@
       <dependency>
         <groupId>org.mnode.ical4j</groupId>
         <artifactId>ical4j</artifactId>
-        <version>2.0.0</version>
+        <version>3.0.7</version>
         <scope>provided</scope>
       </dependency>
       <dependency>

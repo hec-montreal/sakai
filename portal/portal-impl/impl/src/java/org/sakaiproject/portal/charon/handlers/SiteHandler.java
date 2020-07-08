@@ -576,6 +576,8 @@ public class SiteHandler extends WorksiteHandler
 		}
 		
 		addLocale(rcontext, site, session.getUserId());
+
+		addTimeInfo(rcontext);
 		
 		includeSiteNav(rcontext, req, session, siteId);
 
@@ -600,6 +602,9 @@ public class SiteHandler extends WorksiteHandler
 
 		rcontext.put("currentUrlPath", Web.serverUrl(req) + req.getContextPath()
 				+ URLUtils.getSafePathInfo(req));
+
+		//Show a confirm dialog when publishing an unpublished site.
+		rcontext.put("publishSiteDialogEnabled", ServerConfigurationService.getBoolean("portal.publish.site.confirm.enabled", false));
 
 		//Find any quick links ready for display in the top navigation bar,
 		//they can be set per site or for the whole portal.

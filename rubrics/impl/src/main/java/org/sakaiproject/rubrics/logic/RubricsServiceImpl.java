@@ -193,13 +193,17 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
     }
 
     public String generateJsonWebToken(String tool) {
-        return generateJsonWebToken(tool, getCurrentSiteId("generateJsonWebToken"));
+        return generateJsonWebToken(tool, null);
     }
 
     public String generateJsonWebToken(String tool, String siteId) {
 
         String token = null;
         String userId = sessionManager.getCurrentSessionUserId();
+
+        if (StringUtils.isBlank(siteId)) {
+            siteId = getCurrentSiteId("generateJsonWebToken");
+        }
 
         try {
             DateTime now = DateTime.now();
@@ -322,7 +326,7 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
                     String input = "{\"toolId\" : \""+tool+"\",\"itemId\" : \"" + id + "\",\"rubricId\" : " + params.get(RubricsConstants.RBCS_LIST) + ",\"metadata\" : {\"created\" : \"" + created + /*"\",\"modified\" : \"" + nowTime +*/ "\",\"ownerId\" : \"" + owner +
 					"\",\"ownerType\" : \"" + ownerType + "\",\"creatorId\" : \"" + creatorId + "\"},\"parameters\" : {" + setConfigurationParameters(params, oldParams) + "}}";
                     log.debug("Existing association update {}", input);
-                    if(Long.valueOf(params.get(RubricsConstants.RBCS_LIST)) != oldRubricId){
+                    if (!Long.valueOf(params.get(RubricsConstants.RBCS_LIST)).equals(oldRubricId)) {
                         deleteRubricEvaluationsForAssociation(associationHref, tool);
                     }
                     String resultPut = putRubricResource(associationHref, input, tool);
@@ -346,99 +350,6 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
         }
     }
 
-    public void saveRubricEvaluation(String toolId, String associatedItemId, String evaluatedItemId,
-            String evaluatedItemOwnerId, String evaluatorId, Map<String,String> params) {
-
-        String evaluationUri = null;
-        String created = "";
-        String owner = "";
-
-        try {
-            // Check for an existing evaluation
-            Evaluation existingEvaluation = null;
-            String rubricEvaluationId = null;
-
-            try {
-                TypeReferences.ResourcesType<Resource<Evaluation>> resourceParameterizedTypeReference =
-                        new TypeReferences.ResourcesType<Resource<Evaluation>>() {};
-
-                URI apiBaseUrl = new URI(serverConfigurationService.getServerUrl() + RBCS_SERVICE_URL_PREFIX);
-                Traverson traverson = new Traverson(apiBaseUrl, MediaTypes.HAL_JSON);
-
-                Traverson.TraversalBuilder builder = traverson.follow("evaluations", "search",
-                        "by-tool-item-and-associated-item-and-evaluated-item-ids");
-
-                HttpHeaders headers = new HttpHeaders();
-                headers.add("Authorization", String.format("Bearer %s", generateJsonWebToken(toolId)));
-                builder.withHeaders(headers);
-
-                Map<String, Object> parameters = new HashMap<>();
-                parameters.put("toolId", toolId);
-                parameters.put("itemId", associatedItemId);
-                parameters.put("evaluatedItemId", evaluatedItemId);
-                parameters.put("evaluatorId", evaluatorId);
-
-                Resources<Resource<Evaluation>> evaluationResources = builder.withTemplateParameters(parameters).toObject(
-                        resourceParameterizedTypeReference);
-
-                // Should only be one matching this search criterion
-                if (evaluationResources.getContent().size() > 1) {
-                    throw new IllegalStateException(String.format("Number of evaluation resources greater than one for request: %s",
-                            evaluationResources.getLink(Link.REL_SELF).toString()));
-                }
-
-                for (Resource<Evaluation> evaluationResource : evaluationResources) {
-                    existingEvaluation = evaluationResource.getContent();
-                    evaluationUri = evaluationResource.getLink(Link.REL_SELF).getHref();
-                }
-
-            } catch (Exception ex){
-                log.info("Exception on saveRubricEvaluation: " + ex.getMessage());
-                //no previous evaluation
-            }
-
-            // Get the actual association (necessary to get the rubrics association resource for persisting the evaluation)
-            Resource<ToolItemRubricAssociation> rubricToolItemAssociationResource = getRubricAssociationResource(
-                    toolId, associatedItemId, null).get();
-
-            String criterionJsonData = createCriterionJsonPayload(associatedItemId, evaluatedItemId, params, rubricToolItemAssociationResource);
-
-            if (existingEvaluation == null) { // Create a new one
-
-                String input = String.format("{ \"evaluatorId\" : \"%s\",\"evaluatedItemId\" : \"%s\", " +
-                        "\"evaluatedItemOwnerId\" : \"%s\"," +
-                        "\"overallComment\" : \"%s\", " +
-                        "\"toolItemRubricAssociation\" : \"%s\", " +
-                        "\"criterionOutcomes\" : [ %s ] " +
-                        "}", evaluatorId, evaluatedItemId, evaluatedItemOwnerId, "",
-                        rubricToolItemAssociationResource.getLink(Link.REL_SELF).getHref(), criterionJsonData);
-
-                String requestUri = serverConfigurationService.getServerUrl() + RBCS_SERVICE_URL_PREFIX + "evaluations/";
-                String resultPost = postRubricResource(requestUri, input, toolId, null);
-                log.debug("resultPost: " +  resultPost);
-
-            } else { // Update existing evaluation
-
-                // Resource IDs return as null when using Spring HATEOAS due to https://github.com/spring-projects/spring-hateoas/issues/67
-                // so ID is not added and the resource URI is where it is derived from.
-                String input = String.format("{ \"evaluatorId\" : \"%s\",\"evaluatedItemId\" : \"%s\", " +
-                        "\"evaluatedItemOwnerId\" : \"%s\", \"overallComment\" : \"%s\", \"toolItemRubricAssociation\" : \"%s\", \"criterionOutcomes\" : [ %s ], " + 
-                        "\"metadata\" : {\"created\" : \"%s\", \"ownerId\" : \"%s\", \"ownerType\" : \"%s\", \"creatorId\" : \"%s\"} }", evaluatorId, evaluatedItemId, evaluatedItemOwnerId, existingEvaluation.getOverallComment(),
-                        rubricToolItemAssociationResource.getLink(Link.REL_SELF).getHref(), criterionJsonData, existingEvaluation.getMetadata().getCreated(), existingEvaluation.getMetadata().getOwnerId(), 
-						existingEvaluation.getMetadata().getOwnerType(), existingEvaluation.getMetadata().getCreatorId());
-
-                String resultPut = putRubricResource(evaluationUri, input, toolId);
-                //lets update the actual one.
-                log.debug("resultPUT: " +  resultPut);
-            }
-
-        } catch (Exception e) {
-            //TODO If we have an error here, maybe we should return say something to the user
-            log.error("Error in SaveRubricEvaluation " + e.getMessage());
-        }
-
-    }
-
     private String createCriterionJsonPayload(String associatedItemId, String evaluatedItemId,
                                               Map<String,String> formPostParameters,
                                               Resource<ToolItemRubricAssociation> association) throws Exception {
@@ -449,7 +360,6 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
         int index = 0;
         boolean pointsAdjusted = false;
         String points = null;
-        String selectedRatingId = null;
 
         String inlineRubricUri = String.format("%s?%s", association.getLink("rubric").getHref(), "projection=inlineRubric");
 
@@ -471,7 +381,8 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
             }
             index++;
 
-            final String selectedRatingPoints = criterionData.getValue().get(RubricsConstants.RBCS_PREFIX + evaluatedItemId + "-"+ associatedItemId + "-criterion");
+            String selectedRatingPoints = criterionData.getValue().get(RubricsConstants.RBCS_PREFIX + evaluatedItemId + "-"+ associatedItemId + "-criterion");
+            String selectedRatingId = criterionData.getValue().get(RubricsConstants.RBCS_PREFIX + evaluatedItemId + "-"+ associatedItemId + "-criterionrating");
 
             if (StringUtils.isNotBlank(criterionData.getValue().get(RubricsConstants.RBCS_PREFIX + evaluatedItemId + "-" + associatedItemId + "-criterion-override"))) {
                 pointsAdjusted = true;
@@ -481,15 +392,8 @@ public class RubricsServiceImpl implements RubricsService, EntityProducer, Entit
                 points = selectedRatingPoints;
             }
 
-            Criterion criterion = criterions.get(criterionData.getKey());
-            Optional<Rating> rating = criterion.getRatings().stream().filter(c -> String.valueOf(c.getPoints()).equals(selectedRatingPoints)).findFirst();
-
-            if (rating.isPresent()) {
-                selectedRatingId =  String.valueOf(rating.get().getId());
-            }
-
             if (StringUtils.isEmpty(points)){
-                points = "0";
+                points = "0.0";
             }
 
             criterionJsonData += String.format("{ \"criterionId\" : \"%s\", \"points\" : \"%s\", " +
