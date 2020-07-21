@@ -102,7 +102,7 @@
     <random-source></random-source>
 
     <!-- Open syllabus -->
-    <sakai.opensyllabus.version>19.3</sakai.opensyllabus.version>
+    <sakai.opensyllabus.version>19.4</sakai.opensyllabus.version>
     <sakai.edu-services.version>${sakai.version}</sakai.edu-services.version>
     <sakai.evaluation.version>19-SNAPSHOT</sakai.evaluation.version>
   </properties>
