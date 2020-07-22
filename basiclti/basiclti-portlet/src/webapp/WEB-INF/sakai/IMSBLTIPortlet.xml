@@ -195,7 +195,7 @@
         <tool
                 id="sakai.zoom"
                 title="Zoom"
-                description="">
+                description="Pour donner vos séances de cours en direct (synchrone)">
 
                 <configuration name="sakai:portlet-pre-render" value="true" />
 
@@ -245,7 +245,7 @@
 <tool
                 id="sakai.wooclap"
                 title="Wooclap"
-                description="">
+                description="Pour dynamiser vos cours et faire interagir vos étudiants">
 
                 <configuration name="sakai:portlet-pre-render" value="true" />
 
