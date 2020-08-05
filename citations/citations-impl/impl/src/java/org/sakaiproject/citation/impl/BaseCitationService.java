@@ -1213,97 +1213,84 @@ public abstract class BaseCitationService implements CitationService
 			String firstDelimiter = (resolverUrl.indexOf("?") != -1) ? "&" : "?";
 			String openUrlParams  = getOpenurlParameters();
 
-			// Depending on the citation type, we refer to our library
-			// catalog(books)
-			// to our library SFX (articles and others)
-			String url =
-					m_configService.getSiteConfigLibraryUrlResolverAddress();
+			String worldcatSearchUrl = m_serverConfigurationService.getString("citations.worldcat.searchUrl");
 
-			if (url != null) {
-				if ("article".equalsIgnoreCase(m_schema.getIdentifier())) {
-			return resolverUrl + firstDelimiter + openUrlParams;
-				}
-				else {
-					return url + getLibraryUrlParameters();
+			if ("article".equalsIgnoreCase(m_schema.getIdentifier())) {
+				return resolverUrl + firstDelimiter + openUrlParams;
+			}
+			else  {
+				String params = getBookSearchParameter();
+				if (worldcatSearchUrl != null && !worldcatSearchUrl.isEmpty() && params != null) {
+					return worldcatSearchUrl + params;
 				}
 			}
-			else
-				return resolverUrl + openUrlParams;
+
+			return resolverUrl + openUrlParams;
 		}
 
-		public String getLibraryUrlParameters() {
-		    String parameters = "";
-		    // check citationProperties
-		    if (m_citationProperties == null) {
-			// citation properties do not exist as yet - no OpenUrl
-			return "";
-		    }
+		private String getBookSearchParameter() {
+			Object m_linkParameters = m_citationProperties.get("m_linkParameters");
+			String linkParametersString = null;
 
-		    // the ISBN or ISSN is the unique identifier of the book
-		    // if we have it, it will be enought to create a link
-		    String isn = (String) m_citationProperties.get(Schema.ISN);
-		    String year = (String) m_citationProperties.get(Schema.YEAR);
+			// the ISBN or ISSN is the unique identifier of the book
+			// if we have it, it will be enought to create a link
+			String isn = (String) m_citationProperties.get(Schema.ISN);
 
-		    //ZCII-533: If the citation has the property m_linkParameters (record 909) we can build the citation url using this id instead of the isbn
-		    Object m_linkParameters = m_citationProperties.get("m_linkParameters");
-		    String linkParametersString = null;
-
-		    if (m_linkParameters != null) {
-		    	//ZCII-1497: Handle case where multiple m_linkParameters are present in db
-		    	if (m_linkParameters instanceof String) {
-		    		linkParametersString = m_linkParameters.toString();
-		    	} else if (m_linkParameters instanceof Vector) {
-		    		linkParametersString = ((Vector)m_linkParameters).get(0).toString();
-		    	}
-
-		    	if (linkParametersString != null && !linkParametersString.equals(""))
-		    		return linkParametersString;
-			}
-		    //End ZCII-533
-
-		    if (isn != null && isn != "") {
-			parameters = isn;
-			return filterParameters(parameters);
-		    } else {
-			// get first author
-			String author = getFirstAuthor();
-
-			if (author != null)
-			    parameters += author;
-
-			// titles
-			String title = (String) m_citationProperties.get(Schema.TITLE);
-			if (title != null) {
-				//if it's not the first parameter we have to use the AND
-				if (!parameters.equals("")){
-					parameters += " AND ";
+			// If we have 909 parameter, use it first (tranformed for worldcat)
+			if (m_linkParameters != null) {
+				// ZCII-1497: Handle case where multiple m_linkParameters are present in db
+				if (m_linkParameters instanceof String) {
+					linkParametersString = m_linkParameters.toString();
+				} else if (m_linkParameters instanceof Vector) {
+					linkParametersString = ((Vector) m_linkParameters).get(0).toString();
 				}
-			    parameters += title.trim();
+
+				if (linkParametersString != null && !linkParametersString.equals(""))
+					return "HECck" + linkParametersString.replace("{909}", "");
+			} else if (isn != null && !isn.isEmpty()) {
+				// replace anything other than a number
+				return isn.replace("-", "");
 			} else {
-			    // want to 'borrow' a title from another field if possible
-			    String sourceTitle =
-				    (String) m_citationProperties
-					    .get(Schema.SOURCE_TITLE);
-			    if (sourceTitle != null && !sourceTitle.trim().equals("")) {
-			    	//if it's not the first parameter we have to use the AND
-					if (!parameters.equals("")){
+				String parameters = "";
+				// get first author
+				String author = getFirstAuthor();
+				if (author != null)
+					parameters += author;
+
+				// titles
+				String title = (String) m_citationProperties.get(Schema.TITLE);
+				if (title != null) {
+					// if it's not the first parameter we have to use the AND
+					if (!parameters.equals("")) {
 						parameters += " AND ";
 					}
-					parameters += sourceTitle;
-			    }
-			    // could add other else ifs for fields to borrow from...
-			}
-
-			if (year != null){
-				//if it's not the first parameter we have to use the AND
-				if (!parameters.equals("")){
-					parameters += " AND ";
+					parameters += title.trim();
+				} else {
+					// want to 'borrow' a title from another field if possible
+					String sourceTitle = (String) m_citationProperties.get(Schema.SOURCE_TITLE);
+					if (sourceTitle != null && !sourceTitle.trim().equals("")) {
+						// if it's not the first parameter we have to use the AND
+						if (!parameters.equals("")) {
+							parameters += " AND ";
+						}
+						parameters += sourceTitle;
+					}
+					// could add other else ifs for fields to borrow from...
 				}
-				parameters += year;
+
+				String year = (String) m_citationProperties.get(Schema.YEAR);
+				if (year != null) {
+					// if it's not the first parameter we have to use the AND
+					if (!parameters.equals("")) {
+						parameters += " AND ";
+					}
+					parameters += year;
+				}
+
+				return filterParameters(parameters);
 			}
 
-			return filterParameters(parameters);
-		    }
+			return null;
 		}
 
 		/**
