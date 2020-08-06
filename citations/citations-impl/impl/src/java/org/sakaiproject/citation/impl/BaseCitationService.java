@@ -1225,7 +1225,7 @@ public abstract class BaseCitationService implements CitationService
 				}
 			}
 
-			return resolverUrl + openUrlParams;
+			return resolverUrl + firstDelimiter + openUrlParams;
 		}
 
 		private String getBookSearchParameter() {
