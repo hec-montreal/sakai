@@ -45,7 +45,8 @@ public class CodeOfConductEntityProviderImpl extends HibernateDaoSupport impleme
 		{
 			url = getClass().getClassLoader().getResource("CodeOfConductMessages.properties");
 			properties = new PropertiesConfiguration();
-			properties.setListDelimiter('?');
+			//disable list delimiter
+			properties.setListDelimiter((char) 0);
 			properties.load(url);
 			titleEn = (String) properties.getProperty("codeOfConduct.title");
 			bodyEn = (String) properties.getProperty("codeOfConduct.body");
@@ -59,7 +60,8 @@ public class CodeOfConductEntityProviderImpl extends HibernateDaoSupport impleme
 		{
 			url = getClass().getClassLoader().getResource("CodeOfConductMessages_fr_CA.properties");
 			properties = new PropertiesConfiguration();
-			properties.setListDelimiter('?');
+			//disable list delimiter
+			properties.setListDelimiter((char) 0);
 			properties.load(url);
 			titleFr = (String) properties.getProperty("codeOfConduct.title");
 			bodyFr = (String) properties.getProperty("codeOfConduct.body");
