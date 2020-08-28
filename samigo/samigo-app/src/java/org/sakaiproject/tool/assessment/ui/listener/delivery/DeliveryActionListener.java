@@ -1444,32 +1444,16 @@ public class DeliveryActionListener
         }
 
         // Show the answers in the same order that student did.
-		String agentString = "";
-		if (delivery.getActionMode() == DeliveryBean.GRADE_ASSESSMENT) {
-			StudentScoresBean studentscorebean = (StudentScoresBean) ContextUtil
-					.lookupBean("studentScores");
-			agentString = studentscorebean.getStudentId();
-		} else {
-			agentString = getAgentString();
-		}
+        String agentString = "";
+        if (delivery.getActionMode() == DeliveryBean.GRADE_ASSESSMENT) {
+            StudentScoresBean studentscorebean = (StudentScoresBean) ContextUtil.lookupBean("studentScores");
+            agentString = studentscorebean.getStudentId();
+        } else {
+            agentString = getAgentString();
+        }
 
         String itemText = (item.getText() == null) ? "" : item.getText();
-        Collections.shuffle(shuffled, 
-        		new Random( (long) itemText.hashCode() + (getAgentString() + "_" + item.getItemId().toString()).hashCode()));
-        /*
-        if (item.getTypeId().equals(TypeIfc.MATCHING))
-        {
-          Collections.shuffle(shuffled,
-                              new Random( (long) item.getText().hashCode() +
-                getAgentString().hashCode()));
-        }
-        else
-        {
-          Collections.shuffle(shuffled,
-                              new Random( (long) item.getText().hashCode() +
-                                         getAgentString().hashCode()));
-        }
-        */
+        Collections.shuffle(shuffled, new Random( (long) itemText.hashCode() + (agentString + "_" + item.getItemId().toString()).hashCode()));
         key2 = shuffled.iterator();
       }
       else
@@ -1754,7 +1738,17 @@ public class DeliveryActionListener
 
     if (item.getTypeId().equals(TypeIfc.MATCHING)) // matching
     {
-      populateMatching(item, itemBean, publishedAnswerHash);
+        // Show the answers in the same order that student did.
+        String agentString = "";
+
+        if (delivery.getActionMode() == DeliveryBean.GRADE_ASSESSMENT) {
+            StudentScoresBean studentscorebean = (StudentScoresBean) ContextUtil.lookupBean("studentScores");
+            agentString = studentscorebean.getStudentId();
+        } else {
+            agentString = getAgentString();
+        }
+
+        populateMatching(item, itemBean, publishedAnswerHash, agentString);
     }
     else if (item.getTypeId().equals(TypeIfc.EXTENDED_MATCHING_ITEMS))
     {
@@ -1863,7 +1857,7 @@ public class DeliveryActionListener
     bean.setIsMultipleItems(beans.size() > 1);
   }
 
-  public void populateMatching(ItemDataIfc item, ItemContentsBean bean, Map publishedAnswerHash)
+  public void populateMatching(ItemDataIfc item, ItemContentsBean bean, Map publishedAnswerHash, String agentString)
   {
 	  // used only for questions with distractors where the user has selected None of the Above
 	  final Long NONE_OF_THE_ABOVE = -1l;
@@ -1891,7 +1885,7 @@ public class DeliveryActionListener
       }
       Collections.shuffle(shuffled,
                           new Random( (long) item.getText().hashCode() +
-                          (getAgentString() + "_" + item.getItemId().toString()).hashCode()));
+                          (agentString + "_" + item.getItemId().toString()).hashCode()));
 
 /*
       Collections.shuffle
