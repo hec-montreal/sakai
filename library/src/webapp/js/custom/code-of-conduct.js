@@ -7,10 +7,12 @@ function showDialog(locale) {
 
     if (locale === 'fr_CA' || locale === 'fr-CA') {
         title = sessionStorage.getItem('titleFr');
+	    acceptButton = sessionStorage.getItem('acceptButtonFr');
         $('div#codeOfConduct').html(sessionStorage.getItem('bodyFr'));
     }
     else {
         title = sessionStorage.getItem('titleEn');
+	    acceptButton = sessionStorage.getItem('acceptButtonEn');
         $('div#codeOfConduct').html(sessionStorage.getItem('bodyEn'));
     }
 
@@ -24,10 +26,12 @@ function showDialog(locale) {
         },
         close: closeDialog,
         modal:true,
-        buttons:  
-        {
-            "J'ai lu et j'accepte": sendAccept
-        }
+        buttons:  [
+            {
+                text: acceptButton,
+                click : sendAccept
+            }
+        ]
     });
 }
 
@@ -64,6 +68,8 @@ function retrieveCodeOfConduct(locale, tutorial, showTutorialLocationOnHide) {
         sessionStorage.setItem('titleFr', response.data.titleFr);
         sessionStorage.setItem('bodyEn', response.data.bodyEn);
         sessionStorage.setItem('bodyFr', response.data.bodyFr);
+        sessionStorage.setItem('acceptButtonEn', response.data.acceptButtonEn);
+        sessionStorage.setItem('acceptButtonFr', response.data.acceptButtonFr);
         sessionStorage.setItem('hasUserAccepted', response.data.hasUserAccepted);
         sessionStorage.setItem('userType', response.data.userType);
     });

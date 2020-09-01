@@ -32,8 +32,10 @@ public class CodeOfConductEntityProviderImpl extends HibernateDaoSupport impleme
 
 	private static String titleFr;
 	private static String bodyFr;
+	private static String acceptButtonFr;
 	private static String titleEn;
 	private static String bodyEn;
+	private static String acceptButtonEn;
 
 	private UserDirectoryService userDirectoryService;
 	private PreferencesService preferencesService;
@@ -50,6 +52,7 @@ public class CodeOfConductEntityProviderImpl extends HibernateDaoSupport impleme
 			properties.load(url);
 			titleEn = (String) properties.getProperty("codeOfConduct.title");
 			bodyEn = (String) properties.getProperty("codeOfConduct.body");
+			acceptButtonEn = (String) properties.getProperty("acceptButton");			
 		}
 		catch (ConfigurationException e)
 		{
@@ -65,6 +68,7 @@ public class CodeOfConductEntityProviderImpl extends HibernateDaoSupport impleme
 			properties.load(url);
 			titleFr = (String) properties.getProperty("codeOfConduct.title");
 			bodyFr = (String) properties.getProperty("codeOfConduct.body");
+			acceptButtonFr = (String) properties.getProperty("acceptButton");
 		}
 		catch (ConfigurationException e)
 		{
@@ -149,6 +153,8 @@ public class CodeOfConductEntityProviderImpl extends HibernateDaoSupport impleme
 		valuesMap.put("bodyEn", bodyEn);
 		valuesMap.put("titleFr", titleFr);
 		valuesMap.put("bodyFr", bodyFr);
+		valuesMap.put("acceptButtonEn", acceptButtonEn);
+		valuesMap.put("acceptButtonFr", acceptButtonFr);
 
 		return valuesMap;
 	}
