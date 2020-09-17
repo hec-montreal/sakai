@@ -1208,35 +1208,24 @@ public abstract class BaseCitationService implements CitationService
 				return null;
 			}
 
-      // SAK-16886 Honor parameters "hard coded" at the end of the resolver URL
-			String resolverUrl    = m_configService.getSiteConfigOpenUrlResolverAddress();
-			String firstDelimiter = (resolverUrl.indexOf("?") != -1) ? "&" : "?";
-			String openUrlParams  = getOpenurlParameters();
-
+			String doiUrl = m_serverConfigurationService.getString("citations.doi.url");
 			String worldcatSearchUrl = m_serverConfigurationService.getString("citations.worldcat.searchUrl");
 
-			if ("article".equalsIgnoreCase(m_schema.getIdentifier())) {
-				return resolverUrl + firstDelimiter + openUrlParams;
-			}
-			else  {
-				String params = getBookSearchParameter();
-				if (worldcatSearchUrl != null && !worldcatSearchUrl.isEmpty() && params != null) {
-					return worldcatSearchUrl + params;
-				}
+			// ZCII-4135: return DOI link if available
+			String doi = (String) m_citationProperties.get("doi");
+			if (doi != null && !doi.isEmpty()) {
+				return doiUrl + doi;
 			}
 
-			return resolverUrl + firstDelimiter + openUrlParams;
-		}
-
-		private String getBookSearchParameter() {
-			Object m_linkParameters = m_citationProperties.get("m_linkParameters");
-			String linkParametersString = null;
-
-			// the ISBN or ISSN is the unique identifier of the book
-			// if we have it, it will be enought to create a link
-			String isn = (String) m_citationProperties.get(Schema.ISN);
+			// ZCII-4135: return OCLC link if available
+			String hecUrl = (String) m_citationProperties.get("hecUrl");
+			if (hecUrl != null && !hecUrl.isEmpty()) {
+				return hecUrl;
+			}
 
 			// If we have 909 parameter, use it first (tranformed for worldcat)
+			Object m_linkParameters = m_citationProperties.get("m_linkParameters");
+			String linkParametersString = null;
 			if (m_linkParameters != null) {
 				// ZCII-1497: Handle case where multiple m_linkParameters are present in db
 				if (m_linkParameters instanceof String) {
@@ -1246,8 +1235,22 @@ public abstract class BaseCitationService implements CitationService
 				}
 
 				if (linkParametersString != null && !linkParametersString.equals(""))
-					return "HECck" + linkParametersString.replace("{909}", "");
-			} else if (isn != null && !isn.isEmpty()) {
+					return worldcatSearchUrl + "HECck" + linkParametersString.replace("{909}", "");
+			}
+
+			if (!"article".equalsIgnoreCase(m_schema.getIdentifier())) {
+				return worldcatSearchUrl + getBookSearchParameter();
+			}
+
+			return worldcatSearchUrl + getOpenurlParameters();
+		}
+
+		private String getBookSearchParameter() {
+			// the ISBN or ISSN is the unique identifier of the book
+			// if we have it, it will be enought to create a link
+			String isn = (String) m_citationProperties.get(Schema.ISN);
+
+			if (isn != null && !isn.isEmpty()) {
 				// replace anything other than a number
 				return isn.replace("-", "");
 			} else {
@@ -1289,8 +1292,6 @@ public abstract class BaseCitationService implements CitationService
 
 				return filterParameters(parameters);
 			}
-
-			return null;
 		}
 
 		/**
