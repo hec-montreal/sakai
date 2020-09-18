@@ -3457,7 +3457,7 @@ public class DeliveryBean
     return hasSubmissionLeft;
   }
 
-  private boolean isAvailable(){
+  public boolean isAvailable(){
 	  boolean isAvailable = true;
 	  Date currentDate = new Date();
 		Date startDate;
