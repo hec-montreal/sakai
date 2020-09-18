@@ -1470,6 +1470,9 @@ public class DeliveryBean
         int submissionsRemaining = control.getSubmissionsAllowed().intValue() - totalSubmissions;
         setNumberRetake(
             gradingService.getNumberRetake(publishedAssessmentId, AgentFacade.getAgentString()));
+
+        // dont return a negative value in case of retakes
+        if (submissionsRemaining < 0) submissionsRemaining = 0;
         setSubmissionsRemaining(submissionsRemaining);
       }
     }
@@ -3301,7 +3304,7 @@ public class DeliveryBean
     	
     log.debug("check 7");
     // check 7: any submission attempt left?
-    if (!getHasSubmissionLeft(numberRetake)){
+    if (!getHasSubmissionLeft(numberRetake, actualNumberRetake)) {
       return "noSubmissionLeft";
     }
 
@@ -3392,7 +3395,7 @@ public class DeliveryBean
 	  return checkBeforeProceed(isSubmitForGrade, isFromTimer, isViaUrlLogin);
   }
 
-  private boolean getHasSubmissionLeft(int numberRetake){
+  private boolean getHasSubmissionLeft(final int numberRetake, final int actualNumberRetake) {
     boolean hasSubmissionLeft = false;
     int maxSubmissionsAllowed = 9999;
     if ( (Boolean.FALSE).equals(publishedAssessment.getAssessmentAccessControl().getUnlimitedSubmissions())){
@@ -3404,7 +3407,8 @@ public class DeliveryBean
       settingsDeliveryBean.setMaxAttempts(maxSubmissionsAllowed);
       settings = settingsDeliveryBean;
     }
-    if (totalSubmissions < maxSubmissionsAllowed + numberRetake){
+    log.debug("getHasSubmissionLeft: actualNumberTakes={}, numberRetakeAllowed={}", actualNumberRetake, numberRetake);
+    if (actualNumberRetake <= numberRetake) {
       hasSubmissionLeft = true;
     } 
     return hasSubmissionLeft;
