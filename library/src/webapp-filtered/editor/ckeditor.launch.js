@@ -172,8 +172,8 @@ sakai.editor.editors.ckeditor.launch = function(targetId, config, w, h) {
                     : ['AudioRecorder', 'ResourceSearch', 'Image','Movie','Table','HorizontalRule','Smiley','SpecialChar']
                   )
 		: ( sakai.editor.contentItemUrl
-                    ? ['AudioRecorder', 'Image','Movie','Table','HorizontalRule','Smiley','SpecialChar']
-                    : ['AudioRecorder', 'Image','Movie','Table','HorizontalRule','Smiley','SpecialChar']
+                    ? ['AudioRecorder', 'Image','Embed','Movie','Table','HorizontalRule','Smiley','SpecialChar']
+                    : ['AudioRecorder', 'Image','Embed','Movie','Table','HorizontalRule','Smiley','SpecialChar']
                   )
             ),
             '/',
@@ -239,8 +239,15 @@ sakai.editor.editors.ckeditor.launch = function(targetId, config, w, h) {
         if (detectWidth == true && getWidth() < 800) {
             ckconfig.toolbar = 'Basic';
         }
+
+        CKEDITOR.config.embed_provider = '//ckeditor.iframe.ly/api/oembed?url={url}&callback={callback}';
         //These could be applicable to the basic toolbar
-        CKEDITOR.plugins.addExternal('lineutils',basePath+'lineutils/', 'plugin.js');
+		CKEDITOR.plugins.addExternal('embed',webJars+'ckeditor/4.11.2/plugins/embed/', 'plugin.js');
+		CKEDITOR.plugins.addExternal('autoembed',webJars+'ckeditor/4.11.2/plugins/autoembed/', 'plugin.js');
+		CKEDITOR.plugins.addExternal('embedbase',webJars+'ckeditor/4.11.2/plugins/embedbase/', 'plugin.js');
+		CKEDITOR.plugins.addExternal('autolink',webJars+'ckeditor/4.11.2/plugins/autolink/', 'plugin.js');
+		CKEDITOR.plugins.addExternal('textmatch',webJars+'ckeditor/4.11.2/plugins/textmatch/', 'plugin.js');
+		CKEDITOR.plugins.addExternal('lineutils',basePath+'lineutils/', 'plugin.js');
         CKEDITOR.plugins.addExternal('widget',basePath+'widget/', 'plugin.js');
         CKEDITOR.plugins.addExternal('iframedialog',basePath+'iframedialog/', 'plugin.js');
         CKEDITOR.plugins.addExternal('html5video',webJars+'github-com-bahriddin-ckeditor-html5-video/${ckeditor.html5video.version}/html5video/', 'plugin.js');
@@ -274,7 +281,6 @@ sakai.editor.editors.ckeditor.launch = function(targetId, config, w, h) {
         //ckconfig.contentsCss = [basePath+'atd-ckeditor/atd.css'];
 
         ckconfig.extraPlugins+="${ckeditor-extra-plugins}${ckeditor-a11y-extra-plugins}";
-
         // Load FontAwesome CSS in case a user wants to manually add FA markup
         ckconfig.contentsCss = [webJars+'fontawesome/4.7.0/css/font-awesome.min.css'];
         //If the siteskin is defined, add the print.css
