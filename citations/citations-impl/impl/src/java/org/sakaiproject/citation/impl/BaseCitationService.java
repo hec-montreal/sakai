@@ -1242,7 +1242,7 @@ public abstract class BaseCitationService implements CitationService
 				return worldcatSearchUrl + getBookSearchParameter();
 			}
 
-			return worldcatSearchUrl + getOpenurlParameters();
+			return "";
 		}
 
 		private String getBookSearchParameter() {
