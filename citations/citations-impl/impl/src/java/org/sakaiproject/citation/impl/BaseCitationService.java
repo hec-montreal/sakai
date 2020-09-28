@@ -1211,16 +1211,16 @@ public abstract class BaseCitationService implements CitationService
 			String doiUrl = m_serverConfigurationService.getString("citations.doi.url");
 			String worldcatSearchUrl = m_serverConfigurationService.getString("citations.worldcat.searchUrl");
 
+			// ZCII-4135: return search tool link if available (either oclc # or doi)
+			String hecUrl = (String) m_citationProperties.get("hecUrl");
+			if (hecUrl != null && !hecUrl.isEmpty()) {
+				return hecUrl;
+			}
+
 			// ZCII-4135: return DOI link if available
 			String doi = (String) m_citationProperties.get("doi");
 			if (doi != null && !doi.isEmpty()) {
 				return doiUrl + doi;
-			}
-
-			// ZCII-4135: return OCLC link if available
-			String hecUrl = (String) m_citationProperties.get("hecUrl");
-			if (hecUrl != null && !hecUrl.isEmpty()) {
-				return hecUrl;
 			}
 
 			// If we have 909 parameter, use it first (tranformed for worldcat)
