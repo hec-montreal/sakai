@@ -203,6 +203,15 @@ public class CitationServlet extends VmServlet
 				setVmReference("success", citation != null, req);
        
 				if (citation != null) {
+					// HEC CUSTOMISATION
+					// Add hecUrl when available
+					String hecUrl = req.getParameter("hecUrl");
+					
+					if (hecUrl != null && hecUrl.length() > 0) {
+					        citation.setCitationProperty("hecUrl", hecUrl);
+					}
+					// END CUSTOMISATION
+					
 					addCitation(resource, citation);
 					setVmReference( "citation", citation, req );
 					setVmReference("topRefresh", Boolean.TRUE, req ); // TODO
