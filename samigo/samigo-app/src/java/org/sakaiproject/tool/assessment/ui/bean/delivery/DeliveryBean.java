@@ -4173,4 +4173,9 @@ public class DeliveryBean
     public String getCDNQuery() {
         return PortalUtils.getCDNQuery();
     }
+
+    public String getPublishedURL() {
+        PublishedAssessmentSettingsBean pasBean = (PublishedAssessmentSettingsBean) ContextUtil.lookupBean("publishedSettings");
+        return pasBean.generatePublishedURL(publishedAssessment);
+    }
 }
