@@ -222,6 +222,7 @@ public class AssignmentServiceImpl implements AssignmentService, EntityTransferr
 
     private boolean allowSubmitByInstructor;
     private boolean exposeContentReviewErrorsToUI;
+    private boolean createGroupsOnImport;
 
     public void init() {
         allowSubmitByInstructor = serverConfigurationService.getBoolean("assignments.instructor.submit.for.student", true);
@@ -232,6 +233,7 @@ public class AssignmentServiceImpl implements AssignmentService, EntityTransferr
         }
 
         exposeContentReviewErrorsToUI = serverConfigurationService.getBoolean("contentreview.expose.errors.to.ui", true);
+        createGroupsOnImport = serverConfigurationService.getBoolean("assignment.create.groups.on.import", true);
 
         // register as an entity producer
         entityManager.registerEntityProducer(this, REFERENCE_ROOT);
@@ -3567,36 +3569,44 @@ public class AssignmentServiceImpl implements AssignmentService, EntityTransferr
                     nAssignment.setScaleFactor(oAssignment.getScaleFactor());
                     nAssignment.setReleaseGrades(oAssignment.getReleaseGrades());
 
-                    // group assignment
-					/*
-					 * ZCII-4029: Sections de l'automne qui ont suivi dans remise de travaux
-					 * if (oAssignment.getTypeOfAccess() == GROUP) {
-					 * nAssignment.setTypeOfAccess(GROUP); Site oSite =
-					 * siteService.getSite(oAssignment.getContext()); Site nSite =
-					 * siteService.getSite(nAssignment.getContext());
-					 * 
-					 * boolean siteChanged = false; Collection<Group> nGroups = nSite.getGroups();
-					 * for (String groupId : oAssignment.getGroups()) { Group oGroup =
-					 * oSite.getGroup(groupId); Optional<Group> existingGroup =
-					 * nGroups.stream().filter(g -> StringUtils.equals(g.getTitle(),
-					 * oGroup.getTitle())).findAny(); Group nGroup; if (existingGroup.isPresent()) {
-					 * // found a matching group nGroup = existingGroup.get(); } else { // create
-					 * group nGroup = nSite.addGroup(); nGroup.setTitle(oGroup.getTitle());
-					 * nGroup.setDescription(oGroup.getDescription());
-					 * nGroup.getProperties().addProperty("group_prop_wsetup_created",
-					 * Boolean.TRUE.toString()); siteChanged = true; }
-					 * nAssignment.getGroups().add(nGroup.getReference()); } if (siteChanged)
-					 * siteService.save(nSite); nAssignment.setIsGroup(oAssignment.getIsGroup()); }
-					 * 
-					 * End ZCII-4029
-					 */
+                    if (!createGroupsOnImport) {
+                        nAssignment.setTypeOfAccess(SITE);
+                    } else {
+                        // group assignment
+                        if (oAssignment.getTypeOfAccess() == GROUP) {
+                            nAssignment.setTypeOfAccess(GROUP);
+                            Site oSite = siteService.getSite(oAssignment.getContext());
+                            Site nSite = siteService.getSite(nAssignment.getContext());
 
+                            boolean siteChanged = false;
+                            Collection<Group> nGroups = nSite.getGroups();
+                            for (String groupId : oAssignment.getGroups()) {
+                                Group oGroup = oSite.getGroup(groupId);
+                                Optional<Group> existingGroup = nGroups.stream().filter(g -> StringUtils.equals(g.getTitle(), oGroup.getTitle())).findAny();
+                                Group nGroup;
+                                if (existingGroup.isPresent()) {
+                                    // found a matching group
+                                    nGroup = existingGroup.get();
+                                } else {
+                                    // create group
+                                    nGroup = nSite.addGroup();
+                                    nGroup.setTitle(oGroup.getTitle());
+                                    nGroup.setDescription(oGroup.getDescription());
+                                    nGroup.getProperties().addProperty("group_prop_wsetup_created", Boolean.TRUE.toString());
+                                    siteChanged = true;
+                                }
+                                nAssignment.getGroups().add(nGroup.getReference());
+                            }
+                            if (siteChanged) siteService.save(nSite);
+                            nAssignment.setIsGroup(oAssignment.getIsGroup());
+                        }
+                   }
+                        
                     // review service
                     nAssignment.setContentReview(oAssignment.getContentReview());
 
                     // attachments
                     Set<String> oAttachments = oAssignment.getAttachments();
-                    List<Reference> nAttachments = entityManager.newReferenceList();
                     for (String oAttachment : oAttachments) {
                         Reference oReference = entityManager.newReference(oAttachment);
                         String oAttachmentId = oReference.getId();
