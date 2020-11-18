@@ -18,28 +18,20 @@
  * limitations under the License.
  *
  **********************************************************************************/
-
 package org.sakaiproject.tool.assessment.services;
 
-/**
-*
-* @author dhearn@edtell.com
-*
-* Used to handle data inconsistencies when a student uses multiple tabs with Samigo
-*/
-
-public class DataInconsistencyException extends RuntimeException {
+public class DataException extends RuntimeException {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 3412500011044201559L;
+	private static final long serialVersionUID = 4787108556148621714L;
 
 	/**
-	 * Creates a new DataInconsistencyException object.
+	 * Creates a new DataException object.
 	 *
-	 * @param message DOCUMENTATION PENDING
+	 * @param message For Data Discrepancy
 	 */
-	public DataInconsistencyException(String message)
+	public DataException(String message)
 	{
 		super(message);
 	}
