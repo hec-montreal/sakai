@@ -104,7 +104,10 @@ public class RepublishAssessmentListener implements ActionListener {
 				publishedAssessmentSettings.getDueDateString(), publishedAssessmentSettings.getTimedHours(), publishedAssessmentSettings.getTimedMinutes(), 
 				publishedAssessmentSettings.getUnlimitedSubmissions(), publishedAssessmentSettings.getSubmissionsAllowed(), publishedAssessmentSettings.getScoringType(), publishedAssessmentSettings.getFeedbackDelivery(), publishedAssessmentSettings.getFeedbackDateString());
 		if (publishRepublishNotification.getSendNotification()) {
-		    publishAssessmentListener.sendNotification(assessment, publishedAssessmentService, subject, notificationMessage, publishedAssessmentSettings.getReleaseTo());
+		    publishAssessmentListener.sendNotification(assessment, publishedAssessmentService, subject, notificationMessage, publishedAssessmentSettings.getReleaseTo(), publishedAssessmentSettings.getExtendedTimes(),
+		    		publishedAssessmentSettings.getTitle(), publishedAssessmentSettings.getPublishedUrl(), publishedAssessmentSettings.getUnlimitedSubmissions()
+	        		, publishedAssessmentSettings.getSubmissionsAllowed(), publishedAssessmentSettings.getScoringType(), publishedAssessmentSettings.getFeedbackDelivery(), publishedAssessmentSettings.getFeedbackDateString());
+
 		}
 		
 		GradingService gradingService = new GradingService();

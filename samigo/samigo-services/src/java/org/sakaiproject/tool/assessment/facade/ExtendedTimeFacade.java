@@ -19,13 +19,20 @@ package org.sakaiproject.tool.assessment.facade;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.tool.assessment.data.dao.assessment.ExtendedTime;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.AssessmentAccessControlIfc;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.AssessmentBaseIfc;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.PublishedAssessmentIfc;
+import org.sakaiproject.tool.assessment.util.TextFormat;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Leonardo Canessa [lcanessa1 (at) udayton (dot) edu]
@@ -145,4 +152,24 @@ public class ExtendedTimeFacade {
 
     @Setter
     private ExtendedTimeQueriesAPI extendedTimeQueries;
+    
+    
+    public  Map<String, String> getNotificationMessageInformation
+    	(ExtendedTime extendedTime){    	
+
+      return extendedTime.getNotificationInformation();
+    }
+
+    public  Map<String, String> getNotificationInformationForUser
+		(ExtendedTime extendedTime){    	
+	
+	  return extendedTime.getNotificationInformation();
+	}
+    
+    public  Map<String, String> getNotificationInformationForGroup
+		(ExtendedTime extendedTime){    	
+	
+	  return extendedTime.getNotificationInformation();
+	}
+    
 }

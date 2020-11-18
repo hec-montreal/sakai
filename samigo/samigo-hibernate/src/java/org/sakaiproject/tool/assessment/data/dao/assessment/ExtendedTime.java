@@ -27,6 +27,8 @@ import org.sakaiproject.tool.assessment.data.ifc.assessment.AssessmentAccessCont
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Leonardo Canessa [lcanessa1 (at) udayton (dot) edu]
@@ -42,7 +44,7 @@ public class ExtendedTime implements Serializable {
     private                 PublishedAssessmentIfc  pubAssessment;
     private                 String                  user;
     private                 String                  group;
-    private                 Date                    startDate;
+	private                 Date                    startDate;
     private                 Date                    dueDate;
     private                 Date                    retractDate;
     private                 Integer                 timeHours;
@@ -138,4 +140,25 @@ public class ExtendedTime implements Serializable {
                 .append(timeMinutes)
                 .toHashCode();
     }
+    
+    
+    public Map<String, String> getNotificationInformation() {
+    	Map<String, String> extendedTimeMessageInfo = new HashMap<String, String>();
+    	
+    	extendedTimeMessageInfo.put("dueDateString", dueDate.toString() );
+    	extendedTimeMessageInfo.put("startDateString", startDate.toString() );
+    	extendedTimeMessageInfo.put("timedHours", timeHours.toString());
+    	extendedTimeMessageInfo.put("timedMinutes", timeHours.toString());
+
+    	if (user != null) {
+    		extendedTimeMessageInfo.put("isForUser", "true");
+    		extendedTimeMessageInfo.put("userId", user);
+    	} else {
+    		extendedTimeMessageInfo.put("isForUser", "false");
+    		extendedTimeMessageInfo.put("groupId", group);   		
+    	}
+    	
+    	return extendedTimeMessageInfo;
+    }
+  
 }

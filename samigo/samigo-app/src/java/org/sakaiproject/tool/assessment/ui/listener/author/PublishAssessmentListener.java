@@ -53,12 +53,14 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.rubrics.logic.RubricsConstants;
 import org.sakaiproject.rubrics.logic.RubricsService;
 import org.sakaiproject.rubrics.logic.model.ToolItemRubricAssociation;
+import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.spring.SpringBeanLocator;
 import org.sakaiproject.samigo.util.SamigoConstants;
 import org.sakaiproject.service.gradebook.shared.AssignmentHasIllegalPointsException;
 import org.sakaiproject.service.gradebook.shared.GradebookExternalAssessmentService;
+import org.sakaiproject.tool.assessment.data.dao.assessment.ExtendedTime;
 import org.sakaiproject.tool.assessment.data.dao.assessment.PublishedItemData;
 import org.sakaiproject.tool.assessment.data.dao.assessment.PublishedSectionData;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.ItemDataIfc;
@@ -209,6 +211,11 @@ public class PublishAssessmentListener
       assessment.addAssessmentMetaData("ALIAS", assessmentSettings.getAlias());
       pub = publishedAssessmentService.publishAssessment(assessment);
       PublishRepublishNotificationBean publishRepublishNotification = (PublishRepublishNotificationBean) ContextUtil.lookupBean("publishRepublishNotification");
+
+      
+      ExtendedTimeFacade extendedTimeFacade = PersistenceService.getInstance().getExtendedTimeFacade();
+      extendedTimeFacade.copyEntriesToPub(pub.getData(), assessmentSettings.getExtendedTimes());
+
       boolean sendNotification = publishRepublishNotification.getSendNotification();
       String subject = publishRepublishNotification.getNotificationSubject();
       String notificationMessage = getNotificationMessage(publishRepublishNotification, assessmentSettings.getTitle(), assessmentSettings.getReleaseTo(), assessmentSettings.getStartDateString(), assessmentSettings.getPublishedUrl(),
@@ -216,12 +223,10 @@ public class PublishAssessmentListener
         assessmentSettings.getUnlimitedSubmissions(), assessmentSettings.getSubmissionsAllowed(), assessmentSettings.getScoringType(), assessmentSettings.getFeedbackDelivery(), assessmentSettings.getFeedbackDateString());
        
       if (sendNotification) {
-        sendNotification(pub, publishedAssessmentService, subject, notificationMessage, 
-          assessmentSettings.getReleaseTo());
+        sendNotification(pub, publishedAssessmentService, subject, notificationMessage, assessmentSettings.getReleaseTo(), 
+        		assessmentSettings.getExtendedTimes(), assessmentSettings.getTitle(), assessmentSettings.getPublishedUrl(), assessmentSettings.getUnlimitedSubmissions()
+        		, assessmentSettings.getSubmissionsAllowed(), assessmentSettings.getScoringType(), assessmentSettings.getFeedbackDelivery(), assessmentSettings.getFeedbackDateString());
       }
-
-      ExtendedTimeFacade extendedTimeFacade = PersistenceService.getInstance().getExtendedTimeFacade();
-      extendedTimeFacade.copyEntriesToPub(pub.getData(), assessmentSettings.getExtendedTimes());
 
       EventTrackingService.post(EventTrackingService.newEvent(SamigoConstants.EVENT_ASSESSMENT_PUBLISH, "siteId=" + AgentFacade.getCurrentSiteId() + ", assessmentId=" + assessment.getAssessmentId() + ", publishedAssessmentId=" + pub.getPublishedAssessmentId(), true));
 
@@ -315,7 +320,9 @@ public class PublishAssessmentListener
   }
   
   public void sendNotification(PublishedAssessmentFacade pub, PublishedAssessmentService service, String subject, String message,
-		  String releaseTo) {
+		  String releaseTo, List <ExtendedTime> extendedTimes, String title, 
+		  String publishedUrl , String unlimitedSubmissions, String submissionsAllowed, 
+		  String scoringType,String feedbackDelivery, String feedbackDeliveryDate) {
 	  TotalScoresBean totalScoresBean = (TotalScoresBean) ContextUtil.lookupBean("totalScores");
 	  
 	  boolean groupRelease = AssessmentAccessControlIfc.RELEASE_TO_SELECTED_GROUPS.equals(releaseTo);
@@ -338,27 +345,8 @@ public class PublishAssessmentListener
 		  log.warn("AddressException encountered when constructing instructor's email.");
 	  }
 	  Iterator iter = useridMap.keySet().iterator();
-
-	  while (iter.hasNext()) {
-		  String userUid = (String) iter.next();
-		  agent = new AgentFacade(userUid);
-		  InternetAddress ia = null;
-		  try {
-			  ia = new InternetAddress(agent.getEmail()); 
-		  } catch (AddressException e) {
-			  log.warn("AddressException encountered when constructing toIAList email. userUid = " + userUid);
-		  }
-		  if (ia != null) {
-			  toIAList.add(ia);
-		  }
-	  }
-	  
-	  InternetAddress[] toIA = new InternetAddress[toIAList.size()];
-	  int count = 0;
-	  Iterator iter2 = toIAList.iterator();
-	  while (iter2.hasNext()) {
-		  toIA[count++] = (InternetAddress) iter2.next();
-	  }
+      List<String> headers = new  ArrayList<String>();
+	  headers.add("Content-Type: text/html");
 
 	  String noReplyEmaillAddress =  ServerConfigurationService.getString("setup.request","no-reply@" + ServerConfigurationService.getServerName());
       InternetAddress[] noReply = new InternetAddress[1];
@@ -370,8 +358,78 @@ public class PublishAssessmentListener
           log.warn("AddressException encountered when constructing no_reply@serverName email.");
       }
 	  
-	  List<String> headers = new  ArrayList<String>();
-	  headers.add("Content-Type: text/html");
+
+      //Retrieve and send emails for extended times
+	  List <String> etStudents = new ArrayList<String>();
+	  InternetAddress[] etGroupStudents = null;
+      ExtendedTimeFacade etFacade = PersistenceService.getInstance().getExtendedTimeFacade();
+      boolean isForUser = false;
+      Map<String, String> notificationInformation = null;
+      String etMessage = null;
+      InternetAddress etia = null;
+      Group etGroup = null;
+      PublishRepublishNotificationBean publishRepublishNotification = (PublishRepublishNotificationBean) ContextUtil.lookupBean("publishRepublishNotification");
+
+      for (ExtendedTime et: extendedTimes) {
+    	  try {
+	    	  notificationInformation = etFacade.getNotificationInformationForGroup(et);
+	    	  isForUser = new Boolean(notificationInformation.get("isForUser"));
+	    	  if (isForUser) {
+	    		  etStudents.add(notificationInformation.get("userId"));
+	    		  etia = new InternetAddress((new AgentFacade(notificationInformation.get("userId")).getEmail()));
+	    		  etMessage = getNotificationMessage(publishRepublishNotification, title, "Users", 
+	    				  notificationInformation.get("startDateString"), publishedUrl, 
+	    				  notificationInformation.get("dueDateString"), Integer.parseInt(notificationInformation.get("timedHours")), 
+	    				  Integer.parseInt(notificationInformation.get("timedMinutes")), unlimitedSubmissions, 
+	    				  submissionsAllowed, scoringType, feedbackDelivery, feedbackDeliveryDate);
+	    		  EmailService.sendMail(from, new InternetAddress[]{etia}, subject, message, noReply, noReply, headers);
+	     	  }else {
+	     		 etGroup = SiteService.findGroup(notificationInformation.get("groupId"));
+  	     		 etGroupStudents = new InternetAddress[etGroup.getUsersHasRole("Student").size()];
+  	     		 int position = 0;
+	     		 for (String userId: etGroup.getUsersHasRole("Student")) {
+	     			 etStudents.add(userId);
+	     			 etia = new InternetAddress((new AgentFacade(userId).getEmail()));
+	     			 etGroupStudents[position++] = etia;
+	     		 }
+	    		 etMessage = getNotificationMessage(publishRepublishNotification, title, AssessmentAccessControlIfc.RELEASE_TO_SELECTED_GROUPS, 
+	    				  notificationInformation.get("startDateString"), publishedUrl, 
+	    				  notificationInformation.get("dueDateString"), Integer.parseInt(notificationInformation.get("timedHours")), 
+	    				  Integer.parseInt(notificationInformation.get("timedMinutes")), unlimitedSubmissions, 
+	    				  submissionsAllowed, scoringType, feedbackDelivery, feedbackDeliveryDate);
+	    		  EmailService.sendMail(from, etGroupStudents, subject, message, noReply, noReply, headers);
+	    		  
+	    	  }
+    	  }catch (AddressException e) {
+			  log.warn("AddressException encountered when constructing toIAList email. userUid = " );
+		  }
+      }
+      //End
+
+      
+      while (iter.hasNext()) {
+		  String userUid = (String) iter.next();
+		  if (!etStudents.contains(userUid)) {
+			  agent = new AgentFacade(userUid);
+			  InternetAddress ia = null;
+			  try {
+				  ia = new InternetAddress(agent.getEmail()); 
+			  } catch (AddressException e) {
+				  log.warn("AddressException encountered when constructing toIAList email. userUid = " + userUid);
+			  }
+			  if (ia != null) {
+				  toIAList.add(ia);
+			  }
+		  }
+	  }
+	  
+	  InternetAddress[] toIA = new InternetAddress[toIAList.size()];
+	  int count = 0;
+	  Iterator iter2 = toIAList.iterator();
+	  while (iter2.hasNext()) {
+		  toIA[count++] = (InternetAddress) iter2.next();
+	  }
+
 	  EmailService.sendMail(from, toIA, subject, message, noReply, noReply, headers);
   }
   
