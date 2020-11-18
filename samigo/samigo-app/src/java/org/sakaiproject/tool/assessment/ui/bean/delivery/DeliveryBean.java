@@ -3441,7 +3441,24 @@ public class DeliveryBean
   }
 
   public boolean isAcceptLateSubmission() {
-	  boolean acceptLateSubmission = AssessmentAccessControlIfc.ACCEPT_LATE_SUBMISSION.equals(publishedAssessment.getAssessmentAccessControl().getLateHandling());
+    boolean acceptLateSubmission;
+    try {
+      acceptLateSubmission = AssessmentAccessControlIfc.ACCEPT_LATE_SUBMISSION.equals(publishedAssessment.getAssessmentAccessControl().getLateHandling());
+    }
+    catch (NullPointerException e) {
+      if (publishedAssessment == null) {
+        log.error("*** publishedAssessment is null");
+      }
+      else if (publishedAssessment.getAssessmentAccessControl() == null) {
+        log.error("*** publishedAssessment.getAssessmentAccessControl() is null");
+      }
+      if (adata != null) {
+        log.error("*** assessmentGradingId: " + adata.getAssessmentGradingId() + " agentId: " + adata.getAgentId());
+      }
+      log.error("*** assessmentId: " + this.getAssessmentId() + " submission: " + this.getSubmissionId());
+      throw e;
+    }
+
 	  //If using extended Time Delivery, the late submission setting is based on retracted
 	  if (extendedTimeDeliveryService.hasExtendedTime()) {
 		  //Accept it if it's not retracted on the extended time entry
