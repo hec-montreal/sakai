@@ -3444,6 +3444,12 @@ public class DeliveryBean
     boolean acceptLateSubmission;
     try {
       acceptLateSubmission = AssessmentAccessControlIfc.ACCEPT_LATE_SUBMISSION.equals(publishedAssessment.getAssessmentAccessControl().getLateHandling());
+
+  	  //If using extended Time Delivery, the late submission setting is based on retracted
+	    if (extendedTimeDeliveryService.hasExtendedTime()) {
+		    //Accept it if it's not retracted on the extended time entry
+		    acceptLateSubmission = (extendedTimeDeliveryService.getRetractDate() != null) ? !isRetracted(false) : false;
+      }
     }
     catch (NullPointerException e) {
       if (publishedAssessment == null) {
@@ -3452,18 +3458,17 @@ public class DeliveryBean
       else if (publishedAssessment.getAssessmentAccessControl() == null) {
         log.error("*** publishedAssessment.getAssessmentAccessControl() is null");
       }
+      if (extendedTimeDeliveryService == null) {
+        log.error("*** extendedTimeDeliveryService is null");
+      }
       if (adata != null) {
         log.error("*** assessmentGradingId: " + adata.getAssessmentGradingId() + " agentId: " + adata.getAgentId());
       }
       log.error("*** assessmentId: " + this.getAssessmentId() + " submission: " + this.getSubmissionId());
+      e.printStackTrace();
       throw e;
     }
 
-	  //If using extended Time Delivery, the late submission setting is based on retracted
-	  if (extendedTimeDeliveryService.hasExtendedTime()) {
-		  //Accept it if it's not retracted on the extended time entry
-		  acceptLateSubmission = (extendedTimeDeliveryService.getRetractDate() != null) ? !isRetracted(false) : false;
-	  }
 	  return acceptLateSubmission;
   }
 
