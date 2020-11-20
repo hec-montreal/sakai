@@ -92,6 +92,8 @@ public class PublishRepublishNotificationListener implements ValueChangeListener
 			}
 
 			publishRepublishNotification.setSendNotification(true);
+			// ZCII-4287 centralize this in PublishAssessmentListener for exceptions and normal time
+			/*
 			StringBuilder subject = new StringBuilder("[");
 			subject.append(siteTitle);
 			subject.append("] \"");
@@ -109,6 +111,7 @@ public class PublishRepublishNotificationListener implements ValueChangeListener
 				subject.append(ContextUtil.getLocalizedString("org.sakaiproject.tool.assessment.bundle.AssessmentSettingsMessages", "was_republished"));
 			}
 			publishRepublishNotification.setNotificationSubject(subject.toString());
+			*/
 			publishRepublishNotification.setSiteTitle(siteTitle);
 		}
 		else {

@@ -23,7 +23,9 @@ package org.sakaiproject.tool.assessment.ui.listener.author;
 
 import java.io.UnsupportedEncodingException;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Iterator;
@@ -45,6 +47,7 @@ import javax.mail.internet.InternetAddress;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.StringUtils;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.email.cover.EmailService;
@@ -85,6 +88,7 @@ import org.sakaiproject.tool.assessment.ui.bean.author.PublishRepublishNotificat
 import org.sakaiproject.tool.assessment.ui.bean.authz.AuthorizationBean;
 import org.sakaiproject.tool.assessment.ui.bean.evaluation.TotalScoresBean;
 import org.sakaiproject.tool.assessment.ui.listener.util.ContextUtil;
+import org.sakaiproject.tool.assessment.ui.listener.util.TimeUtil;
 import org.sakaiproject.tool.assessment.util.TextFormat;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.ResourceLoader;
@@ -217,15 +221,14 @@ public class PublishAssessmentListener
       extendedTimeFacade.copyEntriesToPub(pub.getData(), assessmentSettings.getExtendedTimes());
 
       boolean sendNotification = publishRepublishNotification.getSendNotification();
-      String subject = publishRepublishNotification.getNotificationSubject();
       String notificationMessage = getNotificationMessage(publishRepublishNotification, assessmentSettings.getTitle(), assessmentSettings.getReleaseTo(), assessmentSettings.getStartDateString(), assessmentSettings.getPublishedUrl(),
         assessmentSettings.getDueDateString(), assessmentSettings.getTimedHours(), assessmentSettings.getTimedMinutes(), 
         assessmentSettings.getUnlimitedSubmissions(), assessmentSettings.getSubmissionsAllowed(), assessmentSettings.getScoringType(), assessmentSettings.getFeedbackDelivery(), assessmentSettings.getFeedbackDateString());
        
       if (sendNotification) {
-        sendNotification(pub, publishedAssessmentService, subject, notificationMessage, assessmentSettings.getReleaseTo(), 
-        		assessmentSettings.getExtendedTimes(), assessmentSettings.getTitle(), assessmentSettings.getPublishedUrl(), assessmentSettings.getUnlimitedSubmissions()
-        		, assessmentSettings.getSubmissionsAllowed(), assessmentSettings.getScoringType(), assessmentSettings.getFeedbackDelivery(), assessmentSettings.getFeedbackDateString());
+        sendNotification(pub, publishedAssessmentService, notificationMessage, assessmentSettings.getReleaseTo(), assessmentSettings.getStartDateString(),
+			assessmentSettings.getExtendedTimes(), assessmentSettings.getTitle(), assessmentSettings.getPublishedUrl(), assessmentSettings.getUnlimitedSubmissions(),
+			assessmentSettings.getSubmissionsAllowed(), assessmentSettings.getScoringType(), assessmentSettings.getFeedbackDelivery(), assessmentSettings.getFeedbackDateString(), false);
       }
 
       EventTrackingService.post(EventTrackingService.newEvent(SamigoConstants.EVENT_ASSESSMENT_PUBLISH, "siteId=" + AgentFacade.getCurrentSiteId() + ", assessmentId=" + assessment.getAssessmentId() + ", publishedAssessmentId=" + pub.getPublishedAssessmentId(), true));
@@ -319,10 +322,10 @@ public class PublishAssessmentListener
     return error;
   }
   
-  public void sendNotification(PublishedAssessmentFacade pub, PublishedAssessmentService service, String subject, String message,
-		  String releaseTo, List <ExtendedTime> extendedTimes, String title, 
-		  String publishedUrl , String unlimitedSubmissions, String submissionsAllowed, 
-		  String scoringType,String feedbackDelivery, String feedbackDeliveryDate) {
+  public void sendNotification(PublishedAssessmentFacade pub, PublishedAssessmentService service, String message,
+		  String releaseTo, String startDateString, List <ExtendedTime> extendedTimes, String title,
+		  String publishedUrl, String unlimitedSubmissions, String submissionsAllowed,
+		  String scoringType, String feedbackDelivery, String feedbackDeliveryDate, Boolean isRepublish) {
 	  TotalScoresBean totalScoresBean = (TotalScoresBean) ContextUtil.lookupBean("totalScores");
 	  
 	  boolean groupRelease = AssessmentAccessControlIfc.RELEASE_TO_SELECTED_GROUPS.equals(releaseTo);
@@ -357,7 +360,6 @@ public class PublishAssessmentListener
       } catch (AddressException e) {
           log.warn("AddressException encountered when constructing no_reply@serverName email.");
       }
-	  
 
       //Retrieve and send emails for extended times
 	  List <String> etStudents = new ArrayList<String>();
@@ -366,24 +368,29 @@ public class PublishAssessmentListener
       boolean isForUser = false;
       Map<String, String> notificationInformation = null;
       String etMessage = null;
+	  String etSubject = null;
       InternetAddress etia = null;
       Group etGroup = null;
       PublishRepublishNotificationBean publishRepublishNotification = (PublishRepublishNotificationBean) ContextUtil.lookupBean("publishRepublishNotification");
+      String siteTitle = publishRepublishNotification.getSiteTitle();
 
       for (ExtendedTime et: extendedTimes) {
+		String etStartDateString = getDisplayFormatFromDate(et.getStartDate());
+		String etDueDateString = getDisplayFormatFromDate(et.getDueDate());
+
     	  try {
-	    	  notificationInformation = etFacade.getNotificationInformationForGroup(et);
-	    	  isForUser = new Boolean(notificationInformation.get("isForUser"));
+	          notificationInformation = et.getNotificationInformation();
+	    	  isForUser = et.getUser() != null ? true : false;
 	    	  if (isForUser) {
 	    		  etStudents.add(notificationInformation.get("userId"));
 	    		  etia = new InternetAddress((new AgentFacade(notificationInformation.get("userId")).getEmail()));
 	    		  etMessage = getNotificationMessage(publishRepublishNotification, title, "Users", 
-	    				  notificationInformation.get("startDateString"), publishedUrl, 
-	    				  notificationInformation.get("dueDateString"), Integer.parseInt(notificationInformation.get("timedHours")), 
-	    				  Integer.parseInt(notificationInformation.get("timedMinutes")), unlimitedSubmissions, 
-	    				  submissionsAllowed, scoringType, feedbackDelivery, feedbackDeliveryDate);
-	    		  EmailService.sendMail(from, new InternetAddress[]{etia}, subject, message, noReply, noReply, headers);
-	     	  }else {
+	    				  etStartDateString, publishedUrl, etDueDateString, et.getTimeHours(), 
+	    				  et.getTimeMinutes(), unlimitedSubmissions, 
+						  submissionsAllowed, scoringType, feedbackDelivery, feedbackDeliveryDate);
+				  etSubject = getNotificationSubject(siteTitle, title, etStartDateString, isRepublish);
+				  EmailService.sendMail(from, new InternetAddress[]{etia}, etSubject, etMessage, noReply, noReply, headers);
+	           } else {
 	     		 etGroup = SiteService.findGroup(notificationInformation.get("groupId"));
   	     		 etGroupStudents = new InternetAddress[etGroup.getUsersHasRole("Student").size()];
   	     		 int position = 0;
@@ -393,11 +400,11 @@ public class PublishAssessmentListener
 	     			 etGroupStudents[position++] = etia;
 	     		 }
 	    		 etMessage = getNotificationMessage(publishRepublishNotification, title, AssessmentAccessControlIfc.RELEASE_TO_SELECTED_GROUPS, 
-	    				  notificationInformation.get("startDateString"), publishedUrl, 
-	    				  notificationInformation.get("dueDateString"), Integer.parseInt(notificationInformation.get("timedHours")), 
-	    				  Integer.parseInt(notificationInformation.get("timedMinutes")), unlimitedSubmissions, 
+	    				  etStartDateString, publishedUrl, etDueDateString, et.getTimeHours(), 
+	    				  et.getTimeMinutes(), unlimitedSubmissions, 
 	    				  submissionsAllowed, scoringType, feedbackDelivery, feedbackDeliveryDate);
-	    		  EmailService.sendMail(from, etGroupStudents, subject, message, noReply, noReply, headers);
+				  etSubject = getNotificationSubject(siteTitle, title, etStartDateString, isRepublish);
+				  EmailService.sendMail(from, etGroupStudents, etSubject, etMessage, noReply, noReply, headers);
 	    		  
 	    	  }
     	  }catch (AddressException e) {
@@ -430,9 +437,37 @@ public class PublishAssessmentListener
 		  toIA[count++] = (InternetAddress) iter2.next();
 	  }
 
+	  String subject = getNotificationSubject(siteTitle, title, startDateString, isRepublish);
 	  EmailService.sendMail(from, toIA, subject, message, noReply, noReply, headers);
   }
+
+  public String getNotificationSubject(String siteTitle, String title, String startDateString, Boolean isRepublish){
+	StringBuilder subject = new StringBuilder("[");
+    subject.append(siteTitle);
+    subject.append("] \"");
+    subject.append(title);
+    subject.append("\" ");
+    if (!isRepublish) {
+	    if (startDateString == null || startDateString.trim().equals("")) {
+		    subject.append(ContextUtil.getLocalizedString("org.sakaiproject.tool.assessment.bundle.AssessmentSettingsMessages", "is_available_immediately"));
+	    }
+	    else {
+		    subject.append(MessageFormat.format(ContextUtil.getLocalizedString("org.sakaiproject.tool.assessment.bundle.AssessmentSettingsMessages", "is_available_on"), startDateString));
+	    }
+    }
+    else {
+	    subject.append(ContextUtil.getLocalizedString("org.sakaiproject.tool.assessment.bundle.AssessmentSettingsMessages", "was_republished"));
+    }
+    return subject.toString();
+  }
   
+  private String getDisplayFormatFromDate(Date date) {
+    if (date == null) return StringUtils.EMPTY;
+	String displayFormat = ContextUtil.getLocalizedString("org.sakaiproject.tool.assessment.bundle.GeneralMessages","output_data_picker_w_sec");
+	SimpleDateFormat sdf = new SimpleDateFormat(displayFormat);
+	return sdf.format(date);
+  }
+
   public String getNotificationMessage(PublishRepublishNotificationBean publishRepublishNotification, String title, String releaseTo, String startDateString, String publishedURL, String dueDateString, Integer timedHours, Integer timedMinutes, String unlimitedSubmissions, String submissionsAllowed, String scoringType, String feedbackDelivery, String feedbackDateString){
 	  String siteTitle = publishRepublishNotification.getSiteTitle();
 	  if(siteTitle == null || "".equals(siteTitle)){

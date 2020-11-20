@@ -99,14 +99,13 @@ public class RepublishAssessmentListener implements ActionListener {
 		
 		PublishedAssessmentSettingsBean publishedAssessmentSettings = (PublishedAssessmentSettingsBean) ContextUtil.lookupBean("publishedSettings");
 		PublishAssessmentListener publishAssessmentListener = new PublishAssessmentListener();
-		String subject = publishRepublishNotification.getNotificationSubject();
 		String notificationMessage = publishAssessmentListener.getNotificationMessage(publishRepublishNotification, publishedAssessmentSettings.getTitle(), publishedAssessmentSettings.getReleaseTo(), publishedAssessmentSettings.getStartDateString(), publishedAssessmentSettings.getPublishedUrl(),
 				publishedAssessmentSettings.getDueDateString(), publishedAssessmentSettings.getTimedHours(), publishedAssessmentSettings.getTimedMinutes(), 
 				publishedAssessmentSettings.getUnlimitedSubmissions(), publishedAssessmentSettings.getSubmissionsAllowed(), publishedAssessmentSettings.getScoringType(), publishedAssessmentSettings.getFeedbackDelivery(), publishedAssessmentSettings.getFeedbackDateString());
 		if (publishRepublishNotification.getSendNotification()) {
-		    publishAssessmentListener.sendNotification(assessment, publishedAssessmentService, subject, notificationMessage, publishedAssessmentSettings.getReleaseTo(), publishedAssessmentSettings.getExtendedTimes(),
-		    		publishedAssessmentSettings.getTitle(), publishedAssessmentSettings.getPublishedUrl(), publishedAssessmentSettings.getUnlimitedSubmissions()
-	        		, publishedAssessmentSettings.getSubmissionsAllowed(), publishedAssessmentSettings.getScoringType(), publishedAssessmentSettings.getFeedbackDelivery(), publishedAssessmentSettings.getFeedbackDateString());
+		    publishAssessmentListener.sendNotification(assessment, publishedAssessmentService, notificationMessage, publishedAssessmentSettings.getReleaseTo(), publishedAssessmentSettings.getStartDateString(), publishedAssessmentSettings.getExtendedTimes(),
+				publishedAssessmentSettings.getTitle(), publishedAssessmentSettings.getPublishedUrl(), publishedAssessmentSettings.getUnlimitedSubmissions(), publishedAssessmentSettings.getSubmissionsAllowed(), publishedAssessmentSettings.getScoringType(),
+				publishedAssessmentSettings.getFeedbackDelivery(), publishedAssessmentSettings.getFeedbackDateString(), true);
 
 		}
 		
