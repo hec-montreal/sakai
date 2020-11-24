@@ -366,7 +366,6 @@ public class PublishAssessmentListener
 	  InternetAddress[] etGroupStudents = null;
       ExtendedTimeFacade etFacade = PersistenceService.getInstance().getExtendedTimeFacade();
       boolean isForUser = false;
-      Map<String, String> notificationInformation = null;
       String etMessage = null;
 	  String etSubject = null;
       InternetAddress etia = null;
@@ -379,11 +378,10 @@ public class PublishAssessmentListener
 		String etDueDateString = getDisplayFormatFromDate(et.getDueDate());
 
     	  try {
-	          notificationInformation = et.getNotificationInformation();
 	    	  isForUser = et.getUser() != null ? true : false;
 	    	  if (isForUser) {
-	    		  etStudents.add(notificationInformation.get("userId"));
-	    		  etia = new InternetAddress((new AgentFacade(notificationInformation.get("userId")).getEmail()));
+	    		  etStudents.add(et.getUser());
+	    		  etia = new InternetAddress((new AgentFacade(et.getUser()).getEmail()));
 	    		  etMessage = getNotificationMessage(publishRepublishNotification, title, "Users", 
 	    				  etStartDateString, publishedUrl, etDueDateString, et.getTimeHours(), 
 	    				  et.getTimeMinutes(), unlimitedSubmissions, 
@@ -391,7 +389,7 @@ public class PublishAssessmentListener
 				  etSubject = getNotificationSubject(siteTitle, title, etStartDateString, isRepublish);
 				  EmailService.sendMail(from, new InternetAddress[]{etia}, etSubject, etMessage, noReply, noReply, headers);
 	           } else {
-	     		 etGroup = SiteService.findGroup(notificationInformation.get("groupId"));
+	     		 etGroup = SiteService.findGroup(et.getGroup());
   	     		 etGroupStudents = new InternetAddress[etGroup.getUsersHasRole("Student").size()];
   	     		 int position = 0;
 	     		 for (String userId: etGroup.getUsersHasRole("Student")) {

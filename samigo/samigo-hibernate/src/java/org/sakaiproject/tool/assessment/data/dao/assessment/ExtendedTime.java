@@ -140,25 +140,5 @@ public class ExtendedTime implements Serializable {
                 .append(timeMinutes)
                 .toHashCode();
     }
-    
-    
-    public Map<String, String> getNotificationInformation() {
-    	Map<String, String> extendedTimeMessageInfo = new HashMap<String, String>();
-    	
-    	extendedTimeMessageInfo.put("dueDateString", dueDate.toString() );
-    	extendedTimeMessageInfo.put("startDateString", startDate.toString() );
-    	extendedTimeMessageInfo.put("timedHours", timeHours.toString());
-    	extendedTimeMessageInfo.put("timedMinutes", timeHours.toString());
-
-    	if (user != null) {
-    		extendedTimeMessageInfo.put("isForUser", "true");
-    		extendedTimeMessageInfo.put("userId", user);
-    	} else {
-    		extendedTimeMessageInfo.put("isForUser", "false");
-    		extendedTimeMessageInfo.put("groupId", group);   		
-    	}
-    	
-    	return extendedTimeMessageInfo;
-    }
 
 }
