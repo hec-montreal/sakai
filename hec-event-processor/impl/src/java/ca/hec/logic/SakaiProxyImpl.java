@@ -78,10 +78,6 @@ public class SakaiProxyImpl {
 	{
 		return siteService.siteReference(siteId);
 	}
-	
-	public Group findGroup (String groupId) {
-	    return siteService.findGroup(groupId);
-	}
 
 	public boolean isSitePublished(String siteId) {
 		Site site = getSite(siteId);

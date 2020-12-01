@@ -43,16 +43,8 @@ public class GroupEventProcessor implements EventProcessor {
 		Site site = sakaiProxy.getSite(siteId);
 
 		if(site == null) {
-			Group group = sakaiProxy.findGroup(groupId);
-			if(group == null) {
-			    logger.info(String.format("No group exist for this id. The site %s not exists.", siteId));			
-			    return;
-			}			
-			site = group.getContainingSite();
-			if(site == null) {
-			    logger.warn(String.format("No group liked to the site. The site %s not exists.", siteId));			
-			    return;
-			}
+			logger.warn(String.format("The site %s not exists.", siteId));
+			return;
 		}
 		Group group = site.getGroup(groupId);
 
