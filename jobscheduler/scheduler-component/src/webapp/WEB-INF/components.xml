@@ -409,6 +409,7 @@
     </bean>
 
     <!-- This is to automatically import some sites on startup. -->
+<!--
     <bean class="org.sakaiproject.component.app.scheduler.AutoRun" init-method="init">
         <property name="schedulerManager" ref="org.sakaiproject.api.app.scheduler.SchedulerManager"/>
         <property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService"/>
@@ -433,6 +434,7 @@
             </list>
         </property>
     </bean>
+-->
 
 
     <!-- Automatically create event purge job -->
