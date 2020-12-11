@@ -19,6 +19,7 @@
 		<property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService" />
 		<property name="entityManager" ref="org.sakaiproject.entity.api.EntityManager" />
 		<property name="assignmentService" ref="org.sakaiproject.assignment.api.AssignmentService" />
+		<property name="serverConfigurationService" ref="org.sakaiproject.component.api.ServerConfigurationService" />
 		<property name="compilatioContentValidator" ref="org.sakaiproject.contentreview.compilatio.CompilatioContentValidator" />
 		<property name="compilatioConn" ref="org.sakaiproject.contentreview.compilatio.CompilatioAccountConnection" />
 		<property name="siteAdvisor" ref="org.sakaiproject.contentreview.service.ContentReviewSiteAdvisor" />

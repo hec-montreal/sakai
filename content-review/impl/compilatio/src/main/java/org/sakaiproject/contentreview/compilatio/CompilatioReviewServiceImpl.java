@@ -37,10 +37,8 @@ import org.sakaiproject.contentreview.exception.SubmissionException;
 import org.sakaiproject.contentreview.exception.TransientSubmissionException;
 import org.sakaiproject.contentreview.service.BaseContentReviewService;
 import org.sakaiproject.contentreview.service.ContentReviewQueueService;
-import org.sakaiproject.contentreview.service.ContentReviewService;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.entitybroker.EntityReference;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
@@ -187,6 +185,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 	@Setter protected ContentHostingService contentHostingService;
 	@Setter protected EntityManager entityManager;
 	@Setter protected AssignmentService assignmentService;
+	@Setter protected ServerConfigurationService serverConfigurationService;
 	@Setter protected CompilatioAccountConnection compilatioConn;
 	@Setter protected CompilatioContentValidator compilatioContentValidator;
 	@Setter protected ContentReviewSiteAdvisor siteAdvisor;
@@ -375,8 +374,13 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 		int errors = 0;
 		int success = 0;
 
+		Integer minsToRun = serverConfigurationService.getInt("compilatio.processQueueJob.maxMinutesToRun", 45);
+		Long stopTime = System.currentTimeMillis() + (minsToRun*60000);
+
 		Optional<ContentReviewItem> nextItem = null;
-		while ((nextItem = getNextItemInSubmissionQueue()).isPresent()) {
+		while ((nextItem = getNextItemInSubmissionQueue()).isPresent()
+			&& System.currentTimeMillis() < stopTime) {
+
 			ContentReviewItem currentItem = nextItem.get();
 			
 			//if document has no external id, we need to add it to Compilatio
