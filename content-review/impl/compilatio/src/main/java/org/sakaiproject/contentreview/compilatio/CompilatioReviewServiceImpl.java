@@ -412,7 +412,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 						continue;
 					}
 				}
-			} catch (IdUnusedException | PermissionException e) {
+			} catch (IdUnusedException | PermissionException | IllegalArgumentException e) {
 				log.error("Error getting assignment for item "+currentItem.getId(), e);
 				processError(currentItem, ContentReviewConstants.CONTENT_REVIEW_SUBMISSION_ERROR_NO_RETRY_CODE, null, null);
 				errors++;
