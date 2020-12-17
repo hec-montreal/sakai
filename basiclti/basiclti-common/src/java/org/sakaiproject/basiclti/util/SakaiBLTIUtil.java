@@ -24,6 +24,7 @@ import java.net.URLEncoder;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -442,10 +443,12 @@ public class SakaiBLTIUtil {
 
 			// filter out non official groups (user created)
 			for (Group g : groups) {
-				if (g.getProviderGroupId() != null) {
+				String wsetupProp = g.getProperties().getProperty(Group.GROUP_PROP_WSETUP_CREATED);
+				if (wsetupProp == null || wsetupProp.equals(Boolean.FALSE.toString())) {
 					sectionsList.add(g.getTitle());
 				}
 			}
+			sectionsList.sort(Comparator.naturalOrder());
 
 			return sectionsList;
 		}
