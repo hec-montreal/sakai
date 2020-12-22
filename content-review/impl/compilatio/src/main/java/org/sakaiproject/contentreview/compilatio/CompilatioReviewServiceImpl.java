@@ -37,6 +37,7 @@ import org.sakaiproject.contentreview.exception.SubmissionException;
 import org.sakaiproject.contentreview.exception.TransientSubmissionException;
 import org.sakaiproject.contentreview.service.BaseContentReviewService;
 import org.sakaiproject.contentreview.service.ContentReviewQueueService;
+import org.sakaiproject.email.api.EmailService;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdUnusedException;
@@ -63,6 +64,8 @@ import javax.servlet.http.HttpServletRequest;
 public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 	
 	private static final Log log = LogFactory.getLog(CompilatioReviewServiceImpl.class);
+	
+	private static final String NOTIFICATION_EMAIL_PROP = "hec.error.notification.email";
 	
 	public static final String COMPILATIO_DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	
@@ -190,6 +193,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 	@Setter protected CompilatioContentValidator compilatioContentValidator;
 	@Setter protected ContentReviewSiteAdvisor siteAdvisor;
 	@Setter	ContentReviewQueueService crqs;
+	@Setter protected EmailService emailService;
 	
 	public void init() {		
 	}
@@ -376,6 +380,8 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 
 		Integer minsToRun = serverConfigurationService.getInt("compilatio.processQueueJob.maxMinutesToRun", 45);
 		Long stopTime = System.currentTimeMillis() + (minsToRun*60000);
+		
+		List <String> processedDocs = new ArrayList<String>();
 
 		Optional<ContentReviewItem> nextItem = null;
 		while ((nextItem = getNextItemInSubmissionQueue()).isPresent()
@@ -388,12 +394,14 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 				
 				if(!processItem(currentItem)){
 					errors++;
+					processedDocs.add(currentItem.getContentId());
 					continue;
 				}
 				
 				//check if we have added it correctly
 				if(addDocumentToCompilatio(currentItem) == false){
 					errors++;
+					processedDocs.add(currentItem.getContentId());
 					continue;
 				}
 			}
@@ -416,6 +424,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 				log.error("Error getting assignment for item "+currentItem.getId(), e);
 				processError(currentItem, ContentReviewConstants.CONTENT_REVIEW_SUBMISSION_ERROR_NO_RETRY_CODE, null, null);
 				errors++;
+				processedDocs.add(currentItem.getContentId());
 				continue;
 			}
 
@@ -424,6 +433,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 
 			if(!processItem(currentItem)){
 				errors++;
+				processedDocs.add(currentItem.getContentId());
 				continue;
 			}
 			
@@ -438,6 +448,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 				String errorMsg = createLastError(doc -> createFormattedMessageXML(doc, "submission.error.generic", e.getLocalizedMessage()));
 				processError(currentItem, ContentReviewConstants.CONTENT_REVIEW_SUBMISSION_ERROR_RETRY_CODE, errorMsg, null);
 				errors++;
+				processedDocs.add(currentItem.getContentId());
 				continue;
 			}
 
@@ -476,12 +487,23 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 					String errorMsg = createLastError(doc -> createFormattedMessageXML(doc, "submission.error.with.code", rMessage, rCode));
 					processError(currentItem, ContentReviewConstants.CONTENT_REVIEW_SUBMISSION_ERROR_RETRY_CODE, errorMsg, errorCodeInt);
 					errors++;
+					processedDocs.add(currentItem.getContentId());
 				}
 	
 				crqs.update(currentItem);
 			}
 		}
 
+		// If for all pending documents (more than 0) we have 0 sent and  
+		// more than 1 error we sending warning email to admin
+		if (success == 0 && errors > 0) {
+		    String message = "Des documents en attente n'ont pas été envoyés."
+		    	+ " Veillez vérifier les erreurs dans la table de contentreview_item ou les logs. "
+			+ processedDocs.toString();
+		    warnAdmin("CompilatioReview - Aucun document envoyé, " + errors + " erreurs", message);
+		}
+
+		
 		log.info("Submission queue run completed: " + success + " items submitted, " + errors + " errors.");
 	}
 
@@ -493,6 +515,8 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 		dform.applyPattern(COMPILATIO_DATETIME_FORMAT);
 
 		log.info("Fetching reports from Compilatio");
+		
+		List<String> docRef = new ArrayList<String>();
 		
 		// get the list of all items that are waiting for reports
 		List<ContentReviewItem> awaitingReport = crqs.getAwaitingReports(getProviderId());
@@ -521,6 +545,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 			}
 
 			if(!processItem(currentItem)){
+			    	docRef.add(currentItem.getContentId());
 				errors++;
 				continue;
 			}
@@ -529,6 +554,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 			if (StringUtils.isBlank(currentItem.getExternalId())) {
 				currentItem.setStatus(Long.valueOf(ContentReviewConstants.CONTENT_REVIEW_SUBMISSION_ERROR_RETRY_CODE));
 				crqs.update(currentItem);
+				docRef.add(currentItem.getContentId());
 				errors++;
 				continue;
 			}
@@ -546,6 +572,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 			} catch (TransientSubmissionException | SubmissionException e) {
 				log.warn("Update failed : " + e.toString(), e);
 				processError(currentItem, ContentReviewConstants.CONTENT_REVIEW_REPORT_ERROR_RETRY_CODE, e.getLocalizedMessage(), null);
+				docRef.add(getResourceLoaderName());
 				errors++;
 				continue;
 			}
@@ -563,6 +590,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 					//send back to the process queue, we need no analyze it again
 					String msg = createLastError(doc -> createFormattedMessageXML(doc, "report.error.analyse.not.started"));
 					processError(currentItem, ContentReviewConstants.CONTENT_REVIEW_SUBMISSION_ERROR_RETRY_CODE, msg, null);
+					docRef.add(getResourceLoaderName());
 					errors++;
 					continue;
 				} else if ("ANALYSE_COMPLETE".equals(status)) {
@@ -584,8 +612,18 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 			} else {
 				log.debug("Report list request not successful");
 				log.debug(document.getTextContent());
+				docRef.add(currentItem.getContentId());
 				errors++;
 			}
+		}
+		
+		// If for all awaited reports (more than 0) we have 0 success and 0 
+		// in progress we sending warning email to admin
+		if (success == 0 && inprogress == 0 && errors > 0) {
+		    String message = "Des rapports attendus ne sont pas retournés actuellement."
+		    	+ " Veillez vérifier les erreurs dans la table de contentreview_item ou les logs. "
+			+ docRef.toString();
+		    warnAdmin("CompilatioReview - Aucun rapport généré, " + errors + " erreurs", message);
 		}
 
 		log.info("Finished fetching reports from Compilatio : "+success+" success items, "+inprogress+" in progress, "+errors+" errors");
@@ -1077,5 +1115,11 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 	public void webhookEvent(HttpServletRequest request, int providerId, Optional<String> customParam) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public void warnAdmin( String subject, String message) {
+	    String adminAddress = serverConfigurationService
+			.getString(NOTIFICATION_EMAIL_PROP, null);
+	    emailService.send("zonecours2@hec.ca", adminAddress, subject, message, null, null, null);
 	}
 }
