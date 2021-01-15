@@ -572,7 +572,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 			} catch (TransientSubmissionException | SubmissionException e) {
 				log.warn("Update failed : " + e.toString(), e);
 				processError(currentItem, ContentReviewConstants.CONTENT_REVIEW_REPORT_ERROR_RETRY_CODE, e.getLocalizedMessage(), null);
-				docRef.add(getResourceLoaderName());
+				docRef.add(currentItem.getContentId());
 				errors++;
 				continue;
 			}
@@ -590,7 +590,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 					//send back to the process queue, we need no analyze it again
 					String msg = createLastError(doc -> createFormattedMessageXML(doc, "report.error.analyse.not.started"));
 					processError(currentItem, ContentReviewConstants.CONTENT_REVIEW_SUBMISSION_ERROR_RETRY_CODE, msg, null);
-					docRef.add(getResourceLoaderName());
+					docRef.add(currentItem.getContentId());
 					errors++;
 					continue;
 				} else if ("ANALYSE_COMPLETE".equals(status)) {
