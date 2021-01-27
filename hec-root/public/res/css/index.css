@@ -163,6 +163,9 @@ button:hover {
 	float: left;
 	text-align: justify;
 	padding-top: 15px;
+	font-size: 0.8em;
+	color: #000;
+	
 }
 
 .governance a, .governance a:visited {
