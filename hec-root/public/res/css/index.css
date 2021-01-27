@@ -159,6 +159,23 @@ button:hover {
 	color: #333;
 }
 
+.governance {
+	float: left;
+	text-align: justify;
+	padding-top: 15px;
+}
+
+.governance a, .governance a:visited {
+	font-family: 'din-regular', 'arial';
+	color: #009fdf;
+	text-decoration: none;
+	font-size: 1.1em;
+}
+
+.governance a:hover {
+	color: #333;
+}
+
 .do-login {
 	float: right;
 }
