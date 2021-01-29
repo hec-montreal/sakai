@@ -44,6 +44,7 @@ public class AutoSubmitAssessmentsJob implements Job {
 	@Setter private ServerConfigurationService serverConfigurationService;
 	@Setter private SessionManager sessionManager;
 	@Setter private UsageSessionService usageSessionService;
+	private static boolean isRunning = false;
 
 	/*
 	 * Quartz job to check for assessment attempts that should be autosubmitted
@@ -51,6 +52,13 @@ public class AutoSubmitAssessmentsJob implements Job {
 	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
 	 */
 	public void execute(JobExecutionContext jobInfo) throws JobExecutionException {
+	    	
+	    	if (isRunning) {
+	    	    log.error("The job is already running");
+	    	    return;
+	    	}
+	    	isRunning = true;
+	    	
 		loginToSakai("admin");
 
 		String jobName = jobInfo.getJobDetail().getKey().getName();
@@ -89,6 +97,8 @@ public class AutoSubmitAssessmentsJob implements Job {
 		log.info("End Job: {} ({} failures)", whoAmI, failures);
 		
 		logoutFromSakai();
+		
+		isRunning = false;
 	}
 	
 	/**
