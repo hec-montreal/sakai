@@ -21,6 +21,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -36,6 +37,7 @@ import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 
 @Slf4j
+@DisallowConcurrentExecution
 public class AutoSubmitAssessmentsJob implements Job {
 
 	@Setter private AuthzGroupService authzGroupService;
@@ -44,7 +46,6 @@ public class AutoSubmitAssessmentsJob implements Job {
 	@Setter private ServerConfigurationService serverConfigurationService;
 	@Setter private SessionManager sessionManager;
 	@Setter private UsageSessionService usageSessionService;
-	private static boolean isRunning = false;
 
 	/*
 	 * Quartz job to check for assessment attempts that should be autosubmitted
@@ -52,12 +53,6 @@ public class AutoSubmitAssessmentsJob implements Job {
 	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
 	 */
 	public void execute(JobExecutionContext jobInfo) throws JobExecutionException {
-	    	
-	    	if (isRunning) {
-	    	    log.error("The job is already running");
-	    	    return;
-	    	}
-	    	isRunning = true;
 	    	
 		loginToSakai("admin");
 
@@ -97,8 +92,6 @@ public class AutoSubmitAssessmentsJob implements Job {
 		log.info("End Job: {} ({} failures)", whoAmI, failures);
 		
 		logoutFromSakai();
-		
-		isRunning = false;
 	}
 	
 	/**
