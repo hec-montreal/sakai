@@ -29,6 +29,7 @@ public class EventCopy implements Event
 	protected String entityReference;
 	@Getter protected String sessionId;
 	@Getter protected String userId;
+	@Getter protected boolean isTransient = false;
 	//Uncomment this for 12.x or master
 	//@Getter protected LRS_Statement lrsStatement;
 
@@ -79,6 +80,7 @@ public class EventCopy implements Event
 		this.entityReference = original.getResource();
 		this.sessionId = original.getSessionId();
 		this.userId = original.getUserId();
+		this.isTransient = original.isTransient();
 		//Uncomment this for 12.x or master
 		//this.lrsStatement = original.getLrsStatement();
 	}
@@ -114,6 +116,8 @@ public class EventCopy implements Event
 		builder.append(sessionId);
 		builder.append(", userId=");
 		builder.append(userId);
+		builder.append(", isTransient=");
+		builder.append(isTransient);
 		//Uncomment this for 12.x or master
 		//builder.append(", lrsStatement=");
 		//builder.append(lrsStatement);
