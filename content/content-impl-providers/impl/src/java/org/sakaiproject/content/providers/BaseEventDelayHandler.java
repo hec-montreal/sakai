@@ -404,9 +404,5 @@ public class BaseEventDelayHandler implements EventDelayHandler, ScheduledInvoca
 			//Don't do anything right now on a rerun
 			return null;
 		}
-
-		public boolean isTransient() {
-			return false;
-		}
 	}
 }

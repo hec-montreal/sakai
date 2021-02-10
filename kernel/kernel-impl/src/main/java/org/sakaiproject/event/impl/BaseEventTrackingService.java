@@ -25,8 +25,6 @@ import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import org.sakaiproject.authz.api.SecurityAdvisor;
@@ -232,11 +230,6 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 	public Event newEvent(String event, String resource, String context, boolean modify, int priority)
 	{
 		return new BaseEvent(event, resource, context, modify, priority, null);
-	}
-
-	public Event newEvent(String event, String resource, String context, boolean modify, int priority, boolean isTransient)
-	{
-		return new BaseEvent(event, resource, context, modify, priority, isTransient);
 	}
 
 	/**
@@ -520,7 +513,6 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 	 * Event objects are posted to the EventTracking service, and may be listened for.
 	 * </p>
 	 */
-	@Getter @Setter
 	protected class BaseEvent implements Event
 	{
 		/**
@@ -529,37 +521,34 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 		private static final long serialVersionUID = 3690761674282252600L;
 
 		/** The Event's sequence number. */
-		protected long seq = 0;
+		protected long m_seq = 0;
 
 		/** The Event's id string. */
-		protected String id = "";
+		protected String m_id = "";
 
 		/** The Event's resource reference string. */
-		protected String resource = "";
+		protected String m_resource = "";
 
 		/** The Event's context. May be null. */
-		protected String context = null;
+		protected String m_context = null;
 		
 		/** The Event's session id string. May be null. */
-		protected String sessionId = null;
+		protected String m_session = null;
 
 		/** The Event's user id string. May be null. */
-		protected String userId = null;
+		protected String m_user = null;
 
 		/** The Event's modify flag (true if the event caused a resource modification). */
-		protected boolean modify = false;
+		protected boolean m_modify = false;
 
 		/** The Event's notification priority. */
-		protected int priority = NotificationService.NOTI_OPTIONAL;
+		protected int m_priority = NotificationService.NOTI_OPTIONAL;
 
 		/** Event creation time. */
-		protected Date time = null;
+		protected Date m_time = null;
 
 		/** Event LRS Statement */
-		protected LRS_Statement lrsStatement = null;
-
-        /** Do we store this event? */
-		protected boolean isTransient = false;
+		protected LRS_Statement m_lrsStatement = null;
 
 		/**
 		 * Construct
@@ -577,23 +566,23 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 		{
 			setEvent(event);
 			setResource(resource);
-			this.lrsStatement = lrsStatement;
-			this.modify = modify;
-			this.priority = priority;
+			m_lrsStatement = lrsStatement;
+			m_modify = modify;
+			m_priority = priority;
 
 			// Find the context using the reference (let the service that it belongs to parse it)
 			if (resource != null && !"".equals(resource)) {
 				Reference ref = entityManager().newReference(resource);
 				if (ref != null) {
-					this.context = ref.getContext();
+					m_context = ref.getContext();
 				}
 			}
 
 			// If we still need to find the context, try the tool placement
-			if (this.context == null) {
+			if (m_context == null) {
 				Placement placement = toolManager().getCurrentPlacement();
 				if (placement != null) {
-					this.context = placement.getContext();
+					m_context = placement.getContext();
 				}
 			}
 
@@ -604,6 +593,8 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 				uId = UNKNOWN_USER;
 			}
 			setUserId(uId);
+
+
 		}
 
 		/**
@@ -625,7 +616,7 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 			this(event, resource, modify, priority, lrsStatement);
 			//Use the context parameter if it's not null, otherwise default to the detected context
 			if (context != null) {
-				this.context = context;
+				m_context = context;
 			}
 		}
 		
@@ -648,25 +639,6 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 			this(event, resource, context, modify, priority, null);
 		}
 
-		/**
-		 * Construct
-		 *
-		 * @param event
-		 *        The Event id.
-		 * @param resource
-		 *        The resource id.
-		 * @param modify
-		 *        If the event caused a modify, true, if it was just an access, false.
-		 * @param priority
-		 *        The Event's notification priority.
-		 * @param isTransient
-		 *        If true, this event will never be written to storage. It will only exist in memory.
-		 */
-		public BaseEvent(String event, String resource, String context, boolean modify, int priority, boolean isTransient)
-		{
-			this(event, resource, context, modify, priority);
-			this.isTransient = isTransient;
-		}
 
 		/**
 		 * Construct
@@ -685,14 +657,15 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 		public BaseEvent(long seq, String event, String resource, String context, boolean modify, int priority)
 		{
 			this(event, resource, context, modify, priority);
-			this.seq = seq;
+			m_seq = seq;
 		}
+
 		
 		public BaseEvent(long seq, String event, String resource, String context, boolean modify, int priority, Date eventDate)
 		{
 			this(event, resource, context, modify, priority);
-			this.seq = seq;
-			this.time = eventDate;
+			m_seq = seq;
+			m_time = eventDate;
 		}
 
 		/**
@@ -702,7 +675,7 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 		 */
 		public String getEvent()
 		{
-			return id;
+			return m_id;
 		}
 
 		/**
@@ -715,16 +688,22 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 		{
 			if (id != null)
 			{
-				this.id = id;
+				m_id = id;
 			}
 			else
 			{
-				this.id = "";
+				m_id = "";
 			}
 		}
 
-		public boolean getModify() {
-			return modify;
+		/**
+		 * Access the resource reference.
+		 *
+		 * @return The resource reference string.
+		 */
+		public String getResource()
+		{
+			return m_resource;
 		}
 
 		/**
@@ -737,14 +716,44 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 		{
 			if (id != null)
 			{
-				this.resource = id;
+				m_resource = id;
 			}
 			else
 			{
-				this.resource = "";
+				m_resource = "";
 			}
 		}
 
+		/**
+		 * Access the resource reference.
+		 *
+		 * @return The resource reference string.
+		 */
+		public String getContext()
+		{
+			return m_context;
+		}
+
+		/**
+		 * Access the resource metadata.
+		 *
+		 * @return The resource metadata string.
+		 */
+		public LRS_Statement getLrsStatement()
+		{
+			return m_lrsStatement;
+		}
+
+		/**
+		 * Access the UsageSession id. If null, check for a User id.
+		 *
+		 * @return The UsageSession id string.
+		 */
+		public String getSessionId()
+		{
+			return m_session;
+		}
+		
 		/**
 		 * Set the session id.
 		 *
@@ -755,12 +764,22 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 		{
 			if ((id != null) && (id.length() > 0))
 			{
-				this.sessionId = id;
+				m_session = id;
 			}
 			else
 			{
-				this.sessionId = null;
+				m_session = null;
 			}
+		}
+
+		/**
+		 * Access the User id. If null, check for a session id.
+		 *
+		 * @return The User id string.
+		 */
+		public String getUserId()
+		{
+			return m_user;
 		}
 
 		/**
@@ -773,12 +792,32 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 		{
 			if ((id != null) && (id.length() > 0))
 			{
-				this.userId = id;
+				m_user = id;
 			}
 			else
 			{
-				this.userId = null;
+				m_user = null;
 			}
+		}
+
+		/**
+		 * Is this event one that caused a modify to the resource, or just an access.
+		 *
+		 * @return true if the event caused a modify to the resource, false if it was just an access.
+		 */
+		public boolean getModify()
+		{
+			return m_modify;
+		}
+
+		/**
+		 * Access the event's notification priority.
+		 *
+		 * @return The event's notification priority.
+		 */
+		public int getPriority()
+		{
+			return m_priority;
 		}
 
 		/**
@@ -786,11 +825,11 @@ public abstract class BaseEventTrackingService implements EventTrackingService
 		 */
 		public String toString()
 		{
-			return this.seq + ":" + getEvent() + "@" + getResource() + "[" + (getModify() ? "m" : "a") + ", " + getPriority() + "]";
+			return m_seq + ":" + getEvent() + "@" + getResource() + "[" + (getModify() ? "m" : "a") + ", " + getPriority() + "]";
 		}
 
 		public Date getEventTime() {
-			return new Date(this.time.getTime());
+			return new Date(m_time.getTime());
 		}
 	}
 }

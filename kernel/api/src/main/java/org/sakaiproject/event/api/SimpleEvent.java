@@ -23,16 +23,12 @@ package org.sakaiproject.event.api;
 
 import java.util.Date;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.sakaiproject.event.api.LearningResourceStoreService.LRS_Statement;
 
 /**
  * Allows Event object to be serializable for distribution
  * KNL-1184
  */
-@Getter @Setter
 public class SimpleEvent implements Event {
 
     static final long serialVersionUID = 1L;
@@ -82,10 +78,10 @@ public class SimpleEvent implements Event {
     protected String context = null;
     
     /** The Event's session id string. May be null. */
-    protected String sessionId = null;
+    protected String session = null;
 
     /** The Event's user id string. May be null. */
-    protected String userId = null;
+    protected String user = null;
 
     /** The Event's modify flag (true if the event caused a resource modification). */
     protected boolean modify = false;
@@ -94,13 +90,10 @@ public class SimpleEvent implements Event {
     protected int priority = NotificationService.NOTI_OPTIONAL;
 
     /** Event creation time. */
-    protected Date eventTime = null;
+    protected Date time = null;
 
     /** Event server ID */
     protected String serverId = null;
-
-    /** Do we store this event? */
-    protected boolean isTransient = false;
 
     /**
      * Access the event id string
@@ -122,6 +115,15 @@ public class SimpleEvent implements Event {
     }
 
     /**
+     * Access the resource reference.
+     * 
+     * @return The resource reference string.
+     */
+    public String getResource() {
+        return resource;
+    }
+
+    /**
      * Set the resource id.
      * 
      * @param id
@@ -130,9 +132,14 @@ public class SimpleEvent implements Event {
     public void setResource(String id) {
         resource = (id != null) ? id : "";
     }
-
-    public boolean getModify() {
-        return this.modify;
+    
+    /**
+     * Access the resource metadata.
+     * 
+     * @return The resource metadata string.
+     */
+    public LRS_Statement getLrsStatement() {
+        return lrsStatement;
     }
 
     /**
@@ -146,13 +153,49 @@ public class SimpleEvent implements Event {
     }
 
     /**
+     * Access the resource reference.
+     * 
+     * @return The resource reference string.
+     */
+    public String getContext() {
+        return context;
+    }
+
+    /**
+     * Set the resource reference
+     * 
+     * @param context resource reference
+     */
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    /**
+     * Access the UsageSession id. If null, check for a User id.
+     * 
+     * @return The UsageSession id string.
+     */
+    public String getSessionId() {
+        return session;
+    }
+
+    /**
      * Set the session id.
      * 
      * @param id
      *        The session id string.
      */
     public void setSessionId(String id) {
-        sessionId = ((id != null) && (id.length() > 0)) ? id : null;
+        session = ((id != null) && (id.length() > 0)) ? id : null;
+    }
+
+    /**
+     * Access the User id. If null, check for a session id.
+     * 
+     * @return The User id string.
+     */
+    public String getUserId() {
+        return user;
     }
 
     /**
@@ -162,7 +205,79 @@ public class SimpleEvent implements Event {
      *        The user id string.
      */
     public void setUserId(String id) {
-        userId = ((id != null) && (id.length() > 0)) ? id : null;
+        user = ((id != null) && (id.length() > 0)) ? id : null;
+    }
+
+    /**
+     * Is this event one that caused a modify to the resource, or just an access.
+     * 
+     * @return true if the event caused a modify to the resource, false if it was just an access.
+     */
+    public boolean getModify() {
+        return modify;
+    }
+
+    /**
+     * Set resource modify or access
+     * 
+     * @param modify modified event
+     */
+    public void setModify(boolean modify) {
+        this.modify = modify;
+    }
+
+    /**
+     * Access the event's notification priority.
+     * 
+     * @return The event's notification priority.
+     */
+    public int getPriority() {
+        return priority;
+    }
+
+    /**
+     * Set the event's notification priority
+     * 
+     * @param priority level
+     */
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    /**
+     * Get the server's ID
+     * 
+     * @return the server ID string
+     */
+    public String getServerId() {
+        return serverId;
+    }
+
+    /**
+     * Set the server ID string
+     * 
+     * @param serverId id string
+     */
+    public void setServerId(String serverId) {
+        this.serverId = serverId;
+    }
+
+    /**
+     * Get the event's time
+     * 
+     * @return the event date
+     */
+    public Date getEventTime() {
+        return time;
+    }
+
+    /**
+     * Set the event's date
+     * 
+     * @param time date event occurred
+     */
+    public void setEventTime(Date time) {
+        this.time = time;
     }
 
     /**

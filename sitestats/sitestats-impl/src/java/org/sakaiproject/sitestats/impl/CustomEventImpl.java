@@ -110,8 +110,4 @@ public class CustomEventImpl implements Event {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public boolean isTransient() {
-		return false;
-	}
 }
