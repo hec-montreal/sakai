@@ -794,11 +794,12 @@ public abstract class BaseSiteService implements SiteService, Observer
 					 * according to their LDAP program
 					 */
 					if (TYPE_STUDENT.equals(user.getType())) {
-						String saeSiteId =
-								serverConfigurationService().getString("espace.sae.siteId");
-
-						if (saeSiteId != null && siteExists(saeSiteId)) {
-							authzGroupService().joinGroup("/site/"+saeSiteId, "access");
+						List<String> allStudentsAccess = Arrays.asList(serverConfigurationService().getStrings("all.students.access"));
+						
+						for (String siteId: allStudentsAccess) {
+						    if (siteId != null && siteExists(siteId)) {
+							authzGroupService().joinGroup("/site/"+siteId, "access");
+						    }
 						}
 
 						String etudeProperty = user.getProperties().getProperty(LDAP_ETUDE_PROPERTY);

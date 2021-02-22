@@ -427,7 +427,7 @@ public class SakaiProxyImpl implements SakaiProxy, Observer {
             return null;
 		}
 
-        if (site.isType("course") && enrollmentSetId != null) {
+        if (!site.isType("course") && enrollmentSetId != null) {
             return getEnrollmentMembership(site, enrollmentSetId, enrollmentStatus, currentUserId);
         } else {
             List<RosterMember> rosterMembers = getAndCacheSortedMembership(site, groupId, roleId);
