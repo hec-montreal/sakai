@@ -794,7 +794,12 @@ public abstract class BaseSiteService implements SiteService, Observer
 					 * according to their LDAP program
 					 */
 					if (TYPE_STUDENT.equals(user.getType())) {
-						List<String> allStudentsAccess = Arrays.asList(serverConfigurationService().getStrings("all.students.access"));
+					   	String[] params = serverConfigurationService().getStrings("all.students.access");
+						if(params == null) {
+						    params = new String[0];
+						}
+						
+						List<String> allStudentsAccess = Arrays.asList(params);
 						
 						for (String siteId: allStudentsAccess) {
 						    if (siteId != null && siteExists(siteId)) {
