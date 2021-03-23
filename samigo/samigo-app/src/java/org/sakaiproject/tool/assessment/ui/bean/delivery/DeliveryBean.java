@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.TimeZone;
@@ -3409,6 +3410,7 @@ public class DeliveryBean
 	  boolean isAvailable = true;
 	  Date currentDate = new Date();
 		Date startDate;
+		verifyExtendedTimeDeliveryService();
 		if (extendedTimeDeliveryService.hasExtendedTime()) {
 			startDate = extendedTimeDeliveryService.getStartDate();
 		} else {
@@ -3423,6 +3425,7 @@ public class DeliveryBean
   public boolean pastDueDate(){
     boolean pastDueDate = true;
     Date currentDate = new Date();
+    verifyExtendedTimeDeliveryService();
     Date due = extendedTimeDeliveryService.hasExtendedTime() ? extendedTimeDeliveryService.getDueDate() : publishedAssessment.getAssessmentAccessControl().getDueDate();
 
     if (due == null) {
@@ -3446,6 +3449,7 @@ public class DeliveryBean
       acceptLateSubmission = AssessmentAccessControlIfc.ACCEPT_LATE_SUBMISSION.equals(publishedAssessment.getAssessmentAccessControl().getLateHandling());
 
   	  //If using extended Time Delivery, the late submission setting is based on retracted
+	  verifyExtendedTimeDeliveryService();
 	    if (extendedTimeDeliveryService.hasExtendedTime()) {
 		    //Accept it if it's not retracted on the extended time entry
 		    acceptLateSubmission = (extendedTimeDeliveryService.getRetractDate() != null) ? !isRetracted(false) : false;
@@ -3477,6 +3481,7 @@ public class DeliveryBean
     Date currentDate = new Date();
     Date retractDate = null;
     boolean acceptLateSubmission = AssessmentAccessControlIfc.ACCEPT_LATE_SUBMISSION.equals(publishedAssessment.getAssessmentAccessControl().getLateHandling());
+    verifyExtendedTimeDeliveryService();
     if (extendedTimeDeliveryService.hasExtendedTime()) {
     	retractDate = extendedTimeDeliveryService.getRetractDate();
     }
@@ -4177,5 +4182,14 @@ public class DeliveryBean
     public String getPublishedURL() {
         PublishedAssessmentSettingsBean pasBean = (PublishedAssessmentSettingsBean) ContextUtil.lookupBean("publishedSettings");
         return pasBean.generatePublishedURL(publishedAssessment);
+    }
+
+    /**
+     * Ensure that the ExtendedTimeDeliveryService instance is making reference to the correct assessment.
+     */
+    private void verifyExtendedTimeDeliveryService() {
+        if(!Objects.equals(extendedTimeDeliveryService.getPublishedAssessmentId(), publishedAssessment.getPublishedAssessmentId())) {
+            extendedTimeDeliveryService = new ExtendedTimeDeliveryService(publishedAssessment);
+        }
     }
 }
