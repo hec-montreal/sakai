@@ -237,6 +237,33 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 		log.debug("Adding content from site " + siteId + " and user: " + userId + " for task: " + taskId
 				+ " to submission queue");
 		crqs.queueContent(getProviderId(), userId, siteId, taskId, content);
+		
+		//ZCII-4456: Here because first class with assignmentService in call hierarchy
+		//Update nextretrytime
+		Assignment assignment = null;
+		Optional<ContentReviewItem> item = null;
+		String assignmentId = null;
+		for (ContentResource resource: content) {
+		    try {
+			assignmentId = assignmentService.getEntity(entityManager.newReference(taskId)).getId();
+			assignment = assignmentService.getAssignment(assignmentId);
+
+			item = crqs.getQueuedItem(getProviderId(), resource.getId());
+			if (item.isPresent() && 
+				NEW_ASSIGNMENT_REVIEW_SERVICE_REPORT_DUE.equals(assignment.getProperties().get(NEW_ASSIGNMENT_REVIEW_SERVICE_REPORT_RADIO))) {
+			    if (assignment.getCloseDate() != null) {
+				item.get().setNextRetryTime(Date.from(assignment.getCloseDate()));
+			    } else {
+				item.get().setNextRetryTime(Date.from(assignment.getDueDate()));
+			    }
+			    crqs.update(item.get());
+			}
+			    
+		    } catch (IdUnusedException | PermissionException e) {
+			e.printStackTrace();
+		    } 
+		}
+		
 	}
 	
 	@Override
