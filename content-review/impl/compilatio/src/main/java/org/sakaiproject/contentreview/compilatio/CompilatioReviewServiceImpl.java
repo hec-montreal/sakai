@@ -828,24 +828,8 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 	 * @return
 	 */
 	private Date getNextRetryTime(long retryCount) {
-		int offset = 5;
-
-		if (retryCount > 9 && retryCount < 20) {
-
-			offset = 10;
-
-		} else if (retryCount > 19 && retryCount < 30) {
-			offset = 20;
-		} else if (retryCount > 29 && retryCount < 40) {
-			offset = 40;
-		} else if (retryCount > 39 && retryCount < 50) {
-			offset = 80;
-		} else if (retryCount > 49 && retryCount < 60) {
-			offset = 160;
-		} else if (retryCount > 59) {
-			offset = 220;
-		}
-
+		int offset = 60;
+		
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.MINUTE, offset);
 		return cal.getTime();
