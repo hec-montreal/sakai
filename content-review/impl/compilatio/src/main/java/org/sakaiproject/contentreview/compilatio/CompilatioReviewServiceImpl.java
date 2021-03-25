@@ -828,7 +828,8 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 	 * @return
 	 */
 	private Date getNextRetryTime(long retryCount) {
-		int offset = 60;
+		Integer minsToRun = serverConfigurationService.getInt("compilatio.processQueueJob.maxMinutesToRun", 45);
+		int offset = minsToRun + 5;
 		
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.MINUTE, offset);
