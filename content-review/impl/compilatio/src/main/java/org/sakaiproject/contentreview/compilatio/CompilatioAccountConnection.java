@@ -49,6 +49,7 @@ public class CompilatioAccountConnection {
 	private String secretKey = null;
 	private String apiURL = "";
 	private int compilatioConnTimeout = 0; // Default to 0, no timeout.
+	private boolean debugMode = false;
 
 	public void init() {
 
@@ -61,13 +62,15 @@ public class CompilatioAccountConnection {
 		// Timeout period in ms for network connections (default 180s). Set to 0 to disable timeout.
 		compilatioConnTimeout = serverConfigurationService.getInt("compilatio.networkTimeout", DEFAULT_TIMEOUT);
 
+		debugMode = serverConfigurationService.getBoolean("compilatio.debugApi", false);
+
 	}
 
 	/*
 	 * Utility Methods below
 	 */	
 	public Document callCompilatioReturnDocument(Map params) throws TransientSubmissionException, SubmissionException {
-		return CompilatioAPIUtil.callCompilatioReturnDocument(apiURL, params, secretKey, compilatioConnTimeout);
+		return CompilatioAPIUtil.callCompilatioReturnDocument(apiURL, params, secretKey, compilatioConnTimeout, debugMode);
 	}
         
 	// Dependency

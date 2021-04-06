@@ -57,7 +57,7 @@ public class CompilatioAPIUtil {
 	private static final Log log = LogFactory.getLog(CompilatioAPIUtil.class);
 
 	public static Document callCompilatioReturnDocument(String apiURL, Map<String, String> parameters, String secretKey,
-			final int timeout) throws TransientSubmissionException, SubmissionException {
+			final int timeout, boolean debugMode) throws TransientSubmissionException, SubmissionException {
 
 		SOAPConnectionFactory soapConnectionFactory;
 		Document xmlDocument = null;
@@ -106,6 +106,9 @@ public class CompilatioAPIUtil {
 			builderfactory.setNamespaceAware(true);
 
 			DocumentBuilder builder = builderfactory.newDocumentBuilder();
+			if (debugMode) {
+				log.debug(out.toString());
+			}
 			xmlDocument = builder.parse(new InputSource(new StringReader(out.toString())));
 			soapConnection.close();
 

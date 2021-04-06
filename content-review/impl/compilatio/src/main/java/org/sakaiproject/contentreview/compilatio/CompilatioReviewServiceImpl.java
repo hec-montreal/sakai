@@ -160,7 +160,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 	private String defaultAssignmentName = null;
 	
 	public enum CompilatioError {
-		INVALID_ID_FOLDER(1), NOT_ENOUGH_SPACE(2), TEMPORARY_UNAVAILABLE(3), INVALID_KEY(4), NOT_ENOUGH_CREDITS(5), ANALYSE_ALREADY_STARTED(6), INVALID_FILE_TYPE(10), NO_CONTENT_FOUND(11), TEXT_EXTRACTION_FAILED(12), NO_TEXT_FOUND(13), UNANALYSABLE_TEXT(14);
+		INVALID_ID_FOLDER(1), NOT_ENOUGH_SPACE(2), TEMPORARY_UNAVAILABLE(3), INVALID_KEY(4), NOT_ENOUGH_CREDITS(5), ANALYSE_ALREADY_STARTED(6), INVALID_FILE_TYPE(10), NO_CONTENT_FOUND(11), TEXT_EXTRACTION_FAILED(12), NO_TEXT_FOUND(13), UNANALYSABLE_TEXT(14), NOT_ENOUGH_WORDS(15);
 	
 		private int errorCode;
 		public int getErrorCode() {
@@ -481,7 +481,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 
 			Element root = document.getDocumentElement();
 
-			boolean successQuery = root.getElementsByTagName("sucess") != null;
+			boolean successQuery = root.getElementsByTagName("success").getLength() > 0;
 			if (successQuery) {
 				log.debug("Submission successful");
 				currentItem.setStatus(ContentReviewConstants.CONTENT_REVIEW_SUBMITTED_AWAITING_REPORT_CODE);
@@ -495,10 +495,10 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 			} else {
 				String rMessage = getNodeValue("faultstring", root);
 				String rCode = getNodeValue("faultcode", root);
-				
-				//TODO : check this
-				log.debug("Submission not successful: " + rMessage + "(" + rCode + ")");
-				if (CompilatioError.ANALYSE_ALREADY_STARTED.equals(CompilatioError.valueOf(rCode))) {
+				CompilatioError returnedError = CompilatioError.valueOf(rCode);
+
+				log.debug("Submission error: " + rMessage + "(" + rCode + ")");
+				if (CompilatioError.ANALYSE_ALREADY_STARTED.equals(returnedError)) {
 					log.debug("ContentReview id " + currentItem.getId() + ", externalId : " + currentItem.getExternalId() + " has new status : " + ContentReviewConstants.CONTENT_REVIEW_SUBMITTED_AWAITING_REPORT);
 					currentItem.setStatus(ContentReviewConstants.CONTENT_REVIEW_SUBMITTED_AWAITING_REPORT_CODE);
 					currentItem.setRetryCount(Long.valueOf(0));
@@ -506,13 +506,28 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 					currentItem.setErrorCode(null);
 					currentItem.setDateSubmitted(new Date());
 				} else {
-					log.warn("Submission not successful. It will be retried.");
+					log.warn("Submission not successful for ContentReview id " + currentItem.getId());
 					int errorCodeInt = -1;
-					if (CompilatioError.valueOf(rCode) != null) {
-						errorCodeInt = CompilatioError.valueOf(rCode).getErrorCode();
+					if (returnedError != null) {
+						errorCodeInt = returnedError.getErrorCode();
 					}
 					String errorMsg = createLastError(doc -> createFormattedMessageXML(doc, "submission.error.with.code", rMessage, rCode));
-					processError(currentItem, ContentReviewConstants.CONTENT_REVIEW_SUBMISSION_ERROR_RETRY_CODE, errorMsg, errorCodeInt);
+					Long contentReviewCode;
+					switch (returnedError) {
+						case NOT_ENOUGH_WORDS: 
+						case TEXT_EXTRACTION_FAILED:
+						case UNANALYSABLE_TEXT:
+						case NO_TEXT_FOUND:
+						case NO_CONTENT_FOUND:
+							contentReviewCode = ContentReviewConstants.CONTENT_REVIEW_SUBMISSION_ERROR_NO_RETRY_CODE;
+							log.warn("Submission will not be retried");
+							break;
+						default:
+							contentReviewCode = ContentReviewConstants.CONTENT_REVIEW_SUBMISSION_ERROR_RETRY_CODE;
+							log.warn("Submission will be retried");
+							break;
+					}
+					processError(currentItem, contentReviewCode, errorMsg, errorCodeInt);
 					errors++;
 					processedDocs.add(currentItem.getContentId());
 				}
@@ -637,7 +652,7 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 				log.debug("new report received: " + currentItem.getExternalId() + " -> " + currentItem.getReviewScore());
 
 			} else {
-				log.debug("Report list request not successful");
+				log.error("Report list request not successful for contentreview item: " + currentItem.getId());
 				log.debug(document.getTextContent());
 				docRef.add(currentItem.getContentId());
 				errors++;
