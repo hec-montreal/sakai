@@ -45,6 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.tool.assessment.facade.*;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
