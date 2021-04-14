@@ -444,7 +444,7 @@ document.links[newindex].onclick();
              <p><h:outputText value="#{deliveryMessages.autosaveFailed}" escape="false" /></p>
              <p><h:outputText value="#{deliveryMessages.autosaveFailedDetail}" escape="false" /></p>
            </div>
-           <div role="alert" class="sak-banner-error" style="display: none" id="multiple-tabs-warning">
+           <div role="alert" class="messageSamigo" style="display: none" id="multiple-tabs-warning">
              <p><h:outputText value="#{deliveryMessages.multipleTabsWarning}" escape="false" /></p>
              <p><h:outputText value="#{deliveryMessages.multipleTabsWarningDetail}" escape="false" /></p>
            </div>
