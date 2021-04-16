@@ -40,7 +40,7 @@
  <h:form id="retractAssessmentForm">
    <h:inputHidden id="publishedId" value="#{totalScores.publishedId}" />
 
-   <h:outputFormat value="#{evaluationMessages.retake_not_available_to_student}" styleClass="sak-banner-warn" rendered="#{!retakeAssessment.isAvailable()}">
+   <h:outputFormat value="#{evaluationMessages.retake_not_available_to_student}" styleClass="bs-callout-warn" rendered="#{!retakeAssessment.isAvailable()}">
      <f:param value="#{retakeAssessment.studentName}" />
    </h:outputFormat>
    <h:outputText value="#{evaluationMessages.retake_confirmation_1} #{retakeAssessment.studentName} #{evaluationMessages.retake_confirmation_2}" />
