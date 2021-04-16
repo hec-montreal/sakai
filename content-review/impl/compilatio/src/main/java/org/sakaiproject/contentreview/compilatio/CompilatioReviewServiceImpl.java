@@ -511,10 +511,14 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 					if (returnedError != null) {
 						errorCodeInt = returnedError.getErrorCode();
 					}
-					String errorMsg = createLastError(doc -> createFormattedMessageXML(doc, "submission.error.with.code", rMessage, rCode));
+					String errorMsg = null;
 					Long contentReviewCode;
 					switch (returnedError) {
 						case NOT_ENOUGH_WORDS: 
+							errorMsg = createLastError(doc -> createFormattedMessageXML(doc, "submission.error.not.enough.words"));
+							contentReviewCode = ContentReviewConstants.CONTENT_REVIEW_SUBMISSION_ERROR_NO_RETRY_CODE;
+							log.warn("Submission will not be retried");
+							break;
 						case TEXT_EXTRACTION_FAILED:
 						case UNANALYSABLE_TEXT:
 						case NO_TEXT_FOUND:
@@ -526,6 +530,9 @@ public class CompilatioReviewServiceImpl extends BaseContentReviewService {
 							contentReviewCode = ContentReviewConstants.CONTENT_REVIEW_SUBMISSION_ERROR_RETRY_CODE;
 							log.warn("Submission will be retried");
 							break;
+					}
+					if (errorMsg == null) {
+						errorMsg = createLastError(doc -> createFormattedMessageXML(doc, "submission.error.with.code", rMessage, rCode));
 					}
 					processError(currentItem, contentReviewCode, errorMsg, errorCodeInt);
 					errors++;
