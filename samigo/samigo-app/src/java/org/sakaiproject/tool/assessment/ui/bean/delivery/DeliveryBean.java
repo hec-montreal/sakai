@@ -1642,7 +1642,11 @@ public class DeliveryBean
  	  List eventLogDataList = eventService.getEventLogData(adata.getAssessmentGradingId());
 	  if(eventLogDataList != null && eventLogDataList.size() > 0) {
 	 	  EventLogData eventLogData= (EventLogData) eventLogDataList.get(0);
-	 	  eventLogData.setErrorMsg(eventLogMessages.getString("no_error"));
+	 	  if (submitFromTimeoutPopup) {
+		 	    eventLogData.setErrorMsg(eventLogMessages.getString("timer_submit"));
+		 	  } else {
+		 	    eventLogData.setErrorMsg(eventLogMessages.getString("no_error"));
+		 	  }
 	 	  Date endDate = new Date();
 	 	  eventLogData.setEndDate(endDate);
 	 	  if(eventLogData.getStartDate() != null) {
