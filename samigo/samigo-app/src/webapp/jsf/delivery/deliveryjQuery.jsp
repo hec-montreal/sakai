@@ -29,8 +29,6 @@
      var totalSubmissions = <h:outputText value="#{delivery.totalSubmissions}"/>;
      var button_ok = "<h:outputText value="#{deliveryMessages.button_ok} "/>";
      var please_wait = "<h:outputText value="#{deliveryMessages.please_wait} "/>";
-     var submitButtonValue = "<h:outputText value='#{deliveryMessages.begin_assessment_}' />";
-     var selector = "input[value='" + submitButtonValue + "']";
 
      var time_30_warning = "<h:outputText value="#{deliveryMessages.time_30_warning} "/><h:outputText value="#{deliveryMessages.time_30_warning_2} " />";
      var time_due_warning = "<h:outputText value="#{deliveryMessages.time_due_warning_1} "/><h:outputText value="#{deliveryMessages.time_due_warning_2} " />";
@@ -43,6 +41,8 @@
 	
 		//Turn off browser autocomplete on all forms
 		$("form").attr("autocomplete", "off");
+
+		var selector = $('#takeAssessmentForm\\:beginAssessment1');
 
 		// If instructor requires honor pledge, we check for it before allowing assessment to start
 		if($('#takeAssessmentForm\\:honor_pledge').length > 0) {
