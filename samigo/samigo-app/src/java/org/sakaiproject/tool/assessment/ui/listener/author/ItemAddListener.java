@@ -22,6 +22,7 @@
 package org.sakaiproject.tool.assessment.ui.listener.author;
 
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +46,7 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ActionListener;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -118,6 +120,7 @@ public class ItemAddListener
     implements ActionListener {
 
   private static final TagService tagService= (TagService) ComponentManager.get( TagService.class );
+  public static final int MAX_FEEDBACK_CHARS = 4000;
     //private static ContextUtil cu;
   //private String scalename; // used for multiple choice Survey
   private boolean error = false;
@@ -196,7 +199,16 @@ public class ItemAddListener
 		error=true;
 	    }
 	}
-    
+
+	if(StringUtils.length(item.getCorrFeedback()) > MAX_FEEDBACK_CHARS || StringUtils.length(item.getIncorrFeedback()) > MAX_FEEDBACK_CHARS
+			|| StringUtils.length(item.getGeneralFeedback()) > MAX_FEEDBACK_CHARS
+			|| (CollectionUtils.isNotEmpty(item.getMultipleChoiceAnswers()) && item.getMultipleChoiceAnswers().stream().anyMatch(mc -> StringUtils.length(mc.getFeedback()) > MAX_FEEDBACK_CHARS))
+			|| (CollectionUtils.isNotEmpty(item.getMatchItemBeanList()) && item.getMatchItemBeanList().stream().anyMatch(mi -> StringUtils.length(mi.getCorrMatchFeedback()) > MAX_FEEDBACK_CHARS || StringUtils.length(mi.getIncorrMatchFeedback()) > MAX_FEEDBACK_CHARS))) {
+		String feedbackTooLong = ContextUtil.getLocalizedString("org.sakaiproject.tool.assessment.bundle.AuthorMessages", "feedbackTooLong");
+		context.addMessage(null, new FacesMessage(MessageFormat.format(feedbackTooLong, new Object[]{MAX_FEEDBACK_CHARS})));
+		error = true;
+	}
+
     if(error) { 
     	return;
     }

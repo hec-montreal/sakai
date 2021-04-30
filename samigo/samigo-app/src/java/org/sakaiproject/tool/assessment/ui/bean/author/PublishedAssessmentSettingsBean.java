@@ -37,7 +37,6 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -86,6 +85,7 @@ import org.sakaiproject.tool.assessment.ui.listener.util.ContextUtil;
 import org.sakaiproject.tool.assessment.ui.listener.util.TimeUtil;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.assessment.util.ExtendedTimeValidator;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.FormattedText;
 import org.springframework.web.context.ContextLoader;
@@ -1663,12 +1663,8 @@ public void setFeedbackComponentOption(String feedbackComponentOption) {
   //Internal to be able to supress error easier
   public void addExtendedTime() {
       ExtendedTime entry = this.extendedTime;
-      if (StringUtils.isBlank(entry.getUser()) && StringUtils.isBlank(entry.getGroup())) {
-          FacesContext context = FacesContext.getCurrentInstance();
-          String errorString = ContextUtil.getLocalizedString("org.sakaiproject.tool.assessment.bundle.AssessmentSettingsMessages", "extended_time_user_and_group_set");
-          context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, errorString, null));
-      }
-      else {
+      FacesContext context = FacesContext.getCurrentInstance();
+      if (new ExtendedTimeValidator().validateEntry(entry, context, this)) {
           AssessmentAccessControlIfc accessControl = new AssessmentAccessControl();
           accessControl.setStartDate(this.startDate);
           accessControl.setDueDate(this.dueDate);
