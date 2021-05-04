@@ -60,44 +60,49 @@ public class AutoSubmitAssessmentsJob implements Job {
 	    	}
 	    	isRunning = true;
 	    	
-		loginToSakai("admin");
-
-		String jobName = jobInfo.getJobDetail().getKey().getName();
-		String triggerName = jobInfo.getTrigger().getKey().getName();
- 		Date requestedFire = jobInfo.getScheduledFireTime();
-		Date actualfire = jobInfo.getFireTime();
-
-		StringBuffer whoAmI = new StringBuffer("AutoSubmitAssessmentsJob $");
-		whoAmI.append(" Job: ");
-		whoAmI.append(jobName);
-		whoAmI.append(" Trigger: ");
-		whoAmI.append(triggerName);
-		
-		if (requestedFire != null) {
-			whoAmI.append(" Fire scheduled: ");
-			whoAmI.append(requestedFire.toString());
-		}
-		
-		if (actualfire != null) {
-			whoAmI.append(" Fire actual: ");
-			whoAmI.append(actualfire.toString());
-		}
-		
-		eventTrackingService.post(eventTrackingService.newEvent(SamigoConstants.EVENT_AUTO_SUBMIT_JOB, safeEventLength(whoAmI.toString()), true));
-
-		log.info("Start Job: {}", whoAmI);
-		
-		GradingService gradingService = new GradingService();
-		int failures = gradingService.autoSubmitAssessments();
-		
-		if (failures > 0)
-		{
-			samigoETSProvider.notifyAutoSubmitFailures(failures);
-		}
-		
-		log.info("End Job: {} ({} failures)", whoAmI, failures);
-		
-		logoutFromSakai();
+	    	try {
+        	    	    
+        		loginToSakai("admin");
+        
+        		String jobName = jobInfo.getJobDetail().getKey().getName();
+        		String triggerName = jobInfo.getTrigger().getKey().getName();
+         		Date requestedFire = jobInfo.getScheduledFireTime();
+        		Date actualfire = jobInfo.getFireTime();
+        
+        		StringBuffer whoAmI = new StringBuffer("AutoSubmitAssessmentsJob $");
+        		whoAmI.append(" Job: ");
+        		whoAmI.append(jobName);
+        		whoAmI.append(" Trigger: ");
+        		whoAmI.append(triggerName);
+        		
+        		if (requestedFire != null) {
+        			whoAmI.append(" Fire scheduled: ");
+        			whoAmI.append(requestedFire.toString());
+        		}
+        		
+        		if (actualfire != null) {
+        			whoAmI.append(" Fire actual: ");
+        			whoAmI.append(actualfire.toString());
+        		}
+        		
+        		eventTrackingService.post(eventTrackingService.newEvent(SamigoConstants.EVENT_AUTO_SUBMIT_JOB, safeEventLength(whoAmI.toString()), true));
+        
+        		log.info("Start Job: {}", whoAmI);
+        		
+        		GradingService gradingService = new GradingService();
+        		int failures = gradingService.autoSubmitAssessments();
+        		
+        		if (failures > 0)
+        		{
+        			samigoETSProvider.notifyAutoSubmitFailures(failures);
+        		}
+        		
+        		log.info("End Job: {} ({} failures)", whoAmI, failures);
+        		
+        		logoutFromSakai();
+	    	} finally {
+	            isRunning = false;
+	        }
 	}
 	
 	/**
