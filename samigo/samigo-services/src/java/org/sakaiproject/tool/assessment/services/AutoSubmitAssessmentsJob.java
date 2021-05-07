@@ -37,6 +37,7 @@ import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 
 @Slf4j
+@DisallowConcurrentExecution
 public class AutoSubmitAssessmentsJob implements Job {
 
 	@Setter private AuthzGroupService authzGroupService;
