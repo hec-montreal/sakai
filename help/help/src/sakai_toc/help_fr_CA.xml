@@ -25,6 +25,7 @@
 				<ref bean="rosterUserGuide" />
 				<ref bean="testsandQuizzesUserGuide" />
 				<ref bean="evaluationUserGuide" />
+				<ref bean="gestionnairesitecoursUserGuide" />
 				<ref bean="tegrityUserGuide" />
 				<ref bean="viaUserGuide" />
 				<ref bean="gradebookGuide" />
@@ -727,4 +728,33 @@
 			<value>sakai.motd</value>
 		</property>
 	</bean>
+	
+	<bean id="gestionnairesitecoursUserGuide"
+		class="org.sakaiproject.component.app.help.model.CategoryBean">
+		<property name="name">
+			<value>Gestionnaire de site de cours</value>
+		</property>
+		<property name="resources">
+			<list>
+				<ref bean="gestionnairesitecoursRedirect" />
+			</list>
+		</property>
+	</bean>
+	<bean id="gestionnairesitecoursRedirect"
+		class="org.sakaiproject.component.app.help.model.ResourceBean">
+		<property name="docId">
+			<value>gestionnairesitecoursRedirect</value>
+		</property>
+		<property name="name">
+			<value>Aide</value>
+		</property>
+		<property name="location">
+			<value>/zonecours_confluence_redirects/gestionnairesitecours.html</value>
+		</property>
+		<property name="defaultForTool">
+			<value>sakai.opensyllabus.manager.tool</value>
+		</property>
+	</bean>
+
+	
 </beans>
