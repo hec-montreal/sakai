@@ -81,7 +81,6 @@ import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.ResourceLoader;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
-import org.sakaiproject.tool.assessment.util.ExtendedTimeValidator;
 
 /**
  *
@@ -1780,8 +1779,12 @@ public class AssessmentSettingsBean
     //Internal to be able to supress error easier
     public void addExtendedTime() {
         ExtendedTime entry = this.extendedTime;
-        FacesContext context = FacesContext.getCurrentInstance();
-        if (new ExtendedTimeValidator().validateEntry(entry, context, this)) {
+        if (StringUtils.isBlank(entry.getUser()) && StringUtils.isBlank(entry.getGroup())) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            String errorString = ContextUtil.getLocalizedString("org.sakaiproject.tool.assessment.bundle.AssessmentSettingsMessages", "extended_time_user_and_group_set");
+            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, errorString, null));
+        }
+        else {
             AssessmentAccessControlIfc accessControl = new AssessmentAccessControl();
             accessControl.setStartDate(this.startDate);
             accessControl.setDueDate(this.dueDate);

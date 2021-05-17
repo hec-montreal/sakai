@@ -150,14 +150,16 @@ public class DeliveryActionListener
 
       if (delivery.pastDueDate() && (DeliveryBean.TAKE_ASSESSMENT == action || DeliveryBean.TAKE_ASSESSMENT_VIA_URL == action)) {
         if (delivery.isAcceptLateSubmission()) {
-          if(delivery.getTotalSubmissions() > 0 && delivery.getActualNumberRetake() > delivery.getNumberRetake()) {// Not during a Retake
-            log.debug("processAction returning because no retakes left for this overdue, late submission");
-            return;
+          if(delivery.getTotalSubmissions() > 0) {
+            // Not during a Retake
+            if (delivery.getActualNumberRetake() == delivery.getNumberRetake()) {
+              return;
+            }
           }
-        }
-        if(delivery.isRetracted(false)){
-            log.debug("processAction returning because assessment is retracted");
-            return;
+        } else {
+          if(delivery.isRetracted(false)){
+              return;
+          }
         }
       }
       // Clear elapsed time, set not timed out
@@ -1444,16 +1446,32 @@ public class DeliveryActionListener
         }
 
         // Show the answers in the same order that student did.
-        String agentString = "";
-        if (delivery.getActionMode() == DeliveryBean.GRADE_ASSESSMENT) {
-            StudentScoresBean studentscorebean = (StudentScoresBean) ContextUtil.lookupBean("studentScores");
-            agentString = studentscorebean.getStudentId();
-        } else {
-            agentString = getAgentString();
-        }
+		String agentString = "";
+		if (delivery.getActionMode() == DeliveryBean.GRADE_ASSESSMENT) {
+			StudentScoresBean studentscorebean = (StudentScoresBean) ContextUtil
+					.lookupBean("studentScores");
+			agentString = studentscorebean.getStudentId();
+		} else {
+			agentString = getAgentString();
+		}
 
         String itemText = (item.getText() == null) ? "" : item.getText();
-        Collections.shuffle(shuffled, new Random( (long) itemText.hashCode() + (agentString + "_" + item.getItemId().toString()).hashCode()));
+        Collections.shuffle(shuffled, 
+        		new Random( (long) itemText.hashCode() + (getAgentString() + "_" + item.getItemId().toString()).hashCode()));
+        /*
+        if (item.getTypeId().equals(TypeIfc.MATCHING))
+        {
+          Collections.shuffle(shuffled,
+                              new Random( (long) item.getText().hashCode() +
+                getAgentString().hashCode()));
+        }
+        else
+        {
+          Collections.shuffle(shuffled,
+                              new Random( (long) item.getText().hashCode() +
+                                         getAgentString().hashCode()));
+        }
+        */
         key2 = shuffled.iterator();
       }
       else
@@ -1738,17 +1756,7 @@ public class DeliveryActionListener
 
     if (item.getTypeId().equals(TypeIfc.MATCHING)) // matching
     {
-        // Show the answers in the same order that student did.
-        String agentString = "";
-
-        if (delivery.getActionMode() == DeliveryBean.GRADE_ASSESSMENT) {
-            StudentScoresBean studentscorebean = (StudentScoresBean) ContextUtil.lookupBean("studentScores");
-            agentString = studentscorebean.getStudentId();
-        } else {
-            agentString = getAgentString();
-        }
-
-        populateMatching(item, itemBean, publishedAnswerHash, agentString);
+      populateMatching(item, itemBean, publishedAnswerHash);
     }
     else if (item.getTypeId().equals(TypeIfc.EXTENDED_MATCHING_ITEMS))
     {
@@ -1857,7 +1865,7 @@ public class DeliveryActionListener
     bean.setIsMultipleItems(beans.size() > 1);
   }
 
-  public void populateMatching(ItemDataIfc item, ItemContentsBean bean, Map publishedAnswerHash, String agentString)
+  public void populateMatching(ItemDataIfc item, ItemContentsBean bean, Map publishedAnswerHash)
   {
 	  // used only for questions with distractors where the user has selected None of the Above
 	  final Long NONE_OF_THE_ABOVE = -1l;
@@ -1885,7 +1893,7 @@ public class DeliveryActionListener
       }
       Collections.shuffle(shuffled,
                           new Random( (long) item.getText().hashCode() +
-                          (agentString + "_" + item.getItemId().toString()).hashCode()));
+                          (getAgentString() + "_" + item.getItemId().toString()).hashCode()));
 
 /*
       Collections.shuffle
