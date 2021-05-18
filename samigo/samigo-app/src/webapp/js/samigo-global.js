@@ -149,4 +149,23 @@ $(function () {
   $(window.self).scroll(function () {
     resizeFrame("grow");
   });
+
+  if ( $("#selectIndexForm\\:selectTable").length ) {
+    $("#selectIndexForm\\:selectTable").tablesorter({ 
+      sortList: [[2,0]],
+      textExtraction: {
+        0: function(node, table, cellIndex) { return $(node).find("a").text(); }
+      }
+    });
+  }
+  if ( $("#editform\\:questionpool-questions").length ) {
+    $("#editform\\:questionpool-questions").tablesorter({
+      headers: {
+        0: {
+          sorter: false
+        }
+      }
+    });
+  }
+
 });

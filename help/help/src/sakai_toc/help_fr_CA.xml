@@ -25,7 +25,11 @@
 				<ref bean="rosterUserGuide" />
 				<ref bean="testsandQuizzesUserGuide" />
 				<ref bean="evaluationUserGuide" />
+				<ref bean="gestionnairesitecoursUserGuide" />
 				<ref bean="tegrityUserGuide" />
+				<ref bean="yujaUserGuide" />
+				<ref bean="zoomUserGuide" />
+				<ref bean="wooclapUserGuide" />				
 				<ref bean="viaUserGuide" />
 				<ref bean="gradebookGuide" />
 				<ref bean="preferenceUserGuide" />
@@ -506,6 +510,84 @@
 			<value>sakai.tegrity</value>
 		</property>
 	</bean>
+	<bean id="yujaUserGuide"
+		class="org.sakaiproject.component.app.help.model.CategoryBean">
+		<property name="name">
+			<value>Yuja</value>
+		</property>
+		<property name="resources">
+			<list>
+				<ref bean="yujaRedirect" />
+			</list>
+		</property>
+	</bean>
+	<bean id="yujaRedirect"
+		class="org.sakaiproject.component.app.help.model.ResourceBean">
+		<property name="docId">
+			<value>yujaRedirect</value>
+		</property>
+		<property name="name">
+			<value>Aide</value>
+		</property>
+		<property name="location">
+			<value>/zonecours_confluence_redirects/yuja.html</value>
+		</property>
+		<property name="defaultForTool">
+			<value>sakai.yuja</value>
+		</property>
+	</bean>
+	<bean id="zoomUserGuide"
+		class="org.sakaiproject.component.app.help.model.CategoryBean">
+		<property name="name">
+			<value>Zoom</value>
+		</property>
+		<property name="resources">
+			<list>
+				<ref bean="zoomRedirect" />
+			</list>
+		</property>
+	</bean>
+	<bean id="zoomRedirect"
+		class="org.sakaiproject.component.app.help.model.ResourceBean">
+		<property name="docId">
+			<value>zoomRedirect</value>
+		</property>
+		<property name="name">
+			<value>Aide</value>
+		</property>
+		<property name="location">
+			<value>/zonecours_confluence_redirects/zoom.html</value>
+		</property>
+		<property name="defaultForTool">
+			<value>sakai.zoom</value>
+		</property>
+	</bean>
+	<bean id="wooclapUserGuide"
+		class="org.sakaiproject.component.app.help.model.CategoryBean">
+		<property name="name">
+			<value>Wooclap</value>
+		</property>
+		<property name="resources">
+			<list>
+				<ref bean="wooclapRedirect" />
+			</list>
+		</property>
+	</bean>
+	<bean id="wooclapRedirect"
+		class="org.sakaiproject.component.app.help.model.ResourceBean">
+		<property name="docId">
+			<value>wooclapRedirect</value>
+		</property>
+		<property name="name">
+			<value>Aide</value>
+		</property>
+		<property name="location">
+			<value>/zonecours_confluence_redirects/wooclap.html</value>
+		</property>
+		<property name="defaultForTool">
+			<value>sakai.wooclap</value>
+		</property>
+	</bean>
 
 	<bean id="viaUserGuide"
 		class="org.sakaiproject.component.app.help.model.CategoryBean">
@@ -727,4 +809,33 @@
 			<value>sakai.motd</value>
 		</property>
 	</bean>
+	
+	<bean id="gestionnairesitecoursUserGuide"
+		class="org.sakaiproject.component.app.help.model.CategoryBean">
+		<property name="name">
+			<value>Gestionnaire de site de cours</value>
+		</property>
+		<property name="resources">
+			<list>
+				<ref bean="gestionnairesitecoursRedirect" />
+			</list>
+		</property>
+	</bean>
+	<bean id="gestionnairesitecoursRedirect"
+		class="org.sakaiproject.component.app.help.model.ResourceBean">
+		<property name="docId">
+			<value>gestionnairesitecoursRedirect</value>
+		</property>
+		<property name="name">
+			<value>Aide</value>
+		</property>
+		<property name="location">
+			<value>/zonecours_confluence_redirects/gestionnairesitecours.html</value>
+		</property>
+		<property name="defaultForTool">
+			<value>sakai.opensyllabus.manager.tool</value>
+		</property>
+	</bean>
+
+	
 </beans>

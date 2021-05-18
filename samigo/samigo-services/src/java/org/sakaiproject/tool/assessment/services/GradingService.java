@@ -1553,7 +1553,7 @@ public class GradingService
 	  if (!eventLogDataList.isEmpty()) {
 		  EventLogData eventLogData= (EventLogData) eventLogDataList.get(0);
 		  //will do the i18n issue later.
-		  eventLogData.setErrorMsg("No Errors (Auto submit)");
+		  eventLogData.setErrorMsg("Aucune erreur (Soumission automatique)");
 		  Date endDate = new Date();
 		  eventLogData.setEndDate(endDate);
 		  if(eventLogData.getStartDate() != null) {
@@ -1562,7 +1562,7 @@ public class GradingService
 			  eventLogData.setEclipseTime(eclipseTime); 
 		  } else {
 			  eventLogData.setEclipseTime(null); 
-			  eventLogData.setErrorMsg("Error during auto submit");
+			  eventLogData.setErrorMsg("Erreur pendant la soumission automatique");
 		  }
 		  eventLogFacade.setData(eventLogData);
 		  eventService.saveOrUpdateEventLog(eventLogFacade);
