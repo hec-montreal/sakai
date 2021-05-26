@@ -25,6 +25,8 @@ should be included in file importing DeliveryMessages
 -->
 <h:outputText value="<fieldset>" escape="false"/>
 <h:outputText value="<legend class='samigo-legend'> #{question.text} </legend>" escape="false"/>
+  <f:converter converterId="org.sakaiproject.tool.assessment.jsf.convert.SecureContentWrapper" />
+</h:outputText>
   <!-- ATTACHMENTS -->
   <%@ include file="/jsf/delivery/item/attachment.jsp" %>
 
@@ -48,7 +50,9 @@ should be included in file importing DeliveryMessages
           <h:outputText value=" #{selection.answer.label}" escape="false" />
           <h:outputText value="#{deliveryMessages.dot} " rendered="#{selection.answer.label ne ''}" />
         </span>
-        <h:outputLabel for="samigo-mc-mc" value="#{selection.answer.text}" escape="false" />
+        <h:outputLabel for="samigo-mc-mc" value="#{selection.answer.text}" escape="false">
+          <f:converter converterId="org.sakaiproject.tool.assessment.jsf.convert.SecureContentWrapper" />
+        </h:outputLabel>
       </h:panelGroup>
     </t:column>
     <t:column>

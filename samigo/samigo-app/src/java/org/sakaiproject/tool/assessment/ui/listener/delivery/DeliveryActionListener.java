@@ -21,6 +21,9 @@
 
 package org.sakaiproject.tool.assessment.ui.listener.delivery;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,12 +46,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.util.Precision;
-
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.event.api.Event;
 import org.sakaiproject.event.api.EventTrackingService;
 import org.sakaiproject.event.cover.NotificationService;
 import org.sakaiproject.samigo.util.SamigoConstants;
+import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.assessment.api.SamigoApiFactory;
 import org.sakaiproject.tool.assessment.data.dao.assessment.AssessmentAccessControl;
 import org.sakaiproject.tool.assessment.data.dao.assessment.EventLogData;
@@ -97,6 +100,7 @@ import org.sakaiproject.tool.assessment.util.FormatException;
 import org.sakaiproject.tool.assessment.util.SamigoLRSStatements;
 import org.sakaiproject.util.FormattedText;
 import org.sakaiproject.util.ResourceLoader;
+import org.sakaiproject.util.api.EncryptionUtilityService;
 
 /**
  * <p>Title: Samigo</p>
@@ -116,6 +120,8 @@ public class DeliveryActionListener
   private long previewGradingId = (long)(Math.random() * 1000);
   private static ResourceBundle eventLogMessages = ResourceBundle.getBundle("org.sakaiproject.tool.assessment.bundle.EventLogMessages");
   private final EventTrackingService eventTrackingService= ComponentManager.get( EventTrackingService.class );
+  private EncryptionUtilityService encryptionUtilityService = ComponentManager.get(EncryptionUtilityService.class);
+  private SessionManager sessionManager = ComponentManager.get(SessionManager.class);
 
   /**
    * ACTION.
@@ -226,7 +232,7 @@ public class DeliveryActionListener
       boolean isFirstTimeBegin = false;
       StringBuffer eventRef; 
       Event event;
-      
+
       switch (action){
       case 2: // preview assessment
               setFeedbackMode(delivery);
