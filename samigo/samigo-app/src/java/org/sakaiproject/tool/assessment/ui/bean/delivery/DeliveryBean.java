@@ -257,6 +257,7 @@ public class DeliveryBean
   private String javaScriptEnabledCheck;
 
   //cwent
+  @Setter @Getter
   private String siteId;
 
   private boolean beginAssessment;
@@ -317,7 +318,10 @@ public class DeliveryBean
   private static String questionProgressUnansweredPath = ServerConfigurationService.getString("samigo.questionprogress.unansweredpath", "/images/whiteBubble15.png");
   private static String questionProgressAnsweredPath = ServerConfigurationService.getString("samigo.questionprogress.answeredpath", "/images/blackBubble15.png");
   private static String questionProgressMardPath = ServerConfigurationService.getString("samigo.questionprogress.mardpath", "/images/questionMarkBubble15.png");
-  
+
+  @Getter @Setter
+  private String secureToken;
+
   /**
    * Creates a new DeliveryBean object.
    */
@@ -1026,6 +1030,8 @@ public class DeliveryBean
         sb.append(publishedAssessment.getPublishedAssessmentId()).append("\n");
         sb.append("         - Assessment Title       : ").append(publishedAssessment.getTitle()).append("\n");
         sb.append("         - Assessment Site ID     : ").append(publishedAssessment.getOwnerSiteId());
+        // Setting the siteId in the bean may help in contexts like taking the exam via URL or lessons.
+        this.setSiteId(publishedAssessment.getOwnerSiteId());
         BeginDeliveryActionListener listener = new BeginDeliveryActionListener();
         //settings variable may be populated by populateBeanFromPub
         listener.populateBeanFromPub(this, publishedAssessment);

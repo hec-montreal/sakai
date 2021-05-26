@@ -24,6 +24,9 @@
 include file for delivering file upload questions
 should be included in file importing DeliveryMessages
 --%>
+<h:outputText value="#{question.text} <br/>" escape="false">
+  <f:converter converterId="org.sakaiproject.tool.assessment.jsf.convert.SecureContentWrapper" />
+</h:outputText>
 
 <h:outputText value="#{question.text} <br/>"  escape="false"/>
 <!-- ATTACHMENTS -->
