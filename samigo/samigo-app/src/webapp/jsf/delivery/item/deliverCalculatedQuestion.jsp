@@ -121,13 +121,14 @@ should be included in file importing DeliveryMessages
   };
   */
   includeWebjarLibrary('mathjs');
-  var finFormatError = '<h:outputText value="#{deliveryMessages.calcq_invalid_characters_error}" escape="false"/>';
+  var calcqFormatError = '<h:outputText value="#{deliveryMessages.calcq_invalid_characters_error}" escape="false"/>';
   
   $( document ).ready(function() {
   
     $('.calculatedQuestionInput').each( function() {
-//      $(this).attr('data-toggle', 'popover'); 
-      $(this).attr('data-content', finFormatError);
+      $(this).attr('data-toggle', 'popover'); 
+      $(this).attr('data-content', calcqFormatError);
+      $(this).attr('data-trigger', 'focus');
     });
   
     $('#takeAssessmentForm').submit(function() {
@@ -137,16 +138,16 @@ should be included in file importing DeliveryMessages
       });
     });
   
-//    $('.calculatedQuestionInput').focus( function() {
-//      $(this).popover();
-//    });
+    $('.fillInNumericInput').popover({
+      trigger: 'focus'
+    });
   
     $('.calculatedQuestionInput').change( function() {
       validateCalculatedQuestionInput(this);
     });
   
     $('.calculatedQuestionInput').keyup( throttle(function(){
-      // Do not validate on key up when the user is inserting a complex number or scientific notation or a real with sign.
+      // Do not validate on key up when the user is inserting a scientific notation or a real with sign.
       if (this.value !== '' && 
           (this.value.includes('+') ||
           this.value.includes('-') ||
