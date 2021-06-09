@@ -713,7 +713,7 @@ span.author_mcLabelText {
     text-align: right;
     font-size: 0.9em;
 }
-.audio-visual-container button {
+div.audio-visual-container button {
     height: 56px;
     width: 60px;
     padding-top: 32px;
