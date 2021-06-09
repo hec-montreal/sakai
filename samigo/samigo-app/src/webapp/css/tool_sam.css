@@ -1,79 +1,56 @@
 div#questionProgressPanel a {
-  color: var(--sakai-text-color-3);
+  color: #022f6a;
   text-decoration: none;
+}
+div#questionProgressPanel p.progressItem {
+  padding-right: 10px;
 }
 #questionProgressPanel img {
   padding-bottom: 1px;
 }
 div#questionProgressPanel>div.tier1>table>tbody>tr {
-  border-bottom: solid var(--sakai-border-color) 1px;
+  border-bottom: solid grey 1px;
 }
 #questionProgressPanel a[href]:hover {
   text-decoration: none;
 }
-
+div#questionProgressPanel>div.tier1>table>tbody>tr:hover {
+  background: #bcd8ff;
+}
 table.table.stat-table {
   margin-bottom: 0;
 }
-
-div.progress-stat {
-  overflow: hidden;
-  height: 20px;
-  background-color: var(--sakai-background-color-2);
-  border-radius: 0;
-}
-
 span.progress-num {
   padding-left: 2px;
-  color: var(--sakai-text-color-1);
+  color: #000;
   font-weight: bold;
-  float: left;
-  width: 110px;
-  background-color: var(--sakai-background-color-2);
-  border-right: 1px solid var(--sakai-border-color);
-  font-size: 12px;
-  line-height: 20px;
-  text-align: center;
 }
-ul.question-with-progress {
-	list-style: none;
-	padding: 0;
-}
-
-.question-with-progress li {
-	padding-bottom: 4px;
-}
-
-table.presentation p {
-	margin: 0;
-}
-
 .progress {
   margin-bottom: 0;
 }
 .progress-bar {
-  background-color: var(--sakai-active-color-1);
-  border-right: 1px solid var(--sakai-border-color);
+  background-color: #70A7D7;
+  border-right: 1px solid #000;
 }
 .progress-bar-success {
-  background-color: var(--successBanner-bgcolor);
+  background-color: #5cb85c;
 }
 .samigo-subheading {
   font-weight: 400;
-  border-bottom: 1px solid var(--sakai-border-color);
+  border-bottom: 1px solid #999;
   font-size: 1.1em;
   margin: 8px 0;
 }
 h4.samigo-category-subhead {
   font-weight: bold;
   padding-bottom: 8px;
-  color: var(--sakai-text-color-1);
+  color: black;
 }
 
 h4.samigo-category-subhead-2 {
   font-weight: bold;
   margin-top: -2px;
-  color: var(--sakai-text-color-1);
+  color: black;
 }
 
 .treefolder {
@@ -92,25 +69,30 @@ h4.samigo-category-subhead-2 {
 .actionHeader{
   overflow: hidden;
   width:100%;
-  background: var(--warnBanner-bgcolor);
-  padding: 0;
+  background:#eec;
+  padding:0
+
  }
 .actionHeader h3 h4 h5{
   float:left;
-  margin:.3em;
+  margin:.3em
  }
 
 .actionHeader div{
   float:right;
-  padding:.3em;
+  padding:.3em
 }
 
+/*
+.navModeQuestion
+{background-color:#CCC;text-align:left;padding:.3em;vertical-align:middle font-size:1.2ems}
+*/
 .navViewAction {
-  background-color:var(--sakai-background-color-4);
-  text-align:left;
-  padding: 16px;
-  vertical-align: bottom;
-  font-size:1.2em
+background-color:#CCC;
+text-align:left;
+padding:.3em;
+vertical-align: bottom;
+font-size:1.2em
 }
 
 .textTable
@@ -119,16 +101,16 @@ h4.samigo-category-subhead-2 {
 .number {
   width:23px;
   height:23px;
-  font-weight: bold;
-  color: var(--sakai-text-color-inverted);
-  background-image: url(../images/circle.gif);
-  vertical-align: middle;
-  background-repeat: no-repeat;
-  padding-left: 7px;
-  padding-right: 2px;
-  height: 32px;
-  width: 32px;
-  float: left;
+        FONT-WEIGHT: bold;
+        COLOR:#FFFFFF;
+        background-image: url(../images/circle.gif);
+        vertical-align: middle;
+        background-repeat: no-repeat;
+        padding-left: 7px;
+        padding-right: 2px;
+        height: 32px;
+        width: 32px;
+        float: left;
 }
 
 
@@ -146,6 +128,7 @@ h4.samigo-category-subhead-2 {
  font-weight: bold;
 }
 
+
 .navList{
         text-align: right;
 }
@@ -154,7 +137,7 @@ h4.samigo-category-subhead-2 {
 }
 
 .validate{
-	color:var(--sakai-color-red);
+	color:red;
 }
 
 .toggle_link_container{
@@ -162,9 +145,9 @@ h4.samigo-category-subhead-2 {
 }
 .toggle_link{
 	font-size:85%;
-	border-right:1px solid var(--sakai-border-color);
-	border-left:1px solid var(--sakai-border-color);
-	border-top:1px solid var(--sakai-border-color);
+	border-right:1px solid #ddd;
+	border-left:1px solid #ddd;
+	border-top:1px solid #ddd;
 	margin-bottom:0px;
 }
 
@@ -183,7 +166,7 @@ h4.samigo-category-subhead-2 {
 
 .samLeftTopNav  {
 	vertical-align:top;
-    text-align:left;
+    text-align:top;
 }
 
 .samRightNav  {
@@ -197,7 +180,7 @@ h4.samigo-category-subhead-2 {
 
 .new_assessment
 {
-	color: var(--sakai-text-color-2);
+	color: #555555;
 	font-weight: bold;
 }
 
@@ -207,7 +190,7 @@ h4.samigo-category-subhead-2 {
 
 .prePopulateText
 {
-	color:var(--sakai-text-color-dimmed);
+	color:gray;
 }
 
 .textBelowHeader {
@@ -239,13 +222,13 @@ h4.samigo-category-subhead-2 {
 }
 
 .listAssessments th{
-	background-color: var(--sakai-background-color-4);
-	border: 1px solid var(--sakai-border-color);
+	background-color: #ddd;
+	border: 1px solid #999;
 }
 
 .makeInfo {
-	border: 1px solid var(--sakai-border-color);
-	background-color: var(--warnBanner-bgcolor);
+	border: 1px solid #666;
+	background-color: #FFFDD2;
 	position: absolute;
 	top: 0px;
 	left: 30px;
@@ -257,15 +240,15 @@ h4.samigo-category-subhead-2 {
 }
 
 .makeLogInfo {
-	border: 1px solid var(--warnBanner-bordercolor);
-	background-color: var(--warnBanner-bgcolor);
+	border: 1px solid #003366;
+	background-color: #FFFFCC;
 	left: 30px;
 	position: absolute;
 	top: -10px;
 	height: auto !important;
-	padding:6px;
-	font-size:1.1em;
-	color:var(--warnBanner-color);
+            padding:6px;
+            font-size:1.1em;
+            color:#333;
 	text-indent: 0em;
 	margin-top: 0.6em;
 	margin-left: -1.5em;
@@ -277,8 +260,8 @@ h4.samigo-category-subhead-2 {
 }
 
 .itemLogInfo {
-	border: 1px solid var(--warnBanner-bordercolor);
-	background-color: var(--warnBanner-bgcolor);
+	border: 1px solid #003366;
+	background-color: #FFFFCC;
 	position: absolute;
 	top: -10px;
 	left: 20px;
@@ -309,11 +292,11 @@ h4.samigo-category-subhead-2 {
 }
 
 table.settings {
-    border: 1px solid var(--sakai-border-color);
+    border: 1px solid #bbb;
 }
 
 .notification {
-    color: var(--sakai-text-color-1);
+    color: #555;
     font-size: 110%;
     font-weight: bold;
 }
@@ -338,26 +321,26 @@ li.last {
 
 /* Simple Borders for EMI Tables=====================*/
 table.simpleBorder {
-	border-bottom: 1px solid var(--sakai-border-color);
-	background-color: var(--sakai-background-color-1);
+	border-bottom: 1px solid #ccc;
+	background-color: white;
 	vertical-align: top; 
 }
 table.simpleBorder td {
 	padding: 4px;
-	border-top: 1px solid var(--sakai-border-color);
-	background-color: var(--sakai-background-color-1);
+	border-top: 1px solid #ccc;
+	background-color: white;
 	vertical-align: top; 
 }
 table.noBorder {
-	background-color: var(--sakai-background-color-1);
+	background-color: white;
 	vertical-align: top; 
-	border: 1px solid var(--sakai-background-color-1);
+	border: 1px solid #fff;
 }
 table.noBorder td {
 	padding: 4px;
-	background-color: var(--sakai-background-color-1);
+	background-color: white;
 	vertical-align: top; 
-	border: 1px solid var(--sakai-background-color-1);
+	border: 1px solid #fff;
 }
 
 #samigo-create-container {
@@ -365,7 +348,7 @@ table.noBorder td {
 }
 #samigo-create-new {
 	display: table-cell;
-	background-color: var(--sakai-background-color-2);
+	background-color: #F0F0F0;
 	width: 40%;
 	padding: 12px;
 }
@@ -381,7 +364,7 @@ table.noBorder td {
 }
 #samigo-create-import {
 	display: table-cell;
-	background-color: var(--sakai-background-color-2);
+	background-color: #F3F3F3;
 	width: 40%;
 	padding: 20px;
 }
@@ -391,22 +374,29 @@ table.noBorder td {
 	overflow: auto;
 }
 ul.ui-tabs-nav {
-	border-bottom: 2px solid var(--sakai-border-color);
+	border-bottom: 2px solid #828282;
 }
 ul.ui-tabs-nav li span.samigo-tab-sub {
 	text-decoration: none !important;
 	font-weight: normal !important;
-	color: var(--sakai-text-color-1);
+	color: #000000;
 }
 ul.ui-tabs-nav li a {
 	text-decoration: none !important;
-	color: var(--link-color);
+	color: #0A72AE;
 }
 ul.ui-tabs-nav li.ui-tabs-selected a {
-	color: var(--sakai-text-color-1);
+	color: #000000;
+}
+#authorIndexForm\:import {
+	display: block;
+	margin-top: 12px;
+}
+#authorIndexForm\:createnew {
+	margin-top: 12px;
 }
 tr.list-row-even td, tr.list-row-odd td {
-	border-bottom: 1px solid var(--sakai-border-color);
+	border-bottom: 1px solid #C6C6C6;
 	padding-top: 8px;
 }
 #assessment-status-limiter {
@@ -415,7 +405,7 @@ tr.list-row-even td, tr.list-row-odd td {
 #tabs #assessment-status-limiter a.active {
 	font-weight: bold;
 	text-decoration: none !important;
-	color: var(--sakai-text-color-1);
+	color: #000000;
 }
 #assessment-link-status-all, #assessment-link-status-active, #assessment-link-status-inactive {
 	cursor:pointer;
@@ -456,7 +446,7 @@ tr.list-row-even td, tr.list-row-odd td {
 	padding: 15px;
 }
 #divider {
-	background: none repeat scroll 0 0 var(--sakai-active-color-1);
+	background: none repeat scroll 0 0 #88D0E8;
 	height: 150px;
 	width: 1px;
 	margin-left: 2px;
@@ -471,8 +461,8 @@ tr.list-row-even td, tr.list-row-odd td {
       padding-left: 20px;
 }
 .greyBox {
-      background: none repeat-x scroll 50% 50% var(--sakai-background-color-2);
-      border: 1px solid var(--sakai-border-color);
+      background: none repeat-x scroll 50% 50% #F6F6F6;
+      border: 1px solid #eee;
       padding: 8px;
 }
 .alignTop {
@@ -489,25 +479,74 @@ a.hideDivision {
 }
 
 .answerkeyFeedbackCommentLabel {
-    font-weight: bold;
-    color: var(--errorBanner-color);
+	FONT-WEIGHT: bold;
+    COLOR:#860000;
 } 
 
+.messageSamigo {
+	background: #FFEEEE url(../images/exclamation.png) 5px 4px no-repeat;
+	border: 1px solid #b11;
+	display: block;
+	width: 80%;
+	font-size: 1em;
+	clear: both;
+	color: black;
+	margin: 20px 0 10px 0;
+	padding: 1px 5px 1px 25px;
+}
+
+.messageSamigo2 {
+	background: #FFEEEE url(../images/error.png) 5px 5px no-repeat;
+	border: 1px solid #b11;
+	display: block;
+	width: 80%;
+	font-size: 1em;
+	clear: both;
+	color: black;
+	margin: 20px 0 10px 0;
+	padding: 5px 5px 5px 25px;
+}
+
+.messageSamigo3 {
+	background: #FFEEEE url(../images/exclamation.png) 5px 2px no-repeat;
+	border: 1px solid #b11;
+	display: block;
+	width: 80%;
+	font-size: 1em;
+	clear: both;
+	color: black;
+	margin: 20px 0 10px 0;
+	padding: 3px 5px 3px 25px;
+}
+
+
+.previewMessage {
+	background: url(../images/info.gif) 5px 5px no-repeat;
+	border: 1px solid grey;
+	display: block;
+	width: 80%;
+	font-size: 1em;
+	clear: both;
+	margin: 5px 0;
+	padding: 5px 5px 5px 25px;
+}
+
 .saCharCount {
-    border: 1px solid var(--sakai-border-color);
+    border: 1px solid #bbb;
 }
 
 .samigo-linear-access-warning {
-    background-color: var(--warnBanner-bgcolor);
-    border: 1px solid var(--warnBanner-bordercolor);
+    background-color: #FAFAD6;
+    border: 1px solid #F6D87D;
     margin: 0px 10px 10px 10px;
     padding: 5px;
     border-radius: 5px;
-    color: var(--warnBanner-color);
+    color: #404040;
+    font-family: Arial,Helvetica,sans-serif;
 }
 .placeholder, form#assessmentSettingsAction label.placeholder
 {
-  color: var(--sakai-text-color-dimmed);
+  color: #aaa;
 }
 .submissionInfoCol1{
     width: 200px; 
@@ -545,12 +584,12 @@ span.author_mcLabelText {
 }
 
 #jqueryui-accordion .ui-accordion-content {
-    background-color: var(--sakai-background-color-2);
+    background-color: #efefef;
 }
 #jqueryui-accordion .ui-accordion-header {
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    border: 1px solid var(--sakai-border-color);
+    border: 1px solid #ddd;
 }
 
 .html {
@@ -569,16 +608,15 @@ span.author_mcLabelText {
 .featherlight .featherlight-content {
 	max-width: initial !important;
 	max-height: initial !important;
-	background-color: var(--sakai-background-color-1) !important;
 }
 
 .featherlight .featherlight-close-icon {
-	color: var(--sakai-text-color-1) !important;
+	color: #000 !important;
 }
 
 .audio-recorder-header {
     text-align: center;
-    border-bottom: 1px solid var(--sakai-border-color);
+    border-bottom: 1px solid black;
     font-size: 1.1em;
     padding: 4px 0;
     margin-bottom: 8px;
@@ -597,33 +635,34 @@ span.author_mcLabelText {
 .audio-visual-container {
     width: 778px;
     padding: 2px;
-    border: 1px solid var(--sakai-border-color);
-    background-color: var(--sakai-background-color-2);
+    border: 1px solid black;
+    background-color: #ccc;
 }
 .audio-analyzer {
     height: 128px;
     width: 100%;
     background-color: black;
 }
+
 .playback-analyzer {
     height: 128px;
     width: 100%;
-    background-color: var(--sakai-color-black);
+    background-color: black;
 }
 .audio-timer-wrapper {
     width: auto;
     height: 60px;
-    background-color: var(--sakai-color-gray--darker-4);
+    background-color: #333;
     margin: 0 auto;
     position: relative;
-    color: var(--sakai-color-white);
+    color: white;
 }
 .audio-scrubber {
     width: 704px;
     height: 12px;
     border-radius: 4px;
-    background-color: var(--sakai-color-gray--lighter-2);
-    border: 1px solid var(--sakai-color-gray);
+    background-color: #ccc;
+    border: 1px solid #ddd;
     position: absolute;
     top: 30px;
     right: 50px;
@@ -634,14 +673,14 @@ span.author_mcLabelText {
     left: 12px;
     width: 30px;
     height: 20px;
-    background-color: var(--sakai-color-gray--darker-2);
-    border: 1px solid var(--sakai-color-gray--darker-4);
+    background-color: #858585;
+    border: 1px solid #333;
     border-radius: 3px;
     text-align: center;
     font-size: 0.9em;
     z-index: 999;
 }
-.audio-timer:after, .audio-timer:before {
+.audio-timer:after, #audio-timer:before {
 	top: 100%;
 	border: solid transparent;
 	content: " ";
@@ -653,15 +692,15 @@ span.author_mcLabelText {
 }
 
 .audio-timer:after {
-	border-color: transparent;
-	border-top-color: var(--sakai-color-gray--darker-2);
+	border-color: rgba(133, 133, 133, 0);
+	border-top-color: #858585;
 	border-width: 4px;
 	left: 50%;
 	margin-left: -4px;
 }
 .audio-timer:before {
-	border-color: transparent;
-	border-top-color: var(--sakai-color-gray--darker-2);
+	border-color: rgba(153, 153, 153, 0);
+	border-top-color: #999;
 	border-width: 5px;
 	left: 50%;
 	margin-left: -5px;
@@ -674,24 +713,24 @@ span.author_mcLabelText {
     text-align: right;
     font-size: 0.9em;
 }
-div.audio-visual-container button {
+.audio-visual-container button {
     height: 56px;
     width: 60px;
     padding-top: 32px;
     margin-top: 2px;
-    color: var(--sakai-text-color-1);
+    color: black;
 }
-div.audio-controls button.audio-record, div.audio-controls button.audio-record:hover {
+.audio-record {
     background: transparent url(/library/image/record.png) no-repeat center 2px;
 }
-div.audio-controls button.audio-stop, div.audio-controls button.audio-stop:hover {
+.audio-stop {
     background: transparent url(/library/image/stop.png) no-repeat center 2px;
 }
-div.audio-controls button.audio-play, div.audio-controls button.audio-play:hover {
+.audio-play {
     background: transparent url(/library/image/play.png) no-repeat center 2px;
 }
-.audio-visual-container .audio-upload {
-    margin-left: 50px;
+.audio-visual-container #audio-upload {
+    float: right;
     width: 140px;
     border-radius: 5px;
     height: 40px;
@@ -699,7 +738,7 @@ div.audio-controls button.audio-play, div.audio-controls button.audio-play:hover
     margin-top: 8px;
     vertical-align: top;
 }
-.audio-posting, .audio-finished, .audio-browser-plea {
+.audio-posting, #audio-finished, #audio-browser-plea {
     font-size: 28px;
     font-weight: bold;
     text-align: center;
@@ -732,7 +771,7 @@ margin-right:auto;
 .squaresWaveG{
 position:absolute;
 top:0;
-background-color: var(--errorBanner-color);
+background-color:#2E2323;
 width:15px;
 height:15px;
 -moz-animation-name:bounce_squaresWaveG;
@@ -831,55 +870,55 @@ animation-delay:2.09s;
 
 @-moz-keyframes bounce_squaresWaveG{
 0%{
-background-color:var(--errorBanner-color);
+background-color:#2E2323;
 }
 
 100%{
-background-color:var(--sakai-background-color-2);
+background-color:#DBDBDB;
 }
 
 }
 
 @-webkit-keyframes bounce_squaresWaveG{
 0%{
-background-color:var(--errorBanner-color);
+background-color:#2E2323;
 }
 
 100%{
-background-color:var(--sakai-background-color-2);
+background-color:#DBDBDB;
 }
 
 }
 
 @-ms-keyframes bounce_squaresWaveG{
 0%{
-background-color:var(--errorBanner-color);
+background-color:#2E2323;
 }
 
 100%{
-background-color:var(--sakai-background-color-2);
+background-color:#DBDBDB;
 }
 
 }
 
 @-o-keyframes bounce_squaresWaveG{
 0%{
-background-color:var(--errorBanner-color);
+background-color:#2E2323;
 }
 
 100%{
-background-color:var(--sakai-background-color-2);
+background-color:#DBDBDB;
 }
 
 }
 
 @keyframes bounce_squaresWaveG{
 0%{
-background-color:var(--errorBanner-color);
+background-color:#2E2323;
 }
 
 100%{
-background-color:var(--sakai-background-color-2);
+background-color:#DBDBDB;
 }
 
 }
@@ -911,7 +950,7 @@ background-color:var(--sakai-background-color-2);
 
 label.inactive
 {
-    color: var(--sakai-text-color-disabled) !important;
+    color: #999999 !important;
 }
 
 #modifyPartForm
@@ -921,7 +960,7 @@ label.inactive
 
 #modifyPartForm fieldset.roundedBorder
 {
-    border: 2px solid var(--sakai-border-color);
+    border: 2px solid #c8c8c8;
     border-radius: 5px;
     padding: 1em;
     margin-bottom: 1em;
@@ -931,8 +970,8 @@ label.inactive
 {
     padding-left: 6px;
     padding-right: 6px;
-    background: transparent;
-    color: var(--sakai-text-color-1);
+    background: rgba(255, 255, 255, 0);
+    color: #444444;
 }
 
 #modifyPartForm fieldset.roundedBorder input[type="text"]
@@ -976,7 +1015,7 @@ label.inactive
 .titleEditor label, .infoEditor label
 {
     font-weight: bold;
-    color: var(--sakai-text-color-1);
+    color: #000;
     font-size: 100%;
     margin-left: 0px;
     padding-left: 0px;
@@ -1112,6 +1151,7 @@ td.releaseTo div.alertMessage {
 }
 
 .qtipBodyContent{
+   font-family: 'Helvetica Neue', Arial,sans-serif !important;
    font-size: 1.3em !important;
    min-width: 800px !important;
 }
@@ -1136,15 +1176,15 @@ td.feedbackColumn2 {
 	min-height: 220px;
 	max-height:auto;
 	width: 300px;
-	background: var(--sakai-background-color-2);
+	background: #eaf1fb;
 	right:0px;
 	display: none;
 	position: absolute;
 	padding-bottom: 1em;
 	top:20px;
-	color: var(--sakai-text-color-1);
-	border: 1px solid var(--sakai-border-color);
-	border-bottom-left-radius: 4px;
+       color: #022f6a;
+        border: 1px solid #022f6a;
+        border-bottom-left-radius: 10px;
 }
 
 div#questionProgressPanel div.tier1 {
@@ -1154,24 +1194,24 @@ div#questionProgressPanel div.tier1 {
 #questionProgressClick {
 	height: 200px;
 	width: 40px;
-	background: var(--sakai-background-color-2);
-	border: 1px solid var(--sakai-border-color);
-	color: var(--sakai-text-color-1);
-	border-right: none;
+	background: #022f6a;
 	right:299px;
 	margin-top: 200px;
 	position: absolute;
 	display: none;
 	font-weight: bold;
-	border-top-left-radius: 4px;
-	border-bottom-left-radius: 4px;
+	-moz-border-radius-topleft: 15px;
+	border-top-left-radius: 15px;
+	-moz-border-radius-bottomleft: 15px;
+	border-bottom-left-radius: 15px;
 	cursor: pointer;
-	top: 20px;
+	top: 20px
 }
-.currentQuestion a {
-	border: 1px solid var(--sakai-active-color-3);
-	background-color:var(--sakai-active-color-1);
-	color: var(--sakai-text-color-3);
+.currentQuestion {
+	border: 1px solid #74acde;
+	padding: 2px;
+	background-color:#d3ecff;
+	border-radius: 5px;
 }
 .questionProgressTable {
 
@@ -1181,17 +1221,15 @@ div#questionProgressPanel div.tier1 {
 	text-align: right;
 	background-color: transparent;
 }
-.questionProgressTable td .progressItem:hover {
-	background-color: var(--sakai-background-color-3);
+.questionProgressTable td:hover {
+	background-color: #d6ebff;
 	cursor: pointer;
-	border-radius: 4px;
+	border-radius: 5px;
 }
 .questionProgressTable a {
 	text-decoration: none;
 	font-size:100%;
-	padding: 8px;
-	border-radius: 4px;
-	display: inline-block;
+	padding: 4px;
 }
 .questionProgressTable a img {
 	vertical-align: middle;
@@ -1200,8 +1238,8 @@ img.bublecenter {
 	vertical-align: middle;
 }
 p.progressItem {
-	padding:0;
-	margin:0 8px 8px 0;
+	padding:0 0 0 0;
+	margin:0 0 0 0;
 	line-height:1.5em;
 }
 p.progressItem img {
@@ -1209,7 +1247,7 @@ p.progressItem img {
 }
 
 .rotateQP {
-	color: var(--sakai-text-color-1);
+	color:white;
 	white-space:nowrap;
 	margin-top:154px;
 
@@ -1231,9 +1269,11 @@ p.progressItem img {
 }
 
 button.partLink {
+	background-color: transparent;
 	margin: 0;
 	border: none;
 	padding: 0;
+	color: #022f6a !important;
 	cursor: pointer;
 	display: inline;
 	outline: none;
@@ -1246,7 +1286,20 @@ button.partLink {
 	width: 160px;
 }
 
+button.partLink:focus {
+	background-color: transparent;
+	color: #022f6a;
+}
 
+button.partLink:hover {
+	background-color: transparent;
+	color: #022f6a;
+}
+
+button.partLink:active {
+	background-color: transparent;
+	color: #022f6a;
+}
 
 button.partLink::-moz-focus-inner {
 	border: none;
@@ -1256,6 +1309,7 @@ button.partLink::-moz-focus-inner {
 
 div[id^='partTable'] {
 	display: none;
+	padding-bottom: 5px;
 }
 
 .numberOfQuestionsInPart {
@@ -1265,8 +1319,9 @@ div[id^='partTable'] {
 .partTitle {
 	display: inline-block;
 	width: 270px;
-	padding-bottom: 8px;
-	padding-top: 8px;
+	margin-bottom: 3px;
+	padding-bottom: 4px;
+	padding-top: 4px;
 	line-height: 1;
 }
 
@@ -1303,7 +1358,7 @@ input[type='reset'].linearButton {
 
 .sam-leftSep
 {
-	border-left: 1px solid var(--sakai-border-color);
+	border-left: 1px solid #000000;
 	padding-left: 10px;
 	margin-left: 10px;
 }
@@ -1329,7 +1384,7 @@ input[type='reset'].linearButton {
 .sam-asterisks-row
 {
 	padding: 0.5em 1em;
-	border-top: 1px solid var(--sakai-border-color);
+	border-top: 1px solid #dddddd;
 }
 
 .sam-submittedPanel
@@ -1358,7 +1413,7 @@ input[type='reset'].linearButton {
 .collection
 {
 	font-size: x-small;
-	color: var(--sakai-text-color-1);
+	color:#444444;
 	font-style: italic;
 }
 
@@ -1367,15 +1422,11 @@ input[type='reset'].linearButton {
 	padding: 6px 12px;
 }
 
-.MathJax_Display {
-  text-align: left !important;
-}
-
 .input-group-btn button.multiselect-clear-filter{
 	padding: 6px 12px;
 	font-size: 14px;
 	line-height: 1.42857143;
-	background-color: var(--sakai-background-color-2);
+	background-color: #eee;
 }
 
 .multiselect-container.dropdown-menu {
@@ -1389,87 +1440,10 @@ label#itemForm\:noFeedbackMsg {
 }
 
 .eventLogDeleted {
-	color: var(--sakai-text-color-disabled);
+	color: #aaaaaa;
 }
 
 .noListStyle {
 	list-style: none;
 	padding-left: 0;
-}
-
-.extraCreditLabel {
-	font-weight: bold;
-	color: var(--successBanner-color);
-}
-
-.categorySelect {
-	margin-left: 8px;
-}
-
-.attachment-table {
-  width: 40% !important;
-}
-
-table.stats-bar {
-  margin-bottom: 0px;
-}
-
-table.stats-bar td {
-  width: 50%;
-}
-
-table.stats-bar th {
-  border: 0px;
-  background-color: var(--sakai-background-color-2);
-}
-
-table.table.panel-body.stats-bod td {
-  background-color: var(--sakai-background-color-1);
-  padding: 4px;
-}
-
-div.question-text.panel-heading {
-  background-color: var(--infoBanner-bgcolor);
-}
-
-td.stats-info-column {
-  width: 300px;
-  vertical-align: top;
-}
-
-#chartdiv .jqplot-point-label {
-  font-weight: bold;
-  font-size: 12pt;
-}
-
-td.stats-info-column td {
-  font-size: .95em;
-  padding-top: 6px;
-  padding-bottom: 6px;
-}
-
-
-.stats-info-column caption {
-  background-color: var(--sakai-background-color-2);
-  padding: 0;
-  border-bottom: 0;
-  color: var(--sakai-text-color-1);
-}
-
-td.stats-answers {
-  width: 43%;
-  padding-left: 10px;
-}
-
-td.stats-correctness {
-  width: 7%;
-  padding-left: 10px;
-}
-
-.sam-data-discrepancy-ol {
-	margin-top: 10px;
-}
-
-.feedbackByDatePanel {
-  padding-left: 2em;
 }
