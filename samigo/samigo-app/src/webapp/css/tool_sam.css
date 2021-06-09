@@ -720,16 +720,16 @@ span.author_mcLabelText {
     margin-top: 2px;
     color: black;
 }
-.audio-record {
+div.audio-controls button.audio-record, div.audio-controls button.audio-record:hover {
     background: transparent url(/library/image/record.png) no-repeat center 2px;
 }
-.audio-stop {
+div.audio-controls button.audio-stop, div.audio-controls button.audio-stop:hover {
     background: transparent url(/library/image/stop.png) no-repeat center 2px;
 }
-.audio-play {
+div.audio-controls button.audio-play, div.audio-controls button.audio-play:hover  {
     background: transparent url(/library/image/play.png) no-repeat center 2px;
 }
-.audio-visual-container #audio-upload {
+.audio-visual-container .audio-upload {
     float: right;
     width: 140px;
     border-radius: 5px;
@@ -738,7 +738,7 @@ span.author_mcLabelText {
     margin-top: 8px;
     vertical-align: top;
 }
-.audio-posting, #audio-finished, #audio-browser-plea {
+.audio-posting, .audio-finished, .audio-browser-plea {
     font-size: 28px;
     font-weight: bold;
     text-align: center;
