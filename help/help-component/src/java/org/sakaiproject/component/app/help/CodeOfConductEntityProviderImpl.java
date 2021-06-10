@@ -51,7 +51,6 @@ public class CodeOfConductEntityProviderImpl extends HibernateDaoSupport impleme
 			properties.setListDelimiter((char) 0);
 			properties.load(url);
 			titleEn = (String) properties.getProperty("codeOfConduct.title");
-			bodyEn = (String) properties.getProperty("codeOfConduct.body");
 			acceptButtonEn = (String) properties.getProperty("acceptButton");			
 		}
 		catch (ConfigurationException e)
@@ -67,7 +66,6 @@ public class CodeOfConductEntityProviderImpl extends HibernateDaoSupport impleme
 			properties.setListDelimiter((char) 0);
 			properties.load(url);
 			titleFr = (String) properties.getProperty("codeOfConduct.title");
-			bodyFr = (String) properties.getProperty("codeOfConduct.body");
 			acceptButtonFr = (String) properties.getProperty("acceptButton");
 		}
 		catch (ConfigurationException e)
@@ -150,9 +148,7 @@ public class CodeOfConductEntityProviderImpl extends HibernateDaoSupport impleme
 		valuesMap.put("userType", type);
 
 		valuesMap.put("titleEn", titleEn);
-		valuesMap.put("bodyEn", bodyEn);
 		valuesMap.put("titleFr", titleFr);
-		valuesMap.put("bodyFr", bodyFr);
 		valuesMap.put("acceptButtonEn", acceptButtonEn);
 		valuesMap.put("acceptButtonFr", acceptButtonFr);
 
