@@ -64,7 +64,7 @@ function closeDialog() {
 
 function retrieveCodeOfConduct(locale, tutorial, showTutorialLocationOnHide) {
 
-    return Promise.all(
+    return Promise.all([
         $.get("access/content/public/codeDeConduite_EN.html", (response) => sessionStorage.setItem('bodyEn', response) ),
         $.get("access/content/public/codeDeConduite_FR.html", (response) => sessionStorage.setItem('bodyFr', response) ),
         $.getJSON('/direct/code_of_conduct/code_of_conduct.json?' + new Date().getTime(), function(response){
@@ -74,7 +74,7 @@ function retrieveCodeOfConduct(locale, tutorial, showTutorialLocationOnHide) {
             sessionStorage.setItem('acceptButtonFr', response.data.acceptButtonFr);
             sessionStorage.setItem('hasUserAccepted', response.data.hasUserAccepted);
             sessionStorage.setItem('userType', response.data.userType);
-        }));
+        })]);
 }
 
 function showCodeOfConduct(opts){
