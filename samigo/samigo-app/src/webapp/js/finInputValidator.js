@@ -66,7 +66,7 @@ var validateCalculatedQuestionInput = function(input) {
 
   if (!isValidInput) {
     input.value = '';
-    alert(finFormatError);
+    alert(calcqFormatError);
     return false;
   }
 
