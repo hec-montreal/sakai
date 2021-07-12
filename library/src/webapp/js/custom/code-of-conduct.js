@@ -63,16 +63,18 @@ function closeDialog() {
 }
 
 function retrieveCodeOfConduct(locale, tutorial, showTutorialLocationOnHide) {
-    return $.getJSON('/direct/code_of_conduct/code_of_conduct.json?' + new Date().getTime(), function(response){
-        sessionStorage.setItem('titleEn', response.data.titleEn);
-        sessionStorage.setItem('titleFr', response.data.titleFr);
-        sessionStorage.setItem('bodyEn', response.data.bodyEn);
-        sessionStorage.setItem('bodyFr', response.data.bodyFr);
-        sessionStorage.setItem('acceptButtonEn', response.data.acceptButtonEn);
-        sessionStorage.setItem('acceptButtonFr', response.data.acceptButtonFr);
-        sessionStorage.setItem('hasUserAccepted', response.data.hasUserAccepted);
-        sessionStorage.setItem('userType', response.data.userType);
-    });
+
+    return Promise.all([
+        $.get("access/content/public/codeDeConduite_EN.html", (response) => sessionStorage.setItem('bodyEn', response) ),
+        $.get("access/content/public/codeDeConduite_FR.html", (response) => sessionStorage.setItem('bodyFr', response) ),
+        $.getJSON('/direct/code_of_conduct/code_of_conduct.json?' + new Date().getTime(), function(response){
+            sessionStorage.setItem('titleEn', response.data.titleEn);
+            sessionStorage.setItem('titleFr', response.data.titleFr);
+            sessionStorage.setItem('acceptButtonEn', response.data.acceptButtonEn);
+            sessionStorage.setItem('acceptButtonFr', response.data.acceptButtonFr);
+            sessionStorage.setItem('hasUserAccepted', response.data.hasUserAccepted);
+            sessionStorage.setItem('userType', response.data.userType);
+        })]);
 }
 
 function showCodeOfConduct(opts){

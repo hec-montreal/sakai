@@ -150,7 +150,7 @@
         #end ## END of IF ( $tutorial && $loggedIn )
 
         <!-- Code of conduct -->
-        <script src="/library/js/custom/code-of-conduct.js"></script>
+        <script src="/library/js/custom/code-of-conduct.js?v2"></script>
 
         #if ( $loggedIn )
             <script type="text/javascript" language="JavaScript">$(document).ready(function(){ showCodeOfConduct({'checkHasUserAccepted': true, 'userLocale' : '$!{locale}', 'tutorial': '$!tutorial','showTutorialLocationOnHide': 'true' });});</script>
