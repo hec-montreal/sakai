@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.log4j.BasicConfigurator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,7 +57,6 @@ public class AssignmentActionTestTools {
 
     @Before
     public void setUp() {
-        BasicConfigurator.configure();
         PowerMockito.mockStatic(ComponentManager.class);
         // A mock component manager.
         when(ComponentManager.get(any(Class.class))).then(new Answer<Object>() {
