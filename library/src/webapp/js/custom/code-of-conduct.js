@@ -4,7 +4,7 @@ function showDialog(locale) {
 	var height = dialogHeight -100;
 
     if (sessionStorage.getItem('bodyFr') == null ||
-	sessionsStorage.getItem('bodyEn') == null) {
+	sessionStorage.getItem('bodyEn') == null) {
 	console.error('Missing code of conduct');
 	return;
     }
