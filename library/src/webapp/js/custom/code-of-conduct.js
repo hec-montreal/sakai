@@ -3,6 +3,12 @@ function showDialog(locale) {
 	var dialogHeight = $(window).height()*0.8;
 	var height = dialogHeight -100;
 
+    if (sessionStorage.getItem('bodyFr') == null ||
+	sessionsStorage.getItem('bodyEn') == null) {
+	console.error('Missing code of conduct');
+	return;
+    }
+
     console.log('Locale: ' + locale);
 
     if (locale === 'fr_CA' || locale === 'fr-CA') {
@@ -65,8 +71,8 @@ function closeDialog() {
 function retrieveCodeOfConduct(locale, tutorial, showTutorialLocationOnHide) {
 
     return Promise.all([
-        $.get("access/content/public/codeDeConduite_EN.html", (response) => sessionStorage.setItem('bodyEn', response) ),
-        $.get("access/content/public/codeDeConduite_FR.html", (response) => sessionStorage.setItem('bodyFr', response) ),
+        $.get("/access/content/public/codeDeConduite_EN.html", (response) => sessionStorage.setItem('bodyEn', response) ),
+        $.get("/access/content/public/codeDeConduite_FR.html", (response) => sessionStorage.setItem('bodyFr', response) ),
         $.getJSON('/direct/code_of_conduct/code_of_conduct.json?' + new Date().getTime(), function(response){
             sessionStorage.setItem('titleEn', response.data.titleEn);
             sessionStorage.setItem('titleFr', response.data.titleFr);
