@@ -189,7 +189,7 @@
             #if($allowReviewService && $assignment.ContentReview)
                 <tr>
                     <th>
-                        $reviewServiceName&nbsp;$tlang.getString("review.report")
+                        $tlang.getString("review.report")
                     </th>
                     <td>
                         #if (!$submission || !$!service.isContentReviewVisibleForSubmission($!submission))
