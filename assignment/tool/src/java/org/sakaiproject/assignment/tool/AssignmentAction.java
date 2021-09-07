@@ -1123,17 +1123,22 @@ public class AssignmentAction extends PagedResourceActionII {
         if (assignmentService.allowReviewService(s)) {
             //put the review service stings in context
             String reviewServiceName = contentReviewService.getServiceName();
-            String reviewServiceTitle = rb.getFormattedMessage("review.title", new Object[]{reviewServiceName});
-            String reviewServiceUse = rb.getFormattedMessage("review.use", new Object[]{reviewServiceName});
-            String reviewServiceNonElectronic1 = rb.getFormattedMessage("review.switch.ne.1", reviewServiceName);
-            String reviewServiceNonElectronic2 = rb.getFormattedMessage("review.switch.ne.2", reviewServiceName);
+            String reviewServiceTitle;
+            if (reviewServiceName.equalsIgnoreCase("Urkund"))
+        	reviewServiceTitle = rb.getFormattedMessage("review.service.urkund.title");
+            else 
+        	reviewServiceTitle = rb.getFormattedMessage("review.title", new Object[]{reviewServiceName});
+            
+            String reviewServiceUse = rb.getFormattedMessage("review.use", new Object[]{reviewServiceTitle});
+            String reviewServiceNonElectronic1 = rb.getFormattedMessage("review.switch.ne.1", reviewServiceTitle);
+            String reviewServiceNonElectronic2 = rb.getFormattedMessage("review.switch.ne.2", reviewServiceTitle);
             context.put("reviewServiceName", reviewServiceName);
             context.put("reviewServiceProviderId", contentReviewService.getProviderId());
             context.put("turnitinProviderId", ContentReviewConstants.TURNITIN_PROVIDER_ID);
             context.put("turnitinOCProviderId", ContentReviewConstants.TURNITINOC_PROVIDER_ID);
             context.put("reviewServiceTitle", reviewServiceTitle);
             context.put("reviewServiceUse", reviewServiceUse);
-            context.put("reviewIndicator", rb.getFormattedMessage("review.contentReviewIndicator", new Object[]{reviewServiceName}));
+            context.put("reviewIndicator", rb.getFormattedMessage("review.contentReviewIndicator", new Object[]{reviewServiceTitle}));
             context.put("reviewSwitchNe1", reviewServiceNonElectronic1);
             context.put("reviewSwitchNe2", reviewServiceNonElectronic2);
         }
