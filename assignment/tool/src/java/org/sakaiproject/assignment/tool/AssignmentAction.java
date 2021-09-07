@@ -1123,9 +1123,12 @@ public class AssignmentAction extends PagedResourceActionII {
         if (assignmentService.allowReviewService(s)) {
             //put the review service stings in context
             String reviewServiceName = contentReviewService.getServiceName();
+            String reviewTitle = rb.getFormattedMessage("review.title");
             String reviewServiceTitle;
             if (reviewServiceName.equalsIgnoreCase("Urkund"))
         	reviewServiceTitle = rb.getFormattedMessage("review.service.urkund.title");
+            else if (reviewServiceName.equalsIgnoreCase("Compilatio"))
+        	reviewServiceTitle = rb.getFormattedMessage("review.service.compilatio.title");
             else 
         	reviewServiceTitle = rb.getFormattedMessage("review.title", new Object[]{reviewServiceName});
             
@@ -1137,6 +1140,7 @@ public class AssignmentAction extends PagedResourceActionII {
             context.put("turnitinProviderId", ContentReviewConstants.TURNITIN_PROVIDER_ID);
             context.put("turnitinOCProviderId", ContentReviewConstants.TURNITINOC_PROVIDER_ID);
             context.put("reviewServiceTitle", reviewServiceTitle);
+            context.put("reviewTitle", reviewTitle);
             context.put("reviewServiceUse", reviewServiceUse);
             context.put("reviewIndicator", rb.getFormattedMessage("review.contentReviewIndicator", new Object[]{reviewServiceTitle}));
             context.put("reviewSwitchNe1", reviewServiceNonElectronic1);

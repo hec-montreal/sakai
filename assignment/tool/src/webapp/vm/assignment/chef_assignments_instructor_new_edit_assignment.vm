@@ -729,7 +729,7 @@
 		#end
 
 		#if ($allowReviewService)
-			<h4> $reviewServiceTitle </h4>
+			<h4> $reviewTitle </h4>
 			<div>
 				#if (4 == $value_SubmissionType)
 					<div id="review.switch.ne.1" class="information">$reviewSwitchNe1</div>
