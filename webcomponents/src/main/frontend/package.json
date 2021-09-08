@@ -8,7 +8,7 @@
     "url": "https://github.com/sakaiproject/sakai.git"
   },
   "scripts": {
-    "postinstall": "empathy install",
+    "postinstall": "empathise install",
     "webpack": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,7 +21,7 @@
     "sortablejs": "^1.8.3"
   },
   "devDependencies": {
-    "@0xcda7a/empathy": "0.0.9",
+    "@adrianfish/empathise": "^0.1.9",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.0.5",
     "babel-preset-env": "^1.7.0",
