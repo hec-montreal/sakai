@@ -14379,18 +14379,9 @@ public class AssignmentAction extends PagedResourceActionII {
                         if (!inPeerReviewMode && assignmentService.allowReviewService(s)) {
                             String assignmentReference = (String) state.getAttribute(VIEW_SUBMISSION_ASSIGNMENT_REFERENCE);
                             Assignment a = getAssignment(assignmentReference, "doAttachUpload", state);
-                            String reviewServiceTitle;
-                            String reviewServiceName = contentReviewService.getServiceName();
-                            if (reviewServiceName.equalsIgnoreCase("Urkund"))
-                        	reviewServiceTitle = rb.getFormattedMessage("review.service.urkund.title");
-                            else if (reviewServiceName.equalsIgnoreCase("Compilatio"))
-                        	reviewServiceTitle = rb.getFormattedMessage("review.service.compilatio.title");
-                            else 
-                        	reviewServiceTitle = rb.getFormattedMessage("review.title", new Object[]{reviewServiceName});
-
                             if (a.getContentReview()) {
                                 if (!contentReviewService.isAcceptableContent(attachment)) {
-                                    addAlert(state, rb.getFormattedMessage("review.file.not.accepted", new Object[]{reviewServiceTitle, getContentReviewAcceptedFileTypesMessage()}));
+                                    addAlert(state, rb.getFormattedMessage("review.file.not.accepted", new Object[]{contentReviewService.getServiceName(), getContentReviewAcceptedFileTypesMessage()}));
                                     blockedByCRS = true;
                                     // TODO: delete the file? Could we have done this check without creating it in the first place?
                                 }
