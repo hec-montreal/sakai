@@ -161,7 +161,7 @@
         #if($allowReviewService && $assignment.ContentReview && $!allowStudentViewReport.equals('true') && ($assignment.TypeOfSubmission() != 4 || $!service.getContentReviewResults($!submission).size() > 0))
             <tr>
                 <th>
-                    $reviewServiceTitle&nbsp;$tlang.getString("review.report")
+                    $reviewServiceName&nbsp;$tlang.getString("review.report")
                 </th>
                 <td>
                     #if (!$submission || !$!service.isContentReviewVisibleForSubmission($!submission))
