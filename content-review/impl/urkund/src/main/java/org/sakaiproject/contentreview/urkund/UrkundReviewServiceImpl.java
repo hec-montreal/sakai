@@ -78,7 +78,7 @@ public class UrkundReviewServiceImpl extends BaseContentReviewService {
 	private static final String STATE_ANALYZED = "Analyzed";
 	private static final String STATE_ERROR = "Error";
 	
-	private static final String SERVICE_NAME = "Urkund";
+	private static final String SERVICE_NAME = "Détecteur de similitudes";
 	
 	// Site property to enable or disable use of Urkund for the site
 	private static final String URKUND_SITE_PROPERTY = "urkund";
@@ -581,7 +581,7 @@ public class UrkundReviewServiceImpl extends BaseContentReviewService {
 			ResourceLoader resourceLoader = getResourceLoader();
 			for( String fileExtension : acceptableFileExtensions )
 			{
-				String key = KEY_FILE_TYPE_PREFIX + fileExtension;
+			String key = KEY_FILE_TYPE_PREFIX + fileExtension;
 				if (!resourceLoader.getIsValid(key))
 				{
 					log.warn("While resolving acceptable file types for Urkund, the sakai.property {} is not set, and the message bundle {} could not be resolved. Displaying [missing key ...] to the user", PROP_ACCEPTABLE_FILE_TYPES, key);
@@ -635,7 +635,7 @@ public class UrkundReviewServiceImpl extends BaseContentReviewService {
 
 	public ResourceLoader getResourceLoader(String userRef) {
 		String userId = EntityReference.getIdFromRef(userRef);
-		return new ResourceLoader(userId, "urkund");
+		return new ResourceLoader(userId, "détecteur de similitudes");
 	}
 
 	public String getFormattedMessage(String key, Object... args) {

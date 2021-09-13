@@ -1139,7 +1139,7 @@
 							#end
 						</div>
 				<!-- End Compilatio custom options -->
-				#elseif($reviewServiceName.equals("Urkund"))
+				#elseif($reviewServiceName.equals("Détecteur de similitudes"))
 						#if ($content_review_note)
 							$content_review_note
 						#end
