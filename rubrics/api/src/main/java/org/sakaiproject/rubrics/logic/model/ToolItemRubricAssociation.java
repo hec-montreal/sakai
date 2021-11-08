@@ -35,13 +35,20 @@ import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import lombok.ToString;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.sakaiproject.rubrics.logic.listener.MetadataListener;
 import org.sakaiproject.rubrics.logic.RubricsConstants;
 
@@ -52,12 +59,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
+// @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Data
 @Entity
 @EntityListeners(MetadataListener.class)
 @JsonPropertyOrder({"id", "toolId", "itemId", "rubricId", "parameters", "metadata"})
 @NoArgsConstructor
-@Table(name = "rbc_tool_item_rbc_assoc")
+@Table(name = "rbc_tool_item_rbc_assoc",
+        indexes = {@Index(name = "rbc_tool_item_owner", columnList = "toolId, itemId, ownerId")},
+        uniqueConstraints = @UniqueConstraint(columnNames = {"rubric_id", "toolId", "itemId"})
+)
 @ToString(exclude = {"rubric", "parameters"})
 public class ToolItemRubricAssociation implements Modifiable, Serializable, Cloneable  {
 
@@ -66,6 +77,7 @@ public class ToolItemRubricAssociation implements Modifiable, Serializable, Clon
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "rbc_tool_item_rbc_seq")
     private Long id;
 
+    @Column(length=99)
     private String toolId;
     private String itemId;
 
@@ -83,12 +95,9 @@ public class ToolItemRubricAssociation implements Modifiable, Serializable, Clon
     @CollectionTable(name = "rbc_tool_item_rbc_assoc_conf", joinColumns = @JoinColumn(name = "association_id", referencedColumnName = "id"))
     @MapKeyColumn(name = "parameter_label")
     @Column(name="parameters")
+    @Fetch(FetchMode.SUBSELECT)
     private Map<String, Boolean> parameters;
 
-    public Map<String, Boolean> getParameters() {
-        return parameters;
-    }
-	
     public Map<String, String> getFormattedAssociation() {
         Map<String, String> formattedParams = new HashMap<>();
         formattedParams.put(RubricsConstants.RBCS_ASSOCIATE,"1");

@@ -9,10 +9,10 @@ export class SakaiRubricCriterionStudent extends RubricsElement {
 
     return {
       criteria: { type: Array},
-      totalPoints: { type: Number },
+      totalPoints: Number,
       rubricAssociation: { attribute: "rubric-association", type: Object },
       evaluationDetails: { attribute: "evaluation-details", type: Array },
-      preview: { type: Boolean },
+      preview: Boolean,
       entityId: { attribute: "entity-id", type: String },
     };
   }
@@ -64,7 +64,7 @@ export class SakaiRubricCriterionStudent extends RubricsElement {
                   <div class="rating-item student ${r.selected ? "selected" : ""}" id="rating-item-${r.id}">
                     <h5 class="criterion-item-title">${r.title}</h5>
                     <p>${r.description}</p>
-                    <span class="points">${r.points} Points</span>
+                    <span class="points">${r.points.toLocaleString(this.locale)} Points</span>
                   </div>
                 `)}
                 </div>
@@ -88,7 +88,7 @@ export class SakaiRubricCriterionStudent extends RubricsElement {
       </div>
       ${!this.preview ? html`
       <div class="rubric-totals" style="margin-bottom: 5px;">
-        <div class="total-points">Total: <strong>${this.totalPoints}</strong></div>
+        <div class="total-points"><sr-lang key="total">Total</sr-lang>: <strong>${this.totalPoints.toLocaleString(this.locale)}</strong></div>
       </div>
       ` : html``}
     `;
@@ -102,7 +102,7 @@ export class SakaiRubricCriterionStudent extends RubricsElement {
 
         if (ed.criterionId === c.id) {
 
-          var selectedRatingItem;
+          var selectedRatingItem = null;
           c.ratings.forEach(r => {
             if (r.id == ed.selectedRatingId) {
               r.selected = true;
@@ -115,7 +115,7 @@ export class SakaiRubricCriterionStudent extends RubricsElement {
           c.selectedRatingId = ed.selectedRatingId;
           if (ed.pointsAdjusted) {
             c.pointoverride = ed.points;
-            c.selectedvalue = selectedRatingItem.points;
+            c.selectedvalue = selectedRatingItem != null ? selectedRatingItem.points : 0; // Set selected value (points) to zero if no rating was selected
           } else {
             c.pointoverride = "";
             c.selectedvalue = ed.points;
@@ -139,7 +139,7 @@ export class SakaiRubricCriterionStudent extends RubricsElement {
       return false;
     }
 
-    if ((pointoverride || pointoverride === 0) && (parseInt(pointoverride) !== parseInt(selected))) {
+    if ((pointoverride || pointoverride === 0) && (parseFloat(pointoverride) !== parseFloat(selected))) {
       return true;
     } else {
       return false;
@@ -151,9 +151,9 @@ export class SakaiRubricCriterionStudent extends RubricsElement {
     this.totalPoints = this.criteria.reduce((a, c) => {
 
       if (c.pointoverride) {
-        return a + parseInt(c.pointoverride);
+        return a + parseFloat(c.pointoverride);
       } else if (c.selectedvalue) {
-        return a + parseInt(c.selectedvalue);
+        return a + parseFloat(c.selectedvalue);
       } else {
         return a;
       }
@@ -168,7 +168,7 @@ export class SakaiRubricCriterionStudent extends RubricsElement {
       return '';
     }
 
-    if ((ovrdvl || ovrdvl === 0) && (parseInt(ovrdvl) !== parseInt(selected))) {
+    if ((ovrdvl || ovrdvl === 0) && (parseFloat(ovrdvl) !== parseFloat(selected))) {
       return 'strike';
     } else {
       return '';
