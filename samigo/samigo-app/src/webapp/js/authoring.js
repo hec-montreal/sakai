@@ -359,6 +359,8 @@ $( document ).ready( function() {
         $thisSelect.prop('disabled', false);
         $otherSelect.prop('disabled', true);
         $otherSelect.val('');
+
+        prePopulateExceptionInfo();
     });
 
     if($('#assessmentSettingsAction\\:newEntry-user').val() === '') {
@@ -375,6 +377,27 @@ $( document ).ready( function() {
         $('#assessmentSettingsAction\\:extendedEnableGroup').prop('checked', true);
     }
 });
+
+function prePopulateExceptionInfo() {
+  // only populate exception values if all values are empty (default)
+  if ($('#assessmentSettingsAction\\:newEntry-start_date').val() === '' &&
+    $('#assessmentSettingsAction\\:newEntry-due_date').val() === '' &&
+    $('#assessmentSettingsAction\\:newEntry-retract_date').val() === '' &&
+    $('#assessmentSettingsAction\\:newEntry-hours').val() === '0' && 
+    $('#assessmentSettingsAction\\:newEntry-mins').val() === '0') {
+       
+      $('#assessmentSettingsAction\\:newEntry-start_date').val($('#assessmentSettingsAction\\:startDate').val());
+      $('#assessmentSettingsAction\\:newEntry-due_date').val($('#assessmentSettingsAction\\:endDate').val());
+
+      // check if retract date is enabled before copy
+      if($('#assessmentSettingsAction\\:lateHandling\\:1').prop('checked')) {
+        $('#assessmentSettingsAction\\:newEntry-retract_date').val($('#assessmentSettingsAction\\:retractDate').val());
+      }
+
+      $('#assessmentSettingsAction\\:newEntry-hours').val($('#assessmentSettingsAction\\:timedHours').val());
+      $('#assessmentSettingsAction\\:newEntry-mins').val($('#assessmentSettingsAction\\:timedMinutes').val());
+  }
+}
 
 function validationWarningSetDefault(element, value) {
     $( element ).animate({ backgroundColor: "red" });
