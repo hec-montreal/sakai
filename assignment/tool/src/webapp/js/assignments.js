@@ -61,6 +61,13 @@ ASN.setSelectDate = function(prefix,dateval) {
 };
 
 ASN.setupAssignNew = function(){
+    isNew = $('#new_assignment_title').val() === "";
+    $("#duedate").change(function() {
+        if (isNew) {
+            $("#closedate").val($("#duedate").val());
+        }
+    });
+
     // show the previously opened field
     $('.extraNode').hide();
     showNode = $('#attachments_for').val();
