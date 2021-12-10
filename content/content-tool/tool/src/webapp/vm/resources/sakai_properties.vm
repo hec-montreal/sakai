@@ -3,6 +3,11 @@
 
 <!-- sakai_properties.vm -->
 <script type="text/javascript">includeLatestJQuery('sakai_properties');</script>
+<script>
+	$(document).ready(function() {
+		$('main a[data-toggle="popover"]').popover();
+	});
+</script>
 #javascript("/library/js/lang-datepicker/lang-datepicker.js")
 #if($calendarcounter)<!-- calendarcounter == $calendarcounter -->#else#set($calendarcounter = 0)#end
 #if($item && !$model)#set($model = $item)#end
@@ -500,6 +505,7 @@
 											/>
 											$tlang.getString("access.secured")
 										</label>
+										<a class="fa fa-info-circle" title="[$tlang.getString('access.secured.tooltip')]" tabindex="0" data-placement="bottom" role="button" data-toggle="popover" data-trigger="focus" data-html="true" data-content="$tlang.getString('access.secured.tooltip')"></a>
 									</div>
 								</div>
 							#end
