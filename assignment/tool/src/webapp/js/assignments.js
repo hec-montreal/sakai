@@ -63,6 +63,13 @@ ASN.setSelectDate = function(prefix,dateval) {
 ASN.setupAssignNew = function(){
     $("#duedate").change(function() {
         $("#closedate").val($("#duedate").val());
+        var dateObj = moment($("#duedate").val(), "YYYY-MM-DD HH:mm");
+        // must update hidden fields for this to work
+        $("#new_assignment_closemin").val(dateObj.minute());
+        $("#new_assignment_closehour").val(dateObj.hour());
+        $("#new_assignment_closeday").val(dateObj.date());
+        $("#new_assignment_closemonth").val(dateObj.month()+1); //for some reason month is 0 indexed
+        $("#new_assignment_closeyear").val(dateObj.year());
     });
 
     // show the previously opened field
