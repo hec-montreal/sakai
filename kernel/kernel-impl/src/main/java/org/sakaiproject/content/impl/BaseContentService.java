@@ -7119,7 +7119,10 @@ SiteContentAdvisorProvider, SiteContentAdvisorTypeRegistry, EntityTransferrerRef
 					}
 					
 					// SAK-30455: Track event now so the direct link still records a content.read
-					eventTrackingService.post(eventTrackingService.newEvent(EVENT_RESOURCE_READ, resource.getReference(null), false));
+					// Don't record access by probes, they generate too many events
+					if (!(ref.getId().equals("/public/background.jpg") || ref.getId().equals("/public/zc_alerte.txt"))) {
+						eventTrackingService.post(eventTrackingService.newEvent(EVENT_RESOURCE_READ, resource.getReference(null), false));
+					}
 
 					// Bypass loading the asset and just send the user a link to it.
 					if (directLinkUri != null) {
