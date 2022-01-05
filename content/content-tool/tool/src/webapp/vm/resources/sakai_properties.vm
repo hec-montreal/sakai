@@ -3,6 +3,11 @@
 
 <!-- sakai_properties.vm -->
 <script type="text/javascript">includeLatestJQuery('sakai_properties');</script>
+<script>
+	$(document).ready(function() {
+		$('main a[data-toggle="popover"]').popover();
+	});
+</script>
 #javascript("/library/js/lang-datepicker/lang-datepicker.js")
 #if($calendarcounter)<!-- calendarcounter == $calendarcounter -->#else#set($calendarcounter = 0)#end
 #if($item && !$model)#set($model = $item)#end
@@ -485,6 +490,22 @@
 											<input type="radio" name="access_mode${DOT}$i" id="access_mode_groups${DOT}$i" value="$GROUP_ACCESS" #if("$!model.accessMode" == "$GROUP_ACCESS") checked="checked"#end />
 											#if($model.isCollection())$tlang.getString("access.groups.fldr")#else$tlang.getString("access.groups.choice")#end
 										</label>
+									</div>
+								</div>
+							#end
+							#if (!$item.isCollection())
+								<div class="row">
+									<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+										<label for="allowSecuredAccess${DOT}$i">
+											<input type="checkbox"
+												name="allowSecuredAccess${DOT}$i"
+												id="allowSecuredAccess${DOT}$i"
+												value="true"
+												#if($model.isAllowSecuredAccess()) checked="checked" #end
+											/>
+											$tlang.getString("access.secured")
+										</label>
+										<a class="fa fa-info-circle" title="[$tlang.getString('access.secured.tooltip')]" tabindex="0" data-placement="bottom" role="button" data-toggle="popover" data-trigger="focus" data-html="true" data-content="$tlang.getString('access.secured.tooltip')"></a>
 									</div>
 								</div>
 							#end
