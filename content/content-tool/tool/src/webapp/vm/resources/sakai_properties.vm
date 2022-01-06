@@ -505,7 +505,7 @@
 											/>
 											$tlang.getString("access.secured")
 										</label>
-										<a class="fa fa-info-circle" title="[$tlang.getString('access.secured.tooltip')]" tabindex="0" data-placement="bottom" role="button" data-toggle="popover" data-trigger="focus" data-html="true" data-content="$tlang.getString('access.secured.tooltip')"></a>
+										<a class="fa fa-info-circle" tabindex="0" data-placement="bottom" role="button" data-toggle="popover" data-trigger="focus" data-html="true" data-content="$tlang.getString('access.secured.tooltip')"></a>
 									</div>
 								</div>
 							#end
