@@ -622,11 +622,11 @@ public class UrkundReviewServiceImpl extends BaseContentReviewService {
 
 	@Override
 	public String getIconCssClassforScore(int score, String contentId) {
-		if (score == 0) {
+		if (score <= 10) {
 			return "contentReviewIconThreshold-4";
-		} else if (score <= 39) {
+		} else if (score <= 49) {
 			return "contentReviewIconThreshold-3";
-		} else if (score <= 54) {
+		} else if (score <= 74) {
 			return "contentReviewIconThreshold-2";
 		} else {
 			return "contentReviewIconThreshold-1";
