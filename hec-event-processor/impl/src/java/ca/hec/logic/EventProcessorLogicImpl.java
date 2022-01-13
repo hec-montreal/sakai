@@ -12,7 +12,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import ca.hec.listener.EventProcessor;
 import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.component.cover.ComponentManager;
@@ -21,7 +22,7 @@ import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.SessionManager;
 
 public class EventProcessorLogicImpl implements Observer, EventProcessorLogic {
-	private static Logger logger = Logger.getLogger(EventProcessorLogicImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(EventProcessorLogicImpl.class);
 	
 	protected EventProcessingThread eventProcessingThread = new EventProcessingThread();
 	protected Queue<EventCopy> eventQueue = new ConcurrentLinkedQueue<EventCopy>();

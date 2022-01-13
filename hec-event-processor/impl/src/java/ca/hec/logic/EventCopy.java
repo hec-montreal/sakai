@@ -4,7 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sakaiproject.event.api.Event;
 import org.sakaiproject.event.api.LearningResourceStoreService.LRS_Statement;
 
@@ -19,7 +20,7 @@ import lombok.Getter;
 
 public class EventCopy implements Event
 {
-	private static Logger logger = Logger.getLogger(EventCopy.class);
+	private static Logger logger = LoggerFactory.getLogger(EventCopy.class);
 
 	@Getter protected String context;
 	protected String eventIdentifier;

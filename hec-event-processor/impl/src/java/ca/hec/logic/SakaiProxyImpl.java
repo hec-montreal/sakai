@@ -9,7 +9,8 @@ import java.util.Arrays;
 import ca.hec.listener.EventProcessor;
 import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.api.SecurityService;
@@ -32,7 +33,7 @@ public class SakaiProxyImpl {
 	public static final String[] DEFAULT_CONFIG_HEC_INSTRUCTOR_ROLES_TO_ENROLE = {"Instructor","TA", "Teaching Assistant","maintain"};
 	public static final String[] DEFAULT_CONFIG_HEC_STUDENT_ROLES = {"Student","access"};
 
-	private static final Logger logger = Logger.getLogger(SakaiProxyImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(SakaiProxyImpl.class);
 
 	public void addLocalEventListener(Observer observer) {
 		this.eventTrackingService.addLocalObserver(observer);

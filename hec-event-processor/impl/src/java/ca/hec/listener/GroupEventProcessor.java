@@ -8,7 +8,8 @@ import ca.hec.logic.EventProcessorLogic;
 import ca.hec.logic.SakaiProxyImpl;
 import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.event.api.Event;
@@ -17,7 +18,7 @@ import org.sakaiproject.site.api.Site;
 
 public class GroupEventProcessor implements EventProcessor {
 
-	private static Logger logger = Logger.getLogger(GroupEventProcessor.class);
+	private static Logger logger = LoggerFactory.getLogger(GroupEventProcessor.class);
 
 	private static final String EVENT_ID = "site.upd.grp.mbrshp";
 

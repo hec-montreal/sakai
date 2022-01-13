@@ -12,7 +12,8 @@ import java.util.Observer;
 import ca.hec.logic.EventProcessorLogic;
 import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.event.api.Event;
@@ -22,7 +23,7 @@ import org.sakaiproject.user.api.UserDirectoryService;
 
 public class LoginProcessor implements EventProcessor {
 
-	private static Logger logger = Logger.getLogger(LoginProcessor.class);
+	private static Logger logger = LoggerFactory.getLogger(LoginProcessor.class);
 
 	private static final String EVENT_ID = "user.login";
 
