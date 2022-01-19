@@ -90,8 +90,10 @@ Headings for delivery pages, needs to have msg=DeliveryMessages.properties, etc.
 					&& (delivery.graderComment ne '' || delivery.hasAssessmentGradingAttachment)}" columns="1" border="0">
     <h:panelGroup>  
       <h:outputLabel for="commentSC" styleClass="answerkeyFeedbackCommentLabel" value="#{deliveryMessages.comment}#{deliveryMessages.column} " />
-	  <h:outputText id="commentSC" value="#{delivery.graderComment}" escape="false" rendered="#{delivery.graderComment ne ''}"/>
-    </h:panelGroup>
+	  <h:outputText id="commentSC" value="#{delivery.graderComment}" escape="false" rendered="#{delivery.graderComment ne ''}">
+      <f:converter converterId="org.sakaiproject.tool.assessment.jsf.convert.SecureContentWrapper" />
+    </h:outputText>
+  </h:panelGroup>
     
 	<h:panelGroup rendered="#{delivery.hasAssessmentGradingAttachment}">
       <h:dataTable value="#{delivery.assessmentGradingAttachmentList}" var="attach">

@@ -74,7 +74,9 @@ should be included in file importing DeliveryMessages
   <h:panelGrid rendered="#{delivery.feedbackComponent.showCorrectResponse && !delivery.noFeedback=='true'&& question.modelAnswerIsNotEmpty}" >
     <h:panelGroup>
       <h:outputLabel for="answerKeyMC" styleClass="answerkeyFeedbackCommentLabel" value="#{deliveryMessages.model} " />
-	    <h:outputText  value="#{question.key}" escape="false"/>
+	    <h:outputText  value="#{question.key}" escape="false">
+	            <f:converter converterId="org.sakaiproject.tool.assessment.jsf.convert.SecureContentWrapper" />
+	    </h:outputText>
     </h:panelGroup>
     <h:outputText value=" "/>
   </h:panelGrid>
@@ -82,7 +84,9 @@ should be included in file importing DeliveryMessages
   <h:panelGrid rendered="#{delivery.feedbackComponent.showItemLevel && !delivery.noFeedback=='true' && question.feedbackIsNotEmpty}">
     <h:panelGroup>
       <h:outputLabel for="feedSC" styleClass="answerkeyFeedbackCommentLabel" value="#{commonMessages.feedback}#{deliveryMessages.column} " />
-      <h:outputText id="feedSC" value="#{question.feedback}" escape="false" />
+      <h:outputText id="feedSC" value="#{question.feedback}" escape="false">
+            <f:converter converterId="org.sakaiproject.tool.assessment.jsf.convert.SecureContentWrapper" />
+      </h:outputText>
     </h:panelGroup>
     <h:outputText value=" "/>
   </h:panelGrid>
@@ -90,7 +94,9 @@ should be included in file importing DeliveryMessages
   <h:panelGrid rendered="#{delivery.actionString !='gradeAssessment' && delivery.feedbackComponent.showGraderComment && !delivery.noFeedback=='true' && (question.gradingCommentIsNotEmpty || question.hasItemGradingAttachment)}" columns="1" border="0">
     <h:panelGroup>
       <h:outputLabel for="commentSC" styleClass="answerkeyFeedbackCommentLabel" value="#{deliveryMessages.comment}#{deliveryMessages.column} " />
-      <h:outputText id="commentSC" value="#{question.gradingComment}" escape="false" rendered="#{question.gradingCommentIsNotEmpty}"/>
+      <h:outputText id="commentSC" value="#{question.gradingComment}" escape="false" rendered="#{question.gradingCommentIsNotEmpty}">
+            <f:converter converterId="org.sakaiproject.tool.assessment.jsf.convert.SecureContentWrapper" />
+      </h:outputText>
     </h:panelGroup>
     
 	<h:panelGroup rendered="#{question.hasItemGradingAttachment}">
