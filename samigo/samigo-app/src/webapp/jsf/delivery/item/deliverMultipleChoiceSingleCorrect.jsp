@@ -76,8 +76,8 @@ should be included in file importing DeliveryMessages
         <h:outputText value="#{deliveryMessages.dot} " rendered="#{selection.answer.label ne ''}" />
       </span>
       <h:outputText styleClass="samigo-answer-text" value="#{selection.answer.text}" escape="false">
-        <f:converter converterId="org.sakaiproject.tool.assessment.jsf.convert.AnswerSurveyConverter" />
         <f:converter converterId="org.sakaiproject.tool.assessment.jsf.convert.SecureContentWrapper" />
+        <f:converter converterId="org.sakaiproject.tool.assessment.jsf.convert.AnswerSurveyConverter" />
       </h:outputText>
     </h:panelGroup>
 
