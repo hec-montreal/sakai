@@ -28,7 +28,6 @@ should be included in file importing DeliveryMessages
   <f:converter converterId="org.sakaiproject.tool.assessment.jsf.convert.SecureContentWrapper" />
 </h:outputText>
 
-<h:outputText value="#{question.text} <br/>"  escape="false"/>
 <!-- ATTACHMENTS -->
 <%@ include file="/jsf/delivery/item/attachment.jsp" %>
 
