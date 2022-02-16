@@ -259,7 +259,8 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
     	assignmentDefinition.setExternallyMaintained(internalAssignment.isExternallyMaintained());
     	assignmentDefinition.setExternalAppName(internalAssignment.getExternalAppName());
     	assignmentDefinition.setExternalId(internalAssignment.getExternalId());
-    	assignmentDefinition.setExternalData(internalAssignment.getExternalData());
+		assignmentDefinition.setExternalData(internalAssignment.getExternalData());
+		assignmentDefinition.setExternalAssignedGroups(internalAssignment.getExternalAssignedGroups());
     	assignmentDefinition.setReleased(internalAssignment.isReleased());
     	assignmentDefinition.setId(internalAssignment.getId());
     	assignmentDefinition.setExtraCredit(internalAssignment.isExtraCredit());
@@ -501,7 +502,7 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
 						// create the assignment for the current category
 						try {
 							Long newId = createAssignmentForCategory(gradebook.getId(), categoriesCreated.get(c.getName()), a.getName(), a.getPoints(),
-									a.getDueDate(), !a.isCounted(), a.isReleased(), a.isExtraCredit(), a.getCategorizedSortOrder());
+									a.getDueDate(), !a.isCounted(), a.isReleased(), a.isExtraCredit(), a.getCategorizedSortOrder(), a.getExternalAssignedGroups());
 							transversalMap.put("gb/"+a.getId(),"gb/"+newId);
 						} catch (final ConflictingAssignmentNameException e) {
 							// assignment already exists. Could be from a merge.
@@ -533,7 +534,7 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
 		assignments.removeIf(a -> assignmentsCreated.contains(a.getName()));
 		assignments.forEach(a -> {
 			try {
-				Long newId = createAssignment(gradebook.getId(), a.getName(), a.getPoints(), a.getDueDate(), !a.isCounted(), a.isReleased(), a.isExtraCredit(), a.getSortOrder());
+				Long newId = createAssignment(gradebook.getId(), a.getName(), a.getPoints(), a.getDueDate(), !a.isCounted(), a.isReleased(), a.isExtraCredit(), a.getSortOrder(), a.getExternalAssignedGroups());
 				transversalMap.put("gb/"+a.getId(),"gb/"+newId);
 			} catch (final ConflictingAssignmentNameException e) {
 				// assignment already exists. Could be from a merge.
@@ -617,11 +618,12 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
 		if (assignmentDefinition.getCategoryId() != null) {
 			return createAssignmentForCategory(gradebook.getId(), assignmentDefinition.getCategoryId(), assignmentDefinition.getName(),
 					points, assignmentDefinition.getDueDate(), !assignmentDefinition.isCounted(), assignmentDefinition.isReleased(),
-					assignmentDefinition.isExtraCredit(), assignmentDefinition.getCategorizedSortOrder());
+					assignmentDefinition.isExtraCredit(), assignmentDefinition.getCategorizedSortOrder(), assignmentDefinition.getExternalAssignedGroups());
 		}
 
 		return createAssignment(gradebook.getId(), assignmentDefinition.getName(), points, assignmentDefinition.getDueDate(),
-				!assignmentDefinition.isCounted(), assignmentDefinition.isReleased(), assignmentDefinition.isExtraCredit(), assignmentDefinition.getSortOrder());
+				!assignmentDefinition.isCounted(), assignmentDefinition.isReleased(), assignmentDefinition.isExtraCredit(), assignmentDefinition.getSortOrder(), 
+				assignmentDefinition.getExternalAssignedGroups());
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -680,6 +682,7 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
 				assignment.setExternallyMaintained(assignmentDefinition.isExternallyMaintained());
 				assignment.setExternalId(assignmentDefinition.getExternalId());
 				assignment.setExternalData(assignmentDefinition.getExternalData());
+				assignment.setExternalAssignedGroups(assignmentDefinition.getExternalAssignedGroups());
 
 				// if we have a category, get it and set it
 				// otherwise clear it fully

@@ -23,6 +23,7 @@ package org.sakaiproject.service.gradebook.shared;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -99,6 +100,13 @@ public class Assignment implements Serializable, Comparable<Assignment> {
 	@Getter
 	@Setter
 	private String externalData;
+
+	/**
+	 * the external assigned groups, or null if the assignment is maintained by the Gradebook
+	 */
+	@Getter
+	@Setter
+	private Set<String> externalAssignedGroups;
 
 	/**
 	 * true if the assignment has been released for view to students
