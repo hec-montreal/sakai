@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This service is designed for use by external assessment engines. These use
@@ -41,7 +42,7 @@ public interface GradebookExternalAssessmentService {
 	 *		{@link addExternalAssessment(String, String, String, String, Double, Date, String, Boolean)}
 	 */
 	public void addExternalAssessment(String gradebookUid, String externalId, String externalUrl,
-			String title, double points, Date dueDate, String externalServiceDescription, String externalData)
+			String title, double points, Date dueDate, String externalServiceDescription, String externalData, Set<String> externalGroups)
             throws GradebookNotFoundException, ConflictingAssignmentNameException,
             ConflictingExternalIdException, AssignmentHasIllegalPointsException;
 
@@ -72,7 +73,7 @@ public interface GradebookExternalAssessmentService {
 	 *
 	 */
 	public void addExternalAssessment(String gradebookUid, String externalId, String externalUrl, String title, Double points,
-									  Date dueDate, String externalServiceDescription, String externalData, Boolean ungraded)
+									  Date dueDate, String externalServiceDescription, String externalData, Boolean ungraded, Set<String> externalGroups)
             throws GradebookNotFoundException, ConflictingAssignmentNameException, ConflictingExternalIdException, AssignmentHasIllegalPointsException;
 	
 	/**
@@ -96,7 +97,7 @@ public interface GradebookExternalAssessmentService {
 	 * @throws InvalidCategoryException
 	 */
     public void addExternalAssessment(String gradebookUid, String externalId, String externalUrl, String title, Double points,
-									  Date dueDate, String externalServiceDescription, String externalData, Boolean ungraded, Long categoryId)
+									  Date dueDate, String externalServiceDescription, String externalData, Boolean ungraded, Long categoryId, Set<String> externalGroups)
             throws GradebookNotFoundException, ConflictingAssignmentNameException, ConflictingExternalIdException, AssignmentHasIllegalPointsException, InvalidCategoryException;
 	
 		/**
@@ -104,7 +105,7 @@ public interface GradebookExternalAssessmentService {
 		 *		{@link updateExternalAssessment(String, String, String, String, Double, Date, Boolean)}
 		 */
     public void updateExternalAssessment(String gradebookUid, String externalId, String externalUrl, String externalData,
-										 String title, double points, Date dueDate)
+										 String title, double points, Date dueDate, Set<String> externalGroups)
 	        throws GradebookNotFoundException, AssessmentNotFoundException, ConflictingAssignmentNameException, AssignmentHasIllegalPointsException;
     
     /**
@@ -123,7 +124,7 @@ public interface GradebookExternalAssessmentService {
      * @throws AssignmentHasIllegalPointsException
      */
     public void updateExternalAssessment(String gradebookUid, String externalId, String externalUrl, String externalData,
-										 String title, Double points, Date dueDate, Boolean ungraded)
+										 String title, Double points, Date dueDate, Boolean ungraded, Set<String> externalGroups)
 			throws GradebookNotFoundException, AssessmentNotFoundException, ConflictingAssignmentNameException, AssignmentHasIllegalPointsException;
 
 	/**

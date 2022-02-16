@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -98,6 +99,7 @@ public class GradebookAssignment extends GradableObject {
 	@Setter private String itemType;
 	@Getter @Setter public String selectedGradeEntryValue;
 	@Setter private Boolean hideInAllGradesTable = Boolean.FALSE;
+	@Getter @Setter private Set<String> externalAssignedGroups;
 
 	static {
 		dateComparator = new Comparator() {
