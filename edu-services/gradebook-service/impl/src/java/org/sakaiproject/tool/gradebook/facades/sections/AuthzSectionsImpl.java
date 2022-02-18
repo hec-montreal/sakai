@@ -682,4 +682,10 @@ public class AuthzSectionsImpl implements Authz {
 		this.gradebookPermissionService = gradebookPermissionService;
 	}
 
+	@Override
+	public boolean isUserAbleToGradeSection(String sectionUid) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
