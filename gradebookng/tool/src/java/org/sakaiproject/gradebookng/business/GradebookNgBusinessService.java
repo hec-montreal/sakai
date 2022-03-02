@@ -50,6 +50,7 @@ import org.sakaiproject.authz.api.SecurityAdvisor.SecurityAdvice;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.coursemanagement.api.Section;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.section.api.coursemanagement.CourseSection;
@@ -242,9 +243,9 @@ public class GradebookNgBusinessService {
 
 			final GbRole role = this.getUserRole(givenSiteId);
 
-			// if TA, pass it through the gradebook permissions (only if there
+			// if TA or INSTRUCTOR, pass it through the gradebook permissions (only if there
 			// are permissions)
-			if (role == GbRole.TA) {
+			if (role == GbRole.TA || role == GbRole.INSTRUCTOR) {
 				final User user = getCurrentUser();
 
 				// if there are permissions, pass it through them
