@@ -25,6 +25,7 @@ import java.util.Map;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.sakaiproject.authz.cover.SecurityService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.section.api.SectionAwareness;
 import org.sakaiproject.section.api.coursemanagement.CourseSection;
@@ -245,9 +246,12 @@ public class AuthzSectionsImpl implements Authz {
 			return viewableSections;
 		}
 		
+		// this lets instructors grade all, not what we want at HEC
+		/*
 		if (isUserAbleToGradeAll(gradebookUid)) {
 			return allSections;
 		}
+		*/
 
 		Map sectionIdCourseSectionMap = new HashMap();
 
@@ -270,11 +274,11 @@ public class AuthzSectionsImpl implements Authz {
 				}
 			}
 		} else {
-			// return all sections that the current user is a TA for
+			// return all sections that the current user has gradebook.gradeSection for
 			for (Iterator<Map.Entry<String, CourseSection>> iter = sectionIdCourseSectionMap.entrySet().iterator(); iter.hasNext(); ) {
 	            Map.Entry<String, CourseSection> entry = iter.next();
 	            String sectionUuid = entry.getKey();
-				if (isUserTAinSection(sectionUuid)) {
+				if (SecurityService.unlock("gradebook.gradeSection", sectionUuid)) {
 					CourseSection viewableSection = (CourseSection)sectionIdCourseSectionMap.get(sectionUuid);
 					if (viewableSection != null)
 						viewableSections.add(viewableSection);
