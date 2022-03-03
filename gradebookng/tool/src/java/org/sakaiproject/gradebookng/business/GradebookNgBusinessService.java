@@ -1614,7 +1614,10 @@ public class GradebookNgBusinessService {
 			final Collection<Group> groups = site.getGroups();
 
 			for (final Group group : groups) {
-				rval.add(new GbGroup(group.getId(), group.getTitle(), group.getReference(), GbGroup.Type.GROUP));
+				// only add group if user can grade
+				if (canUserGradeSection(group.getReference())) {
+					rval.add(new GbGroup(group.getId(), group.getTitle(), group.getReference(), GbGroup.Type.GROUP));
+				}
 			}
 
 		} catch (final IdUnusedException e) {
@@ -2332,6 +2335,10 @@ public class GradebookNgBusinessService {
 		}
 
 		return rval;
+	}
+
+	private boolean canUserGradeSection(String sectionRef) {
+		return this.securityService.unlock("gradebook.gradeSection", sectionRef);
 	}
 
 	/**
