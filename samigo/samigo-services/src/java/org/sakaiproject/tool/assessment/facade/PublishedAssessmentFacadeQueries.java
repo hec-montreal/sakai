@@ -746,6 +746,10 @@ public class PublishedAssessmentFacadeQueries extends HibernateDaoSupport implem
 				}
 			}
 		}
+
+		// write authorization
+		createAuthorization(publishedAssessment);
+
 		// add to gradebook
 		if (publishedAssessment.getEvaluationModel() != null) {
 			String toGradebook = publishedAssessment.getEvaluationModel()
@@ -768,7 +772,20 @@ public class PublishedAssessmentFacadeQueries extends HibernateDaoSupport implem
 							.equals(EvaluationModelIfc.TO_DEFAULT_GRADEBOOK
 									.toString())) {
 				try {
-					gbsHelper.addToGradebook(publishedAssessment, null, g);
+					Set<String> groups = new HashSet<String>();
+					String releaseTo = publishedAssessment.getAssessmentAccessControl().getReleaseTo();
+					Long assessmentId = publishedAssessment.getPublishedAssessmentId();
+					String siteId = getPublishedAssessmentSiteId(assessmentId.toString());
+					if (AssessmentAccessControl.RELEASE_TO_SELECTED_GROUPS.equals(releaseTo)) {
+						Map groupsForSite = getGroupsForSite(siteId);
+						Map<String,String> releaseToGroups = getReleaseToGroups(groupsForSite, assessmentId);
+						// don't know a better way to get group ref than concat
+						groups.addAll(releaseToGroups.keySet().stream().map(gid->{ return "/site/"+siteId+"/group/"+gid; }).collect(Collectors.toSet()));
+					}
+					else {
+						groups.add("/site/"+siteId);
+					}
+					gbsHelper.addToGradebook(publishedAssessment, null, groups, g);
 				} catch (Exception e) {
 					log.error("Removing published assessment: " + e);
 					delete(publishedAssessment);
@@ -777,8 +794,6 @@ public class PublishedAssessmentFacadeQueries extends HibernateDaoSupport implem
 			}
 		}
 
-		// write authorization
-		createAuthorization(publishedAssessment);
 		return new PublishedAssessmentFacade(publishedAssessment);
 	}
 

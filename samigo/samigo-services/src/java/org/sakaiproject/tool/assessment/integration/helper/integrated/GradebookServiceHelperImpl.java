@@ -19,6 +19,7 @@ package org.sakaiproject.tool.assessment.integration.helper.integrated;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -175,7 +176,7 @@ public void removeExternalAssessment(String gradebookUId,
    * @return false: cannot add to gradebook
    * @throws java.lang.Exception
    */
-  public boolean addToGradebook(PublishedAssessmentData publishedAssessment, Long categoryId, 
+  public boolean addToGradebook(PublishedAssessmentData publishedAssessment, Long categoryId, Set<String> groups, 
 		  GradebookExternalAssessmentService g) throws
     Exception
   {
@@ -191,7 +192,7 @@ public void removeExternalAssessment(String gradebookUId,
       String title = StringEscapeUtils.unescapeHtml3(publishedAssessment.getTitle());
       if(!g.isAssignmentDefined(gradebookUId, title))
       {
-          g.addExternalAssessment(gradebookUId,
+          g.addExternalAssessment(gradebookUId, 
                   publishedAssessment.getPublishedAssessmentId().toString(),
                   null,
                   title,
@@ -200,7 +201,8 @@ public void removeExternalAssessment(String gradebookUId,
                   getAppName(), // Use the app name from sakai
                   null,
                   false,
-                  categoryId);
+                  categoryId,
+                  groups);
         added = true;
       }
     }
@@ -214,7 +216,7 @@ public void removeExternalAssessment(String gradebookUId,
    * @return false: cannot update the gradebook
    * @throws java.lang.Exception
    */
-  public boolean updateGradebook(PublishedAssessmentIfc publishedAssessment,
+  public boolean updateGradebook(PublishedAssessmentIfc publishedAssessment, Set<String> groups,
 		  GradebookExternalAssessmentService g) throws Exception
   {
     log.debug("updateGradebook start");
@@ -231,7 +233,7 @@ public void removeExternalAssessment(String gradebookUId,
             null,
             publishedAssessment.getTitle(),
             publishedAssessment.getTotalScore(),
-            publishedAssessment.getAssessmentAccessControl().getDueDate());
+            publishedAssessment.getAssessmentAccessControl().getDueDate(), groups);
     return true;
   }
 
