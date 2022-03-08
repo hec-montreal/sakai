@@ -25,6 +25,8 @@ package org.sakaiproject.lessonbuildertool.service;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,7 +50,8 @@ public class GradebookIfc {
     public boolean addExternalAssessment(final String gradebookUid, final String externalId, final String externalUrl,
 					 final String title, final double points, final Date dueDate, final String externalServiceDescription) {
 	try {
-	    gbExternalService.addExternalAssessment(gradebookUid, externalId, externalUrl, title, points, dueDate, externalServiceDescription, null);
+		gbExternalService.addExternalAssessment(gradebookUid, externalId, externalUrl, title, points, dueDate, externalServiceDescription, null, 
+			Stream.of("/site/"+gradebookUid).collect(Collectors.toSet()));
 	} catch (ConflictingAssignmentNameException cane) {
 	    // already exists
 	    log.warn("ConflictingAssignmentNameException for title {} : {} ", title, cane.getMessage());
@@ -63,7 +66,8 @@ public class GradebookIfc {
     public boolean updateExternalAssessment(final String gradebookUid, final String externalId, final String externalUrl,
 					    final String title, final double points, final Date dueDate) {
 	try {
-	    gbExternalService.updateExternalAssessment(gradebookUid, externalId, externalUrl, null, title, points, dueDate);
+		gbExternalService.updateExternalAssessment(gradebookUid, externalId, externalUrl, null, title, points, dueDate, 
+			Stream.of("/site/"+gradebookUid).collect(Collectors.toSet()));
 	} catch (Exception e) {
 	    return false;
 	}
