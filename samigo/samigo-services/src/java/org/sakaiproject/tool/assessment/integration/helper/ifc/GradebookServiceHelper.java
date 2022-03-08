@@ -22,6 +22,7 @@
 package org.sakaiproject.tool.assessment.integration.helper.ifc;
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Set;
 
 import org.sakaiproject.service.gradebook.shared.GradebookExternalAssessmentService;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
@@ -48,10 +49,10 @@ public interface GradebookServiceHelper extends Serializable
   public void removeExternalAssessment(String gradebookUId,
      String publishedAssessmentId, GradebookExternalAssessmentService g) throws Exception;
 
-  public boolean addToGradebook(PublishedAssessmentData publishedAssessment, Long categoryId,
+  public boolean addToGradebook(PublishedAssessmentData publishedAssessment, Long categoryId, Set<String> groups,
 		  GradebookExternalAssessmentService g) throws Exception;
 
-  public boolean updateGradebook(PublishedAssessmentIfc publishedAssessment,
+  public boolean updateGradebook(PublishedAssessmentIfc publishedAssessment, Set<String> groups,
 		  GradebookExternalAssessmentService g) throws Exception;
 
   public boolean isAssignmentDefined(String assessmentTitle,

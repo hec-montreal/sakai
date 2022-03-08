@@ -22,11 +22,13 @@
 package org.sakaiproject.tool.assessment.ui.listener.author;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -42,6 +44,7 @@ import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.event.cover.EventTrackingService;
 import org.sakaiproject.samigo.util.SamigoConstants;
 import org.sakaiproject.service.gradebook.shared.GradebookExternalAssessmentService;
+import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.spring.SpringBeanLocator;
 import org.sakaiproject.tool.assessment.api.SamigoApiFactory;
 import org.sakaiproject.tool.assessment.data.dao.assessment.AssessmentAccessControl;
@@ -848,10 +851,21 @@ implements ActionListener
 						log.info("Exception thrown in updateGB():" + e1.getMessage());
 					}
 				}
-				
+
+				String releaseTo = assessmentSettings.getReleaseTo();
+				Set<String> groups = new HashSet<String>();
+				String siteId = AgentFacade.getCurrentSiteId();
+				if (AssessmentAccessControl.RELEASE_TO_SELECTED_GROUPS.equals(releaseTo)) {
+					List<String> gList = Arrays.asList(assessmentSettings.getGroupsAuthorized());
+					groups.addAll(gList.stream().map(gid->{ return new String("/site/"+siteId+"/group/"+gid); }).collect(Collectors.toSet()));
+				}
+				else {
+					groups.add("/site/"+siteId);
+				}
+
 				if(gbItemExists && !(isTitleChanged || isScoringTypeChanged)){
 					try {
-						gbsHelper.updateGradebook(assessment, g);
+						gbsHelper.updateGradebook(assessment, groups, g);
 					} catch (Exception e) {
                                                String gbConflict_error=ContextUtil.getLocalizedString("org.sakaiproject.tool.assessment.bundle.AssessmentSettingsMessages","gbConflict_error");
                                                context.addMessage(null,new FacesMessage(gbConflict_error));
@@ -863,7 +877,7 @@ implements ActionListener
 				else{
 					try{
 						log.debug("before gbsHelper.addToGradebook()");
-						gbsHelper.addToGradebook((PublishedAssessmentData)assessment.getData(), categoryId, g);
+						gbsHelper.addToGradebook((PublishedAssessmentData)assessment.getData(), categoryId, groups, g);
 
 						// any score to copy over? get all the assessmentGradingData and copy over
 						GradingService gradingService = new GradingService();
