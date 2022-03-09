@@ -394,7 +394,7 @@ public class GradebookNgBusinessService {
 	 * @return a list of assignments or empty list if none/no gradebook
 	 */
 	public List<Assignment> getGradebookAssignments() {
-		return getGradebookAssignments(getCurrentSiteId(), SortType.SORT_BY_SORTING);
+		return getGradebookAssignments(getCurrentSiteId(), SortType.SORT_BY_SORTING, null);
 	}
 
 	/**
@@ -404,7 +404,7 @@ public class GradebookNgBusinessService {
 	 * @return a list of assignments or empty list if none/no gradebook
 	 */
 	public List<Assignment> getGradebookAssignments(final String siteId) {
-		return getGradebookAssignments(siteId, SortType.SORT_BY_SORTING);
+		return getGradebookAssignments(siteId, SortType.SORT_BY_SORTING, null);
 	}
 
 	/**
@@ -415,7 +415,11 @@ public class GradebookNgBusinessService {
 	 * @return a list of assignments or empty list if none/no gradebook
 	 */
 	public List<Assignment> getGradebookAssignments(final SortType sortBy) {
-		return getGradebookAssignments(getCurrentSiteId(), sortBy);
+		return getGradebookAssignments(getCurrentSiteId(), sortBy, null);
+	} 
+
+	public List<Assignment> getGradebookAssignments(final SortType sortBy, final GbGroup groupFilter) {
+			return getGradebookAssignments(getCurrentSiteId(), sortBy, groupFilter);
 	}
 
 	/**
@@ -472,16 +476,27 @@ public class GradebookNgBusinessService {
 	 *
 	 * @param siteId the siteId
 	 * @param sortBy
+	 * @param groupFilter
 	 * @return a list of assignments or empty list if none/no gradebook
 	 */
-	public List<Assignment> getGradebookAssignments(final String siteId, final SortType sortBy) {
+	public List<Assignment> getGradebookAssignments(final String siteId, final SortType sortBy, final GbGroup groupFilter) {
 
 		final List<Assignment> assignments = new ArrayList<>();
 		final Gradebook gradebook = getGradebook(siteId);
+		List<Assignment> viewableAssignments;
 		if (gradebook != null) {
 			// applies permissions (both student and TA) and default sort is
 			// SORT_BY_SORTING
-			assignments.addAll(this.gradebookService.getViewableAssignmentsForCurrentUser(gradebook.getUid(), sortBy));
+			viewableAssignments = this.gradebookService.getViewableAssignmentsForCurrentUser(gradebook.getUid(), sortBy);
+
+			if (groupFilter != null) {
+				assignments.addAll(viewableAssignments.stream()
+					.filter(a -> a.getExternalAssignedGroups().contains("/site/"+siteId) || a.getExternalAssignedGroups().contains(groupFilter.getReference()))
+					.collect(Collectors.toList()));
+			}
+			else {
+				assignments.addAll(viewableAssignments);
+			}
 		}
 		return assignments;
 	}
