@@ -1326,19 +1326,12 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
 			// if user can grade and doesn't have grader perm restrictions, they
 			// may view all assigns
 			if (!getAuthz().isUserHasGraderPermissions(gradebookUid)) {
-				final List<GradebookAssignment> assignments = getAssignments(gradebook.getId(), sortBy, true);
-				for (GradebookAssignment a : assignments) {
-					for (String groupId : a.getExternalAssignedGroups()) {
-						if (getAuthz().isUserAbleToGradeSection(groupId)) {
-							viewableAssignments.add(a);
-						}
-					}
-				}
+				viewableAssignments = getAssignments(gradebook.getId(), sortBy, true);
 			} else {
 				// this user has grader perms, so we need to filter the items returned
 				// if this gradebook has categories enabled, we need to check for category-specific restrictions
 				if (gradebook.getCategory_type() == GradebookService.CATEGORY_TYPE_NO_CATEGORY) {
-					assignmentsToReturn.addAll(getAssignments(gradebookUid, sortBy));
+					viewableAssignments = getAssignments(gradebook.getId(), sortBy, true);
 				} else {
 					final String userUid = getUserUid();
 					if (getGradebookPermissionService().getPermissionForUserForAllAssignment(gradebook.getId(), userUid)) {
@@ -1380,6 +1373,9 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
 				assignmentsToReturn.add(getAssignmentDefinition(assignment));
 			}
 		}
+
+		// HEC: always filter list for gradeSection permission
+		assignmentsToReturn.removeIf(a -> !a.getExternalAssignedGroups().stream().anyMatch(g->getAuthz().isUserAbleToGradeSection(g)));
 
 		return new ArrayList<>(assignmentsToReturn);
 
