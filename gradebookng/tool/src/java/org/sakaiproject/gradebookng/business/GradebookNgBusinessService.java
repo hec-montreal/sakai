@@ -2356,6 +2356,10 @@ public class GradebookNgBusinessService {
 		return this.securityService.unlock("gradebook.gradeSection", sectionRef);
 	}
 
+	public boolean canUserGradeAll(String siteRef) {
+		return this.securityService.unlock("gradebook.gradeAll", siteRef);
+	}
+
 	/**
 	 * Get the role of the current user in the given site or GbRole.NONE if the user does not have access
 	 *

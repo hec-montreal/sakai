@@ -19,7 +19,11 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
+import java.io.Serializable;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -32,6 +36,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
@@ -39,6 +44,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.validation.IValidationError;
 import org.sakaiproject.gradebookng.business.GbCategoryType;
+import org.sakaiproject.gradebookng.business.model.GbGroup;
 import org.sakaiproject.gradebookng.business.util.FormatHelper;
 import org.sakaiproject.gradebookng.tool.model.UiMode;
 import org.sakaiproject.portal.util.PortalUtils;
@@ -47,6 +53,7 @@ import org.sakaiproject.service.gradebook.shared.Assignment;
 import org.sakaiproject.service.gradebook.shared.CategoryDefinition;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.service.gradebook.shared.GradingType;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.tool.gradebook.Gradebook;
 import org.sakaiproject.util.DateFormatterUtil;
 
@@ -189,6 +196,73 @@ public class AddOrEditGradeItemPanelContent extends BasePanel {
 		this.scaleGradesContainer.setOutputMarkupPlaceholderTag(true);
 		this.scaleGradesContainer.add(new CheckBox("scaleGrades", new PropertyModel<Boolean>(assignmentModel, "scaleGrades")));
 		add(this.scaleGradesContainer);
+
+		// map group names to ref
+		final LinkedHashMap<String, String> groupsMap = new LinkedHashMap<String, String>();
+
+		Optional<Site> site = this.businessService.getCurrentSite();
+		Boolean canUserGradeAll = this.businessService.canUserGradeAll(site.get().getReference());
+		final String siteRef = site.get().getReference();
+
+		if ((canUserGradeAll || (assignment.getExternalAssignedGroups() != null && assignment.getExternalAssignedGroups().contains(siteRef)))) {
+			groupsMap.put(siteRef, getString("label.addgradeitem.wholesite"));
+		}
+
+		List<GbGroup> siteGroups = this.businessService.getSiteSectionsAndGroups();
+		for (GbGroup group : siteGroups) {
+			groupsMap.put(group.getReference(), group.getTitle());
+		}
+
+		final ListMultipleChoice<String> sectionsList = new ListMultipleChoice<String>("sections",
+			// not sure why PropertyModel isn't working so I had to do this
+			new Model() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public Serializable getObject() {
+					Set<String> definedGroups = assignment.getExternalAssignedGroups();
+					//if we don't return a new hashset, wicket returns an arraylist :/
+					return definedGroups != null ? new HashSet<String>(definedGroups) : new HashSet<String>();
+				}
+
+				@Override
+				public void setObject(Serializable object) {
+					assignment.setExternalAssignedGroups((HashSet<String>) object);
+				}
+			},
+			new ArrayList<String>(groupsMap.keySet()),
+			new IChoiceRenderer<String>() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public Object getDisplayValue(String object) {
+					return groupsMap.get(object);
+				}
+
+				@Override
+				public String getIdValue(String object, int index) {
+					return object;
+				}
+
+			}
+		) {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public boolean isEnabled() {
+				return !assignment.isExternallyMaintained();
+			}
+
+			@Override
+			public boolean isRequired() {
+				return !assignment.isExternallyMaintained();
+			}
+		};
+
+		// display 5 rows
+		sectionsList.setMaxRows(5);
+		add(sectionsList);
 
 		// due date
 		// TODO date format needs to come from i18n
