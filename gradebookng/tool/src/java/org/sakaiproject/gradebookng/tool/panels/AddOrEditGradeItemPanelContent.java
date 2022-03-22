@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -227,7 +229,9 @@ public class AddOrEditGradeItemPanelContent extends BasePanel {
 
 				@Override
 				public void setObject(Serializable object) {
-					assignment.setExternalAssignedGroups((HashSet<String>) object);
+					Set<String> selectedSections = (HashSet<String>) object;
+					assignment.setExternalAssignedGroups(
+						selectedSections.contains(siteRef) ? Stream.of(siteRef).collect(Collectors.toSet()) : selectedSections);
 				}
 			},
 			new ArrayList<String>(groupsMap.keySet()),
@@ -257,6 +261,12 @@ public class AddOrEditGradeItemPanelContent extends BasePanel {
 			@Override
 			public boolean isRequired() {
 				return !assignment.isExternallyMaintained();
+			}
+
+			@Override
+			public void error(final IValidationError error) {
+				// Use our fancy error message for all validation errors
+				error(getString("error.addgradeitem.sections"));
 			}
 		};
 
