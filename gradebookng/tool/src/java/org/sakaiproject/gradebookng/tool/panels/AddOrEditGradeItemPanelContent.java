@@ -258,6 +258,12 @@ public class AddOrEditGradeItemPanelContent extends BasePanel {
 			public boolean isRequired() {
 				return !assignment.isExternallyMaintained();
 			}
+
+			@Override
+			public void error(final IValidationError error) {
+				// Use our fancy error message for all validation errors
+				error(getString("error.addgradeitem.sections"));
+			}
 		};
 
 		// display 5 rows
