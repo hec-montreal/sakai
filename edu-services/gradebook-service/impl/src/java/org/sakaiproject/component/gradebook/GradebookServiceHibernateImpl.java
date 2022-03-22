@@ -1331,7 +1331,7 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
 				// this user has grader perms, so we need to filter the items returned
 				// if this gradebook has categories enabled, we need to check for category-specific restrictions
 				if (gradebook.getCategory_type() == GradebookService.CATEGORY_TYPE_NO_CATEGORY) {
-					viewableAssignments = getAssignments(gradebook.getId(), sortBy, true);
+					assignmentsToReturn.addAll(getAssignments(gradebookUid, sortBy));
 				} else {
 					final String userUid = getUserUid();
 					if (getGradebookPermissionService().getPermissionForUserForAllAssignment(gradebook.getId(), userUid)) {
