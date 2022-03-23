@@ -1630,7 +1630,7 @@ public class GradebookNgBusinessService {
 
 			for (final Group group : groups) {
 				// only add group if user can grade
-				if (canUserGradeSection(group.getReference())) {
+				if (canUserGradeAll(site.getReference()) || canUserGradeSection(group.getReference())) {
 					rval.add(new GbGroup(group.getId(), group.getTitle(), group.getReference(), GbGroup.Type.GROUP));
 				}
 			}
