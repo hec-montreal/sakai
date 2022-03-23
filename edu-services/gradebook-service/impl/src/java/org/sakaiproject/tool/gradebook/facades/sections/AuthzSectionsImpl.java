@@ -246,12 +246,10 @@ public class AuthzSectionsImpl implements Authz {
 			return viewableSections;
 		}
 		
-		// this lets instructors grade all, not what we want at HEC
-		/*
-		if (isUserAbleToGradeAll(gradebookUid)) {
+		// gradeAll on site?
+		if (SecurityService.unlock("gradebook.gradeAll", gradebookUid)) {
 			return allSections;
 		}
-		*/
 
 		Map sectionIdCourseSectionMap = new HashMap();
 
