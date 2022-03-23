@@ -246,8 +246,8 @@ public class AuthzSectionsImpl implements Authz {
 			return viewableSections;
 		}
 		
-		// gradeAll on site?
-		if (SecurityService.unlock("gradebook.gradeAll", gradebookUid)) {
+		// return if user has gradeAll permission on site
+		if (SecurityService.unlock("gradebook.gradeAll", "/site/"+gradebookUid)) {
 			return allSections;
 		}
 
