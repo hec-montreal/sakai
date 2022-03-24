@@ -210,6 +210,10 @@ public class GradebookNgBusinessService {
 	 */
 	public List<String> getGradeableUsers(final String siteId, final GbGroup groupFilter) {
 
+		final GbStopWatch stopwatch = new GbStopWatch();
+		stopwatch.start();
+		stopwatch.time("GradebookPage init", stopwatch.getTime());
+		
 		try {
 
 			String givenSiteId = siteId;
@@ -221,6 +225,7 @@ public class GradebookNgBusinessService {
 			// GradebookService and will throw a SecurityException if invalid
 			// users are provided
 			final Set<String> userUuids = this.siteService.getSite(givenSiteId).getUsersIsAllowed(GbRole.STUDENT.getValue());
+			stopwatch.timeWithContext("getGradeableUsers", "getUsersIsAllowed", stopwatch.getTime());
 
 			// filter the allowed list based on membership
 			if (groupFilter != null && groupFilter.getType() != GbGroup.Type.ALL) {
@@ -240,6 +245,7 @@ public class GradebookNgBusinessService {
 				// only keep the ones we identified in the group
 				userUuids.retainAll(groupMembers);
 			}
+			stopwatch.timeWithContext("getGradeableUsers", "groupFilter", stopwatch.getTime());
 
 			final GbRole role = this.getUserRole(givenSiteId);
 
@@ -257,12 +263,14 @@ public class GradebookNgBusinessService {
 
 					// get list of sections and groups this TA has access to
 					final List<CourseSection> courseSections = this.gradebookService.getViewableSections(gradebook.getUid());
+					stopwatch.timeWithContext("getGradeableUsers", "getViewableSections", stopwatch.getTime());
 
 					//for each section TA has access to, grab student Id's
 					List<String> viewableStudents = new ArrayList();
 
 					Map<String, Set<Member>> groupMembers = getGroupMembers(givenSiteId);
-					
+					stopwatch.timeWithContext("getGradeableUsers", "getGroupMembers", stopwatch.getTime());
+
 					//iterate through sections available to the TA and build a list of the student members of each section
 					if(courseSections != null && !courseSections.isEmpty() && groupMembers!=null){
 						for(CourseSection section:courseSections){
@@ -275,6 +283,7 @@ public class GradebookNgBusinessService {
 								}
 							}
 						}
+						stopwatch.timeWithContext("getGradeableUsers", "build member list", stopwatch.getTime());
 					}
 
 					if (!viewableStudents.isEmpty()) {
@@ -285,6 +294,7 @@ public class GradebookNgBusinessService {
 					} else {
 						userUuids.removeAll(sectionManager.getSectionEnrollmentsForStudents(givenSiteId, userUuids).getStudentUuids()); // TA can view/grade students without section
 					}
+					stopwatch.timeWithContext("getGradeableUsers", "retain/remove all", stopwatch.getTime());
 				}
 			}
 
@@ -480,22 +490,31 @@ public class GradebookNgBusinessService {
 	 * @return a list of assignments or empty list if none/no gradebook
 	 */
 	public List<Assignment> getGradebookAssignments(final String siteId, final SortType sortBy, final GbGroup groupFilter) {
+		
+		final GbStopWatch stopwatch = new GbStopWatch();
+		stopwatch.start();
+		stopwatch.timeWithContext("getGradebookAssignments", "init", stopwatch.getTime());
 
 		final List<Assignment> assignments = new ArrayList<>();
 		final Gradebook gradebook = getGradebook(siteId);
+		stopwatch.timeWithContext("getGradebookAssignments", "getGradebook", stopwatch.getTime());
 		List<Assignment> viewableAssignments;
 		if (gradebook != null) {
 			// applies permissions (both student and TA) and default sort is
 			// SORT_BY_SORTING
 			viewableAssignments = this.gradebookService.getViewableAssignmentsForCurrentUser(gradebook.getUid(), sortBy);
+			stopwatch.timeWithContext("getGradebookAssignments", "getViewableAssignmentsForCurrentUser", stopwatch.getTime());
 
 			if (groupFilter != null) {
 				assignments.addAll(viewableAssignments.stream()
 					.filter(a -> a.getExternalAssignedGroups().contains("/site/"+siteId) || a.getExternalAssignedGroups().contains(groupFilter.getReference()))
 					.collect(Collectors.toList()));
+			
+				stopwatch.timeWithContext("getGradebookAssignments", "addAll with filter", stopwatch.getTime());
 			}
 			else {
 				assignments.addAll(viewableAssignments);
+				stopwatch.timeWithContext("getGradebookAssignments", "addAll without filter", stopwatch.getTime());
 			}
 		}
 		return assignments;

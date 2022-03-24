@@ -218,6 +218,8 @@ public class GradebookPage extends BasePage {
 		// first get any settings data from the session
 		final GradebookUiSettings settings = getUiSettings();
 
+		stopwatch.timeWithContext("GradebookPage", "getUiSettings", stopwatch.getTime());
+
 		SortType sortBy = SortType.SORT_BY_SORTING;
 		if (settings.isCategoriesEnabled() && settings.isGroupedByCategory()) {
 			// Pre-sort assignments by the categorized sort order
@@ -226,8 +228,11 @@ public class GradebookPage extends BasePage {
 		}
 
 		final List<Assignment> assignments = this.businessService.getGradebookAssignments(sortBy);
-		final List<String> students = this.businessService.getGradeableUsers();
+		stopwatch.timeWithContext("GradebookPage", "getGradebookAssignments", stopwatch.getTime());
 
+		final List<String> students = this.businessService.getGradeableUsers();
+		stopwatch.timeWithContext("GradebookPage", "getGradeableUsers", stopwatch.getTime());
+		
 		this.hasGradebookItems = !assignments.isEmpty();
 		this.hasStudents = !students.isEmpty();
 		// categories enabled?
