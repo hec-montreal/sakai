@@ -227,6 +227,8 @@ public class GradebookNgBusinessService {
 			final Set<String> userUuids = this.siteService.getSite(givenSiteId).getUsersIsAllowed(GbRole.STUDENT.getValue());
 			stopwatch.timeWithContext("getGradeableUsers", "getUsersIsAllowed", stopwatch.getTime());
 
+			final GbRole role = this.getUserRole(givenSiteId);
+
 			// filter the allowed list based on membership
 			if (groupFilter != null && groupFilter.getType() != GbGroup.Type.ALL) {
 
@@ -244,14 +246,12 @@ public class GradebookNgBusinessService {
 
 				// only keep the ones we identified in the group
 				userUuids.retainAll(groupMembers);
+				stopwatch.timeWithContext("getGradeableUsers", "groupFilter", stopwatch.getTime());
 			}
-			stopwatch.timeWithContext("getGradeableUsers", "groupFilter", stopwatch.getTime());
-
-			final GbRole role = this.getUserRole(givenSiteId);
-
 			// if TA or INSTRUCTOR, pass it through the gradebook permissions (only if there
 			// are permissions)
-			if (role == GbRole.TA || role == GbRole.INSTRUCTOR) {
+			// if filter is set, don't bother with this (assumes filter specifies a group the user is allowed to view!)
+			else if (role == GbRole.TA || role == GbRole.INSTRUCTOR) {
 				final User user = getCurrentUser();
 
 				// if there are permissions, pass it through them
@@ -259,32 +259,9 @@ public class GradebookNgBusinessService {
 				final List<PermissionDefinition> perms = getPermissionsForUser(user.getId(),siteId);
 				if (!perms.isEmpty()) {
 
-					final Gradebook gradebook = this.getGradebook(givenSiteId);
-
-					// get list of sections and groups this TA has access to
-					final List<CourseSection> courseSections = this.gradebookService.getViewableSections(gradebook.getUid());
-					stopwatch.timeWithContext("getGradeableUsers", "getViewableSections", stopwatch.getTime());
-
-					//for each section TA has access to, grab student Id's
-					List<String> viewableStudents = new ArrayList();
-
-					Map<String, Set<Member>> groupMembers = getGroupMembers(givenSiteId);
+					//for each section user has access to, grab student Id's
+					Set<String> viewableStudents = getGroupMembers(givenSiteId);
 					stopwatch.timeWithContext("getGradeableUsers", "getGroupMembers", stopwatch.getTime());
-
-					//iterate through sections available to the TA and build a list of the student members of each section
-					if(courseSections != null && !courseSections.isEmpty() && groupMembers!=null){
-						for(CourseSection section:courseSections){
-							if(groupMembers.containsKey(section.getUuid())) {
-								Set<Member> members = groupMembers.get(section.getUuid());
-								for(Member member:members){
-									if(givenSiteId!=null && member.getUserId()!=null && securityService.unlock(member.getUserId(), GbPortalPermission.VIEW_OWN_GRADES.getValue(), siteService.siteReference(givenSiteId))/*member.getRole().equals("S")*/){
-											viewableStudents.add(member.getUserId());
-									}
-								}
-							}
-						}
-						stopwatch.timeWithContext("getGradeableUsers", "build member list", stopwatch.getTime());
-					}
 
 					if (!viewableStudents.isEmpty()) {
 						userUuids.retainAll(viewableStudents); // retain only
@@ -1718,6 +1695,7 @@ public class GradebookNgBusinessService {
 		return rval;
 	}
 
+	/* Curtis - why duplicate this?
 	private List<GbGroup> getSiteSectionsAndGroups(final String siteId) {
 
 		final List<GbGroup> rval = new ArrayList<>();
@@ -1789,6 +1767,7 @@ public class GradebookNgBusinessService {
 
 		return rval;
 	}
+*/
 
 	/**
 	 * Helper to get siteid. This will ONLY work in a portal site context, it will return null otherwise (ie via an entityprovider).
@@ -2738,11 +2717,11 @@ public class GradebookNgBusinessService {
 	}
 
 	/**
-	 * Build a list of group references to site membership (as Member) for the groups that are viewable for the current user.
+	 * Build a list of user ids for the sections that are viewable for the current user.
 	 *
 	 * @return
 	 */
-	private Map<String, Set<Member>> getGroupMembers(final String siteId) {
+	private Set<String> getGroupMembers(final String siteId) {
 
 		Site site;
 		try {
@@ -2752,17 +2731,20 @@ public class GradebookNgBusinessService {
 			return null;
 		}
 
-		// filtered for the user
-		final List<GbGroup> viewableGroups = getSiteSectionsAndGroups(siteId);
+		// filtered for the user for current site
+		final List<GbGroup> viewableGroups = getSiteSectionsAndGroups();
 
-		final Map<String, Set<Member>> rval = new HashMap<>();
-
+		final Set<String> rval = new HashSet<>();
 				
 		for (final GbGroup gbGroup : viewableGroups) {
 			final String groupReference = gbGroup.getReference();
 			final Group group = site.getGroup(groupReference);
-			if (group != null) {
-				rval.put(groupReference, group.getMembers());
+			final String wSetupProp = group.getProperties().getProperty(Group.GROUP_PROP_WSETUP_CREATED);
+
+			// only worry about official sections (not created by worksite setup)
+			if (group != null && !Boolean.TRUE.toString().equals(wSetupProp)) {
+				rval.addAll(group.getMembers().stream()
+					.map(m -> m.getUserId()).collect(Collectors.toSet()));
 			}
 		}
 
