@@ -227,10 +227,10 @@ public class GradebookPage extends BasePage {
 			this.form.add(new AttributeAppender("class", "gb-grouped-by-category"));
 		}
 
-		final List<Assignment> assignments = this.businessService.getGradebookAssignments(sortBy);
+		final List<Assignment> assignments = this.businessService.getGradebookAssignments(sortBy, settings.getGroupFilter());
 		stopwatch.timeWithContext("GradebookPage", "getGradebookAssignments", stopwatch.getTime());
 
-		final List<String> students = this.businessService.getGradeableUsers();
+		final List<String> students = this.businessService.getGradeableUsers(settings.getGroupFilter());
 		stopwatch.timeWithContext("GradebookPage", "getGradeableUsers", stopwatch.getTime());
 		
 		this.hasGradebookItems = !assignments.isEmpty();
