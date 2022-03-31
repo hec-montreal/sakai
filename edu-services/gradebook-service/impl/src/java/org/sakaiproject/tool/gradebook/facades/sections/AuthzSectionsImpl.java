@@ -220,7 +220,8 @@ public class AuthzSectionsImpl implements Authz {
 			// use OOTB permissions based upon TA section membership
 			for (Iterator iter = sectionIds.iterator(); iter.hasNext(); ) {
 				String sectionUuid = (String) iter.next();
-				if (isUserTAinSection(sectionUuid) && getSectionAwareness().isSectionMemberInRole(sectionUuid, studentUid, Role.STUDENT)) {
+				if ((isUserAbleToGradeSection(sectionUuid) || isUserTAinSection(sectionUuid)) 
+					&& getSectionAwareness().isSectionMemberInRole(sectionUuid, studentUid, Role.STUDENT)) {
 					return true;
 				}
 			}
@@ -276,7 +277,7 @@ public class AuthzSectionsImpl implements Authz {
 			for (Iterator<Map.Entry<String, CourseSection>> iter = sectionIdCourseSectionMap.entrySet().iterator(); iter.hasNext(); ) {
 	            Map.Entry<String, CourseSection> entry = iter.next();
 	            String sectionUuid = entry.getKey();
-				if (SecurityService.unlock("gradebook.gradeSection", sectionUuid)) {
+				if (isUserAbleToGradeSection(sectionUuid)) {
 					CourseSection viewableSection = (CourseSection)sectionIdCourseSectionMap.get(sectionUuid);
 					if (viewableSection != null)
 						viewableSections.add(viewableSection);
@@ -611,7 +612,7 @@ public class AuthzSectionsImpl implements Authz {
 		} else {
 			for (Iterator iter = sectionIdCourseSectionMap.keySet().iterator(); iter.hasNext(); ) {
 				String sectionUuid = (String)iter.next();
-				if (isUserTAinSection(sectionUuid, userUid)) {
+				if (isUserAbleToGradeSection(sectionUuid) || isUserTAinSection(sectionUuid, userUid)) {
 					availableSections.add(sectionUuid);
 				}
 			}
@@ -686,8 +687,7 @@ public class AuthzSectionsImpl implements Authz {
 
 	@Override
 	public boolean isUserAbleToGradeSection(String sectionUid) {
-		// TODO Auto-generated method stub
-		return false;
+		return SecurityService.unlock("gradebook.gradeSection", sectionUid);
 	}
 
 }
