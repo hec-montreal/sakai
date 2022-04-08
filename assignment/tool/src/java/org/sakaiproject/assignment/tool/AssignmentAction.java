@@ -2976,7 +2976,7 @@ public class AssignmentAction extends PagedResourceActionII {
 
         // get all assignments in Gradebook
         try {
-            List gradebookAssignments = gradebookService.getAssignments(gradebookUid);
+            List gradebookAssignments = gradebookService.getViewableAssignmentsForCurrentUser(gradebookUid);
 
             // filtering out those from Samigo
             for (Iterator i = gradebookAssignments.iterator(); i.hasNext(); ) {
