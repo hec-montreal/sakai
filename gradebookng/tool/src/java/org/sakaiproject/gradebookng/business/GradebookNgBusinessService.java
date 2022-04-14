@@ -435,13 +435,18 @@ public class GradebookNgBusinessService {
 	 * @return a list of assignments or empty list if none/no gradebook
 	 */
 	public List<Assignment> getGradebookAssignmentsForStudent(final String studentUuid, final SortType sortedBy) {
-
-		final Gradebook gradebook = getGradebook(getCurrentSiteId());
+		final String currentSiteId = getCurrentSiteId();
+		final Gradebook gradebook = getGradebook(currentSiteId);
 		final List<Assignment> assignments = getGradebookAssignments(sortedBy);
 
 		// NOTE: cannot do a role check here as it assumes the current user but this could have been called by an instructor (unless we add
 		// a new method to handle this)
 		// in any case the role check would just be a confirmation that the user passed in was a student.
+
+		// list of groups and sections the student is a member of
+		final Set<String> studentGroups = this.getCurrentSite().get().getGroups().stream()
+			.filter(g->{ return g.getMember(studentUuid) != null; })
+			.map(g->g.getReference()).collect(Collectors.toSet());
 
 		// for each assignment we need to check if it is grouped externally and if the user has access to the group
 		final Iterator<Assignment> iter = assignments.iterator();
@@ -453,6 +458,10 @@ public class GradebookNgBusinessService {
 						studentUuid)) {
 					iter.remove();
 				}
+			}
+			else if (!a.getExternalAssignedGroups().contains("/site/"+currentSiteId) && 
+					!a.getExternalAssignedGroups().stream().anyMatch(studentGroups::contains)) {
+				iter.remove();
 			}
 		}
 		return assignments;
