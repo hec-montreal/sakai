@@ -452,14 +452,16 @@ public class GradebookNgBusinessService {
 		final Iterator<Assignment> iter = assignments.iterator();
 		while (iter.hasNext()) {
 			final Assignment a = iter.next();
+			boolean removed = false;
 			if (a.isExternallyMaintained()) {
 				if (this.gradebookExternalAssessmentService.isExternalAssignmentGrouped(gradebook.getUid(), a.getExternalId()) &&
 					!this.gradebookExternalAssessmentService.isExternalAssignmentVisible(gradebook.getUid(), a.getExternalId(),
 						studentUuid)) {
 					iter.remove();
+					removed = true;
 				}
 			}
-			else if (!a.getExternalAssignedGroups().contains("/site/"+currentSiteId) && 
+			if (!removed && !a.getExternalAssignedGroups().contains("/site/"+currentSiteId) && 
 					!a.getExternalAssignedGroups().stream().anyMatch(studentGroups::contains)) {
 				iter.remove();
 			}
