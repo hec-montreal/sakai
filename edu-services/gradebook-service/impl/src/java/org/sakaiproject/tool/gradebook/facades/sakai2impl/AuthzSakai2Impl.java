@@ -108,7 +108,7 @@ public class AuthzSakai2Impl extends AuthzSectionsImpl implements Authz {
 	 *   return hasPermission(sectionUid, PERMISSION_GRADE_ALL);
 	 */
 	public boolean isUserAbleToGradeSection(String sectionUid) {
-		return getSectionAwareness().isSectionMemberInRole(sectionUid, getAuthn().getUserUid(), Role.TA);
+		return SecurityService.unlock(PERMISSION_GRADE_SECTION, sectionUid);
 	}
 
 	public boolean isUserAbleToEditAssessments(String gradebookUid) {

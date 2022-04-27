@@ -27,6 +27,7 @@ public interface Authz {
 	public boolean isUserAbleToGrade(String gradebookUid, String userUid);
 	public boolean isUserAbleToGradeAll(String gradebookUid);
 	public boolean isUserAbleToGradeAll(String gradebookUid, String userUid);
+	public boolean isUserAbleToGradeSection(String sectionUid);
 	public boolean isUserAbleToEditAssessments(String gradebookUid);
 	public boolean isUserAbleToViewOwnGrades(String gradebookUid);
 	public boolean isUserAbleToViewStudentNumbers(String gradebookUid);

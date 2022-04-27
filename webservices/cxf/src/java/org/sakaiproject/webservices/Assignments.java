@@ -59,6 +59,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @WebService
 @SOAPBinding(style= SOAPBinding.Style.RPC, use= SOAPBinding.Use.LITERAL)
@@ -251,7 +253,8 @@ public class Assignments extends AbstractWebService {
     		String sReference = AssignmentReferenceReckoner.reckoner().submission(sub).reckon().getReference();
     		
     		// update grade in gradebook
-    		integrateGradebook(aReference, associateGradebookAssignment, null, null, -1, null, sReference, "update", context);
+			integrateGradebook(aReference, associateGradebookAssignment, null, null, -1, null, sReference, "update", context, 
+				assign.getIsGroup() ? assign.getGroups() : Stream.of(aReference).collect(Collectors.toSet()));
 
     	}
     	catch (Exception e) 
@@ -329,7 +332,8 @@ public class Assignments extends AbstractWebService {
     		//do GB integration
     		String aReference = AssignmentReferenceReckoner.reckoner().assignment(assign).reckon().getReference();
 
-    		integrateGradebook(aReference, null, "add", title, maxGradePoints, Date.from(dt), null, null, context);
+			integrateGradebook(aReference, null, "add", title, maxGradePoints, Date.from(dt), null, null, context, 
+				assign.getIsGroup() ? assign.getGroups() : Stream.of(aReference).collect(Collectors.toSet()));
     		
     		Calendar c = null;
     		try {
@@ -465,7 +469,7 @@ public class Assignments extends AbstractWebService {
      * @param updateRemoveSubmission
      * @param context
      */
-    protected void integrateGradebook( String assignmentRef, String associateGradebookAssignment, String addUpdateRemoveAssignment, String newAssignment_title, int newAssignment_maxPoints, Date newAssignment_dueTime, String submissionRef, String updateRemoveSubmission, String context)
+    protected void integrateGradebook( String assignmentRef, String associateGradebookAssignment, String addUpdateRemoveAssignment, String newAssignment_title, int newAssignment_maxPoints, Date newAssignment_dueTime, String submissionRef, String updateRemoveSubmission, String context, Set<String> groups)
     {
     	//add or remove external grades to gradebook
     	// a. if Gradebook does not exists, do nothing, 'cos setting should have been hidden
@@ -498,7 +502,8 @@ public class Assignments extends AbstractWebService {
     							newAssignment_maxPoints/10,
     							new Date(newAssignment_dueTime.getTime()),
 								"Assignment",
-								null);
+								null, 
+								groups);
     				}
     				catch (AssignmentHasIllegalPointsException e)
     				{
@@ -526,7 +531,8 @@ public class Assignments extends AbstractWebService {
     										newAssignment_maxPoints/10,
     										new Date(newAssignment_dueTime.getTime()),
 											"Assignment",
-											null);
+											null, 
+											groups);
     								trying = false;
     							}
     							catch(Exception ee)

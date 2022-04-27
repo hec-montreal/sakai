@@ -2976,7 +2976,7 @@ public class AssignmentAction extends PagedResourceActionII {
 
         // get all assignments in Gradebook
         try {
-            List gradebookAssignments = gradebookService.getAssignments(gradebookUid);
+            List gradebookAssignments = gradebookService.getViewableAssignmentsForCurrentUser(gradebookUid);
 
             // filtering out those from Samigo
             for (Iterator i = gradebookAssignments.iterator(); i.hasNext(); ) {
@@ -4949,8 +4949,10 @@ public class AssignmentAction extends PagedResourceActionII {
                 if ((addUpdateRemoveAssignment.equals(GRADEBOOK_INTEGRATION_ADD) || ("update".equals(addUpdateRemoveAssignment) && !isExternalAssignmentDefined)) && associateGradebookAssignment == null) {
                     // add assignment into gradebook
                     try {
+                        Set<String> groupSet = new HashSet<String>();
+                        groupSet.addAll(a.getGroups().size() > 0 ? a.getGroups() : Collections.singleton("/site/"+a.getContext())); 
                         // add assignment to gradebook
-                        gradebookExternalAssessmentService.addExternalAssessment(gradebookUid, assignmentRef, null, newAssignment_title, newAssignment_maxPoints / (double) a.getScaleFactor(), Date.from(newAssignment_dueTime), assignmentToolTitle, null, false, category != -1 ? category : null);
+                        gradebookExternalAssessmentService.addExternalAssessment(gradebookUid, assignmentRef, null, newAssignment_title, newAssignment_maxPoints / (double) a.getScaleFactor(), Date.from(newAssignment_dueTime), assignmentToolTitle, null, false, category != -1 ? category : null, groupSet);
                     } catch (AssignmentHasIllegalPointsException e) {
                         addAlert(state, rb.getString("addtogradebook.illegalPoints"));
                         log.warn(this + ":integrateGradebook " + e.getMessage());
@@ -4965,8 +4967,10 @@ public class AssignmentAction extends PagedResourceActionII {
                     if (associateGradebookAssignment != null && isExternalAssociateAssignmentDefined) {
                         // if there is an external entry created in Gradebook based on this assignment, update it
                         try {
+                            Set<String> groupSet = new HashSet<String>();
+                            groupSet.addAll(a.getGroups().size() > 0 ? a.getGroups() : Collections.singleton("/site/"+a.getContext()));
                             // update attributes if the GB assignment was created for the assignment
-                            gradebookExternalAssessmentService.updateExternalAssessment(gradebookUid, associateGradebookAssignment, null, null, newAssignment_title, newAssignment_maxPoints / (double) a.getScaleFactor(), Date.from(newAssignment_dueTime), false);
+                            gradebookExternalAssessmentService.updateExternalAssessment(gradebookUid, associateGradebookAssignment, null, null, newAssignment_title, newAssignment_maxPoints / (double) a.getScaleFactor(), Date.from(newAssignment_dueTime), false, groupSet);
                         } catch (Exception e) {
                             addAlert(state, rb.getFormattedMessage("cannotfin_assignment", assignmentRef));
                             log.warn("{}", rb.getFormattedMessage("cannotfin_assignment", assignmentRef));

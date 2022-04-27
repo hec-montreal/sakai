@@ -69,7 +69,7 @@ public class GbGradeTableData {
 		}
 
 		isUserAbleToEditAssessments = businessService.isUserAbleToEditAssessments();
-		assignments = businessService.getGradebookAssignments(sortBy);
+		assignments = businessService.getGradebookAssignments(sortBy, settings.getGroupFilter());
 		stopwatch.time("getGradebookAssignments", stopwatch.getTime());
 
 		grades = businessService.buildGradeMatrix(

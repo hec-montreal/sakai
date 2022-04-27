@@ -50,6 +50,7 @@ import org.sakaiproject.authz.api.SecurityAdvisor.SecurityAdvice;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.coursemanagement.api.Section;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.section.api.coursemanagement.CourseSection;
@@ -209,6 +210,10 @@ public class GradebookNgBusinessService {
 	 */
 	public List<String> getGradeableUsers(final String siteId, final GbGroup groupFilter) {
 
+		final GbStopWatch stopwatch = new GbStopWatch();
+		stopwatch.start();
+		stopwatch.time("GradebookPage init", stopwatch.getTime());
+		
 		try {
 
 			String givenSiteId = siteId;
@@ -220,6 +225,9 @@ public class GradebookNgBusinessService {
 			// GradebookService and will throw a SecurityException if invalid
 			// users are provided
 			final Set<String> userUuids = this.siteService.getSite(givenSiteId).getUsersIsAllowed(GbRole.STUDENT.getValue());
+			stopwatch.timeWithContext("getGradeableUsers", "getUsersIsAllowed", stopwatch.getTime());
+
+			final GbRole role = this.getUserRole(givenSiteId);
 
 			// filter the allowed list based on membership
 			if (groupFilter != null && groupFilter.getType() != GbGroup.Type.ALL) {
@@ -238,13 +246,12 @@ public class GradebookNgBusinessService {
 
 				// only keep the ones we identified in the group
 				userUuids.retainAll(groupMembers);
+				stopwatch.timeWithContext("getGradeableUsers", "groupFilter", stopwatch.getTime());
 			}
-
-			final GbRole role = this.getUserRole(givenSiteId);
-
-			// if TA, pass it through the gradebook permissions (only if there
+			// if TA or INSTRUCTOR, pass it through the gradebook permissions (only if there
 			// are permissions)
-			if (role == GbRole.TA) {
+			// if filter is set, don't bother with this (assumes filter specifies a group the user is allowed to view!)
+			else if (role == GbRole.TA || role == GbRole.INSTRUCTOR) {
 				final User user = getCurrentUser();
 
 				// if there are permissions, pass it through them
@@ -252,29 +259,9 @@ public class GradebookNgBusinessService {
 				final List<PermissionDefinition> perms = getPermissionsForUser(user.getId(),siteId);
 				if (!perms.isEmpty()) {
 
-					final Gradebook gradebook = this.getGradebook(givenSiteId);
-
-					// get list of sections and groups this TA has access to
-					final List<CourseSection> courseSections = this.gradebookService.getViewableSections(gradebook.getUid());
-
-					//for each section TA has access to, grab student Id's
-					List<String> viewableStudents = new ArrayList();
-
-					Map<String, Set<Member>> groupMembers = getGroupMembers(givenSiteId);
-					
-					//iterate through sections available to the TA and build a list of the student members of each section
-					if(courseSections != null && !courseSections.isEmpty() && groupMembers!=null){
-						for(CourseSection section:courseSections){
-							if(groupMembers.containsKey(section.getUuid())) {
-								Set<Member> members = groupMembers.get(section.getUuid());
-								for(Member member:members){
-									if(givenSiteId!=null && member.getUserId()!=null && securityService.unlock(member.getUserId(), GbPortalPermission.VIEW_OWN_GRADES.getValue(), siteService.siteReference(givenSiteId))/*member.getRole().equals("S")*/){
-											viewableStudents.add(member.getUserId());
-									}
-								}
-							}
-						}
-					}
+					//for each section user has access to, grab student Id's
+					Set<String> viewableStudents = getGroupMembers(givenSiteId);
+					stopwatch.timeWithContext("getGradeableUsers", "getGroupMembers", stopwatch.getTime());
 
 					if (!viewableStudents.isEmpty()) {
 						userUuids.retainAll(viewableStudents); // retain only
@@ -284,6 +271,7 @@ public class GradebookNgBusinessService {
 					} else {
 						userUuids.removeAll(sectionManager.getSectionEnrollmentsForStudents(givenSiteId, userUuids).getStudentUuids()); // TA can view/grade students without section
 					}
+					stopwatch.timeWithContext("getGradeableUsers", "retain/remove all", stopwatch.getTime());
 				}
 			}
 
@@ -393,7 +381,7 @@ public class GradebookNgBusinessService {
 	 * @return a list of assignments or empty list if none/no gradebook
 	 */
 	public List<Assignment> getGradebookAssignments() {
-		return getGradebookAssignments(getCurrentSiteId(), SortType.SORT_BY_SORTING);
+		return getGradebookAssignments(getCurrentSiteId(), SortType.SORT_BY_SORTING, null);
 	}
 
 	/**
@@ -403,7 +391,7 @@ public class GradebookNgBusinessService {
 	 * @return a list of assignments or empty list if none/no gradebook
 	 */
 	public List<Assignment> getGradebookAssignments(final String siteId) {
-		return getGradebookAssignments(siteId, SortType.SORT_BY_SORTING);
+		return getGradebookAssignments(siteId, SortType.SORT_BY_SORTING, null);
 	}
 
 	/**
@@ -414,7 +402,11 @@ public class GradebookNgBusinessService {
 	 * @return a list of assignments or empty list if none/no gradebook
 	 */
 	public List<Assignment> getGradebookAssignments(final SortType sortBy) {
-		return getGradebookAssignments(getCurrentSiteId(), sortBy);
+		return getGradebookAssignments(getCurrentSiteId(), sortBy, null);
+	} 
+
+	public List<Assignment> getGradebookAssignments(final SortType sortBy, final GbGroup groupFilter) {
+			return getGradebookAssignments(getCurrentSiteId(), sortBy, groupFilter);
 	}
 
 	/**
@@ -443,24 +435,35 @@ public class GradebookNgBusinessService {
 	 * @return a list of assignments or empty list if none/no gradebook
 	 */
 	public List<Assignment> getGradebookAssignmentsForStudent(final String studentUuid, final SortType sortedBy) {
-
-		final Gradebook gradebook = getGradebook(getCurrentSiteId());
+		final String currentSiteId = getCurrentSiteId();
+		final Gradebook gradebook = getGradebook(currentSiteId);
 		final List<Assignment> assignments = getGradebookAssignments(sortedBy);
 
 		// NOTE: cannot do a role check here as it assumes the current user but this could have been called by an instructor (unless we add
 		// a new method to handle this)
 		// in any case the role check would just be a confirmation that the user passed in was a student.
 
+		// list of groups and sections the student is a member of
+		final Set<String> studentGroups = this.getCurrentSite().get().getGroups().stream()
+			.filter(g->{ return g.getMember(studentUuid) != null; })
+			.map(g->g.getReference()).collect(Collectors.toSet());
+
 		// for each assignment we need to check if it is grouped externally and if the user has access to the group
 		final Iterator<Assignment> iter = assignments.iterator();
 		while (iter.hasNext()) {
 			final Assignment a = iter.next();
+			boolean removed = false;
 			if (a.isExternallyMaintained()) {
 				if (this.gradebookExternalAssessmentService.isExternalAssignmentGrouped(gradebook.getUid(), a.getExternalId()) &&
 					!this.gradebookExternalAssessmentService.isExternalAssignmentVisible(gradebook.getUid(), a.getExternalId(),
 						studentUuid)) {
 					iter.remove();
+					removed = true;
 				}
+			}
+			if (!removed && !a.getExternalAssignedGroups().contains("/site/"+currentSiteId) && 
+					!a.getExternalAssignedGroups().stream().anyMatch(studentGroups::contains)) {
+				iter.remove();
 			}
 		}
 		return assignments;
@@ -471,16 +474,36 @@ public class GradebookNgBusinessService {
 	 *
 	 * @param siteId the siteId
 	 * @param sortBy
+	 * @param groupFilter
 	 * @return a list of assignments or empty list if none/no gradebook
 	 */
-	public List<Assignment> getGradebookAssignments(final String siteId, final SortType sortBy) {
+	public List<Assignment> getGradebookAssignments(final String siteId, final SortType sortBy, final GbGroup groupFilter) {
+		
+		final GbStopWatch stopwatch = new GbStopWatch();
+		stopwatch.start();
+		stopwatch.timeWithContext("getGradebookAssignments", "init", stopwatch.getTime());
 
 		final List<Assignment> assignments = new ArrayList<>();
 		final Gradebook gradebook = getGradebook(siteId);
+		stopwatch.timeWithContext("getGradebookAssignments", "getGradebook", stopwatch.getTime());
+		List<Assignment> viewableAssignments;
 		if (gradebook != null) {
 			// applies permissions (both student and TA) and default sort is
 			// SORT_BY_SORTING
-			assignments.addAll(this.gradebookService.getViewableAssignmentsForCurrentUser(gradebook.getUid(), sortBy));
+			viewableAssignments = this.gradebookService.getViewableAssignmentsForCurrentUser(gradebook.getUid(), sortBy);
+			stopwatch.timeWithContext("getGradebookAssignments", "getViewableAssignmentsForCurrentUser", stopwatch.getTime());
+
+			if (groupFilter != null) {
+				assignments.addAll(viewableAssignments.stream()
+					.filter(a -> a.getExternalAssignedGroups().contains("/site/"+siteId) || a.getExternalAssignedGroups().contains(groupFilter.getReference()))
+					.collect(Collectors.toList()));
+			
+				stopwatch.timeWithContext("getGradebookAssignments", "addAll with filter", stopwatch.getTime());
+			}
+			else {
+				assignments.addAll(viewableAssignments);
+				stopwatch.timeWithContext("getGradebookAssignments", "addAll without filter", stopwatch.getTime());
+			}
 		}
 		return assignments;
 	}
@@ -1613,7 +1636,10 @@ public class GradebookNgBusinessService {
 			final Collection<Group> groups = site.getGroups();
 
 			for (final Group group : groups) {
-				rval.add(new GbGroup(group.getId(), group.getTitle(), group.getReference(), GbGroup.Type.GROUP));
+				// only add group if user can grade
+				if (canUserGradeAll(site.getReference()) || canUserGradeSection(group.getReference())) {
+					rval.add(new GbGroup(group.getId(), group.getTitle(), group.getReference(), GbGroup.Type.GROUP));
+				}
 			}
 
 		} catch (final IdUnusedException e) {
@@ -1680,6 +1706,7 @@ public class GradebookNgBusinessService {
 		return rval;
 	}
 
+	/* Curtis - why duplicate this?
 	private List<GbGroup> getSiteSectionsAndGroups(final String siteId) {
 
 		final List<GbGroup> rval = new ArrayList<>();
@@ -1751,6 +1778,7 @@ public class GradebookNgBusinessService {
 
 		return rval;
 	}
+*/
 
 	/**
 	 * Helper to get siteid. This will ONLY work in a portal site context, it will return null otherwise (ie via an entityprovider).
@@ -2333,6 +2361,14 @@ public class GradebookNgBusinessService {
 		return rval;
 	}
 
+	private boolean canUserGradeSection(String sectionRef) {
+		return this.securityService.unlock("gradebook.gradeSection", sectionRef);
+	}
+
+	public boolean canUserGradeAll(String siteRef) {
+		return this.securityService.unlock("gradebook.gradeAll", siteRef);
+	}
+
 	/**
 	 * Get the role of the current user in the given site or GbRole.NONE if the user does not have access
 	 *
@@ -2692,11 +2728,11 @@ public class GradebookNgBusinessService {
 	}
 
 	/**
-	 * Build a list of group references to site membership (as Member) for the groups that are viewable for the current user.
+	 * Build a list of user ids for the sections that are viewable for the current user.
 	 *
 	 * @return
 	 */
-	private Map<String, Set<Member>> getGroupMembers(final String siteId) {
+	private Set<String> getGroupMembers(final String siteId) {
 
 		Site site;
 		try {
@@ -2706,17 +2742,20 @@ public class GradebookNgBusinessService {
 			return null;
 		}
 
-		// filtered for the user
-		final List<GbGroup> viewableGroups = getSiteSectionsAndGroups(siteId);
+		// filtered for the user for current site
+		final List<GbGroup> viewableGroups = getSiteSectionsAndGroups();
 
-		final Map<String, Set<Member>> rval = new HashMap<>();
-
+		final Set<String> rval = new HashSet<>();
 				
 		for (final GbGroup gbGroup : viewableGroups) {
 			final String groupReference = gbGroup.getReference();
 			final Group group = site.getGroup(groupReference);
-			if (group != null) {
-				rval.put(groupReference, group.getMembers());
+			final String wSetupProp = group.getProperties().getProperty(Group.GROUP_PROP_WSETUP_CREATED);
+
+			// only worry about official sections (not created by worksite setup)
+			if (group != null && !Boolean.TRUE.toString().equals(wSetupProp)) {
+				rval.addAll(group.getMembers().stream()
+					.map(m -> m.getUserId()).collect(Collectors.toSet()));
 			}
 		}
 

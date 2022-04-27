@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -149,7 +150,8 @@ public class GradebookExternalAssessmentServiceImpl extends BaseHibernateManager
 
 	@Override
 	public synchronized void addExternalAssessment(final String gradebookUid, final String externalId, final String externalUrl,
-			final String title, final double points, final Date dueDate, final String externalServiceDescription, String externalData)
+			final String title, final double points, final Date dueDate, final String externalServiceDescription, String externalData,
+			Set<String> externalGroups)
 			throws ConflictingAssignmentNameException, ConflictingExternalIdException, GradebookNotFoundException {
 
 		// Ensure that the required strings are not empty
@@ -197,6 +199,7 @@ public class GradebookExternalAssessmentServiceImpl extends BaseHibernateManager
 			asn.setExternalStudentLink(externalUrl);
 			asn.setExternalAppName(externalServiceDescription);
 			asn.setExternalData(externalData);
+			asn.setExternalAssignedGroups(externalGroups);
 			// set released to be true to support selective release
 			asn.setReleased(true);
 			asn.setUngraded(false);
@@ -210,7 +213,7 @@ public class GradebookExternalAssessmentServiceImpl extends BaseHibernateManager
 
 	@Override
 	public void updateExternalAssessment(final String gradebookUid, final String externalId, final String externalUrl,
-										 String externalData, final String title, final double points, final Date dueDate)
+										 String externalData, final String title, final double points, final Date dueDate, Set<String> externalGroups)
 			throws GradebookNotFoundException, AssessmentNotFoundException, AssignmentHasIllegalPointsException {
 		final GradebookAssignment asn = getExternalAssignment(gradebookUid, externalId);
 
@@ -243,6 +246,7 @@ public class GradebookExternalAssessmentServiceImpl extends BaseHibernateManager
 				// support selective release
 				asn.setReleased(BooleanUtils.isTrue(asn.getReleased()));
 				asn.setPointsPossible(Double.valueOf(points));
+				asn.setExternalAssignedGroups(externalGroups);
 				session.update(asn);
 				log.info("External assessment updated in gradebookUid={}, externalId={} by userUid={}", gradebookUid, externalId,
 						getUserUid());
@@ -667,14 +671,14 @@ public class GradebookExternalAssessmentServiceImpl extends BaseHibernateManager
 	 */
 	@Override
     public void addExternalAssessment(final String gradebookUid, final String externalId, final String externalUrl, final String title, final Double points,
-                                      final Date dueDate, final String externalServiceDescription, String externalData, final Boolean ungraded)
+                                      final Date dueDate, final String externalServiceDescription, String externalData, final Boolean ungraded, Set<String> externalGroups)
             throws GradebookNotFoundException, ConflictingAssignmentNameException, ConflictingExternalIdException, AssignmentHasIllegalPointsException {
-        addExternalAssessment(gradebookUid, externalId, externalUrl, title, points, dueDate, externalServiceDescription, externalData, ungraded, null);
+        addExternalAssessment(gradebookUid, externalId, externalUrl, title, points, dueDate, externalServiceDescription, externalData, ungraded, null, externalGroups);
     }
 
     @Override
     public synchronized void addExternalAssessment(final String gradebookUid, final String externalId, final String externalUrl, final String title, final Double points,
-                                                   final Date dueDate, final String externalServiceDescription, String externalData, final Boolean ungraded, final Long categoryId)
+                                                   final Date dueDate, final String externalServiceDescription, String externalData, final Boolean ungraded, final Long categoryId, Set<String> externalGroups)
             throws GradebookNotFoundException, ConflictingAssignmentNameException, ConflictingExternalIdException, AssignmentHasIllegalPointsException {
         // Ensure that the required strings are not empty
 		if (StringUtils.trimToNull(externalServiceDescription) == null ||
@@ -742,6 +746,7 @@ public class GradebookExternalAssessmentServiceImpl extends BaseHibernateManager
 			asn.setExternalStudentLink(externalUrl);
 			asn.setExternalAppName(externalServiceDescription);
 			asn.setExternalData(externalData);
+			asn.setExternalAssignedGroups(externalGroups);
 			if (persistedCategory != null) {
 				asn.setCategory(persistedCategory);
 			}
@@ -762,7 +767,7 @@ public class GradebookExternalAssessmentServiceImpl extends BaseHibernateManager
 
     @Override
     public void updateExternalAssessment(final String gradebookUid, final String externalId, final String externalUrl, String externalData, final String title,
-                                         final Double points, final Date dueDate, final Boolean ungraded)
+                                         final Double points, final Date dueDate, final Boolean ungraded, Set<String> externalGroups)
             throws GradebookNotFoundException, AssessmentNotFoundException, ConflictingAssignmentNameException, AssignmentHasIllegalPointsException {
         final GradebookAssignment asn = getExternalAssignment(gradebookUid, externalId);
 
@@ -794,6 +799,7 @@ public class GradebookExternalAssessmentServiceImpl extends BaseHibernateManager
 			// support selective release
 			asn.setReleased(BooleanUtils.isTrue(asn.getReleased()));
 			asn.setPointsPossible(points);
+			asn.setExternalAssignedGroups(externalGroups);
 			if (ungraded != null) {
 				asn.setUngraded(ungraded.booleanValue());
 			} else {

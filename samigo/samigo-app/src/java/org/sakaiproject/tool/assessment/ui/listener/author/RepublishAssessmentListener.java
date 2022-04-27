@@ -17,9 +17,12 @@ package org.sakaiproject.tool.assessment.ui.listener.author;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.faces.context.FacesContext;
 import javax.faces.event.AbortProcessingException;
@@ -32,6 +35,7 @@ import org.sakaiproject.event.cover.EventTrackingService;
 import org.sakaiproject.service.gradebook.shared.GradebookExternalAssessmentService;
 import org.sakaiproject.service.gradebook.shared.GradebookService;
 import org.sakaiproject.spring.SpringBeanLocator;
+import org.sakaiproject.tool.assessment.data.dao.assessment.AssessmentAccessControl;
 import org.sakaiproject.tool.assessment.data.dao.assessment.PublishedAssessmentData;
 import org.sakaiproject.tool.assessment.data.dao.assessment.PublishedEvaluationModel;
 import org.sakaiproject.tool.assessment.data.dao.grading.AssessmentGradingData;
@@ -200,7 +204,16 @@ public class RepublishAssessmentListener implements ActionListener {
 				
 				try {
 					log.debug("before gbsHelper.addToGradebook()");
-					gbsHelper.addToGradebook((PublishedAssessmentData) assessment.getData(), categoryId, g);
+					Set<String> groups = new HashSet<String>();
+					String siteId = AgentFacade.getCurrentSiteId();
+					if (AssessmentAccessControl.RELEASE_TO_SELECTED_GROUPS.equals(assessment.getAssessmentAccessControl().getReleaseTo())) {
+						Set<String> releaseToGroups = assessment.getReleaseToGroups().keySet();
+						groups.addAll(releaseToGroups.stream().map(gid->{ return "/site/"+siteId+"/group/"+gid; }).collect(Collectors.toSet()));
+					}
+					else {
+						groups.add("/site/"+siteId);
+					}
+					gbsHelper.addToGradebook((PublishedAssessmentData) assessment.getData(), categoryId, groups, g);
 					
 					// any score to copy over? get all the assessmentGradingData and copy over
 					GradingService gradingService = new GradingService();
