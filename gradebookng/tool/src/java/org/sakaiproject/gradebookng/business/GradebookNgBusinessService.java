@@ -2382,13 +2382,17 @@ public class GradebookNgBusinessService {
 		}
 	}
 
+	public Map<Long, GbGradeInfo> getGradesForStudent(final String studentUuid) {
+		return getGradesForStudent(studentUuid, null);
+	}
+	
 	/**
 	 * Get a map of grades for the given student. Safe to call when logged in as a student.
 	 *
 	 * @param studentUuid
 	 * @return map of assignment to GbGradeInfo
 	 */
-	public Map<Long, GbGradeInfo> getGradesForStudent(final String studentUuid) {
+	public Map<Long, GbGradeInfo> getGradesForStudent(final String studentUuid, final Integer gradeType) {
 
 		final String siteId = getCurrentSiteId();
 		final Gradebook gradebook = getGradebook(siteId);
@@ -2420,7 +2424,7 @@ public class GradebookNgBusinessService {
 
 		for (final Assignment assignment : assignments) {
 			final GradeDefinition def = this.gradebookService.getGradeDefinitionForStudentForItem(gradebook.getUid(),
-					assignment.getId(), studentUuid);
+					assignment.getId(), studentUuid, gradeType);
 			rval.put(assignment.getId(), new GbGradeInfo(def));
 		}
 

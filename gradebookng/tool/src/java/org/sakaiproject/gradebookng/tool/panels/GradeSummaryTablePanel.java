@@ -50,6 +50,7 @@ import org.sakaiproject.service.gradebook.shared.Assignment;
 import org.sakaiproject.service.gradebook.shared.CategoryDefinition;
 import org.sakaiproject.service.gradebook.shared.GradebookInformation;
 import org.sakaiproject.service.gradebook.shared.GradingType;
+import org.sakaiproject.tool.gradebook.Gradebook;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -83,6 +84,7 @@ public class GradeSummaryTablePanel extends BasePanel {
 
 		final Map<String, Object> data = (Map<String, Object>) getDefaultModelObject();
 
+		final Gradebook gradebook = getGradebook();
 		final Map<Long, GbGradeInfo> grades = (Map<Long, GbGradeInfo>) data.get("grades");
 		final Map<String, List<Assignment>> categoryNamesToAssignments = (Map<String, List<Assignment>>) data
 				.get("categoryNamesToAssignments");
@@ -311,7 +313,19 @@ public class GradeSummaryTablePanel extends BasePanel {
 						assignmentItem.add(dueDate);
 
 						final WebMarkupContainer gradeScore = new WebMarkupContainer("gradeScore");
+
+		//xform grades? 
+		//final String mappedGrade = GradeMapping.getMappedGrade(sortedGradeMap, calculatedGrade);
+		//final Map<Long, GbGradeInfo> gradesTransfomed = new HashMap<Long, GbGradeInfo>();
+		//grades.entrySet().stream().forEach(e -> { gradesTransfomed.put(e.getKey(), new GbGradeInfo(e.getValue(), gradebook.getSelectedGradeMapping().getMappedGrade(Double.valueOf(e.getValue().getGrade())))); });
+
+						
+						gradeScore.add(
+							new Label("grade", FormatHelper.convertEmptyGradeToDash(rawGrade)));
+						gradeScore.add(new Label("outOf").setVisible(false));
+
 						if (GradingType.PERCENTAGE.equals(gradingType)) {
+							/*
 							gradeScore.add(new Label("grade",
 									new StringResourceModel("label.percentage.valued", null,
 											new Object[] { FormatHelper.formatGrade(rawGrade) })) {
@@ -322,7 +336,7 @@ public class GradeSummaryTablePanel extends BasePanel {
 							});
 
 							gradeScore.add(new Label("outOf").setVisible(false));
-
+*/
 							final WebMarkupContainer sakaiRubricPreview = new WebMarkupContainer("sakai-rubric-student-button");
 							sakaiRubricPreview.add(AttributeModifier.append("display", "icon"));
 							sakaiRubricPreview.add(AttributeModifier.append("tool-id", RubricsConstants.RBCS_TOOL_GRADEBOOKNG));
@@ -340,11 +354,12 @@ public class GradeSummaryTablePanel extends BasePanel {
 
 							gradeScore.add(sakaiRubricPreview);
 						} else {
+							/*
 							gradeScore.add(
 									new Label("grade", FormatHelper.convertEmptyGradeToDash(FormatHelper.formatGradeForDisplay(rawGrade))));
 							gradeScore.add(new Label("outOf",
 									new StringResourceModel("label.studentsummary.outof", null, assignment.getPoints())));
-
+*/
 							final WebMarkupContainer sakaiRubricPreview = new WebMarkupContainer("sakai-rubric-student-button");
 							sakaiRubricPreview.add(AttributeModifier.append("display", "icon"));
 							sakaiRubricPreview.add(AttributeModifier.append("token", rubricsService.generateJsonWebToken(RubricsConstants.RBCS_TOOL_GRADEBOOKNG)));

@@ -252,6 +252,20 @@ public interface GradebookService {
 			throws GradebookNotFoundException, AssessmentNotFoundException;
 
 	/**
+	 *
+	 * @param gradebookUid
+	 * @param assignmentId
+	 * @param studentUid
+	 * @return Returns a GradeDefinition for the student, respecting the grade entry type for the gradebook unless it is specified by the last parameter.
+	 * 			Returns null if no grade
+	 * @throws GradebookNotFoundException
+	 * @throws AssessmentNotFoundException
+	 */
+	public GradeDefinition getGradeDefinitionForStudentForItem(String gradebookUid,
+			Long assignmentId, String studentUid, Integer gradeType)
+			throws GradebookNotFoundException, AssessmentNotFoundException;
+
+	/**
 	 * Get the comment (if any) currently provided for the given combination of student and assignment.
 	 *
 	 * @param gradebookUid

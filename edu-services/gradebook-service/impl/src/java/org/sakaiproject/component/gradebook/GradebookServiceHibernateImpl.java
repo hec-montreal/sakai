@@ -279,9 +279,12 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
     }
 
 
-
 	@Override
 	public GradeDefinition getGradeDefinitionForStudentForItem(final String gradebookUid, final Long assignmentId, final String studentUid) {
+		return getGradeDefinitionForStudentForItem(gradebookUid, assignmentId, studentUid, null);
+	}
+
+	public GradeDefinition getGradeDefinitionForStudentForItem(final String gradebookUid, final Long assignmentId, final String studentUid, final Integer gradeType) {
 
 		if (gradebookUid == null || assignmentId == null || studentUid == null) {
 			throw new IllegalArgumentException("Null paraemter passed to getGradeDefinitionForStudentForItem");
@@ -348,7 +351,15 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
 
 						gradeDef.setExcused(gradeRecord.isExcludedFromGrade());
 
-						if (gradebook.getGrade_type() == GradebookService.GRADE_TYPE_LETTER) {
+						Integer gtype;
+						if (gradeType != null) {
+							gtype = gradeType;
+						}
+						else {
+							gtype = gradebook.getGrade_type();
+						}
+
+						if (gtype == GradebookService.GRADE_TYPE_LETTER) {
 							final List<AssignmentGradeRecord> gradeList = new ArrayList<>();
 							gradeList.add(gradeRecord);
 							convertPointsToLetterGrade(gradebook, gradeList);
@@ -356,7 +367,7 @@ public class GradebookServiceHibernateImpl extends BaseHibernateManager implemen
 							if (gradeRec != null) {
 								gradeDef.setGrade(gradeRec.getLetterEarned());
 							}
-						} else if (gradebook.getGrade_type() == GradebookService.GRADE_TYPE_PERCENTAGE) {
+						} else if (gtype == GradebookService.GRADE_TYPE_PERCENTAGE) {
 							final Double percent = calculateEquivalentPercent(assignment.getPointsPossible(),
 									gradeRecord.getPointsEarned());
 							if (percent != null) {
