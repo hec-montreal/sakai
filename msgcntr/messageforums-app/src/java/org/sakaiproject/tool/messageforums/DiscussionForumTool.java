@@ -755,7 +755,7 @@ public class DiscussionForumTool
 	    		 GradebookService gradebookService = getGradebookService();
 
 	    		 if(getGradebookExist()) {
-	    			 List gradeAssignmentsBeforeFilter = gradebookService.getAssignments(toolManager.getCurrentPlacement().getContext());
+					 List gradeAssignmentsBeforeFilter = gradebookService.getViewableAssignmentsForCurrentUser(toolManager.getCurrentPlacement().getContext());
 	    			 for(int i=0; i<gradeAssignmentsBeforeFilter.size(); i++) {
 	    				 Assignment thisAssign = (Assignment) gradeAssignmentsBeforeFilter.get(i);
 	    				 if(!thisAssign.isExternallyMaintained()) {

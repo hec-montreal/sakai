@@ -164,7 +164,7 @@ public class AuthzSectionsImpl implements Authz {
 			// use OOTB permissions based upon TA section membership
 			for (Iterator iter = sectionIds.iterator(); iter.hasNext(); ) {
 				String sectionUuid = (String) iter.next();
-				if (isUserTAinSection(sectionUuid) && getSectionAwareness().isSectionMemberInRole(sectionUuid, studentUid, Role.STUDENT)) {
+				if ((isUserAbleToGradeSection(sectionUuid) || isUserTAinSection(sectionUuid)) && getSectionAwareness().isSectionMemberInRole(sectionUuid, studentUid, Role.STUDENT)) {
 					return GradebookService.gradePermission;
 				}
 			}
