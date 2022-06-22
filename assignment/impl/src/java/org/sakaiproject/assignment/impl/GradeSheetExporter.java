@@ -19,14 +19,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.NumberFormat;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -123,8 +116,24 @@ public class GradeSheetExporter {
             Map<String, Submitter> submitterMap = new HashMap<>();
             members.sort(new UserComparator());
             for (User user : members) {
-                // put user displayid and sortname in the first two cells
-                Submitter submitter = new Submitter(user.getDisplayId(), user.getSortName());
+                // HEC modifs: Adding a column with user section :
+                //Collection of the member groups
+                Collection<Group> groups = site.getGroupsWithMember(user.getId());
+                String userSection = "";
+                // get only the section
+                for (Group section : groups) {
+
+                    String wSetupCreated = section.getProperties().getProperty(Group.GROUP_PROP_WSETUP_CREATED);
+                    if ((wSetupCreated == null || wSetupCreated.equals(Boolean.FALSE.toString())))
+
+                        userSection = section.getTitle();
+                        break;
+                }
+                // end of HEC modif
+
+
+                // put user displayid , sortname and userSection(HEC) in the first three cells
+                Submitter submitter = new Submitter(user.getDisplayId(), user.getSortName(), userSection );
                 submitterMap.put(user.getId(), submitter);
                 if (isNotesEnabled) {
                     Optional<List<String>> additionalNotes = candidateDetailProvider.getAdditionalNotes(user, site);
@@ -170,23 +179,28 @@ public class GradeSheetExporter {
             cell.setCellValue(rb.getString("download.spreadsheet.column.name"));
 
             // user enterprise id column
-            cell = row.createCell(cellColumnNum);
+            cell = row.createCell(cellColumnNum++);
             cell.setCellStyle(style);
             cell.setCellValue(rb.getString("download.spreadsheet.column.userid"));
+
+            // user section column (HEC)
+            cell = row.createCell(cellColumnNum);
+            cell.setCellStyle(style);
+            cell.setCellValue(rb.getString("download.spreadsheet.column.section"));
 
             // We have to build a Map of the results so that we can sort them afterwards so that we don't expose data
             // by having the anonymous results in the same position as the original listing.
             Map<Submitter, List<Object>> results = new TreeMap<>();
             int index = 0;
             int assignmentSize = downloadable.size();
-            // the grade data portion starts from the third column, since the first two are used for user's display id and sort name
+            // the grade data portion starts from the fourth column, since the first three are used for user's display id, sort name and section
             for (Assignment a : downloadable) {
                 Assignment.GradeType assignmentType = a.getTypeOfGrade();
 
                 int rowNum = headerRowNumber;
                 row = sheet.getRow(rowNum++);
-                cellColumnNum = (index + 2);
-                cell = row.createCell(cellColumnNum); // since the first two column is taken by student id and name
+                cellColumnNum = (index + 3);
+                cell = row.createCell(cellColumnNum); // since the first three column is taken by student id, name and section
                 cell.setCellStyle(style);
                 cell.setCellValue(a.getTitle());
 
@@ -298,7 +312,7 @@ public class GradeSheetExporter {
 
                 if (isNotesEnabled) {
                     // Add the notes header
-                    int cellNum = (index + 2);
+                    int cellNum = (index + 3);
                     rowNum = headerRowNumber;
                     row = sheet.getRow(rowNum++);
                     cell = row.createCell(cellNum);
@@ -316,9 +330,11 @@ public class GradeSheetExporter {
                     if (submitter.anonymous) {
                         sheetRow.createCell(column++).setCellValue("");
                         sheetRow.createCell(column++).setCellValue(submitter.id);
+                        sheetRow.createCell(column++).setCellValue("");
                     } else {
                         sheetRow.createCell(column++).setCellValue(submitter.sortName);
                         sheetRow.createCell(column++).setCellValue(submitter.id);
+                        sheetRow.createCell(column++).setCellValue(submitter.section);
                     }
                     for (Object rowValue : rowValues) {
                         if (rowValue instanceof FloatCell) {
@@ -390,14 +406,16 @@ public class GradeSheetExporter {
         }
 
         // Create normal one
-        Submitter(String id, String sortName) {
+        Submitter(String id, String sortName, String section) {
             this.anonymous = false;
             this.id = id;
+            this.section = section;
             this.sortName = sortName;
         }
 
         boolean anonymous;
         public String id;
+        public String section;
         String sortName;
         List<String> notes = Collections.emptyList();
 
