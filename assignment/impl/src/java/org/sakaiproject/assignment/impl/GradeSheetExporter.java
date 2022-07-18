@@ -124,10 +124,11 @@ public class GradeSheetExporter {
                 for (Group section : groups) {
 
                     String wSetupCreated = section.getProperties().getProperty(Group.GROUP_PROP_WSETUP_CREATED);
-                    if ((wSetupCreated == null || wSetupCreated.equals(Boolean.FALSE.toString())))
+                    if ((wSetupCreated == null || wSetupCreated.equals(Boolean.FALSE.toString()))) {
 
                         userSection = section.getTitle();
                         break;
+                    }
                 }
                 // end of HEC modif
 
