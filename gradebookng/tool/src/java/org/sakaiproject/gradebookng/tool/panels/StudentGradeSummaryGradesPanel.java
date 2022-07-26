@@ -81,7 +81,8 @@ public class StudentGradeSummaryGradesPanel extends BasePanel {
 		this.isAssignmentsDisplayed = gradebook.isAssignmentsDisplayed();
 
 		final GradebookInformation settings = getSettings();
-		this.courseGradeStatsEnabled = settings.isCourseGradeStatsDisplayed();
+		//this.courseGradeStatsEnabled = settings.isCourseGradeStatsDisplayed();
+		this.courseGradeStatsEnabled = false;
 
 		setOutputMarkupId(true);
 	}
