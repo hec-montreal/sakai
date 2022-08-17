@@ -116,18 +116,11 @@
 				<div class="col-xs-offset-3 col-xs-6">
 					<div class="checkbox">
 						<label>
-							<input wicket:id="released" type="checkbox" class="unchecked" />
+							<input wicket:id="released" type="checkbox" />
 							<span><wicket:message key="label.addgradeitem.release" /></span>
 						</label>
 					</div>
 				</div>
-				<script>
-				$(document).ready(function() {
-					$(".unchecked").prop("checked", false);
-
-				});
-
-				</script>
 			</div>
 			<div class="form-group form-group-sm">
 				<div class="col-xs-offset-3 col-xs-6">
@@ -141,6 +134,5 @@
 			</div>
 
         </wicket:panel>
-
     </body>
 </html>

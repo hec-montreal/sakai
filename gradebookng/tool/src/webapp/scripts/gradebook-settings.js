@@ -120,7 +120,4 @@ $(function() {
   sakai.gradebookng = {
     settings: new GradebookSettings($("#gradebookSettings"))
   };
-
-  $(".unchecked").prop("checked", false);
-
 });
