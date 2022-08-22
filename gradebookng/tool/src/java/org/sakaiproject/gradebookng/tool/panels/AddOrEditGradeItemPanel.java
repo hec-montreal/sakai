@@ -89,8 +89,8 @@ public class AddOrEditGradeItemPanel extends BasePanel {
 		} else {
 			// Mode.ADD
 			assignment = new Assignment();
-			// Default released to true
-			assignment.setReleased(true);
+			// Default released to false
+			assignment.setReleased(false);
 			// If no categories, then default counted to true
 			final Gradebook gradebook = this.businessService.getGradebook();
 			assignment.setCounted(GradebookService.CATEGORY_TYPE_NO_CATEGORY == gradebook.getCategory_type());

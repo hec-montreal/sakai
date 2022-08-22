@@ -60,7 +60,8 @@ public class GbGradebookData {
 	private static final boolean SAK_PROP_SHOW_SET_ZERO_SCORE_DEFAULT = true;
 
 	private static final String SAK_PROP_SHOW_COURSE_GRADE_STUDENT = "gradebookng.showDisplayCourseGradeToStudent";
-	private static final Boolean SAK_PROP_SHOW_COURSE_GRADE_STUDENT_DEFAULT = true;
+	private static final Boolean SAK_PROP_SHOW_COURSE_GRADE_STUDENT_DEFAULT = false;
+	//private static final Boolean SAK_PROP_SHOW_COURSE_GRADE_STUDENT_DEFAULT = true;
 
 	private final List<StudentDefinition> students;
 	private final List<ColumnDefinition> columns;

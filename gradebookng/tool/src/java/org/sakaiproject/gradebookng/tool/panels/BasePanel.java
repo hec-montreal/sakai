@@ -53,7 +53,8 @@ public abstract class BasePanel extends Panel {
 	protected ServerConfigurationService serverConfigService;
 
 	protected static final String SAK_PROP_SHOW_COURSE_GRADE_STUDENT = "gradebookng.showDisplayCourseGradeToStudent";
-	protected static final Boolean SAK_PROP_SHOW_COURSE_GRADE_STUDENT_DEFAULT = Boolean.TRUE;
+	//protected static final Boolean SAK_PROP_SHOW_COURSE_GRADE_STUDENT_DEFAULT = Boolean.TRUE;
+	protected static final Boolean SAK_PROP_SHOW_COURSE_GRADE_STUDENT_DEFAULT = Boolean.FALSE;
 
 	public BasePanel(final String id) {
 		super(id);
