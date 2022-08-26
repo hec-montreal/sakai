@@ -201,7 +201,7 @@ public class GradebookExternalAssessmentServiceImpl extends BaseHibernateManager
 			asn.setExternalData(externalData);
 			asn.setExternalAssignedGroups(externalGroups);
 			// set released to be true to support selective release
-			asn.setReleased(true);
+			asn.setReleased(false);
 			asn.setUngraded(false);
 
 			session.save(asn);
@@ -751,7 +751,7 @@ public class GradebookExternalAssessmentServiceImpl extends BaseHibernateManager
 				asn.setCategory(persistedCategory);
 			}
 			// set released to be true to support selective release
-			asn.setReleased(true);
+			asn.setReleased(false);
 			if (ungraded != null) {
 				asn.setUngraded(ungraded);
 			} else {
