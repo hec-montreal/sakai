@@ -226,9 +226,24 @@ public class FormatHelper {
 		}
 
 		String s;
+		String newgrade;
 		try {
+			/**
+			 * ZCII-4717
+			 * Decimal seaprator - point and comma same behauviour
+			 * In french, english and spanish
+			 */
+			if(locale.equals(Locale.CANADA_FRENCH) || locale.toString().equals("es_ES")){
+				newgrade = grade.replace('.', ',');
+			}
+			else{
+				newgrade = grade.replace(',', '.');
+			}
+			/**
+			 * end of change
+			 */
 			final DecimalFormat df = (DecimalFormat) NumberFormat.getInstance(locale);
-			final Double d = df.parse(grade).doubleValue();
+			final Double d = df.parse(newgrade).doubleValue();
 
 			df.setMinimumFractionDigits(0);
 			df.setGroupingUsed(false);
