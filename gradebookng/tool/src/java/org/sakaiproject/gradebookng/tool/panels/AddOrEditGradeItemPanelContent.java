@@ -426,7 +426,9 @@ public class AddOrEditGradeItemPanelContent extends BasePanel {
 					} else {
 						AddOrEditGradeItemPanelContent.this.counted.setEnabled(true);
 						AddOrEditGradeItemPanelContent.this.counted.setModelObject(true);
-						AddOrEditGradeItemPanelContent.this.released.setModelObject(true);
+						//AddOrEditGradeItemPanelContent.this.released.setModelObject(true);
+						//HEC ZCII-4704
+						AddOrEditGradeItemPanelContent.this.released.setModelObject(false);
 					}
 
 					target.add(AddOrEditGradeItemPanelContent.this.counted);
