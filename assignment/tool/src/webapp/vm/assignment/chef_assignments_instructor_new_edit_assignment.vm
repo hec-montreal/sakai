@@ -17,6 +17,10 @@
         $('#selectedGroups').change(function(){
             ASN.showOrHideSelectGroupsMessage();
         });
+
+		#if($!assignment && !$assignment.draft && $!value_additionalOptions.equals("GROUP")) 
+		$('select#selectedGroups + div > button.multiselect').addClass('disabled');
+		#end
     });
 </script>
 <script type="text/javascript">
@@ -586,7 +590,6 @@
 			<div class="col-sm-offset-1 col-sm-9">
 				<div id="msgSelectGroups" class="messageInformation" style="display: $selectGroupsDisplay">$tlang.getString( "settings.access.selectGroups" )</div>
 				<select id="selectedGroups" name="selectedGroups" multiple="multiple" 
-					#if($!assignment && !$assignment.draft && $!value_additionalOptions.equals("GROUP")) disabled="disabled" #end>
 					#foreach ($group in $!groups)
 						#set($description = $validator.escapeHtml($group.Description))
 						#set($selected=false)
