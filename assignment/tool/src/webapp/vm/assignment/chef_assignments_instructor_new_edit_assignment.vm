@@ -589,7 +589,7 @@
 		<div class="row" id="groupTable" style="display:$listDisplay">
 			<div class="col-sm-offset-1 col-sm-9">
 				<div id="msgSelectGroups" class="messageInformation" style="display: $selectGroupsDisplay">$tlang.getString( "settings.access.selectGroups" )</div>
-				<select id="selectedGroups" name="selectedGroups" multiple="multiple" 
+				<select id="selectedGroups" name="selectedGroups" multiple="multiple">
 					#foreach ($group in $!groups)
 						#set($description = $validator.escapeHtml($group.Description))
 						#set($selected=false)
