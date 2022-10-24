@@ -4,26 +4,15 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 		<meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
 
-		<link href="res/css/fonts.css?_cb=1" type="text/css" rel="stylesheet" media="all"/>
-		<link href="res/css/index.css?_cb=1" type="text/css" rel="stylesheet" media="all"/>
-		<link href="res/css/mobile.css?_cb=1" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/fonts.css?_cb=2" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/index.css?_cb=2" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/mobile.css?_cb=2" type="text/css" rel="stylesheet" media="all"/>
 
 		<title>ZoneCours - Home</title>
 
 		<script src="/res/js/lib/jquery-1.10.2.min.js"></script>
 
-		<script src="/res/js/index.js?_cb=1"></script>
-		
-		<script> 
-			var $buoop = {required:{e:-4,f:-3,o:-3,s:-1,c:-3},insecure:true,unsupported:true,api:2019.04 }; 
-			function $buo_f(){ 
-			 var e = document.createElement("script"); 
-			 e.src = "//browser-update.org/update.min.js"; 
-			 document.body.appendChild(e);
-			};
-			try {document.addEventListener("DOMContentLoaded", $buo_f,false)}
-			catch(e){window.attachEvent("onload", $buo_f)}
-		</script>
+		<script src="/res/js/index.js?_cb=2"></script>
 	</head>
 
 	<body>
@@ -49,7 +38,13 @@
 						</div>
 					</div>
 
-					<form method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded">
+					<div id="button-div" class="buttons">
+						<div><p class="hec-courriel">I have an HEC Montréal email address</p><button id="hec-user-button">Login</button></div>
+						<div class="separator">OR</div>
+						<div><p id="guest-button"><a href="#">I have an account in ZoneCours using an external email address</a></p></div>
+					</div>
+
+					<form id="login-form" method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded" style="display: none;">
 						<div class="login">
 							<div>
 								<input name="eid" type="text" placeholder="Username" aria-label="Username" />
@@ -60,18 +55,10 @@
 							</div>
 
 							<div>
-								<div class="problem">
-									<a href="/connexionInfo-en.html">Cannot access your account ?</a>
-								</div>
-
 								<div class="do-login">
 									<button type="submit">Login</button>
+									<button type="button" id="back-button">Back</button>
 								</div>
-								<div>	
-									<div class="governance">
-										By using HEC Montréal's information resources, I agree to respect the <a href="https://www.hec.ca/direction_services/secretariat_general/juridique/reglements_politiques/documents/regulation-on-the-use-of-information-resources.pdf">Regulations on the use of information resources</a>
-									</div>
-								</div>						
 							</div>
 						</div>
 
@@ -79,6 +66,16 @@
 							<img src="/res/images/loading.gif" alt="Loading" />
 						</div>
 					</form>
+					<div class="footer">
+						<div class="problem">
+							<a href="/connexionInfo-en.html">Cannot access your account?</a>
+						</div>
+						<div>
+							<div class="governance">
+								By using HEC Montréal's information resources, I agree to respect the <a href="https://www.hec.ca/direction_services/secretariat_general/juridique/reglements_politiques/documents/regulation-on-the-use-of-information-resources.pdf">Regulations on the use of information resources</a>
+							</div>
+						</div>
+					</div>
 				</div>
 
 				<div class="clear-fix"></div>

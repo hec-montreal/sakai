@@ -130,6 +130,7 @@
         <directory>${basedir}/src/bundle</directory>
         <includes>
           <include>**/*.properties</include>
+          <include>**/*.jks</include>
         </includes>
       </resource>
     </resources>
