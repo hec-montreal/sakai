@@ -3,36 +3,92 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 	<head>
 	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	    <link href="${pageSkinRepo}/tool_base.css" type="text/css" rel="stylesheet" media="all" />
-	    <link href="${pageSkinRepo}/${pageSkin}/tool.css" type="text/css" rel="stylesheet" media="all" />
 	    <meta http-equiv="Content-Style-Type" content="text/css" />
 	    <title>${uiService}</title>
-	    <script type="text/javascript" language="JavaScript" src="${pageScriptPath}headscripts.js"></script>
 		<meta name="viewport" content="width=device-width"/>
+
+		<link href="/res/css/fonts.css?_cb=2" type="text/css" rel="stylesheet" media="all"/>
+		<link href="/res/css/index.css?_cb=2" type="text/css" rel="stylesheet" media="all"/>
+		<link href="/res/css/mobile.css?_cb=2" type="text/css" rel="stylesheet" media="all"/>
+		<script src="/res/js/lib/jquery-1.10.2.min.js"></script>
+		<script src="/res/js/index.js?_cb=2"></script>
+
 	</head>
     <body class="portalBody Mrphs-portalBody">
 
-		<!-- choice.vm -->
-		<div id="Mrphs-choice">
-			<h1>${loginRequired}</h1>
-			<aside class="logo"></aside>
-			<p class="msg">${choiceRequired}</p>
-			<fieldset>
-				<a class="link" href="${containerLoginUrl}" title="${loginTitle}">
-					#if("$containerLoginChoiceIcon" != "")
-						<img src="${containerLoginChoiceIcon}" alt="${containerLoginChoiceText}" />
-					#end
-					${containerLoginChoiceText}
-				</a>
-				<a class="link" href="${xloginUrl}" title="${loginTitle2}">
-					#if("$xloginChoiceIcon" != "")
-						<img src="${xloginChoiceIcon}" alt="${xloginChoiceText}" />
-					#end
-					${xloginChoiceText}
-				</a>
-			</fieldset>
+		<div class="message" style="display: none;">
+			<div class="title"></div>
+			<div class="body"></div>
 		</div>
-		<!-- end choice.vm -->
+
+		<div class="host">
+			<div class="box">
+				<div class="photo"></div>
+
+				<div class="form">
+					<div class="brand">
+						<img src="/res/images/logo-full.png" alt="HEC Montr&eacute;al" />
+
+						<div class="clear-fix"></div>
+
+						<div class="words dark">
+							<div>Apprendre</div>
+							<div>Collaborer</div>
+							<div>Cr&eacute;er</div>
+						</div>
+					</div>
+
+					<div id="button-div" class="buttons">
+						<div><p class="hec-courriel">J'ai un courriel HEC Montréal</p><button id="hec-user-button">Me connecter</button></div>
+						<div class="separator">OU</div>
+						<div><p id="guest-button"><a href="#">J'ai un compte ZoneCours associé à une autre adresse courriel</a></p></div>
+					</div>
+
+					<form id="login-form" method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded" style="display: none;">
+						<div class="login">
+							<div>
+								<input name="eid" type="text" placeholder="Nom d'utilisateur" aria-label="Nom d'utilisateur" />
+							</div>
+							<div>
+								<input name="pw" type="password" placeholder="Mot de passe" aria-label="Mot de passe" autocomplete="new-password" />
+							</div>
+							<div>
+								<div class="do-login">
+									<button type="submit">Se connecter</button>
+									<button type="button" id="back-button">Retour</button>
+								</div>
+							</div>
+						</div>
+
+						<div class="loading">
+							<img src="/res/images/loading.gif" alt="Chargement" />
+						</div>
+					</form>
+					<div class="footer">
+						<div class="problem">
+							<a href="/connexionInfo-fr.html">Probl&egrave;me de connexion?</a>
+						</div>
+						<div>
+							<div class="governance">
+								En utilisant les ressources informationnelles de HEC Montréal, je m'engage à respecter le <a href="https://www.hec.ca/reglement-ressources-informationnelles">R&egrave;glement sur l'utilisation des ressources informationnelles</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="clear-fix"></div>
+			</div>
+
+			<div class="links">
+				<div>
+					<a href="http://www.hec.ca">HEC Montr&eacute;al</a>
+					<a href="http://www.hec.ca/cours">Portail des cours</a>
+					<a href="https://enligne.hec.ca/">HEC en ligne</a>
+					<a href="https://hecmontreal.atlassian.net/l/c/eT0Ve1Lu">Aide</a>
+					<a href="/index-en.html">English</a>
+				</div>
+			</div>
+		</div>
 				
 	</body>
 </html>

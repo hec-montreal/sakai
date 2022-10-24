@@ -14,18 +14,17 @@
 		width: 90%;
 		position: static;
 		margin-top: 20px;
-		height: 800px;
+		height: 100%;
 	}
-
-	.photo {
-		float: none;
-		width: 100%;
-		height: 40%;
+	.photo{
+	    background-size: contain;
+	    width:100%;
+	    height:40%;
 	}
 
 	.form {
-		float: none;
 		width: 100%;
+		height: 100%;
 	}
 
 	.brand {
@@ -64,6 +63,10 @@
 
 	.login {
 		padding: 0 15px 0 15px;
+		max-width: 500px;
+		align-content: center;
+		margin-left: auto;
+		margin-right: auto;
 	}
 
 	.login > div {
@@ -94,23 +97,42 @@
 
 /* Large mobile */
 @media all and (max-width: 1199px) {
+	.box{
+            padding-bottom:120px;
+    }
+    div#button-div{
+            margin: 10px 40px;
+    }
+    .brand img{
+            width:75%;
+    }
+
 	.brand .title {
 		font-size: 4em;
 	}
 
 	.words {
-		font-size: 1.5em;
+		font-size: 1.1em;
 	}
 } 
 
 /* Small mobile */
 @media all and (max-width: 475px) {
+    .box{
+        padding-bottom:120px;
+    }
+    div#button-div{
+        margin: 10px 40px;
+    }
+    .brand img{
+        width:80%;
+    }
 	.brand .title {
 		font-size: 2em;
 	}
 
 	.words {
-		font-size: 0.9em;
+		font-size: 1.3em;
 	}
 
 	.loading img {
