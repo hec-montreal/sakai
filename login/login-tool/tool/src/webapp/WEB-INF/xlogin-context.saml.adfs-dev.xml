@@ -81,12 +81,14 @@
     <!-- Central storage of cryptographic keys -->
     <bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
         <constructor-arg value="file:/opt/sakaidev/data/saml/samlKeystore.jks"/>
-        <constructor-arg type="java.lang.String" value="6AALwOSxFEme"/>
+	<constructor-arg type="java.lang.String" value="6AALwOSxFEme"/>
+	<!--
         <constructor-arg>
             <map>
                 <entry key="zcdevkey" value="changeit"/>
             </map>
-        </constructor-arg>
+		</constructor-arg>
+	-->
         <constructor-arg type="java.lang.String" value="zcdevkey"/>
     </bean>
 
