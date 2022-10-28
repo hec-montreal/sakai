@@ -82,13 +82,11 @@
     <bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
         <constructor-arg value="file:/opt/sakaidev/data/saml/samlKeystore.jks"/>
 	<constructor-arg type="java.lang.String" value="6AALwOSxFEme"/>
-	<!--
         <constructor-arg>
             <map>
-                <entry key="zcdevkey" value="changeit"/>
+                <entry key="zcdevkey" value="testpassword"/>
             </map>
-		</constructor-arg>
-	-->
+	</constructor-arg>
         <constructor-arg type="java.lang.String" value="zcdevkey"/>
     </bean>
 
@@ -144,8 +142,9 @@
                     </constructor-arg>
                     <constructor-arg>
                         <bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
-			               <property name="requireLogoutRequestSigned" value="true"/>
-			               <property name="requireLogoutResponseSigned" value="true"/>
+			               <property name="requireLogoutRequestSigned" value="false"/>
+			               <property name="requireLogoutResponseSigned" value="false"/>
+			               <property name="sslHostnameVerification" value="allowAll"/>
                         </bean>
                     </constructor-arg>
                     <property name="metadataTrustCheck" value="false"/>
@@ -160,9 +159,11 @@
     <bean id="samlAuthenticationProvider" class="org.springframework.security.saml.SAMLAuthenticationProvider">
         <!-- OPTIONAL property: can be used to store/load user data after login -->
         <property name="forcePrincipalAsString" value="false" />
+<!--
         <property name="userDetails">
             <bean class="org.sakaiproject.login.filter.UpnSamlFilter" />
         </property>
+-->
     </bean>
 
     <!-- Provider of default SAML Context -->
@@ -283,8 +284,7 @@
     <bean class="org.springframework.security.saml.SAMLBootstrap"/>
 
     <!-- Use SHA256SAMLBootstrap for SHA-256 instead of default SHA-1 -->
-    <bean class="org.sakaiproject.login.springframework.SHA256SAMLBootstrap"/>
-
+    <!-- bean class="org.sakaiproject.login.springframework.SHA256SAMLBootstrap"/ -->
     <!-- Initialization of the velocity engine -->
     <bean id="velocityEngine" class="org.springframework.security.saml.util.VelocityFactory" factory-method="getEngine"/>
 
