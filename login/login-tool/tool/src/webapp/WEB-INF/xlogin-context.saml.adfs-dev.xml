@@ -159,15 +159,15 @@
     </bean>
 
     <!-- SAML Authentication Provider responsible for validating of received SAML messages -->
-    <bean id="samlAuthenticationProvider" class="org.springframework.security.saml.SAMLAuthenticationProvider">
+    <bean id="samlAuthenticationProvider" class="org.springframework.security.saml.SAMLAuthenticationProvider"/>
         <!-- OPTIONAL property: can be used to store/load user data after login -->
+        <!--
         <property name="forcePrincipalAsString" value="false" />
-<!--
         <property name="userDetails">
-            <bean class="org.sakaiproject.login.filter.UpnSamlFilter" />
+            <bean class="org.sakaiproject.login.filter.EmailSamlFilter" />
         </property>
--->
     </bean>
+-->
 
     <!-- Provider of default SAML Context -->
     <bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderImpl"/>
