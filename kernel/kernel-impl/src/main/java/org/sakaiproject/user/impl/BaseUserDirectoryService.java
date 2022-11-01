@@ -1333,6 +1333,23 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 	/**
 	 * @inheritDoc
 	 */
+	public User getUserByEmail(String emailAddress) throws UserNotDefinedException
+	{
+	   UserEdit user = new BaseUserEdit();
+	   if (m_provider.findUserByEmail(user, emailAddress))
+	   {
+		   String id = m_storage.checkMapForId(user.getEid());
+		   user.setId(id);
+		   ensureMappedIdForProvidedUser(user);
+		   putCachedUser(user.getReference(), user);
+		   return user;
+	   }
+	   return null;
+	}
+
+  /**
+	 * @inheritDoc
+	 */
 	public List<User> getUsers()
 	{
 		List<User> users = m_storage.getAll();

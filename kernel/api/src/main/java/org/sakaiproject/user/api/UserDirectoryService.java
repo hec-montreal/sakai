@@ -369,6 +369,17 @@ public interface UserDirectoryService extends EntityProducer
 	User getUserByAid(String aid) throws UserNotDefinedException;
 
 	/**
+	 * Access a user object, given an email address. HEC assumes email address is unique.
+	 *
+	 * @param emailAddress
+	 *        The user email address.
+	 * @return A user object containing the user information
+	 * @exception UserNotDefinedException
+	 *            if not found
+	 */
+	User getUserByEmail(String emailAddress) throws UserNotDefinedException;
+
+	/**
 	 * Find the user eid from a user id.
 	 *
 	 * @param id
