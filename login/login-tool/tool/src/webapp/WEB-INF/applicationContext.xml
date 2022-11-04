@@ -11,4 +11,6 @@
     <!-- import resource="xlogin-context.saml.adfs-prod.xml" / -->
     <import resource="xlogin-context.saml.adfs-dev.xml" />
 
+    <import resource="xlogin-context.samltest.xml" />
+
 </beans>
