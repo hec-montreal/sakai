@@ -38,7 +38,12 @@
 						</div>
 					</div>
 
-					<form method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded">
+					<div id="button-div" class="buttons">
+						<button id="hec-user-button">Communauté HEC</button>
+						<button id="guest-button">Invité</button>
+					</div>
+
+					<form method="post" id="login-form" action="/portal/xlogin" enctype="application/x-www-form-urlencoded" style="display: none;">
 						<div class="login">
 							<div>
 								<input name="eid" type="text" placeholder="Nom d'utilisateur" aria-label="Nom d'utilisateur" />
@@ -55,6 +60,7 @@
 
 								<div class="do-login">
 									<button type="submit">Se connecter</button>
+									<button type="button" id="back-button">Retour</button>
 								</div>
 							</div>
 							<div>	

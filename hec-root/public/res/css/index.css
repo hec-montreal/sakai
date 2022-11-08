@@ -228,3 +228,7 @@ button:hover {
 .message p span {
 	color: #fff!important;
 }
+
+.buttons {
+	margin-top: 80px;
+}
