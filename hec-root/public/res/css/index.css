@@ -35,6 +35,7 @@ button {
 	color: rgb(255, 255, 255);
 	cursor: pointer;
 	text-transform: uppercase;
+	margin-left:1em;
 }
 
 button:hover {

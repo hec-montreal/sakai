@@ -43,29 +43,18 @@
 						<button id="guest-button">Invité</button>
 					</div>
 
-					<form method="post" id="login-form" action="/portal/xlogin" enctype="application/x-www-form-urlencoded" style="display: none;">
-						<div class="login">
+					<form method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded">
+						<div class="login" id="login-form" style="display: none;">
 							<div>
 								<input name="eid" type="text" placeholder="Nom d'utilisateur" aria-label="Nom d'utilisateur" />
 							</div>
-
 							<div>
 								<input name="pw" type="password" placeholder="Mot de passe" aria-label="Mot de passe" autocomplete="new-password" />
 							</div>
-
 							<div>
-								<div class="problem">
-									<a href="/connexionInfo-fr.html">Probl&egrave;me de connexion?</a>
-								</div>
-
 								<div class="do-login">
 									<button type="submit">Se connecter</button>
 									<button type="button" id="back-button">Retour</button>
-								</div>
-							</div>
-							<div>	
-								<div class="governance">
-									En utilisant les ressources informationnelles de HEC Montréal, je m'engage à respecter le <a href="https://www.hec.ca/reglement-ressources-informationnelles">R&egrave;glement sur l'utilisation des ressources informationnelles</a>
 								</div>
 							</div>
 						</div>
@@ -74,7 +63,16 @@
 							<img src="/res/images/loading.gif" alt="Chargement" />
 						</div>
 					</form>
-					
+					<div>
+						<div class="problem">
+							<a href="/connexionInfo-fr.html">Probl&egrave;me de connexion?</a>
+						</div>
+						<div>	
+							<div class="governance">
+								En utilisant les ressources informationnelles de HEC Montréal, je m'engage à respecter le <a href="https://www.hec.ca/reglement-ressources-informationnelles">R&egrave;glement sur l'utilisation des ressources informationnelles</a>
+							</div>
+						</div>
+					</div>					
 				</div>
 
 				<div class="clear-fix"></div>
