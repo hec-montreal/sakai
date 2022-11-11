@@ -18,15 +18,12 @@
 	}
 
 	.photo {
-		float: none;
-		width: 100%;
-		height: 40%;
+		display: none;
 	}
 
 	.form {
-		float: none;
 		width: 100%;
-/*		height: 60%;*/
+		height: 100%;
 	}
 
 	.brand {
@@ -65,6 +62,10 @@
 
 	.login {
 		padding: 0 15px 0 15px;
+		max-width: 500px;
+		align-content: center;
+		margin-left: auto;
+		margin-right: auto;
 	}
 
 	.login > div {
