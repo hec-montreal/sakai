@@ -72,7 +72,8 @@
     <!-- Central storage of cryptographic keys -->
     <bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
     	<bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
-	    	<constructor-arg value="classpath:samlKeystore.jks"/>
+            <constructor-arg value="file:/opt/sakaidev/data/saml/samlKeystore.jks"/>
+<!--	    	<constructor-arg value="classpath:samlKeystore.jks"/> -->
 		    <constructor-arg type="java.lang.String" value="p=&Vo%+^'kC=!jT"/>
 		    <constructor-arg>
 			    <map>
