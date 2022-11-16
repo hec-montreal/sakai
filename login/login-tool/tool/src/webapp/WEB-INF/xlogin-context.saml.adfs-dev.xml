@@ -6,18 +6,6 @@
                         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
         profile="saml-zcdev">
 
-    <!-- Customize these values:
-         profile="saml-adfs-prod" - Spring profile to select which SAML profile to use on startup
-         file:/data/sakai/otherdata/saml/samlKeystore.jks - Location of keystore
-         samlprodkey - Name of this profile's key in the keystore
-         /data/sakai/otherdata/saml/federationmetadata.xml - Location of IdP metadata
-         sakai.some.domain - FQDN of this Sakai server
-         adfs.some.domain - FQDN of the ADFS IdP
-
-         Create a similar file for development/test server (with a different profile name), and include both in applicationContext.xml.
-         Select which profile to use on startup by adding -Dspring.profiles.active="saml-adfs-prod" to JAVA_OPTS
-     -->
-
     <!-- Enable auto-wiring -->
     <context:annotation-config/>
 
@@ -83,15 +71,16 @@
     
     <!-- Central storage of cryptographic keys -->
     <bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
-        <constructor-arg value="file:/opt/sakaidev/data/saml/samlKeystore.jks"/>
-	<constructor-arg type="java.lang.String" value="6AALwOSxFEme"/>
-        <constructor-arg>
-            <map>
-                <entry key="zcdevkey" value="testpassword"/>
-            </map>
-	</constructor-arg>
-        <constructor-arg type="java.lang.String" value="zcdevkey"/>
-    </bean>
+    	<bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
+	    	<constructor-arg value="classpath:samlKeystore.jks"/>
+		    <constructor-arg type="java.lang.String" value="p=&Vo%+^'kC=!jT"/>
+		    <constructor-arg>
+			    <map>
+				    <entry key="zcdev" value="P,*k@ZIlQC^@Z;Z"/>
+			    </map>
+		    </constructor-arg>
+		    <constructor-arg type="java.lang.String" value="zcpilote"/>
+	</bean>
 
     <!-- Entry point to initialize authentication, default values taken from properties file -->
     <bean id="samlEntryPoint" class="org.springframework.security.saml.SAMLEntryPoint">
@@ -115,7 +104,6 @@
             <bean class="org.springframework.security.saml.metadata.MetadataGenerator">
                 <property name="entityId" value="https://zcdev.hec.ca/saml"/>
                 <property name="entityBaseURL" value="https://zcdev.hec.ca/sakai-login-tool/container"/>
-                <property name="requestSigned" value="false"/>
             </bean>
         </constructor-arg>
     </bean>
@@ -144,30 +132,15 @@
                         </bean>
                     </constructor-arg>
                     <constructor-arg>
-                        <bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
-			               <property name="requireLogoutRequestSigned" value="false"/>
-			               <property name="requireLogoutResponseSigned" value="false"/>
-			               <property name="sslHostnameVerification" value="allowAll"/>
-                        </bean>
+                        <bean class="org.springframework.security.saml.metadata.ExtendedMetadata"/>
                     </constructor-arg>
-                    <property name="metadataTrustCheck" value="false"/>
                 </bean>
             </list>
         </constructor-arg>
-        <!-- OPTIONAL property: can tell the system which IDP should be used for authenticating user by default. -->
-        <!-- <property name="defaultIDP" value="http://adfs.some.domain/adfs/services/trust"/> -->
     </bean>
 
     <!-- SAML Authentication Provider responsible for validating of received SAML messages -->
     <bean id="samlAuthenticationProvider" class="org.springframework.security.saml.SAMLAuthenticationProvider"/>
-        <!-- OPTIONAL property: can be used to store/load user data after login -->
-        <!--
-        <property name="forcePrincipalAsString" value="false" />
-        <property name="userDetails">
-            <bean class="org.sakaiproject.login.filter.EmailSamlFilter" />
-        </property>
-    </bean>
--->
 
     <!-- Provider of default SAML Context -->
     <bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderImpl"/>
@@ -226,7 +199,7 @@
     <bean id="webSSOprofileConsumer" class="org.springframework.security.saml.websso.WebSSOProfileConsumerImpl">
         <!-- Duration in seconds after initial authentication with the IDP that SSO login will be allowed: see
              https://docs.spring.io/spring-security-saml/docs/current/reference/html/configuration-advanced.html#time-interval -->
-        <property name="maxAuthenticationAge" value="86400"/>
+        <property name="maxAuthenticationAge" value="7776000"/> <!-- 90 days -->
     </bean>
 
     <!-- SAML 2.0 Holder-of-Key WebSSO Assertion Consumer -->
@@ -287,7 +260,8 @@
     <bean class="org.springframework.security.saml.SAMLBootstrap"/>
 
     <!-- Use SHA256SAMLBootstrap for SHA-256 instead of default SHA-1 -->
-    <!-- bean class="org.sakaiproject.login.springframework.SHA256SAMLBootstrap"/ -->
+    <bean class="org.sakaiproject.login.springframework.SHA256SAMLBootstrap"/>
+
     <!-- Initialization of the velocity engine -->
     <bean id="velocityEngine" class="org.springframework.security.saml.util.VelocityFactory" factory-method="getEngine"/>
 
