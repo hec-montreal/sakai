@@ -1,3 +1,14 @@
+// Variables
+//-----------
+// Colors
+// in navigation Instruction Mode -- line 115
+$instModeP: rgba(230, 243, 255, 1);//E6F3FF 
+$instModeHA: rgba(205, 243, 241, 1);//CDF3F1  
+$instModeHS: rgba(235, 229, 247, 1);//EBE5F7 
+$instModeDA: rgba(247, 208, 230, 1);//F7D0E6  
+$instModeDS: rgba(255, 247, 205, 1);//FFF7CD 
+// end of variables
+
 .Mrphs-mainHeader .Mrphs-headerLogo .Mrphs-headerLogo--institution {
 	background: #fff no-repeat center center !important;
 	background-image: url('/res/images/logo-top.png')!important;
@@ -101,3 +112,44 @@ body.Mrphs-toolMenu-collapsed #toolMenuWrap {
 .icon-sakai--sakai-yuja {                                 @extend .fa-youtube-play; }
 .icon-sakai--sakai-zoom {                                 @extend .fa-video-camera; }
 .icon-sakai--sakai-wooclap {                              @extend .fa-bar-chart; }
+
+
+// navigation Portal, background color of sitesTabs according to instructionMode
+
+#linkNav ul li.Mrphs-sitesNav__menuitem>a.link-container{
+	&[instruc-mode="P"], &[instruc-mode="P"] + a{
+		background: $instModeP;
+	}
+	&[instruc-mode="HA"], &[instruc-mode="HA"] + a{
+		background: $instModeHA;
+	}
+	&[instruc-mode="HS"], &[instruc-mode="HS"] + a{
+		background: $instModeHS;
+	}
+	&[instruc-mode="DA"], &[instruc-mode="DA"] + a{
+		background: $instModeDA;
+	}
+	&[instruc-mode="DS"], &[instruc-mode="DS"] + a{
+		background: $instModeDS;
+	}
+
+}
+#linkNav ul li.Mrphs-sitesNav__menuitem.is-selected a.link-container + a{
+    background: #009fdf;
+    border-top: 1px solid #009fdf;
+    border-right: 1px solid #009fdf;
+    border-bottom: 1px solid #009fdf;
+    border-left: 1px solid #009fdf;
+    color: #fff;
+}
+#linkNav ul li.Mrphs-sitesNav__menuitem>a.link-container:hover, #linkNav ul li.Mrphs-sitesNav__menuitem>a.link-container:focus {
+    border-top: 1px solid #7F7F7F;
+    border-right: 1px solid #7F7F7F;
+    border-bottom: 1px solid #7F7F7F;
+    border-left: 1px solid #7F7F7F;
+    background: #fff;
+}
+#linkNav ul li.Mrphs-sitesNav__menuitem>a.link-container:hover ~ .Mrphs-sitesNav__drop, #linkNav ul li.Mrphs-sitesNav__menuitem>a.link-container:hover ~ .Mrphs-sitesNav__dropdown, #linkNav ul li.Mrphs-sitesNav__menuitem>a.link-container:focus ~ .Mrphs-sitesNav__drop, #linkNav ul li.Mrphs-sitesNav__menuitem>a.link-container:focus ~ .Mrphs-sitesNav__dropdown {
+    border-left: 1px solid #7F7F7F;
+	background: #fff;
+}
