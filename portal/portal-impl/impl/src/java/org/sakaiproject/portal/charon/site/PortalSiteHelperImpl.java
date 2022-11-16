@@ -104,6 +104,8 @@ public class PortalSiteHelperImpl implements PortalSiteHelper
 	
 	private final String PROP_SITE_TITLE = "title";
 
+	private final String PROP_SITE_INSTMODE = "instruction_mode";
+
 	private static final String PROP_HTML_INCLUDE = "sakai:htmlInclude";
 
 	private static final String PROP_MENU_CLASS = "sakai:menuClass";
@@ -484,6 +486,7 @@ public class PortalSiteHelperImpl implements PortalSiteHelper
 		m.put("siteUrl", siteUrl + Web.escapeUrl(getSiteEffectiveId(s)));
 		m.put("siteType", s.getType());
 		m.put("siteId", s.getId());
+		m.put("siteInstructionMode", s.getProperties().get("instruction_mode"));
 
 		// TODO: This should come from the site neighbourhood.
 		ResourceProperties rp = s.getProperties();
