@@ -142,7 +142,13 @@
     <bean id="samlAuthenticationProvider" class="org.springframework.security.saml.SAMLAuthenticationProvider"/>
 
     <!-- Provider of default SAML Context -->
-    <bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderImpl"/>
+    <bean id="contextProvider" class="org.springframework.security.saml.context.SAMLContextProviderLB">
+        <property name="scheme" value="https"/>
+        <property name="serverName" value="zc2a.hec.ca"/>
+        <property name="serverPort" value="443"/>
+        <property name="includeServerPortInRequestURL" value="false"/>
+        <property name="contextPath" value="/sakai-login-tool"/>
+    </bean>
 
     <!-- Processing filter for WebSSO profile messages -->
     <bean id="samlWebSSOProcessingFilter" class="org.springframework.security.saml.SAMLProcessingFilter">
