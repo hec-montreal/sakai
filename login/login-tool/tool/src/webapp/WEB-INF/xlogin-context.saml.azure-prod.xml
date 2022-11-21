@@ -71,14 +71,14 @@
     
     <!-- Central storage of cryptographic keys -->
     <bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
-    	<constructor-arg value="classpath:samlKeystore-test.jks"/>
-		<constructor-arg type="java.lang.String" value="nalle123"/>
+		<constructor-arg value="file:///opt/sakai/data/saml/samlKeystore.jks"/>
+        <constructor-arg type="java.lang.String" value="#{systemProperties['samlKeyPassword']}"/>
 		<constructor-arg>
 			<map>
-				<entry key="apollo" value="nalle123"/>
+				<entry key="zcprod" value="#{systemProperties['samlKeyPassword']}"/>
 			</map>
 		</constructor-arg>
-		<constructor-arg type="java.lang.String" value="apollo"/>
+		<constructor-arg type="java.lang.String" value="zcprod"/>
 	</bean>
 
     <!-- Entry point to initialize authentication, default values taken from properties file -->

@@ -83,7 +83,7 @@
     
 	<!-- Central storage of cryptographic keys -->
 	<bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
-		<constructor-arg value="file:///home/curtis/Downloads/samlKeystore-test.jks"/>
+		<constructor-arg value="classpath:samlKeystore-test.jks"/>
 		<constructor-arg type="java.lang.String" value="nalle123"/>
 		<constructor-arg>
 			<map>
