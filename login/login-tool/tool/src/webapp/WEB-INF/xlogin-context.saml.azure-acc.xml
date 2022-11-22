@@ -71,7 +71,7 @@
     
     <!-- Central storage of cryptographic keys -->
     <bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
-		<constructor-arg value="file:///opt/sakai/data/saml/samlKeystore.jks"/>
+		<constructor-arg value="file:///opt/sakai/data/saml/samlKeystore-acc.jks"/>
         <constructor-arg type="java.lang.String" value="#{systemProperties['samlKeyPassword']}"/>
 		<constructor-arg>
 			<map>
