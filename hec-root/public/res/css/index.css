@@ -35,7 +35,7 @@ button {
 	color: rgb(255, 255, 255);
 	cursor: pointer;
 	text-transform: uppercase;
-	margin-left:1em;
+	border-radius: 10px;
 }
 
 button:hover {
@@ -192,6 +192,10 @@ button:hover {
 	float: right;
 }
 
+.do-login button:not(:first-child) {
+	margin-left: 1em;
+}
+
 .links {
 	padding-top: 30px;
 }
@@ -239,5 +243,15 @@ button:hover {
 }
 
 .buttons {
-	margin-top: 80px;
+	margin-top: 46px;
+}
+
+.buttons div {
+	margin-bottom: 1em;
+}
+
+.buttons div p {
+	color: black;
+	font-size: 0.8em;
+	margin-top: 5px;
 }
