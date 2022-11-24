@@ -35,8 +35,6 @@ button {
 	color: rgb(255, 255, 255);
 	cursor: pointer;
 	text-transform: uppercase;
-	font-weight: bold;
-	border-radius: 10px;
 }
 
 button:hover {
