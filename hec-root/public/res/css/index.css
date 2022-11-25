@@ -20,10 +20,9 @@ body.connexion-info {
 
 body.connexion-info .help {
 	padding: 10px;
-}
-
-body.connexion-info .Mrphs-topHeader {
-	padding: 10px 0 10px 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: fit-content;
 }
 
 button {
