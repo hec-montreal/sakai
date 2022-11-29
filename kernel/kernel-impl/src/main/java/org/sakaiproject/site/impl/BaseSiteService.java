@@ -779,9 +779,14 @@ public abstract class BaseSiteService implements SiteService, Observer
 					if (TYPE_INSTRUCTOR.equalsIgnoreCase(user.getType())) {
 						String instructorsSiteId =
 								serverConfigurationService().getString("espace.enseignant.siteId");
+						String saeSiteId =
+								serverConfigurationService().getString("espace.sae.siteId");
 
 						if (instructorsSiteId != null && siteExists(instructorsSiteId)){
 							authzGroupService().joinGroup("/site/"+instructorsSiteId, "access");
+						}
+						if (saeSiteId != null && siteExists(saeSiteId)){
+							authzGroupService().joinGroup("/site/"+saeSiteId, "access");
 						}
 					}
 					
