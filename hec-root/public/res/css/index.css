@@ -20,10 +20,9 @@ body.connexion-info {
 
 body.connexion-info .help {
 	padding: 10px;
-}
-
-body.connexion-info .Mrphs-topHeader {
-	padding: 10px 0 10px 0;
+	margin-left: auto;
+	margin-right: auto;
+	width: fit-content;
 }
 
 button {
@@ -85,6 +84,9 @@ button:hover {
 	float: left;
 	width: 50%;
 	text-align: center;
+	display: flex;
+	flex-direction: column;
+	height: 600px;
 }
 
 .brand {
@@ -122,6 +124,7 @@ button:hover {
 
 .login {
 	margin-top: 40px;
+	height: 200px;
 	display: none;
 }
 
@@ -141,6 +144,10 @@ button:hover {
 	background-color: #fff;
 	padding-bottom: 5px;
 	outline: none;
+}
+
+.footer {
+	margin: auto 20px 20px;
 }
 
 .problem {
@@ -181,6 +188,10 @@ button:hover {
 
 .do-login {
 	float: right;
+}
+
+.do-login button:not(:first-child) {
+	margin-left: 1em;
 }
 
 .links {
@@ -227,4 +238,18 @@ button:hover {
 
 .message p span {
 	color: #fff!important;
+}
+
+.buttons {
+	margin-top: 46px;
+}
+
+.buttons div {
+	margin-bottom: 1em;
+}
+
+.buttons div p {
+	color: black;
+	font-size: 0.8em;
+	margin-top: 5px;
 }

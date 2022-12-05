@@ -78,6 +78,20 @@
 		var url = '/access/content/public/login-' + picId + '.png';
 
 		$('.photo').css('background-image', 'url(' + url + ')');
+
+		document.getElementById("hec-user-button").onclick = function () {
+			location.href="/portal/login";
+		}
+
+		document.getElementById("guest-button").onclick = function () {
+			$('#login-form').show();
+			$('#button-div').hide();
+		};
+
+		document.getElementById("back-button").onclick = function () {
+			$('#login-form').hide();
+			$('#button-div').show();
+		};
 	};
 
 	$(document).ready(function () {

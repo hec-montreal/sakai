@@ -8,6 +8,10 @@
 
     <!-- Sample configuration for SAML with ADFS IdP -->
     <!-- import resource="xlogin-context.saml.adfs-prod.xml" / -->
+    <import resource="xlogin-context.saml.azure-dev.xml" />
+    <import resource="xlogin-context.saml.azure-pilote.xml" />
+    <import resource="xlogin-context.saml.azure-acc.xml" />
+
+    <!--<import resource="xlogin-context.samltest.xml" />-->
 
 </beans>
-

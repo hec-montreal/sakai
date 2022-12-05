@@ -4,15 +4,15 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 		<meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
 
-		<link href="res/css/fonts.css?_cb=1" type="text/css" rel="stylesheet" media="all"/>
-		<link href="res/css/index.css?_cb=1" type="text/css" rel="stylesheet" media="all"/>
-		<link href="res/css/mobile.css?_cb=1" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/fonts.css?_cb=2" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/index.css?_cb=2" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/mobile.css?_cb=2" type="text/css" rel="stylesheet" media="all"/>
 
 		<title>ZoneCours - Home</title>
 
 		<script src="/res/js/lib/jquery-1.10.2.min.js"></script>
 
-		<script src="/res/js/index.js?_cb=1"></script>
+		<script src="/res/js/index.js?_cb=2"></script>
 		
 		<script> 
 			var $buoop = {required:{e:-4,f:-3,o:-3,s:-1,c:-3},insecure:true,unsupported:true,api:2019.04 }; 
@@ -49,7 +49,12 @@
 						</div>
 					</div>
 
-					<form method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded">
+					<div id="button-div" class="buttons">
+						<div><button id="hec-user-button">HEC email</button><p>I have an HEC email address</p></div>
+						<div><button id="guest-button">Guest</button><p>I log in with a personal email address</p></div>
+					</div>
+
+					<form id="login-form" method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded" style="display: none;">
 						<div class="login">
 							<div>
 								<input name="eid" type="text" placeholder="Username" aria-label="Username" />
@@ -66,6 +71,7 @@
 
 								<div class="do-login">
 									<button type="submit">Login</button>
+									<button type="button" id="back-button">Back</button>
 								</div>
 								<div>	
 									<div class="governance">

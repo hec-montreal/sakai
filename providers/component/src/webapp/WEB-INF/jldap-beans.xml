@@ -120,9 +120,11 @@
 		      short-circuits that process and refuses all authN
 		      attempts.  Defaults to 
 		      JLDAPDirectoryProvider.DEFAULT_ALLOW_AUTHENTICATION  -->
-		<!--  property name="allowAuthentication">
-			<value>true</value>
-		</property -->
+
+	    <!-- disable authentication by LDAP since we use azure AD for SSO (still used for attributes)-->
+		<property name="allowAuthentication">
+			<value>false</value>
+		</property>
 		
 		<!-- Optional. Defaults to an instance of 
 		edu.amc.sakai.user.SimpleLdapConnectionManager -->

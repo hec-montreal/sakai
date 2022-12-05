@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
                         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
-        profile="saml-adfs-prod">
+        profile="samltest">
 
     <!-- Customize these values:
          profile="saml-adfs-prod" - Spring profile to select which SAML profile to use on startup
@@ -76,19 +76,22 @@
     </security:authentication-manager>
 
     <!-- Logger for SAML messages and events -->
-    <bean id="samlLogger" class="org.springframework.security.saml.log.SAMLDefaultLogger"/>
-    
-    <!-- Central storage of cryptographic keys -->
-    <bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
-        <constructor-arg value="file:/data/sakai/otherdata/saml/samlKeystore.jks"/>
-        <constructor-arg type="java.lang.String" value="changeit"/>
-        <constructor-arg>
-            <map>
-                <entry key="samlprodkey" value="changeit"/>
-            </map>
-        </constructor-arg>
-        <constructor-arg type="java.lang.String" value="samlprodkey"/>
+    <bean id="samlLogger" class="org.springframework.security.saml.log.SAMLDefaultLogger">
+        <property name="logMessages" value="true"/>
+        <property name="logErrors" value="true"/>
     </bean>
+    
+	<!-- Central storage of cryptographic keys -->
+	<bean id="keyManager" class="org.springframework.security.saml.key.JKSKeyManager">
+		<constructor-arg value="classpath:samlKeystore-test.jks"/>
+		<constructor-arg type="java.lang.String" value="nalle123"/>
+		<constructor-arg>
+			<map>
+				<entry key="apollo" value="nalle123"/>
+			</map>
+		</constructor-arg>
+		<constructor-arg type="java.lang.String" value="apollo"/>
+	</bean>
 
     <!-- Entry point to initialize authentication, default values taken from properties file -->
     <bean id="samlEntryPoint" class="org.springframework.security.saml.SAMLEntryPoint">
@@ -110,9 +113,14 @@
     <bean id="metadataGeneratorFilter" class="org.springframework.security.saml.metadata.MetadataGeneratorFilter">
         <constructor-arg>
             <bean class="org.springframework.security.saml.metadata.MetadataGenerator">
-                <property name="entityId" value="https://sakai.some.domain/saml"/>
-                <property name="entityBaseURL" value="https://sakai.some.domain/sakai-login-tool/container"/>
-                <property name="requestSigned" value="false"/>
+                <property name="entityId" value="http://localhost:8090/saml/cvo/sp"/>
+                <property name="entityBaseURL" value="http://localhost:8090/sakai-login-tool/container"/>
+                <!--<property name="requestSigned" value="false"/>-->
+                <property name="extendedMetadata">
+					<bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
+						<property name="idpDiscoveryEnabled" value="true"/>
+					</bean>
+				</property>
             </bean>
         </constructor-arg>
     </bean>
@@ -126,6 +134,7 @@
         <constructor-arg>
             <list>
                 <!-- Metadata for ADFS IdP -->
+                <!--
                 <bean class="org.springframework.security.saml.metadata.ExtendedMetadataDelegate">
                     <constructor-arg>
                         <bean class="org.opensaml.saml2.metadata.provider.ResourceBackedMetadataProvider">
@@ -134,7 +143,7 @@
                             </constructor-arg>
                             <constructor-arg>
                                 <bean class="org.opensaml.util.resource.FilesystemResource">
-                                    <constructor-arg value="/data/sakai/otherdata/saml/federationmetadata.xml"/>
+                                    <constructor-arg value="/opt/sakaidev/data/saml/zcdev/federationmetadata.xml"/>
                                 </bean>
                             </constructor-arg>
                             <property name="parserPool" ref="parserPool"/>
@@ -142,25 +151,39 @@
                     </constructor-arg>
                     <constructor-arg>
                         <bean class="org.springframework.security.saml.metadata.ExtendedMetadata">
-			               <property name="requireLogoutRequestSigned" value="true"/>
-			               <property name="requireLogoutResponseSigned" value="true"/>
+			               <property name="requireLogoutRequestSigned" value="false"/>
+			               <property name="requireLogoutResponseSigned" value="false"/>
+			               <property name="sslHostnameVerification" value="allowAll"/>
                         </bean>
                     </constructor-arg>
                     <property name="metadataTrustCheck" value="false"/>
                 </bean>
+                -->
+                <bean class="org.opensaml.saml2.metadata.provider.HTTPMetadataProvider">
+                    <constructor-arg>
+                        <value type="java.lang.String">http://samltest.id/saml/idp</value>
+                    </constructor-arg>
+                    <constructor-arg>
+                        <value type="int">15000</value>
+                    </constructor-arg>
+                    <property name="parserPool" ref="parserPool"/>
+                </bean>                
             </list>
         </constructor-arg>
         <!-- OPTIONAL property: can tell the system which IDP should be used for authenticating user by default. -->
-        <property name="defaultIDP" value="http://adfs.some.domain/adfs/services/trust"/>
+        <!-- <property name="defaultIDP" value="http://adfs.some.domain/adfs/services/trust"/> -->
     </bean>
 
     <!-- SAML Authentication Provider responsible for validating of received SAML messages -->
     <bean id="samlAuthenticationProvider" class="org.springframework.security.saml.SAMLAuthenticationProvider">
         <!-- OPTIONAL property: can be used to store/load user data after login -->
+        <!--
         <property name="forcePrincipalAsString" value="false" />
+    -->
         <property name="userDetails">
-            <bean class="org.sakaiproject.login.filter.UpnSamlFilter" />
+            <bean class="org.sakaiproject.login.filter.TestSamlFilter" />
         </property>
+
     </bean>
 
     <!-- Provider of default SAML Context -->
@@ -282,7 +305,6 @@
 
     <!-- Use SHA256SAMLBootstrap for SHA-256 instead of default SHA-1 -->
     <!-- bean class="org.sakaiproject.login.springframework.SHA256SAMLBootstrap"/ -->
-
     <!-- Initialization of the velocity engine -->
     <bean id="velocityEngine" class="org.springframework.security.saml.util.VelocityFactory" factory-method="getEngine"/>
 

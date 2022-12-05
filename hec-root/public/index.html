@@ -4,15 +4,15 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 		<meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
 
-		<link href="res/css/fonts.css?_cb=1" type="text/css" rel="stylesheet" media="all"/>
-		<link href="res/css/index.css?_cb=1" type="text/css" rel="stylesheet" media="all"/>
-		<link href="res/css/mobile.css?_cb=1" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/fonts.css?_cb=2" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/index.css?_cb=2" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/mobile.css?_cb=2" type="text/css" rel="stylesheet" media="all"/>
 
 		<title>ZoneCours - Accueil</title>
 
 		<script src="/res/js/lib/jquery-1.10.2.min.js"></script>
 
-		<script src="/res/js/index.js?_cb=1"></script>
+		<script src="/res/js/index.js?_cb=2"></script>
 	</head>
 
 	<body>
@@ -38,28 +38,23 @@
 						</div>
 					</div>
 
-					<form method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded">
+					<div id="button-div" class="buttons">
+						<div><button id="hec-user-button">Courriel HEC</button><p>J'ai un courriel HEC</p></div>
+						<div><button id="guest-button">Invité</button><p>Je m'authentifie avec un courriel personnel</p></div>
+					</div>
+
+					<form id="login-form" method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded" style="display: none;">
 						<div class="login">
 							<div>
 								<input name="eid" type="text" placeholder="Nom d'utilisateur" aria-label="Nom d'utilisateur" />
 							</div>
-
 							<div>
 								<input name="pw" type="password" placeholder="Mot de passe" aria-label="Mot de passe" autocomplete="new-password" />
 							</div>
-
 							<div>
-								<div class="problem">
-									<a href="/connexionInfo-fr.html">Probl&egrave;me de connexion?</a>
-								</div>
-
 								<div class="do-login">
 									<button type="submit">Se connecter</button>
-								</div>
-							</div>
-							<div>	
-								<div class="governance">
-									En utilisant les ressources informationnelles de HEC Montréal, je m'engage à respecter le <a href="https://www.hec.ca/reglement-ressources-informationnelles">R&egrave;glement sur l'utilisation des ressources informationnelles</a>
+									<button type="button" id="back-button">Retour</button>
 								</div>
 							</div>
 						</div>
@@ -68,7 +63,16 @@
 							<img src="/res/images/loading.gif" alt="Chargement" />
 						</div>
 					</form>
-					
+					<div class="footer">
+						<div class="problem">
+							<a href="/connexionInfo-fr.html">Probl&egrave;me de connexion?</a>
+						</div>
+						<div>	
+							<div class="governance">
+								En utilisant les ressources informationnelles de HEC Montréal, je m'engage à respecter le <a href="https://www.hec.ca/reglement-ressources-informationnelles">R&egrave;glement sur l'utilisation des ressources informationnelles</a>
+							</div>
+						</div>
+					</div>					
 				</div>
 
 				<div class="clear-fix"></div>
