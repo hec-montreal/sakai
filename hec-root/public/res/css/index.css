@@ -34,6 +34,7 @@ button {
 	color: rgb(255, 255, 255);
 	cursor: pointer;
 	text-transform: uppercase;
+	width: 60%;
 }
 
 button:hover {
@@ -111,7 +112,7 @@ button:hover {
 
 .words {
 	width: 100%;
-	font-size: 1.35em;
+	font-size: 1.10em;
 	text-transform: uppercase;
 	padding-top: 30px;
 	text-align: center;
@@ -148,10 +149,11 @@ button:hover {
 
 .footer {
 	margin: auto 20px 20px;
+
 }
 
 .problem {
-	float: left;
+
 	padding-top: 15px;
 }
 
@@ -167,8 +169,8 @@ button:hover {
 }
 
 .governance {
-	float: left;
-	text-align: justify;
+
+	margin: 0px 20px;
 	padding-top: 15px;
 	font-size: 0.8em;
 	color: #000;
@@ -186,12 +188,10 @@ button:hover {
 	color: #333;
 }
 
-.do-login {
-	float: right;
-}
+#back-button {
+ color: #009fdf;
+ background:transparent;
 
-.do-login button:not(:first-child) {
-	margin-left: 1em;
 }
 
 .links {
@@ -248,8 +248,46 @@ button:hover {
 	margin-bottom: 1em;
 }
 
+
 .buttons div p {
-	color: black;
+	color: #003c71;
 	font-size: 0.8em;
 	margin-top: 5px;
+}
+
+div#button-div{
+    background: #e1e1e1;
+    margin: 10px 60px;
+    padding: 30px 0px
+}
+#guest-button a{
+    text-decoration:none;
+    color: #009fdf;
+}
+p.hec-courriel{
+    color: #003c71;
+    padding-bottom: 20px;
+}
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: gray;
+  margin-right:20%;
+  margin-left:20%;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 2px solid #d3d3d3;
+}
+
+.separator:not(:empty)::before {
+  margin-right: .25em;
+}
+
+.separator:not(:empty)::after {
+  margin-left: .25em;
 }
