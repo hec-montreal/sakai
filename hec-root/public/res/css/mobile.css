@@ -97,23 +97,42 @@
 
 /* Large mobile */
 @media all and (max-width: 1199px) {
+	.box{
+            padding-bottom:120px;
+    }
+    div#button-div{
+            margin: 10px 40px;
+    }
+    .brand img{
+            width:80%;
+    }
+
 	.brand .title {
 		font-size: 4em;
 	}
 
 	.words {
-		font-size: 1.5em;
+		font-size: 1.3em;
 	}
 } 
 
 /* Small mobile */
 @media all and (max-width: 475px) {
+    .box{
+        padding-bottom:120px;
+    }
+    div#button-div{
+        margin: 10px 40px;
+    }
+    .brand img{
+        width:80%;
+    }
 	.brand .title {
 		font-size: 2em;
 	}
 
 	.words {
-		font-size: 0.9em;
+		font-size: 1.3em;
 	}
 
 	.loading img {
