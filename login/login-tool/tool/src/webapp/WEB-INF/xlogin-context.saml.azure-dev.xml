@@ -133,6 +133,7 @@
                     <constructor-arg>
                         <bean class="org.springframework.security.saml.metadata.ExtendedMetadata"/>
                     </constructor-arg>
+                    <property name="metadataTrustCheck" value="false"/>
                 </bean>
             </list>
         </constructor-arg>
