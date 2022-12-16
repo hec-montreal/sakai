@@ -17,7 +17,7 @@
 		height: 100%;
 	}
 	.photo{
-	    background-size: contain;
+	    background-size: cover;
 	    width:100%;
 	    height:40%;
 	}
@@ -28,7 +28,8 @@
 	}
 
 	.brand {
-		padding: 20px 10px 0 10px;
+		padding-top: 20px;
+		padding-bottom: 0px;
 	}
 
 	.brand img {
@@ -122,17 +123,17 @@
         padding-bottom:120px;
     }
     div#button-div{
-        margin: 10px 40px;
+        margin: 10px 44px;
     }
     .brand img{
-        width:80%;
+        width:75%;
     }
 	.brand .title {
 		font-size: 2em;
 	}
 
 	.words {
-		font-size: 1.3em;
+		font-size: 0.8em;
 	}
 
 	.loading img {
