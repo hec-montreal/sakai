@@ -41,7 +41,7 @@
 					<div id="button-div" class="buttons">
 						<div><p class="hec-courriel">J'ai un courriel HEC Montréal</p><button id="hec-user-button">Me connecter</button></div>
 						<div class="separator">OU</div>
-						<div><p id="guest-button"><a href="#">J'ai un compte ZoneCours associé à une autre adresse&nbsp;courriel</a></p></div>
+						<div class="guest-button"><p id="guest-button"><a href="#">J'ai un compte ZoneCours associé à une autre adresse&nbsp;courriel</a></p></div>
 					</div>
 
 					<form id="login-form" method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded" style="display: none;">
@@ -70,25 +70,23 @@
 						</div>
 						<div>
 							<div class="governance">
-								En utilisant les ressources informationnelles de HEC Montréal, je m'engage à respecter le <a href="https://www.hec.ca/reglement-ressources-informationnelles">R&egrave;glement sur l'utilisation des ressources informationnelles</a>
+								En utilisant les ressources informationnelles de HEC&nbsp;Montréal, je m'engage à respecter le <a href="https://www.hec.ca/reglement-ressources-informationnelles">R&egrave;glement sur l'utilisation des ressources informationnelles</a>
 							</div>
 						</div>
 					</div>
 				</div>
 
 				<div class="clear-fix"></div>
-			</div>
-
-			<div class="links">
-				<div>
-					<a href="http://www.hec.ca">HEC Montr&eacute;al</a>
-					<a href="http://www.hec.ca/cours">Portail des cours</a>
-					<a href="https://enligne.hec.ca/">HEC en ligne</a>
-					<a href="https://hecmontreal.atlassian.net/l/c/eT0Ve1Lu">Aide</a>
-					<a href="/index-en.html">English</a>
+				<div class="links">
+					<div>
+						<a href="http://www.hec.ca">HEC Montr&eacute;al</a>
+						<a href="http://www.hec.ca/cours">Portail des cours</a>
+						<a href="https://enligne.hec.ca/">HEC en ligne</a>
+						<a href="https://hecmontreal.atlassian.net/l/c/eT0Ve1Lu">Aide</a>
+						<a href="/index-en.html">English</a>
+					</div>
 				</div>
 			</div>
-		</div>
-				
+		</div>	
 	</body>
 </html>

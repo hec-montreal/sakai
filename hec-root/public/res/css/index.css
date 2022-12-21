@@ -67,7 +67,6 @@ button:hover {
 .box {
 	width: 100%;
 	height: 100%;
-	background-color: rgb(255, 255, 255);
 }
 
 .photo {
@@ -86,6 +85,7 @@ button:hover {
 	display: flex;
 	flex-direction: column;
 	height: 600px;
+	background-color: rgb(255, 255, 255);
 }
 
 .brand {
@@ -156,12 +156,10 @@ button:hover {
 }
 
 .footer {
-	margin:20px 70px;
-
+	margin:auto 100px 20px;
 }
 
 .problem {
-
 	padding-top: 15px;
 }
 
@@ -177,8 +175,6 @@ button:hover {
 }
 
 .governance {
-
-	margin: 0px 30px;
 	padding-top: 15px;
 	font-size: 11.5px;
 	line-height:16px;
@@ -285,6 +281,11 @@ p.hec-courriel{
   color: gray;
   margin-right:20%;
   margin-left:20%;
+}
+
+.guest-button {
+  margin-right: 20%;
+  margin-left: 20%;
 }
 
 .separator::before,
