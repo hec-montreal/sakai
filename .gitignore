@@ -23,3 +23,12 @@ rsf/sakai-rsf-web/test/overlays
 .mvn/wrapper/maven-wrapper.jar
 .checkstyle
 assets
+
+hec-commons-utils
+hec-course-archive
+hec-providers
+hec-quartz-jobs
+tenjin
+opensyllabus
+evaluation
+attendance
