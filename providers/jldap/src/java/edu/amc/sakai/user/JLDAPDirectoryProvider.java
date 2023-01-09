@@ -38,7 +38,8 @@ import com.novell.ldap.LDAPSearchResults;
 import com.novell.ldap.LDAPSocketFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.email.cover.EmailService;
 import org.sakaiproject.user.api.*;
 
 /**
@@ -508,10 +509,24 @@ public class JLDAPDirectoryProvider implements UserDirectoryProvider, LdapConnec
 				resolvedEntry = (LdapUserData)searchDirectoryForSingleEntry(filter, 
 						null, null, null, null);
 			}
+
+			if ( resolvedEntry == null ) {
+				// HEC - search for alternative email attribute if original email not found 
+				// (used sometimes when defining secondary email)
+				String filter = "mailLocalAddress="+ldapAttributeMapper.escapeSearchFilterTerm(email);
+				resolvedEntry = (LdapUserData)searchDirectoryForSingleEntry(filter,
+						null, null, null, null);
+			}
 		
 			if ( resolvedEntry == null ) {
 				if ( log.isDebugEnabled() ) {
 					log.debug("findUserByEmail(): failed to find user by email [email = " + email + "]");
+				}
+				String errorAddress = ServerConfigurationService.getString("hec.error.notification.email", "");
+				if (errorAddress != "") {
+					EmailService.send("noreply-ZoneCours@hec.ca", errorAddress, "Échec de login ZoneCours", "Un usager n'as pas été trouvé dans LDAP suite à une recherche par courriel pour la valeur \""+email
+						+"\" (la recherche se fait sur l'attribut \"mail\" et \"mailLocalAddress\").",
+						null, null, null);
 				}
 				return false;
 			}
