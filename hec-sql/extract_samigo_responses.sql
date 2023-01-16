@@ -1,0 +1,20 @@
+SELECT spasst.ID, spasst.TITLE, 
+suim.eid,
+spst.title, spst.sequence,
+spitt.TEXT,
+--sigt.answertext, sigt.iscorrect, sigt.comments,
+spat.label, spat.text, spat.iscorrect, sigt.AUTOSCORE AS points, spat.score AS possible_points
+--SELECT spst.* 
+FROM SAM_ASSESSMENTGRADING_T sagt, SAM_PUBLISHEDASSESSMENT_T spasst, 
+	SAM_ITEMGRADING_T sigt, SAM_PUBLISHEDITEM_T spit, SAM_PUBLISHEDITEMTEXT_T spitt, 
+	SAM_PUBLISHEDANSWER_T spat, SAKAI_USER_ID_MAP suim,
+	SAM_PUBLISHEDSECTION_T spst, SAM_AUTHZDATA_T sat
+WHERE sagt.ASSESSMENTGRADINGID = sigt.ASSESSMENTGRADINGID
+AND sigt.PUBLISHEDITEMID = spit.ITEMID
+AND sigt.PUBLISHEDITEMTEXTID = spitt.ITEMTEXTID
+AND sigt.PUBLISHEDANSWERID = spat.ANSWERID
+AND spit.SECTIONID = spst.SECTIONID
+AND sagt.AGENTID = suim.USER_ID
+AND spasst.id = sagt.PUBLISHEDASSESSMENTID
+AND sagt.PUBLISHEDASSESSMENTID = sat.QUALIFIERID AND sat.FUNCTIONID = 'OWN_PUBLISHED_ASSESSMENT' AND sat.AGENTID = 'MATH20605.H2022'
+ORDER BY spasst.id, suim.eid, spst."SEQUENCE"
