@@ -341,4 +341,54 @@
                 <configuration name="final.allowlori" value="true"/>
                 <configuration name="final.contentlink" value="true"/>
         </tool>
+        <tool
+                id="hec.ddrse_ethique"
+                title="Contenu DD, RSE et Éthique"
+                description="Ce formulaire permet de recenser et suivre dans le temps les indicateurs demandées pour les accréditations sur le contenu en développement durable, responsabilité sociale des entreprise et ainsi que de l'éthique de la gouvernance des programmes">
+
+                <configuration name="sakai:portlet-pre-render" value="true" />
+
+                <category name="course" />
+
+                <configuration name="functions.require" />
+
+                <configuration name="imsti.launch"
+                   value="https://education.hec.ca/ddrseethique/api/ethique/lti" />
+                <configuration name="imsti.xml" />
+                <configuration name="imsti.secret" value="0c38fcbe-e6f0-4f51-9739-a74f7d3b1a17" />
+                <configuration name="imsti.key" value="launch_key" />
+
+                <configuration name="imsti.pagetitle" value="Contenu DD, RSE et Éthique"/>
+                <configuration name="imsti.tooltitle" value="Contenu DD, RSE et Éthique"/>
+                <configuration name="imsti.newpage" value="on" />
+                <configuration name="imsti.maximize" value="off" />
+                <configuration name="imsti.releasename" value="on"/>  
+                <configuration name="imsti.releaseemail" value="on"/> 
+                <configuration name="imsti.custom"/>
+                <configuration name="imsti.allowsettings" value="off"/>
+                <configuration name="imsti.allowroster" value="off"/> 
+                <configuration name="imsti.allowoutcomes" value="off"/> 
+                <configuration name="imsti.allowlori" value="off"/> 
+                <configuration name="imsti.contentlink" />
+
+                <configuration name="final.launch" value="true"/>
+                <configuration name="final.xml" value="true"/>
+                <configuration name="final.secret" value="true"/>
+                <configuration name="final.key" value="true"/>
+
+                <configuration name="final.pagetitle" value="true"/>
+                <configuration name="final.tooltitle" value="true"/>
+                <configuration name="final.newpage" value="true"/>
+                <configuration name="final.maximize" value="true"/>
+                <configuration name="final.frameheight" value="true"/>
+                <configuration name="final.debug" value="true"/>
+                <configuration name="final.releasename" value="true"/>
+                <configuration name="final.releaseemail" value="true"/>
+                <configuration name="final.custom" value="true"/>
+                <configuration name="final.allowsettings" value="true"/>
+                <configuration name="final.allowroster" value="true"/>
+                <configuration name="final.allowoutcomes" value="true"/>
+                <configuration name="final.allowlori" value="true"/>
+                <configuration name="final.contentlink" value="true"/>
+        </tool>
 </registration>
