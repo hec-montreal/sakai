@@ -1001,4 +1001,9 @@ public class UrkundReviewServiceImpl extends BaseContentReviewService {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public boolean allowSubmissionsOnBehalf() {
+		return true;
+	}
 }
