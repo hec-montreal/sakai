@@ -32,6 +32,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
@@ -972,7 +973,7 @@ public class PDFAssessmentBean implements Serializable {
 
 			HTMLWorker worker = new HTMLWorker(document);
 
-			HashMap props = worker.getInterfaceProps();
+			Map<String, Object> props = worker.getInterfaceProps();
 			if (props == null) {
 				props = new HashMap();
 			}

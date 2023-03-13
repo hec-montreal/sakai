@@ -22,10 +22,14 @@ import java.io.IOException;
 import java.io.Reader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.Map;
 
+import com.lowagie.text.Image;
 import com.lowagie.text.DocListener;
 import com.lowagie.text.html.simpleparser.StyleSheet;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.sakaiproject.component.cover.ServerConfigurationService;
@@ -43,7 +47,7 @@ import org.sakaiproject.content.cover.ContentHostingService;
  *  
  */
 @Slf4j
- public class HTMLWorker extends org.sakaiproject.tool.assessment.pdf.itext.HTMLWorker {
+ public class HTMLWorker extends com.lowagie.text.html.simpleparser.HTMLWorker {
 
 	//http://yourhost/access + /content at the time of this writting
 	private static String ACCESSBASE = ServerConfigurationService.getAccessUrl() +
@@ -65,7 +69,7 @@ import org.sakaiproject.content.cover.ContentHostingService;
 
 	//duplicated here only because static reference to this was creating a base class instance
 	//is there a better way to do this with spring?
-	public static ArrayList parseToList(Reader reader, StyleSheet style, HashMap interfaceProps) throws IOException {
+	public static ArrayList parseToList(Reader reader, StyleSheet style, Map<String, Object> interfaceProps) throws IOException {
 		HTMLWorker worker = new HTMLWorker(null);
 		if (style != null)
 			worker.setStyleSheet(style);
@@ -85,7 +89,7 @@ import org.sakaiproject.content.cover.ContentHostingService;
 	 * 
 	 * {@inheritDoc}
 	 */
-	public void startElement(String tag, HashMap h) {
+	public void startElement(String tag, Map<String, String> h) {
 
 		if (tag.equals("img")) {
 			String src = (String)h.get("src");
@@ -123,8 +127,8 @@ import org.sakaiproject.content.cover.ContentHostingService;
 					h.put("src", temp.getCanonicalPath());
 
 					//Spoof the interface props so that it won't try anything weird with urls
-					HashMap props = this.getInterfaceProps();
-					HashMap tempProps = new HashMap();
+					Map<String, Object> props = this.getInterfaceProps();
+					Map<String, Object> tempProps = new HashMap();
 					this.setInterfaceProps(tempProps);
 
 					super.startElement(tag, h);
@@ -164,8 +168,8 @@ import org.sakaiproject.content.cover.ContentHostingService;
 					h.put("src", temp.getCanonicalPath());
 
 					//Spoof the interface props so that it won't try anything weird with urls
-					HashMap props = this.getInterfaceProps();
-					HashMap tempProps = new HashMap();
+					Map<String, Object> props = this.getInterfaceProps();
+					Map<String, Object> tempProps = new HashMap();
 					this.setInterfaceProps(tempProps);
 
 					super.startElement(tag, h);
@@ -174,6 +178,23 @@ import org.sakaiproject.content.cover.ContentHostingService;
 				}
 				catch (Exception e) {
 					log.error(e.getMessage(), e);
+				}
+			}
+			else if (src.startsWith("data:image/")) {
+				Image img = null;
+				final String base64Data = src.substring(src.indexOf(",") + 1);
+				try {
+					img = Image.getInstance(Base64.getDecoder().decode(base64Data));
+				} catch (Exception e) {
+					log.warn("Failed retrieving image", e.toString());
+				}
+				if (img != null) {
+					try {
+						document.add(img);
+					}
+					catch (Exception e) {
+						log.warn("Image couldn't be added to the document", e.toString());
+					}
 				}
 			}
 			//nothing fancy for normal images
