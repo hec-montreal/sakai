@@ -154,3 +154,11 @@ body.Mrphs-toolMenu-collapsed #toolMenuWrap {
     border-left: 1px solid #7F7F7F;
 	background: #fff;
 }
+
+// logo on new account validation page
+.stylized .logo {
+        background: #fff no-repeat center center !important;
+        background-image: url('/res/images/logo-top.png')!important;
+        background-size: 250px 53px !important;
+}
+
