@@ -1344,7 +1344,7 @@ public abstract class BaseUserDirectoryService implements UserDirectoryService, 
 		   putCachedUser(user.getReference(), user);
 		   return user;
 	   }
-	   return null;
+	   return getUserByAid(emailAddress);
 	}
 
   /**
