@@ -522,12 +522,6 @@ public class JLDAPDirectoryProvider implements UserDirectoryProvider, LdapConnec
 				if ( log.isDebugEnabled() ) {
 					log.debug("findUserByEmail(): failed to find user by email [email = " + email + "]");
 				}
-				String errorAddress = ServerConfigurationService.getString("hec.error.notification.email", "");
-				if (errorAddress != "") {
-					EmailService.send("noreply-ZoneCours@hec.ca", errorAddress, "Échec de login ZoneCours", "Un usager n'as pas été trouvé dans LDAP suite à une recherche par courriel pour la valeur \""+email
-						+"\" (la recherche se fait sur l'attribut \"mail\" et \"mailLocalAddress\").",
-						null, null, null);
-				}
 				return false;
 			}
 
