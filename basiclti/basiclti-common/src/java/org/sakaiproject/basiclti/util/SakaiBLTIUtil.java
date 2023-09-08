@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -415,42 +416,46 @@ public class SakaiBLTIUtil {
 		}
 
 		public static List<String> getSectionsForCurrentUser(String context) {
-			List<String> sectionsList = new ArrayList<String>();
 			Site site = null;
 			try {
 				site = SiteService.getSite(context);
 			} catch (Exception e) {
 				if(verbosePrint) { System.out.println(("No site/page associated with Launch context="+context)); }
-				return sectionsList;
+				return new ArrayList<String>();
 			}
 			User user = UserDirectoryService.getCurrentUser();
 			Role userRole = site.getUserRole(user.getId());
-			List<Group> groups = new ArrayList<Group>();
-			Collection<Group> userGroups = site.getGroupsWithMember(user.getId());
+			List<String> userSections = site.getGroupsWithMember(user.getId()).stream()
+					.filter(g -> {
+						String wsetupProp = g.getProperties().getProperty(Group.GROUP_PROP_WSETUP_CREATED);
+						return wsetupProp == null || wsetupProp.equals(Boolean.FALSE.toString()); })
+					.map(g -> g.getTitle())
+					.sorted(Comparator.naturalOrder())
+					.collect(Collectors.toList());
+
+			List<String> allSections = site.getGroups().stream()
+					.filter(g -> {
+						String wsetupProp = g.getProperties().getProperty(Group.GROUP_PROP_WSETUP_CREATED);
+						return wsetupProp == null || wsetupProp.equals(Boolean.FALSE.toString()); })
+					.map(g -> g.getTitle())
+					.sorted(Comparator.naturalOrder())
+					.collect(Collectors.toList());
 
 			// user can access all sections if he is admin, the sections they are a member of
 			// or finally all sections if they have site.upd on the site's realm
-			if (SecurityService.isSuperUser()) {
-				groups.addAll(site.getGroups());
-			}else if (userRole != null && "Coordinator-Instructor".equalsIgnoreCase(userRole.getId())){
-				groups.addAll(site.getGroups());
+			if (SecurityService.isSuperUser() || (userRole != null && "Coordinator-Instructor".equalsIgnoreCase(userRole.getId()))) {
+				return allSections;
 			}
-			else if (userGroups != null && userGroups.size() > 0) {
-				groups.addAll(userGroups);
+			else if (userSections != null && userSections.size() > 0) {
+				return userSections;
 			} else if (SecurityService.unlock("site.upd", site.getReference())) {
-				groups.addAll(site.getGroups());
+				// user has site.upd and not enrolled in any sections
+				return allSections;
 			}
-
-			// filter out non official groups (user created)
-			for (Group g : groups) {
-				String wsetupProp = g.getProperties().getProperty(Group.GROUP_PROP_WSETUP_CREATED);
-				if (wsetupProp == null || wsetupProp.equals(Boolean.FALSE.toString())) {
-					sectionsList.add(g.getTitle());
-				}
+			else {
+				//return empty list
+				return new ArrayList<String>();
 			}
-			sectionsList.sort(Comparator.naturalOrder());
-
-			return sectionsList;
 		}
 
 		public static boolean sakaiInfo(Properties props, Placement placement, ResourceLoader rb, String selectedSection) {
