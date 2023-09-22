@@ -170,6 +170,7 @@
                 <configuration name="imsti.allowoutcomes" value="on"/> 
                 <configuration name="imsti.allowlori" value="on"/> 
                 <configuration name="imsti.contentlink" />
+                <configuration name="imsti.rolemap" value="Teaching Assistant:Instructor;Teaching Assistant Editor:Instructor"/>
 
                 <configuration name="final.launch" value="true"/>
                 <configuration name="final.xml" value="true"/>
@@ -190,6 +191,7 @@
                 <configuration name="final.allowoutcomes" value="true"/>
                 <configuration name="final.allowlori" value="true"/>
                 <configuration name="final.contentlink" value="true"/>
+                <configuration name="final.rolemap" value="true"/>
 	</tool>
 
         <tool
