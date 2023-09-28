@@ -141,6 +141,12 @@
         </jaxrs:serviceBeans>
     </jaxrs:server>
 
+    <jaxrs:server id="SelfSignupRS" address="/rest/selfsignup">
+        <jaxrs:serviceBeans>
+            <ref bean="org.sakaiproject.webservices.hec.SelfSignupValidator"/>
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
+
     <jaxws:endpoint id="SakaiJob"
                     implementor="#org.sakaiproject.webservices.SakaiJob"
                     address="/soap/job"/>
@@ -257,4 +263,5 @@
     <bean id="org.sakaiproject.webservices.SakaiGradebook" class="org.sakaiproject.webservices.SakaiGradebook" init-method="init" parent="org.sakaiproject.webservices.AbstractWebService" >
         <property name="gradebookFrameworkService" ref="org.sakaiproject.service.gradebook.GradebookFrameworkService"/>
     </bean>
+    <bean id="org.sakaiproject.webservices.hec.SelfSignupValidator" class="org.sakaiproject.webservices.hec.SelfSignupValidator" init-method="init" parent="org.sakaiproject.webservices.AbstractWebService" />
 </beans>
