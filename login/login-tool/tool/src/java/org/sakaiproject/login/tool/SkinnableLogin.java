@@ -208,8 +208,8 @@ public class SkinnableLogin extends HttpServlet implements Login {
 			if ( containerLogoutUrl != null && session.getAttribute(ATTR_CONTAINER_SUCCESS) != null &&
 					containerLogout != null)
 			{
-				log.debug("containerLogoutUrl: " + containerLogoutUrl);
-				log.debug("containerLogout: " + containerLogout);
+				log.debug("containerLogoutUrl: {} ", containerLogoutUrl);
+				log.debug("containerLogout: {} ", containerLogout);
 				res.sendRedirect(res.encodeRedirectURL(containerLogout));
 			}
 			else
@@ -221,8 +221,8 @@ public class SkinnableLogin extends HttpServlet implements Login {
 				/**
 				 * HEC debug 
 				 */
-				log.debug("return url = ", returnUrl);
-				if (tool != null) { log.debug("tool: " + tool.getTitle()); }
+				log.debug("return url = {} ", returnUrl);
+				if (tool != null) { log.debug("tool title = {} ", tool.getTitle()); }
 
 				complete(returnUrl, null, tool, res);
 			}
