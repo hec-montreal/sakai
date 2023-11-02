@@ -1229,6 +1229,7 @@ public abstract class BaseCitationService implements CitationService
 
 			// ZCII-4135: return DOI link if available
 			Object doiObj = m_citationProperties.get("doi");
+			String doi = null;
 			if (doiObj != null) {
 				if (doiObj instanceof String) {
 					doi = (String) m_citationProperties.get("doi");
