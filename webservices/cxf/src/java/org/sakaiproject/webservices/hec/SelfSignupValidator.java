@@ -16,6 +16,7 @@
 package org.sakaiproject.webservices.hec;
 
 import java.util.Base64;
+import java.util.List;
 import java.util.Base64.Encoder;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
@@ -46,14 +47,24 @@ import com.fasterxml.jackson.databind.JsonNode;
 @SOAPBinding(style = SOAPBinding.Style.RPC, use = SOAPBinding.Use.LITERAL)
 @Slf4j
 public class SelfSignupValidator extends AbstractWebService {
-    private final String continueJson = "{ \"version\":\"1.0\", \"action\": \"Continue\" }";
-    private final String rejectJson = "{ \"version\":\"1.0\", \"action\": \"ShowBlockPage\" }";
+    private String continueJson = "{ \"version\":\"1.0\", \"action\": \"Continue\", \"jobTitle\": \"ZoneCours\" }";
+    private String rejectJson = "{ \"version\":\"1.0\", \"action\": \"ShowBlockPage\" }";
 
     private String authString = null;
 
     public void init() {
         String expectedUsername = serverConfigurationService.getString("selfsignup.azure.username");
         String expectedPassword = serverConfigurationService.getString("selfsignup.azure.password");
+
+        String userDefinedContinueJson = serverConfigurationService.getString("selfsignup.azure.continuejson", null);
+        String userDefinedRejectJson = serverConfigurationService.getString("selfsignup.azure.rejectjson", null);
+
+        if (userDefinedContinueJson != null) {
+            continueJson = userDefinedContinueJson;
+        }
+        if (userDefinedRejectJson != null) {
+            rejectJson = userDefinedRejectJson;
+        }
 
         Encoder enc = Base64.getEncoder();
         if (expectedUsername != null && expectedUsername != "" && expectedPassword != null && expectedPassword != "") {
