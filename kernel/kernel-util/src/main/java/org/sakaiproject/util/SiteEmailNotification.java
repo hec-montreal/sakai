@@ -176,16 +176,8 @@ public class SiteEmailNotification extends EmailNotification
 	 */
 	protected String getTo(Event event)
 	{
-		if (NotificationService.isNotificationToReplyable())
-		{
-			// to site title <email>
-			return "To: " + getToSite(event);
-		}
-		else
-		{
-			// to the site, but with no reply
-			return "To: " + getToSiteNoReply(event);
-		}
+		// ZCII-4841 : ne pas mettre d'address courriel dans le To:
+		return "To: " + getToSiteNoEmail(event);
 	}
 
 	/**
@@ -258,6 +250,36 @@ public class SiteEmailNotification extends EmailNotification
 		return rv;
 	}
 
+	/**
+	 * Format the to site without an email address.
+	 * 
+	 * @param event
+	 *        The event that matched criteria to cause the notification.
+	 * @return the email address attribution for the site.
+	 */
+	protected String getToSiteNoEmail(Event event)
+	{
+		Reference ref = EntityManager.newReference(event.getResource());
+
+		// use either the configured site, or if not configured, the site (context) of the resource
+		String siteId = (getSite() != null) ? getSite() : ref.getContext();
+
+		// get a site title
+		String title = siteId;
+		try
+		{
+			Site site = SiteService.getSite(siteId);
+			title = site.getTitle();
+		}
+		catch (Exception ignore)
+		{
+		}
+
+		String rv = title;
+
+		return rv;
+	}
+	
 	/**
 	 * Refine the recipients list to only users that are actually members
 	 * of the given site.
