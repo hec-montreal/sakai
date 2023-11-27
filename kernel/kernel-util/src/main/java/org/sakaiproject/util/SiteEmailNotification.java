@@ -275,7 +275,7 @@ public class SiteEmailNotification extends EmailNotification
 		{
 		}
 
-		String rv = title;
+		String rv = "\"" + title + "\"";
 
 		return rv;
 	}
