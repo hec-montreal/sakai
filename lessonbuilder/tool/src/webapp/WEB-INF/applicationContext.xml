@@ -370,7 +370,9 @@ simplePageBean.addForumSummary
 		<property name="bltiExport" ref="org.sakaiproject.lessonbuildertool.ccexport.BltiExport"/>
 		<property name="ccUtils" ref="org.sakaiproject.lessonbuildertool.ccexport.CCUtils"/>
 		<property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService"/>
-		<property name="forumsExport" ref="org.sakaiproject.lessonbuildertool.ccexport.ForumsExport"/>
+		<!-- 
+			<property name="forumsExport" ref="org.sakaiproject.lessonbuildertool.ccexport.ForumsExport"/>
+		-->
 		<property name="lessonsExport" ref="org.sakaiproject.lessonbuildertool.ccexport.LessonsExport"/>
 		<property name="preferencesService" ref="org.sakaiproject.user.api.PreferencesService"/>
 		<property name="samigoExport" ref="org.sakaiproject.lessonbuildertool.ccexport.SamigoExport"/>
@@ -401,6 +403,7 @@ simplePageBean.addForumSummary
 		<property name="formattedText" ref="org.sakaiproject.util.api.FormattedText" />
 	</bean>
 
+<!--
  	<bean id="org.sakaiproject.lessonbuildertool.ccexport.ForumsExport"
 	      class="org.sakaiproject.lessonbuildertool.ccexport.ForumsExport">
 		<property name="assignmentExport" ref="org.sakaiproject.lessonbuildertool.ccexport.AssignmentExport"/>
@@ -410,6 +413,7 @@ simplePageBean.addForumSummary
 	    <property name="forumManager" ref="org.sakaiproject.api.app.messageforums.MessageForumsForumManager"/>
 		<property name="siteService" ref="org.sakaiproject.site.api.SiteService"/>
 	</bean>
+-->
 
  	<bean id="org.sakaiproject.lessonbuildertool.ccexport.BltiExport"
 	      class="org.sakaiproject.lessonbuildertool.ccexport.BLTIExport">

@@ -62,7 +62,7 @@ public class CCExport {
     @Setter private BLTIExport bltiExport;
     @Setter private CCUtils ccUtils;
     @Setter private ContentHostingService contentHostingService;
-    @Setter private ForumsExport forumsExport;
+    //@Setter private ForumsExport forumsExport;
     @Setter private LessonsExport lessonsExport;
     @Setter private PreferencesService preferencesService;
     @Setter private SamigoExport samigoExport;
@@ -126,7 +126,7 @@ public class CCExport {
             if (!addAllFiles(ccConfig)) return;
             if (!addAllSamigo(ccConfig)) return;
             if (!addAllAssignments(ccConfig)) return;
-            if (!addAllForums(ccConfig)) return;
+//            if (!addAllForums(ccConfig)) return;
             if (!addAllBlti(ccConfig)) return;
         } catch (Exception e) {
             log.error("Lessons export error outputting file, {}", e.toString());
@@ -141,7 +141,7 @@ public class CCExport {
             outputAllFiles(ccConfig, out);
             outputAllSamigo(ccConfig, out);
             outputAllAssignments(ccConfig, out);
-            outputAllForums(ccConfig, out);
+//            outputAllForums(ccConfig, out);
             outputAllBlti(ccConfig, out);
             outputAllTexts(ccConfig, out);
             outputManifest(ccConfig, out);
@@ -396,6 +396,7 @@ public class CCExport {
         }
     }
 
+/*
     public boolean addAllForums(CCConfig ccConfig) {
         List<String> forums = forumsExport.getEntitiesInSite(ccConfig);
         if (forums == null) return true;
@@ -421,6 +422,7 @@ public class CCExport {
             setErrKey("simplepage.exportcc-fileerr", e.getMessage(), ccConfig.getLocale());
         }
     }
+*/
 
     public boolean addAllBlti(CCConfig ccConfig) {
         List<String> bltis = bltiExport.getEntitiesInSite(ccConfig.getSiteId());
