@@ -250,7 +250,13 @@ public class SamigoExport {
                 profile = "cc.multiple_response.v0p1";
             } else if (type.equals(TypeIfc.TRUE_FALSE)) {
                 profile = "cc.true_false.v0p1";
-            } else if (type.equals(TypeIfc.ESSAY_QUESTION)) {
+            } else if (type.equals(TypeIfc.ESSAY_QUESTION) ||
+                type.equals(TypeIfc.FILE_UPLOAD) ||
+                type.equals(TypeIfc.AUDIO_RECORDING) ||
+                type.equals(TypeIfc.MATRIX_CHOICES_SURVEY) ||
+                type.equals(TypeIfc.MATCHING) ||
+                type.equals(TypeIfc.CALCULATED_QUESTION)
+            ) {
                 profile = "cc.essay.v0p1";
             } else if (type.equals(TypeIfc.FILL_IN_BLANK) || type.equals(TypeIfc.FILL_IN_NUMERIC)) {
                 String answerString = "";
@@ -270,12 +276,6 @@ public class SamigoExport {
                 continue;
             }
 
-            //ignore
-            // MATCHING
-            // FILE_UPLOAD:
-            // AUDIO_RECORDING:
-            // MATRIX_CHOICES_SURVEY:
-
             out.println("      <item ident=\"QUE_" + itemId + "\" title=\"" + StringEscapeUtils.escapeXml11(title) + "\">");
             out.println("        <itemmetadata>");
             out.println("          <qtimetadata>");
@@ -293,6 +293,13 @@ public class SamigoExport {
                 out.println("              <fieldentry>No</fieldentry>");
                 out.println("            </qtimetadatafield>");
             }
+            
+            // question points value
+            out.println("            <qtimetadatafield>");
+            out.println("              <fieldlabel>cc_weighting</fieldlabel>");
+            out.println("              <fieldentry>" + score + "</fieldentry>");
+            out.println("            </qtimetadatafield>");
+
             out.println("          </qtimetadata>");
             out.println("        </itemmetadata>");
 
@@ -464,7 +471,13 @@ public class SamigoExport {
                 out.println("        </resprocessing>");
             }
 
-            if (type.equals(TypeIfc.FILL_IN_BLANK) || type.equals(TypeIfc.ESSAY_QUESTION)) {
+            if (type.equals(TypeIfc.FILL_IN_BLANK) || type.equals(TypeIfc.ESSAY_QUESTION) ||
+                type.equals(TypeIfc.FILE_UPLOAD) ||
+                type.equals(TypeIfc.AUDIO_RECORDING) ||
+                type.equals(TypeIfc.MATRIX_CHOICES_SURVEY) ||
+                type.equals(TypeIfc.MATCHING) ||
+                type.equals(TypeIfc.CALCULATED_QUESTION)
+        ) {
                 // FIB has correct or incorrect, essay has general
 
                 out.println("          <response_str ident=\"QUE_" + itemId + "_RL\">");
@@ -554,9 +567,28 @@ public class SamigoExport {
                 }
             }
 
-            if (type.equals(TypeIfc.ESSAY_QUESTION)) {
+            if (type.equals(TypeIfc.ESSAY_QUESTION) ||
+                type.equals(TypeIfc.FILE_UPLOAD) ||
+                type.equals(TypeIfc.AUDIO_RECORDING) ||
+                type.equals(TypeIfc.MATRIX_CHOICES_SURVEY) ||
+                type.equals(TypeIfc.MATCHING) ||
+                type.equals(TypeIfc.CALCULATED_QUESTION)
+            ) {
+                String feedbackString = "";
+
                 // essay has no resprocessing except if there is general feedback
                 if (item.getGeneralItemFeedback() != null) {
+                    feedbackString = item.getGeneralItemFeedback();
+                } 
+                else {
+                    if (item.getCorrectItemFeedback() != null) {
+                        feedbackString += "Correct: " + item.getCorrectItemFeedback() + "<br/><br/>";
+                    }
+                    if (item.getInCorrectItemFeedback() != null) {
+                        feedbackString += "Incorrect: " + item.getInCorrectItemFeedback();
+                    }
+                }
+                if (!feedbackString.equals("")) {
                     out.println("        <resprocessing>");
                     out.println("          <outcomes>");
                     out.println("            <decvar maxvalue=\"" + score + "\" minvalue=\"0\" varname=\"SCORE\" vartype=\"Decimal\"/>");
@@ -566,8 +598,8 @@ public class SamigoExport {
                     out.println("            <displayfeedback feedbacktype=\"Response\" linkrefid=\"general_fb\" />");
                     out.println("          </respcondition>");
                     out.println("        </resprocessing>");
-                    CCFeedbackItem ccFeedbackItem = new CCFeedbackItem("general_fb", item.getGeneralItemFeedback());
-                    ccFeedbackItems.add(ccFeedbackItem);
+                    CCFeedbackItem ccFeedbackItem = new CCFeedbackItem("general_fb", feedbackString);
+                    ccFeedbackItems.add(ccFeedbackItem); 
                 } else {
                     out.println("        <resprocessing>");
                     out.println("          <outcomes>");
