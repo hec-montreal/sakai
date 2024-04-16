@@ -218,6 +218,48 @@ public class SamigoExport {
             if (section != null) {
                 itemId = item.getSection().getSequence() + "_" + item.getSequence();
                 title = item.getSection().getSequence() + "." + item.getSequence();
+
+                // HEC insert essay question with part description
+                if (item.getSequence() == 1 && section.getDescription() != null) {
+                    out.println("      <item ident=\"QUE_" + section.getSequence() + "_0\" title=\"" + StringEscapeUtils.escapeXml11(section.getSequence() + ".0") + "\">");
+                    out.println("        <itemmetadata>");
+                    out.println("          <qtimetadata>");
+                    out.println("            <qtimetadatafield>");
+                    out.println("              <fieldlabel>cc_profile</fieldlabel>");
+                    out.println("              <fieldentry>cc.essay.v0p1</fieldentry>");
+                    out.println("            </qtimetadatafield>");
+                    out.println("            <qtimetadatafield>");
+                    out.println("              <fieldlabel>qmd_scoringpermitted</fieldlabel>");
+                    out.println("              <fieldentry>Yes</fieldentry>");
+                    out.println("            </qtimetadatafield>");
+                    out.println("            <qtimetadatafield>");
+                    out.println("              <fieldlabel>qmd_computerscored</fieldlabel>");
+                    out.println("              <fieldentry>No</fieldentry>");
+                    out.println("            </qtimetadatafield>");
+                    
+                    // question points value
+                    out.println("            <qtimetadatafield>");
+                    out.println("              <fieldlabel>cc_weighting</fieldlabel>");
+                    out.println("              <fieldentry>0</fieldentry>");
+                    out.println("            </qtimetadatafield>");
+        
+                    out.println("          </qtimetadata>");
+                    out.println("        </itemmetadata>");
+        
+                    out.println("        <presentation>");
+                    out.println("          <material>");
+                    out.println("            <mattext texttype=\"text/html\">" + ccUtils.fixup(ccConfig, section.getDescription(), CCResourceItem) + "</mattext>");
+                    out.println("          </material>");
+                    out.println("          <response_str ident=\"QUE_" + section.getSequence() + "_0" + "_RL\">");
+                    out.println("            <render_fib columns=\"30\" rows=\"1\"/>");
+                    out.println("          </response_str>");
+                    out.println("        </presentation>");
+                    out.println("        </item>");
+                
+                    // handle attachments
+                    // section.getSectionAttachmentList()
+                }
+            
             } else {
                 itemId = assessmentSeq + "_" + seq;
                 title = assessmentTitle + " " + (seq++);
@@ -283,7 +325,13 @@ public class SamigoExport {
             out.println("              <fieldlabel>cc_profile</fieldlabel>");
             out.println("              <fieldentry>" + profile + "</fieldentry>");
             out.println("            </qtimetadatafield>");
-            if (type.equals(TypeIfc.ESSAY_QUESTION)) {
+            if (type.equals(TypeIfc.ESSAY_QUESTION) ||
+                type.equals(TypeIfc.FILE_UPLOAD) ||
+                type.equals(TypeIfc.AUDIO_RECORDING) ||
+                type.equals(TypeIfc.MATRIX_CHOICES_SURVEY) ||
+                type.equals(TypeIfc.MATCHING) ||
+                type.equals(TypeIfc.CALCULATED_QUESTION)
+            ) {
                 out.println("            <qtimetadatafield>");
                 out.println("              <fieldlabel>qmd_scoringpermitted</fieldlabel>");
                 out.println("              <fieldentry>Yes</fieldentry>");
