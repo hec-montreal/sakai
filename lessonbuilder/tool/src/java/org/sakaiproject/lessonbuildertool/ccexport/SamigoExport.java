@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -374,6 +375,24 @@ public class SamigoExport {
                     text = text.substring(0, text.length() - 2);
                 }
                 text = text.replaceAll("\\{}", "[____]");
+            } else if (type.equals(TypeIfc.MATRIX_CHOICES_SURVEY) || type.equals(TypeIfc.MATCHING)) {
+                text = item.getText();
+                text += "<br/><br/>";
+                if (type.equals(TypeIfc.MATCHING)) {
+                    text += answers.stream().map(a -> { return a.getLabel() + ". " + a.getText(); }).collect(Collectors.joining("<br/>"));
+                }
+                else {
+                    text += answers.stream().map(a -> { return a.getSequence() + ". " + a.getText(); }).collect(Collectors.joining("<br/>"));
+                }
+                text += "<br/><br/>";
+                text += texts.stream().map(t -> { return t.getSequence() + ". " + t.getText(); }).collect(Collectors.joining("<br/>"));
+
+                if (type.equals(TypeIfc.MATCHING)) {
+                    text += "<br/><br/>";
+                    text += "R&eacute;ponses : ";
+                    text += texts.stream().map(t -> { 
+                        return t.getSequence() + ":" + t.getAnswerArray().stream().filter(a -> { return a.getIsCorrect(); }).findFirst().map(AnswerIfc::getLabel).get(); }).collect(Collectors.joining(", "));
+                }
             } else {
                 text = item.getText();
             }
