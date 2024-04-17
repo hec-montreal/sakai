@@ -391,7 +391,11 @@ public class SamigoExport {
                     text += "<br/><br/>";
                     text += "R&eacute;ponses : ";
                     text += texts.stream().map(t -> { 
-                        return t.getSequence() + ":" + t.getAnswerArray().stream().filter(a -> { return a.getIsCorrect(); }).findFirst().map(AnswerIfc::getLabel).get(); }).collect(Collectors.joining(", "));
+                        Optional<String> answerOpt = t.getAnswerArray().stream().filter(a -> { return a.getIsCorrect(); }).findFirst().map(AnswerIfc::getLabel);
+                        String answer = "";
+                        if (answerOpt.isPresent()) { answer = answerOpt.get(); }
+                        return t.getSequence() + ":" + answer; 
+                    }).collect(Collectors.joining(", "));
                 }
             } else {
                 text = item.getText();
