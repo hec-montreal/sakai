@@ -127,7 +127,7 @@ public class CCExport {
             if (!addAllSamigo(ccConfig)) return;
             if (!addAllAssignments(ccConfig)) return;
 //            if (!addAllForums(ccConfig)) return;
-            if (!addAllBlti(ccConfig)) return;
+//            if (!addAllBlti(ccConfig)) return;
         } catch (Exception e) {
             log.error("Lessons export error outputting file, {}", e.toString());
             setErrKey("simplepage.exportcc-fileerr", e.getMessage(), ccConfig.getLocale());
@@ -142,7 +142,7 @@ public class CCExport {
             outputAllSamigo(ccConfig, out);
             outputAllAssignments(ccConfig, out);
 //            outputAllForums(ccConfig, out);
-            outputAllBlti(ccConfig, out);
+//            outputAllBlti(ccConfig, out);
             outputAllTexts(ccConfig, out);
             outputManifest(ccConfig, out);
 
