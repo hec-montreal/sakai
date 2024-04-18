@@ -44,9 +44,11 @@ import org.sakaiproject.lessonbuildertool.service.LessonEntity;
 import org.sakaiproject.lessonbuildertool.util.ResourceLoaderMessageSource;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.AnswerIfc;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.AssessmentIfc;
+import org.sakaiproject.tool.assessment.data.ifc.assessment.ItemAttachmentIfc;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.ItemDataIfc;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.ItemTextIfc;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.PublishedAssessmentIfc;
+import org.sakaiproject.tool.assessment.data.ifc.assessment.SectionAttachmentIfc;
 import org.sakaiproject.tool.assessment.data.ifc.assessment.SectionDataIfc;
 import org.sakaiproject.tool.assessment.data.ifc.questionpool.QuestionPoolDataIfc;
 import org.sakaiproject.tool.assessment.data.ifc.shared.TypeIfc;
@@ -247,9 +249,30 @@ public class SamigoExport {
                     out.println("          </qtimetadata>");
                     out.println("        </itemmetadata>");
         
+                    // HEC if the section has attachments, add them to the zip and transform the url
+                    String description = section.getDescription();
+                    if (section.getSectionAttachmentList().size() > 0) {
+                        description += "<br/>";
+                    }
+                    for (int i = 0 ; i < section.getSectionAttachmentList().size() ; i++) {
+                        SectionAttachmentIfc att = (SectionAttachmentIfc)section.getSectionAttachmentList().get(i);
+                        ccConfig.addFile(att.getResourceId(), "import_quiz/"+att.getFilename());
+
+                        description += "<br/>";
+                        if (att.getFilename().endsWith(".png") || 
+                            att.getFilename().endsWith(".jpeg") ||
+                            att.getFilename().endsWith(".webp") ||  
+                            att.getFilename().endsWith(".gif")) {
+                            description += "<img src=\"$IMS-CC-FILEBASE$../import_quiz/" + att.getFilename() + "\">";
+                        }
+                        else {
+                            description += "<a href=\"$IMS-CC-FILEBASE$../import_quiz/" + att.getFilename() + "\">" + att.getFilename()+"</a>";
+                        }
+                    }
+
                     out.println("        <presentation>");
-                    out.println("          <material>");
-                    out.println("            <mattext texttype=\"text/html\">" + ccUtils.fixup(ccConfig, section.getDescription(), CCResourceItem) + "</mattext>");
+                    out.println("          <material>");                  
+                    out.println("            <mattext texttype=\"text/html\">" + ccUtils.fixup(ccConfig, description, CCResourceItem) + "</mattext>");
                     out.println("          </material>");
                     out.println("          <response_str ident=\"QUE_" + section.getSequence() + "_0" + "_RL\">");
                     out.println("            <render_fib columns=\"30\" rows=\"1\"/>");
@@ -257,8 +280,6 @@ public class SamigoExport {
                     out.println("        </presentation>");
                     out.println("        </item>");
                 
-                    // handle attachments
-                    // section.getSectionAttachmentList()
                 }
             
             } else {
@@ -276,8 +297,11 @@ public class SamigoExport {
                     .sorted(Comparator.comparing(AnswerIfc::getSequence))
                     .collect(Collectors.toList());
 
-            Double score = 0.0;
-            if (!answers.isEmpty()) {
+            Double score = null;
+            if (item.getScore() != null) {
+                score = item.getScore();
+            }
+            if (score == null && !answers.isEmpty()) {
                 score = answers.get(0).getScore();
             }
 
@@ -399,6 +423,28 @@ public class SamigoExport {
                 }
             } else {
                 text = item.getText();
+            }
+
+            // HEC if the item has attachments, add them to the zip and transform the url
+            if (item.getItemAttachmentList().size() > 0) {
+                text += "<br/>";
+            }
+            for (int i = 0 ; i < item.getItemAttachmentList().size() ; i++) {
+                ItemAttachmentIfc att = (ItemAttachmentIfc)item.getItemAttachmentList().get(i);
+                ccConfig.addFile(att.getResourceId(), "import_quiz/"+att.getFilename());
+
+                //text += "<br/><a href=\"$IMS-CC-FILEBASE$../docs-import/" + att.getFilename() + "\">" + att.getFilename()+"</a>";
+                text += "<br/>";
+                if (att.getFilename().endsWith(".png") || 
+                    att.getFilename().endsWith(".jpeg") ||
+                    att.getFilename().endsWith(".webp") ||  
+                    att.getFilename().endsWith(".gif")) {
+                    text += "<img src=\"$IMS-CC-FILEBASE$../import_quiz/" + att.getFilename() + "\">";
+                }
+                else {
+                    text += "<a href=\"$IMS-CC-FILEBASE$../import_quiz/" + att.getFilename() + "\">" + att.getFilename()+"</a>";
+                }
+
             }
 
             out.println("            <mattext texttype=\"text/html\">" + ccUtils.fixup(ccConfig, text, CCResourceItem) + "</mattext>");

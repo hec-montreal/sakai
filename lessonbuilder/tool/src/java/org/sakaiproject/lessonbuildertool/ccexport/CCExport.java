@@ -138,11 +138,11 @@ public class CCExport {
             response.setHeader("Content-disposition", "inline; filename=sakai-export.imscc");
             response.setContentType("application/zip");
 
-            outputAllFiles(ccConfig, out);
             outputAllSamigo(ccConfig, out);
             outputAllAssignments(ccConfig, out);
 //            outputAllForums(ccConfig, out);
 //            outputAllBlti(ccConfig, out);
+            outputAllFiles(ccConfig, out);
             outputAllTexts(ccConfig, out);
             outputManifest(ccConfig, out);
 
