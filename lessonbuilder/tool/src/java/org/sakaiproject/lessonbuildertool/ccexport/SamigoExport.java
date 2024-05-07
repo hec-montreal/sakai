@@ -256,17 +256,26 @@ public class SamigoExport {
                     }
                     for (int i = 0 ; i < section.getSectionAttachmentList().size() ; i++) {
                         SectionAttachmentIfc att = (SectionAttachmentIfc)section.getSectionAttachmentList().get(i);
-                        ccConfig.addFile(att.getResourceId(), "import_quiz/"+att.getFilename());
 
+                        String filename = att.getFilename();
+                        int periodIndex = att.getFilename().lastIndexOf(".");
+                        int attachmentNumber = 0;
+                        // make sure we aren't adding multiple files with the same name
+                        while (ccConfig.getFilesSet().contains("import_quiz/" + filename)) {
+                            attachmentNumber++;
+                            filename = att.getFilename().substring(0, periodIndex) + "-" + attachmentNumber + att.getFilename().substring(periodIndex);
+                        }
+                        ccConfig.addFile(att.getResourceId(), "import_quiz/" + filename);
+        
                         description += "<br/>";
                         if (att.getFilename().endsWith(".png") || 
                             att.getFilename().endsWith(".jpeg") ||
                             att.getFilename().endsWith(".webp") ||  
                             att.getFilename().endsWith(".gif")) {
-                            description += "<img src=\"$IMS-CC-FILEBASE$../import_quiz/" + att.getFilename() + "\">";
+                            description += "<img src=\"$IMS-CC-FILEBASE$../import_quiz/" + filename + "\">";
                         }
                         else {
-                            description += "<a href=\"$IMS-CC-FILEBASE$../import_quiz/" + att.getFilename() + "\">" + att.getFilename()+"</a>";
+                            description += "<a href=\"$IMS-CC-FILEBASE$../import_quiz/" + filename + "\">" + filename+"</a>";
                         }
                     }
 
@@ -431,18 +440,26 @@ public class SamigoExport {
             }
             for (int i = 0 ; i < item.getItemAttachmentList().size() ; i++) {
                 ItemAttachmentIfc att = (ItemAttachmentIfc)item.getItemAttachmentList().get(i);
-                ccConfig.addFile(att.getResourceId(), "import_quiz/"+att.getFilename());
 
-                //text += "<br/><a href=\"$IMS-CC-FILEBASE$../docs-import/" + att.getFilename() + "\">" + att.getFilename()+"</a>";
+                String filename = att.getFilename();
+                int periodIndex = att.getFilename().lastIndexOf(".");
+                int attachmentNumber = 0;
+                // make sure we aren't adding multiple files with the same name
+                while (ccConfig.getFilesSet().contains("import_quiz/" + filename)) {
+                    attachmentNumber++;
+                    filename = att.getFilename().substring(0, periodIndex) + "-" + attachmentNumber + att.getFilename().substring(periodIndex);
+                }
+                ccConfig.addFile(att.getResourceId(), "import_quiz/" + filename);
+
                 text += "<br/>";
                 if (att.getFilename().endsWith(".png") || 
                     att.getFilename().endsWith(".jpeg") ||
                     att.getFilename().endsWith(".webp") ||  
                     att.getFilename().endsWith(".gif")) {
-                    text += "<img src=\"$IMS-CC-FILEBASE$../import_quiz/" + att.getFilename() + "\">";
+                    text += "<img src=\"$IMS-CC-FILEBASE$../import_quiz/" + filename + "\">";
                 }
                 else {
-                    text += "<a href=\"$IMS-CC-FILEBASE$../import_quiz/" + att.getFilename() + "\">" + att.getFilename()+"</a>";
+                    text += "<a href=\"$IMS-CC-FILEBASE$../import_quiz/" + filename + "\">" + filename + "</a>";
                 }
 
             }

@@ -422,7 +422,6 @@ public class CCExport {
             setErrKey("simplepage.exportcc-fileerr", e.getMessage(), ccConfig.getLocale());
         }
     }
-*/
 
     public boolean addAllBlti(CCConfig ccConfig) {
         List<String> bltis = bltiExport.getEntitiesInSite(ccConfig.getSiteId());
@@ -449,6 +448,7 @@ public class CCExport {
             setErrKey("simplepage.exportcc-fileerr", e.getMessage(), ccConfig.getLocale());
         }
     }
+*/
 
     public void outputAllTexts(CCConfig ccConfig, ZipPrintStream out) {
         try {

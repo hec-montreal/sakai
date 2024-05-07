@@ -37,6 +37,7 @@ public class CCConfig {
     private int nextId = 1;
 
     private Map<String, CCResourceItem> fileMap = new HashMap<>();                  // file resources
+    private Set<String> filesSet = new HashSet<>();                                 // lsit of files
     private Map<String, CCResourceItem> samigoMap = new HashMap<>();                // Samigo tests
     private Map<Long, CCResourceItem> poolMap = new HashMap<>();                    // Samigo question pools
     private Map<String, CCResourceItem> assignmentMap = new HashMap<>();            // Assignments
@@ -80,6 +81,7 @@ public class CCConfig {
     public CCResourceItem addFile(String sakaiId, String location, String use) {
         CCResourceItem res = new CCResourceItem(sakaiId, getResourceId(), location, use, null, null);
         fileMap.put(sakaiId, res);
+        filesSet.add(location);
         return res;
     }
 
