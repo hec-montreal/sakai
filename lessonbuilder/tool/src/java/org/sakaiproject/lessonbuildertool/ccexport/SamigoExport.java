@@ -422,7 +422,7 @@ public class SamigoExport {
 
                 if (type.equals(TypeIfc.MATCHING)) {
                     text += "<br/><br/>";
-                    text += "R&eacute;ponses : ";
+                    text += "Cl&eacute; de correction : ";
                     text += texts.stream().map(t -> { 
                         Optional<String> answerOpt = t.getAnswerArray().stream().filter(a -> { return a.getIsCorrect(); }).findFirst().map(AnswerIfc::getLabel);
                         String answer = "";
@@ -432,6 +432,30 @@ public class SamigoExport {
                 }
             } else {
                 text = item.getText();
+            }
+
+            if (type.equals(TypeIfc.CALCULATED_QUESTION)) {
+                text += "<br/><br/>";
+                text += "Formules :<br/>";
+                text += answers.stream().map(a -> {
+                    String vals[] = a.getText().split("\\||,");
+                    String regex = ".*\\{.*\\}.*";
+                    if (a.getText().matches(regex) && vals.length == 3) {
+                        return a.getLabel() + " = " + vals[0] + ", tol&eacute;rance = " + vals[1] + " d&eacute;cimales = " + vals[2];
+                    }
+                    if (vals.length == 3) {
+                        return a.getLabel() + ", min = " + vals[0] + ", max = " + vals[1] + " d&eacute;cimales = " + vals[2];
+                    }
+                    return a.getText();
+                }).collect(Collectors.joining("<br/>"));
+            }
+
+            if (type.equals(TypeIfc.FILL_IN_BLANK) || type.equals(TypeIfc.FILL_IN_NUMERIC)) {
+                text += "<br/><br/>";
+                text += "Cl&eacute; de correction : ";
+                text += answers.stream().map(a -> { 
+                    return a.getText();
+                }).collect(Collectors.joining(", "));
             }
 
             // HEC if the item has attachments, add them to the zip and transform the url
