@@ -312,4 +312,8 @@ public class CCUtils {
         return r.getResourceType().equals("org.sakaiproject.content.types.urlResource") ||
                 r.getContentType().equals("text/url");
     }
+
+    public boolean isCitationList(ContentResource r) {
+        return r.getResourceType().equals("org.sakaiproject.citation.impl.CitationList");
+    }
 }

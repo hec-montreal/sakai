@@ -184,7 +184,10 @@ public class CCExport {
                 if (entity instanceof ContentResource) {
                     boolean aLink = ccUtils.isLink((ContentResource) entity);
                     String location;
-                    if (aLink) {
+                    if (ccUtils.isCitationList((ContentResource)entity)) {
+                        // skip citation lists. They are not needed in the export
+                    }
+                    else if (aLink) {
                         location = "attachments/" + ccConfig.getResourceIdPeek() + ".xml";
                         String url = new String(((ContentResource) entity).getContent());
                         // see if Youtube. If so, use the current recommended URL
@@ -373,11 +376,14 @@ public class CCExport {
         try {
             for (Map.Entry<String, CCResourceItem> entry : ccConfig.getAssignmentMap().entrySet()) {
 
-                ZipEntry zipEntry = new ZipEntry(entry.getValue().getLocation());
+                //HEC only output assignments once (don't need them in /attachments/)
+                //ZipEntry zipEntry = new ZipEntry(entry.getValue().getLocation());
 
-                out.putNextEntry(zipEntry);
-                boolean ok = assignmentExport.outputEntity(ccConfig, entry.getValue().getSakaiId(), out, entry.getValue());
-                if (!ok) return;
+                //out.putNextEntry(zipEntry);
+                //boolean ok = assignmentExport.outputEntity(ccConfig, entry.getValue().getSakaiId(), out, entry.getValue());
+                //if (!ok) return;
+                ZipEntry zipEntry;
+                boolean ok;
 
                 if (ccConfig.getVersion().greaterThanOrEqualTo(V13)) {
                     String xmlHref = "cc-objects/" + entry.getValue().getResourceId() + ".xml";
@@ -622,6 +628,7 @@ public class CCExport {
             }
 
             for (Map.Entry<String, CCResourceItem> entry : ccConfig.getAssignmentMap().entrySet()) {
+                /*
                 String variantId = null;
                 out.println("    <resource href=\"" + StringEscapeUtils.escapeXml11(entry.getValue().getLocation()) + "\" identifier=\"" + entry.getValue().getResourceId() + "\" type=\"webcontent\"" + usestr + ">");
                 out.println("      <file href=\"" + StringEscapeUtils.escapeXml11(entry.getValue().getLocation()) + "\"/>");
@@ -633,9 +640,12 @@ public class CCExport {
                     out.println("      </cpx:variant>");
                 }
                 out.println("    </resource>");
+                */
 
                 // output the preferred version for 1.3 and up
                 if (ccConfig.getVersion().greaterThanOrEqualTo(V13)) {
+                    String variantId = ccConfig.getResourceId();
+
                     String xmlHref = "cc-objects/" + entry.getValue().getResourceId() + ".xml";
                     out.println("    <resource href=\"" + StringEscapeUtils.escapeXml11(xmlHref) + "\" identifier=\"" + variantId + "\" type=\"assignment_xmlv1p0\">");
                     out.println("      <file href=\"" + StringEscapeUtils.escapeXml11(xmlHref) + "\"/>");
