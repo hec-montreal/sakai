@@ -387,6 +387,7 @@ simplePageBean.addForumSummary
 		  class="org.sakaiproject.lessonbuildertool.ccexport.CCUtils">
 		<property name="simplePageToolDao" ref="org.sakaiproject.lessonbuildertool.model.SimplePageToolDao" />
 		<property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService"/>
+		<property name="contentHostingService" ref="org.sakaiproject.content.api.ContentHostingService"/>
 	</bean>
 
  	<bean id="org.sakaiproject.lessonbuildertool.ccexport.SamigoExport"

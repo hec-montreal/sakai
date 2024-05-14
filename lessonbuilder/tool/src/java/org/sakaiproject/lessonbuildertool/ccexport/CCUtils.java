@@ -16,13 +16,19 @@
 package org.sakaiproject.lessonbuildertool.ccexport;
 
 import java.net.URLDecoder;
+import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.ContentResourceEdit;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.event.api.NotificationService;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.lessonbuildertool.SimplePageItem;
 import org.sakaiproject.lessonbuildertool.model.SimplePageToolDao;
 import org.sakaiproject.user.api.UserDirectoryService;
@@ -36,6 +42,7 @@ public class CCUtils {
 
     @Setter private SimplePageToolDao simplePageToolDao;
     @Setter private UserDirectoryService userDirectoryService;
+    @Setter private ContentHostingService contentHostingService;
 
     public void outputIndent(ZipPrintStream out, int indent) {
         StringBuffer buffer = new StringBuffer(indent);
@@ -49,7 +56,7 @@ public class CCUtils {
         String sakaiIdBase = "/group/" + ccConfig.getSiteId();
         // I'm matching against /access/content/group not /access/content/group/SITEID, because SITEID can in some installations
         // be user chosen. In that case there could be escaped characters, and the escaping in HTML URL's isn't unique.
-        Pattern target = Pattern.compile("(?:https?:)?(?://[-a-zA-Z0-9.]+(?::[0-9]+)?)?/access/content(/group/|/user/)|http://lessonbuilder.sakaiproject.org/", Pattern.CASE_INSENSITIVE);
+        Pattern target = Pattern.compile("(?:https?:)?(?://[-a-zA-Z0-9.]+(?::[0-9]+)?)?/access/content(/group/|/user/)|http://lessonbuilder.sakaiproject.org/|<img .*?src=\"data:image/.*?;base64,", Pattern.CASE_INSENSITIVE);
         Matcher matcher = target.matcher(text);
         // technically / isn't allowed in an unquoted attribute, but sometimes people
         // use sloppy HTML
@@ -128,6 +135,59 @@ public class CCUtils {
                 }
 
                 index = sakaiend;  // start here next time
+            } else if (matcher.group().startsWith("<img ")) { 
+                // matched <img src="data:image/*;base64,
+                // we can generate a file from this base64 string
+                int startBase64 = matcher.end();
+                int endBase64 = text.indexOf("\"", startBase64);
+                int endTag = text.indexOf(">", endBase64);
+                int startExt = text.indexOf("image/", matcher.start()) + 6;
+                int endExt = text.indexOf(";", startExt);
+
+                String extension = text.substring(startExt, endExt);
+                String base64image = text.substring(startBase64, endBase64);
+                String imageFilename = "image-" + 
+                    base64image
+                    .substring(0, 15)
+                    .replaceAll("/|\\+", "")
+                    .substring(0, 6)+"."+extension;
+
+                try {
+                    String sakaiImageId = "/group/" + ccConfig.getSiteId() + "/images_intégrée/" + imageFilename;
+
+                    try {
+                        contentHostingService.getResource(sakaiImageId);
+                    }
+                    catch (IdUnusedException e) {
+                        // create missing resource from base64 string
+                        ContentResourceEdit cre = contentHostingService.addResource(sakaiImageId);
+                        cre.setContent(Base64.getDecoder().decode(base64image));
+                        cre.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, imageFilename);
+                        cre.getPropertiesEdit().addProperty(ResourceProperties.PROP_PUBVIEW, Boolean.FALSE.toString());
+                        contentHostingService.commitResource(cre, NotificationService.NOTI_NONE);    
+
+                        /*
+                        // tried this, not working ..
+                        ContentCollectionEdit cce = contentHostingService.editCollection("/group/" + ccConfig.getSiteId() + "/images_intégrée/");
+                        if (!cce.isHidden()) {
+                            // make sure collection is hidden / not public
+                            cce.setHidden();
+                            contentHostingService.commitCollection(cce);
+                        }
+                        */
+                    }
+
+                    ccConfig.addFile(sakaiImageId, "images_intégrée/" + imageFilename);
+
+                    ret.append(text, index, start);
+                    ret.append("<img src=\"$IMS-CC-FILEBASE$../images_intégrée/" + imageFilename + "\">");    
+                }
+                catch (Exception e) {
+                    log.error("Error creating base64 image resource", e);
+                }
+                
+                index = endTag+1;
+
             } else { // matched http://lessonbuilder.sakaiproject.org/
                 int last = matcher.end(); // should be start of an integer
                 int endnum = text.length();  // end of the integer
