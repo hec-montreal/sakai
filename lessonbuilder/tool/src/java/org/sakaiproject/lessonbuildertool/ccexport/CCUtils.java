@@ -25,6 +25,8 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.lessonbuildertool.SimplePageItem;
 import org.sakaiproject.lessonbuildertool.model.SimplePageToolDao;
+import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.user.api.UserNotDefinedException;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CCUtils {
 
     @Setter private SimplePageToolDao simplePageToolDao;
+    @Setter private UserDirectoryService userDirectoryService;
 
     public void outputIndent(ZipPrintStream out, int indent) {
         StringBuffer buffer = new StringBuffer(indent);
@@ -46,7 +49,7 @@ public class CCUtils {
         String sakaiIdBase = "/group/" + ccConfig.getSiteId();
         // I'm matching against /access/content/group not /access/content/group/SITEID, because SITEID can in some installations
         // be user chosen. In that case there could be escaped characters, and the escaping in HTML URL's isn't unique.
-        Pattern target = Pattern.compile("(?:https?:)?(?://[-a-zA-Z0-9.]+(?::[0-9]+)?)?/access/content(/group/)|http://lessonbuilder.sakaiproject.org/", Pattern.CASE_INSENSITIVE);
+        Pattern target = Pattern.compile("(?:https?:)?(?://[-a-zA-Z0-9.]+(?::[0-9]+)?)?/access/content(/group/|/user/)|http://lessonbuilder.sakaiproject.org/", Pattern.CASE_INSENSITIVE);
         Matcher matcher = target.matcher(text);
         // technically / isn't allowed in an unquoted attribute, but sometimes people
         // use sloppy HTML
@@ -72,7 +75,7 @@ public class CCUtils {
                     log.info("Decode failed in export, {}", e.toString());
                 }
 
-                if (!ccConfig.getSiteId().equals(sitepart)) continue;
+                if (!matcher.group().endsWith("/user/") && !ccConfig.getSiteId().equals(sitepart)) continue;
 
                 // it matches, now map it
                 // unfortunately the hostname and port are a bit unpredictable. Don't use them for match. I think siteids are
@@ -97,9 +100,33 @@ public class CCUtils {
                 } catch (Exception e) {
                     log.info("Decoding url, {}", e.toString());
                 }
-                ret.append(text, index, start);
-                ret.append("$IMS-CC-FILEBASE$..");
-                ret.append(removeDotDot(text.substring(last, sakaiend)));
+
+                if (matcher.group().endsWith("/user/")) {
+                    try {
+                        // user content, add to the files list to export. Have to transform the userid in the url
+                        // should fail later if we don't have access 
+                        String userId = sakaiId.substring("/user/".length(), sakaiId.indexOf("/", "/user/".length()));
+                        String sakaiUserId = userDirectoryService.getUserId(userId);
+
+                        String sakaiResourceId = "/user/" + sakaiUserId + sakaiId.substring(sakaiId.indexOf("/", "/user/".length()));
+
+                        //remove leading / from sakaiId
+                        ccConfig.addFile(sakaiResourceId, sakaiId.substring(1));
+
+                        ret.append(text, index, start);
+                        ret.append("$IMS-CC-FILEBASE$..");
+                        ret.append(removeDotDot(sakaiId));
+        
+                    } catch (UserNotDefinedException e) {   
+                        log.info("User not defined, {}", e.toString());
+                    }
+                }
+                else {
+                    ret.append(text, index, start);
+                    ret.append("$IMS-CC-FILEBASE$..");
+                    ret.append(removeDotDot(text.substring(last, sakaiend)));    
+                }
+
                 index = sakaiend;  // start here next time
             } else { // matched http://lessonbuilder.sakaiproject.org/
                 int last = matcher.end(); // should be start of an integer

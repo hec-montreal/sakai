@@ -35,6 +35,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.sakaiproject.authz.api.SecurityAdvisor;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentEntity;
@@ -42,6 +44,7 @@ import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.lessonbuildertool.SimplePageItem;
 import org.sakaiproject.lessonbuildertool.model.SimplePageToolDao;
 import org.sakaiproject.lessonbuildertool.tool.beans.SimplePageBean;
@@ -70,6 +73,7 @@ public class CCExport {
     @Setter private SessionManager sessionManager;
     @Setter private SimplePageToolDao simplePageToolDao;
     @Setter private SiteService siteService;
+    @Setter private SecurityService securityService;
 
     private ResourceLoaderMessageSource messageSource;
 
@@ -237,7 +241,33 @@ public class CCExport {
                 File infile = null;
                 InputStream instream = null;
                 if (inSakai) {
-                    resource = contentHostingService.getResource(entry.getKey());
+                    // bypass security for this file if it's in a user folder
+                    SecurityAdvisor securityAdvisor = new SecurityAdvisor() {
+                        public SecurityAdvice isAllowed(String userId, String function, String reference) {
+                            if (function.equals("content.read") && reference.equals("/content"+entry.getKey()) && entry.getKey().startsWith("/user/")) {
+                                return SecurityAdvice.ALLOWED;
+                            } else {
+                                return SecurityAdvice.PASS;
+                            }
+                        }
+                    };
+
+                    try {
+                        securityService.pushAdvisor(securityAdvisor);
+                        resource = contentHostingService.getResource(entry.getKey());
+                    }
+                    catch (Exception e) {
+                        if (e instanceof PermissionException) {
+                            log.error("Permission error retrieving file: " + entry.getKey());
+                        }
+                        else {
+                            log.error("Error retrieving file: " + entry.getKey());
+                        }
+                        continue;
+                    } finally {
+                        securityService.popAdvisor(securityAdvisor);
+                    }
+
                     // if URL there's no file to output. The link XML file will
                     // be done at the end, since some links are discovered while outputting manifest
                     if (entry.getValue().isLink()) {
