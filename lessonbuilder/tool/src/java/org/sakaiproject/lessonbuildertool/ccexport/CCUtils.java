@@ -33,6 +33,7 @@ import org.sakaiproject.lessonbuildertool.SimplePageItem;
 import org.sakaiproject.lessonbuildertool.model.SimplePageToolDao;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
+import org.springframework.util.DigestUtils;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -118,10 +119,10 @@ public class CCUtils {
                         String sakaiResourceId = "/user/" + sakaiUserId + sakaiId.substring(sakaiId.indexOf("/", "/user/".length()));
 
                         //remove leading / from sakaiId
-                        ccConfig.addFile(sakaiResourceId, sakaiId.substring(1));
+                        ccConfig.addFile(sakaiResourceId, "migration" + sakaiId);
 
                         ret.append(text, index, start);
-                        ret.append("$IMS-CC-FILEBASE$..");
+                        ret.append("$IMS-CC-FILEBASE$../migration");
                         ret.append(removeDotDot(sakaiId));
         
                     } catch (UserNotDefinedException e) {   
@@ -146,14 +147,11 @@ public class CCUtils {
 
                 String extension = text.substring(startExt, endExt);
                 String base64image = text.substring(startBase64, endBase64);
-                String imageFilename = "image-" + 
-                    base64image
-                    .substring(0, 15)
-                    .replaceAll("/|\\+", "")
-                    .substring(0, 6)+"."+extension;
+                String md5 = DigestUtils.md5DigestAsHex(base64image.getBytes());
+                String imageFilename = "image_" + md5 + "." + extension;
 
                 try {
-                    String sakaiImageId = "/group/" + ccConfig.getSiteId() + "/images_intégrée/" + imageFilename;
+                    String sakaiImageId = "/group/" + ccConfig.getSiteId() + "/migration/images_intégrées/" + imageFilename;
 
                     try {
                         contentHostingService.getResource(sakaiImageId);
@@ -168,7 +166,7 @@ public class CCUtils {
 
                         /*
                         // tried this, not working ..
-                        ContentCollectionEdit cce = contentHostingService.editCollection("/group/" + ccConfig.getSiteId() + "/images_intégrée/");
+                        ContentCollectionEdit cce = contentHostingService.editCollection("/group/" + ccConfig.getSiteId() + "/images_intégrées/");
                         if (!cce.isHidden()) {
                             // make sure collection is hidden / not public
                             cce.setHidden();
@@ -177,10 +175,10 @@ public class CCUtils {
                         */
                     }
 
-                    ccConfig.addFile(sakaiImageId, "images_intégrée/" + imageFilename);
+                    ccConfig.addFile(sakaiImageId, "migration/images_intégrées/" + imageFilename);
 
                     ret.append(text, index, start);
-                    ret.append("<img src=\"$IMS-CC-FILEBASE$../images_intégrée/" + imageFilename + "\">");    
+                    ret.append("<img src=\"$IMS-CC-FILEBASE$../migration/images_intégrées/" + imageFilename + "\">");    
                 }
                 catch (Exception e) {
                     log.error("Error creating base64 image resource", e);

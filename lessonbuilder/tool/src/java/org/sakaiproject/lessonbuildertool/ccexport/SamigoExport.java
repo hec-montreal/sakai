@@ -26,14 +26,12 @@ package org.sakaiproject.lessonbuildertool.ccexport;
 import static org.sakaiproject.lessonbuildertool.ccexport.CCVersion.V12;
 import static org.sakaiproject.lessonbuildertool.ccexport.CCVersion.V13;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,7 +56,6 @@ import org.sakaiproject.tool.assessment.facade.QuestionPoolFacadeQueriesAPI;
 import org.sakaiproject.tool.assessment.services.assessment.PublishedAssessmentService;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.util.api.FormattedText;
-import org.springframework.context.MessageSource;
 
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -261,21 +258,21 @@ public class SamigoExport {
                         int periodIndex = att.getFilename().lastIndexOf(".");
                         int attachmentNumber = 0;
                         // make sure we aren't adding multiple files with the same name
-                        while (ccConfig.getFilesSet().contains("import_quiz/" + filename)) {
+                        while (ccConfig.getFilesSet().contains("migration/import_quiz/" + filename)) {
                             attachmentNumber++;
                             filename = att.getFilename().substring(0, periodIndex) + "-" + attachmentNumber + att.getFilename().substring(periodIndex);
                         }
-                        ccConfig.addFile(att.getResourceId(), "import_quiz/" + filename);
+                        ccConfig.addFile(att.getResourceId(), "migration/import_quiz/" + filename);
         
                         description += "<br/>";
                         if (att.getFilename().endsWith(".png") || 
                             att.getFilename().endsWith(".jpeg") ||
                             att.getFilename().endsWith(".webp") ||  
                             att.getFilename().endsWith(".gif")) {
-                            description += "<img src=\"$IMS-CC-FILEBASE$../import_quiz/" + filename + "\">";
+                            description += "<img src=\"$IMS-CC-FILEBASE$../migration/import_quiz/" + filename + "\">";
                         }
                         else {
-                            description += "<a href=\"$IMS-CC-FILEBASE$../import_quiz/" + filename + "\">" + filename+"</a>";
+                            description += "<a href=\"$IMS-CC-FILEBASE$../migration/import_quiz/" + filename + "\">" + filename+"</a>";
                         }
                     }
 
@@ -469,21 +466,21 @@ public class SamigoExport {
                 int periodIndex = att.getFilename().lastIndexOf(".");
                 int attachmentNumber = 0;
                 // make sure we aren't adding multiple files with the same name
-                while (ccConfig.getFilesSet().contains("import_quiz/" + filename)) {
+                while (ccConfig.getFilesSet().contains("migration/import_quiz/" + filename)) {
                     attachmentNumber++;
                     filename = att.getFilename().substring(0, periodIndex) + "-" + attachmentNumber + att.getFilename().substring(periodIndex);
                 }
-                ccConfig.addFile(att.getResourceId(), "import_quiz/" + filename);
+                ccConfig.addFile(att.getResourceId(), "migration/import_quiz/" + filename);
 
                 text += "<br/>";
                 if (att.getFilename().endsWith(".png") || 
                     att.getFilename().endsWith(".jpeg") ||
                     att.getFilename().endsWith(".webp") ||  
                     att.getFilename().endsWith(".gif")) {
-                    text += "<img src=\"$IMS-CC-FILEBASE$../import_quiz/" + filename + "\">";
+                    text += "<img src=\"$IMS-CC-FILEBASE$../migration/import_quiz/" + filename + "\">";
                 }
                 else {
-                    text += "<a href=\"$IMS-CC-FILEBASE$../import_quiz/" + filename + "\">" + filename + "</a>";
+                    text += "<a href=\"$IMS-CC-FILEBASE$../migration/import_quiz/" + filename + "\">" + filename + "</a>";
                 }
 
             }
