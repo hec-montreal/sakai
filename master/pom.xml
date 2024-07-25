@@ -216,20 +216,20 @@
     </pluginRepository>
   </pluginRepositories>
   <repositories>
-   <repository>
-      <id>central</id>
-      <name>Maven Repository Switchboard</name>
-      <layout>default</layout>
-      <url>https://repo1.maven.org/maven2</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
+    <repository>
+        <id>central</id>
+        <name>Central Repository</name>
+        <url>https://repo.maven.apache.org/maven2</url>
+        <layout>default</layout>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
     </repository>
     <repository>
       <id>sakai-maven</id>
       <name>Sakai Maven Repo</name>
       <layout>default</layout>
-      <url>http://source.sakaiproject.org/maven2</url>
+      <url>https://source.sakaiproject.org/maven2</url>
       <releases>
         <enabled>true</enabled>
         <checksumPolicy>ignore</checksumPolicy>
@@ -243,7 +243,7 @@
       <id>sakai-maven2-snapshots</id>
       <name>Sakai Maven Repo</name>
       <layout>default</layout>
-      <url>http://source.sakaiproject.org/maven2-snapshots</url>
+      <url>https://source.sakaiproject.org/maven2-snapshots</url>
       <releases>
         <enabled>false</enabled>
         <checksumPolicy>ignore</checksumPolicy>
@@ -2361,5 +2361,4 @@
       <!-- Changelog report - changelog-maven-plugin causes build fail -->
     </plugins>
   </reporting>
-
 </project>
