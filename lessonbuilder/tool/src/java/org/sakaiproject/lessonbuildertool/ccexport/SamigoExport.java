@@ -254,25 +254,34 @@ public class SamigoExport {
                     for (int i = 0 ; i < section.getSectionAttachmentList().size() ; i++) {
                         SectionAttachmentIfc att = (SectionAttachmentIfc)section.getSectionAttachmentList().get(i);
 
-                        String filename = att.getFilename();
-                        int periodIndex = att.getFilename().lastIndexOf(".");
+                        String filename = att.getLocation().lastIndexOf("/") > -1 ? 
+                            att.getLocation().substring(att.getLocation().lastIndexOf("/") + 1) : att.getLocation();
+
+                        String newFilename = filename;
+                        int periodIndex = filename.lastIndexOf(".");
                         int attachmentNumber = 0;
+
                         // make sure we aren't adding multiple files with the same name
-                        while (ccConfig.getFilesSet().contains("migration/import_quiz/" + filename)) {
+                        while (ccConfig.getFilesSet().contains("migration/import_quiz/" + newFilename)) {
                             attachmentNumber++;
-                            filename = att.getFilename().substring(0, periodIndex) + "-" + attachmentNumber + att.getFilename().substring(periodIndex);
-                        }
-                        ccConfig.addFile(att.getResourceId(), "migration/import_quiz/" + filename);
+                            if (periodIndex == -1) {
+                                newFilename = filename + "-" + attachmentNumber;
+                            } else {
+                                newFilename = filename.substring(0, periodIndex) + "-" + attachmentNumber + filename.substring(periodIndex);
+                            }
+                        }        
+
+                        ccConfig.addFile(att.getResourceId(), "migration/import_quiz/" + newFilename);
         
                         description += "<br/>";
-                        if (att.getFilename().endsWith(".png") || 
-                            att.getFilename().endsWith(".jpeg") ||
-                            att.getFilename().endsWith(".webp") ||  
-                            att.getFilename().endsWith(".gif")) {
-                            description += "<img src=\"$IMS-CC-FILEBASE$../migration/import_quiz/" + filename + "\">";
+                        if (newFilename.endsWith(".png") || 
+                            newFilename.endsWith(".jpeg") ||
+                            newFilename.endsWith(".webp") ||  
+                            newFilename.endsWith(".gif")) {
+                            description += "<img src=\"$IMS-CC-FILEBASE$../migration/import_quiz/" + newFilename + "\">";
                         }
                         else {
-                            description += "<a href=\"$IMS-CC-FILEBASE$../migration/import_quiz/" + filename + "\">" + filename+"</a>";
+                            description += "<a href=\"$IMS-CC-FILEBASE$../migration/import_quiz/" + newFilename + "\">" + newFilename +"</a>";
                         }
                     }
 
@@ -462,25 +471,34 @@ public class SamigoExport {
             for (int i = 0 ; i < item.getItemAttachmentList().size() ; i++) {
                 ItemAttachmentIfc att = (ItemAttachmentIfc)item.getItemAttachmentList().get(i);
 
-                String filename = att.getFilename();
-                int periodIndex = att.getFilename().lastIndexOf(".");
+                String filename = att.getLocation().lastIndexOf("/") > -1 ? 
+                    att.getLocation().substring(att.getLocation().lastIndexOf("/") + 1) : att.getLocation();
+
+                String newFilename = filename;
+                int periodIndex = filename.lastIndexOf(".");
                 int attachmentNumber = 0;
+
                 // make sure we aren't adding multiple files with the same name
-                while (ccConfig.getFilesSet().contains("migration/import_quiz/" + filename)) {
+                while (ccConfig.getFilesSet().contains("migration/import_quiz/" + newFilename)) {
                     attachmentNumber++;
-                    filename = att.getFilename().substring(0, periodIndex) + "-" + attachmentNumber + att.getFilename().substring(periodIndex);
+                    if (periodIndex == -1) {
+                        newFilename = filename + "-" + attachmentNumber;
+                    } else {
+                        newFilename = filename.substring(0, periodIndex) + "-" + attachmentNumber + filename.substring(periodIndex);
+                    }
                 }
-                ccConfig.addFile(att.getResourceId(), "migration/import_quiz/" + filename);
+
+                ccConfig.addFile(att.getResourceId(), "migration/import_quiz/" + newFilename);
 
                 text += "<br/>";
-                if (att.getFilename().endsWith(".png") || 
-                    att.getFilename().endsWith(".jpeg") ||
-                    att.getFilename().endsWith(".webp") ||  
-                    att.getFilename().endsWith(".gif")) {
-                    text += "<img src=\"$IMS-CC-FILEBASE$../migration/import_quiz/" + filename + "\">";
+                if (newFilename.endsWith(".png") || 
+                    newFilename.endsWith(".jpeg") ||
+                    newFilename.endsWith(".webp") ||  
+                    newFilename.endsWith(".gif")) {
+                    text += "<img src=\"$IMS-CC-FILEBASE$../migration/import_quiz/" + newFilename + "\">";
                 }
                 else {
-                    text += "<a href=\"$IMS-CC-FILEBASE$../migration/import_quiz/" + filename + "\">" + filename + "</a>";
+                    text += "<a href=\"$IMS-CC-FILEBASE$../migration/import_quiz/" + newFilename + "\">" + newFilename + "</a>";
                 }
 
             }
