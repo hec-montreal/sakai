@@ -26,6 +26,8 @@ package org.sakaiproject.lessonbuildertool.ccexport;
 import static org.sakaiproject.lessonbuildertool.ccexport.CCVersion.V12;
 import static org.sakaiproject.lessonbuildertool.ccexport.CCVersion.V13;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -257,6 +259,13 @@ public class SamigoExport {
                         String filename = att.getLocation().lastIndexOf("/") > -1 ? 
                             att.getLocation().substring(att.getLocation().lastIndexOf("/") + 1) : att.getLocation();
 
+                        try {
+                            filename = URLDecoder.decode(filename, StandardCharsets.UTF_8.toString());
+                        } catch (Exception e) {
+                            log.error("Error decoding filename", e);
+                            filename = att.getFilename();
+                        }            
+            
                         String newFilename = filename;
                         int periodIndex = filename.lastIndexOf(".");
                         int attachmentNumber = 0;
@@ -473,6 +482,13 @@ public class SamigoExport {
 
                 String filename = att.getLocation().lastIndexOf("/") > -1 ? 
                     att.getLocation().substring(att.getLocation().lastIndexOf("/") + 1) : att.getLocation();
+
+                try {
+                    filename = URLDecoder.decode(filename, StandardCharsets.UTF_8.toString());
+                } catch (Exception e) {
+                    log.error("Error decoding filename", e);
+                    filename = att.getFilename();
+                }
 
                 String newFilename = filename;
                 int periodIndex = filename.lastIndexOf(".");
