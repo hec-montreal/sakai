@@ -222,7 +222,7 @@ public class SamigoExport {
                 title = item.getSection().getSequence() + "." + item.getSequence();
 
                 // HEC insert essay question with part description
-                if (item.getSequence() == 1 && section.getDescription() != null) {
+                if (item.getSequence() == 1 && (section.getDescription() != null || section.getSectionAttachmentList().size() > 0)) {
                     out.println("      <item ident=\"QUE_" + section.getSequence() + "_0\" title=\"" + StringEscapeUtils.escapeXml11(section.getSequence() + ".0") + "\">");
                     out.println("        <itemmetadata>");
                     out.println("          <qtimetadata>");
@@ -249,8 +249,8 @@ public class SamigoExport {
                     out.println("        </itemmetadata>");
         
                     // HEC if the section has attachments, add them to the zip and transform the url
-                    String description = section.getDescription();
-                    if (section.getSectionAttachmentList().size() > 0) {
+                    String description = section.getDescription() == null ? "" : section.getDescription();
+                    if (!description.equals("") && section.getSectionAttachmentList().size() > 0) {
                         description += "<br/>";
                     }
                     for (int i = 0 ; i < section.getSectionAttachmentList().size() ; i++) {
