@@ -83,6 +83,10 @@
 			location.href="/sakai-login-tool/container";
 		}
 
+		document.getElementById("hec-goto-canvas-button").onclick = function () {
+			location.href="https://nouveau-zonecours.hec.ca/";
+		}
+
 		document.getElementById("guest-button").onclick = function () {
 			$('#login-form').show();
 			$('#button-div').hide();
