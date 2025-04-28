@@ -89,13 +89,15 @@ button:hover {
 }
 
 .canvas-div {
-	background-size: 100% 100%;
+	background-size: cover;
+	background-position: center;
 	background-image: url('/res/images/canvas-background.png');
 }
 
 .canvas-div .content .description {
 	margin: 25px 25px 40px 25px;
 	text-align: left;
+	line-height: 1.25;
 }
 
 .canvas-div .content .title {
