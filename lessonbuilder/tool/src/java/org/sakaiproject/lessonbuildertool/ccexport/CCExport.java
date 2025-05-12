@@ -368,18 +368,41 @@ public class CCExport {
     public void outputAllSamigo(CCConfig ccConfig, ZipPrintStream out) {
         try {
             for (Map.Entry<String, CCResourceItem> entry : ccConfig.getSamigoMap().entrySet()) {
-
-                ZipEntry zipEntry = new ZipEntry(entry.getValue().getLocation());
-                out.putNextEntry(zipEntry);
-                boolean ok = samigoExport.outputEntity(ccConfig, entry.getValue().getSakaiId(), out, entry.getValue(), ccConfig.getVersion());
-                if (!ok) return;
+                try {
+                    ZipEntry zipEntry = new ZipEntry(entry.getValue().getLocation());
+                    out.putNextEntry(zipEntry);
+                    boolean ok = samigoExport.outputEntity(ccConfig, entry.getValue().getSakaiId(), out, entry.getValue(), ccConfig.getVersion());
+                    if (!ok) return;
+                }
+                catch (Exception e) {
+                    String sakaiId = "";
+                    if (entry.getValue() != null) {
+                        sakaiId = entry.getValue().getSakaiId();
+                    }
+                    e.printStackTrace();
+                    log.error(String.format("Error outputting samigo entity %s, %s", sakaiId, e.getMessage()));
+                    setErrKey("simplepage.exportcc-fileerr", e.getMessage(), ccConfig.getLocale());
+                    ccConfig.getResults().add("Error outputting samigo entity " + sakaiId + ": " + e.getMessage());
+                }
             }
             if (!ccConfig.getPoolMap().isEmpty()) {
                 for (Map.Entry<Long, CCResourceItem> entry : ccConfig.getPoolMap().entrySet()) {
-                    ZipEntry zipEntry = new ZipEntry(entry.getValue().getLocation());
-                    out.putNextEntry(zipEntry);
-                    boolean ok = samigoExport.outputBank(ccConfig, entry.getKey(), out, ccConfig.getSamigoBank(), ccConfig.getVersion());
-                    if (!ok) return;
+                    try {
+                        ZipEntry zipEntry = new ZipEntry(entry.getValue().getLocation());
+                        out.putNextEntry(zipEntry);
+                        boolean ok = samigoExport.outputBank(ccConfig, entry.getKey(), out, ccConfig.getSamigoBank(), ccConfig.getVersion());
+                        if (!ok) return;
+                    }
+                    catch (Exception e) {
+                        String sakaiId = "";
+                        if (entry.getValue() != null) {
+                            sakaiId = entry.getValue().getSakaiId();
+                        }
+                        e.printStackTrace();
+                        log.error(String.format("Error outputting samigo entity %s, %s", sakaiId, e.getMessage()));
+                        setErrKey("simplepage.exportcc-fileerr", e.getMessage(), ccConfig.getLocale());
+                        ccConfig.getResults().add("Error outputting samigo entity " + sakaiId + ": " + e.getMessage());
+                    }
                 }
             }
         } catch (Exception e) {
@@ -415,14 +438,26 @@ public class CCExport {
                 ZipEntry zipEntry;
                 boolean ok;
 
-                if (ccConfig.getVersion().greaterThanOrEqualTo(V13)) {
-                    String xmlHref = "cc-objects/" + entry.getValue().getResourceId() + ".xml";
+                try {
+                    if (ccConfig.getVersion().greaterThanOrEqualTo(V13)) {
+                        String xmlHref = "cc-objects/" + entry.getValue().getResourceId() + ".xml";
 
-                    zipEntry = new ZipEntry(xmlHref);
+                        zipEntry = new ZipEntry(xmlHref);
 
-                    out.putNextEntry(zipEntry);
-                    ok = assignmentExport.outputEntity2(ccConfig, entry.getValue().getSakaiId(), out, entry.getValue());
-                    if (!ok) return;
+                        out.putNextEntry(zipEntry);
+                        ok = assignmentExport.outputEntity2(ccConfig, entry.getValue().getSakaiId(), out, entry.getValue());
+                        if (!ok) return;
+                    }
+                }
+                catch (Exception e) {
+                    String sakaiId = "";
+                    if (entry.getValue() != null) {
+                        sakaiId = entry.getValue().getSakaiId();
+                    }
+                    e.printStackTrace();
+                    log.error(String.format("Error outputting assignment %s, %s", sakaiId, e.getMessage()));
+                    setErrKey("simplepage.exportcc-fileerr", e.getMessage(), ccConfig.getLocale());
+                    ccConfig.getResults().add("Error outputting assignment " + sakaiId + " : " + e.getMessage());
                 }
             }
 
