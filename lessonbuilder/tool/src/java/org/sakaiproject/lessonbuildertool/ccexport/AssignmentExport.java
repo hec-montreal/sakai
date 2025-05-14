@@ -180,7 +180,10 @@ public class AssignmentExport {
         CCAssignmentItem contents = getContents(assignmentRef);
         if (contents == null) return false;
 
-        String instructions = ccUtils.relFixup(ccConfig, contents.getInstructions(), ccResourceItem);
+        String instructions = "";
+        if (contents.getInstructions() != null) {
+            instructions = ccUtils.relFixup(ccConfig, contents.getInstructions(), ccResourceItem);
+        }
 
         List<String> attachments = contents.getAttachments();
 
@@ -261,8 +264,11 @@ public class AssignmentExport {
 
         String title = contents.getTitle();
 
-        // relFixup is for stuff that's in an actual HTML file, fixup for stuff in an XML descriptor
-        String instructions = ccUtils.fixup(ccConfig, contents.getInstructions(), ccResourceItem);
+        String instructions = "";
+        if (contents.getInstructions() != null) {
+            // relFixup is for stuff that's in an actual HTML file, fixup for stuff in an XML descriptor
+            instructions = ccUtils.fixup(ccConfig, contents.getInstructions(), ccResourceItem);
+        }
         List<String> attachments = contents.getAttachments();
 
         // the spec doesn't allow URLs in attachments, so if any of our attachments are URLs,
