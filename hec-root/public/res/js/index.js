@@ -88,8 +88,7 @@
 		}
 
 		document.getElementById("guest-button").onclick = function () {
-			$('#login-form').show();
-			$('#button-div').hide();
+			location.href="/login-externe.html";
 		};
 
 		document.getElementById("back-button").onclick = function () {

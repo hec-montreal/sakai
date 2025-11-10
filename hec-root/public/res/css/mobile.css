@@ -31,10 +31,6 @@
 		padding-bottom: 0px;
 	}
 
-	.brand img {
-		width: 100%;
-	}
-
 	.logo {
 		width: 50px;
 		height: 50px;
@@ -74,10 +70,6 @@
 	}
 
 	.do-login {
-		clear: both;
-		text-align: left;
-		display: block;
-		float: none;
 		padding-top: 20px;
 	}
 
@@ -91,9 +83,6 @@
 @media all and (max-width: 1199px) {
     div#button-div{
             margin: 10px 40px;
-    }
-    .brand img{
-            width:75%;
     }
 
 	.brand .title {
