@@ -87,10 +87,6 @@
 			location.href="https://nouveau-zonecours.hec.ca/";
 		}
 
-		document.getElementById("guest-button").onclick = function () {
-			location.href="/login-externe.html";
-		};
-
 		document.getElementById("back-button").onclick = function () {
 			$('#login-form').hide();
 			$('#button-div').show();
