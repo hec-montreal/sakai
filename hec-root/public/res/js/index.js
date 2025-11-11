@@ -73,12 +73,6 @@
 
 		checkSession();
 
-		// Choose a picture at random
-		var picId = Math.floor(Math.random() * photoCount) + 1;
-		var url = '/access/content/public/login-' + picId + '.png';
-
-		$('.photo').css('background-image', 'url(' + url + ')');
-
 		document.getElementById("hec-user-button").onclick = function () {
 			location.href="/sakai-login-tool/container";
 		}
