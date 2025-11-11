@@ -116,6 +116,7 @@ button:hover {
 .footer .help-link a:visited {
 	font-family: 'din-regular', 'arial';
 	color: #009fdf;
+	padding-right: 15px;
 }
 
 .footer .help-link a:hover {
