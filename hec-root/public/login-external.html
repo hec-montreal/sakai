@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
+
+		<link href="res/css/fonts.css?_cb=4" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/login-externe.css?_cb=4" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/mobile.css?_cb=4" type="text/css" rel="stylesheet" media="all"/>
+
+		<title>ZoneCours - External email login</title>
+
+		<script src="/res/js/lib/jquery-1.10.2.min.js"></script>
+
+		<script src="/res/js/index.js?_cb=4"></script>
+	</head>
+
+	<body>
+		<div class="message" style="display: none;">
+			<div class="title"></div>
+			<div class="body"></div>
+		</div>
+
+				<div class="form">
+					<div class="brand">
+						<img src="res/images/logo-full.png" alt="HEC Montr&eacute;al" />
+
+						<div class="clear-fix"></div>
+
+						<div class="words dark">
+							<div>Learn</div>
+							<div>Collaborate</div>
+							<div>Create</div>
+						</div>
+					</div>
+
+					<form id="login-form" method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded">
+						<div class="login">
+							<div>
+								<input name="eid" type="text" placeholder="Email" aria-label="Email" />
+							</div>
+							<div>
+								<input name="pw" type="password" placeholder="Password" aria-label="Password" autocomplete="new-password" />
+							</div>
+							<div>
+								<div class="do-login">
+									<button type="submit">Login</button>
+								</div>
+							</div>
+						</div>
+					</form>
+					
+					<div class="footer">
+						<div class="problem">
+							<a href="/connexionInfo-en.html">Cannot access your account?</a>
+						</div>
+						<div class="governance">
+							By using HEC Montréal's information resources, I agree to respect the <a href="https://www.hec.ca/direction_services/secretariat_general/juridique/reglements_politiques/documents/regulation-on-the-use-of-information-resources.pdf">Regulations on the use of information resources</a>
+						</div>
+						<div class="help-link">
+							<a href="http://www.hec.ca">HEC Montr&eacute;al</a>
+							<a class="help-link" href="https://hecmontreal.atlassian.net/l/c/vE3qWRxU">HELP</a>
+							<a href="/login-externe.html">Fran&ccedil;ais</a>
+						</div>
+					</div>
+				</div>
+	</body>
+</html>
