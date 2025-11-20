@@ -1,7 +1,6 @@
 (function() {
 	var urlHome = "/portal";
 	var useMockMessage = false;
-	var photoCount = 10;
 
 	// Execute get request
 	var get = function(url, callback) {

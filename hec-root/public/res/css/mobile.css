@@ -16,9 +16,7 @@
 		margin-top: 20px;
 	}
 	.photo{
-	    background-size: cover;
-	    width:100%;
-	    height:40%;
+		display: none;
 	}
 
 	.form {

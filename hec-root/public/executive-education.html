@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width,height=device-height initial-scale=1">
+
+		<link href="res/css/fonts.css?_cb=4" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/ecole-des-dirigeantes.css" type="text/css" rel="stylesheet" media="all"/>
+		<link href="res/css/mobile.css?_cb=4" type="text/css" rel="stylesheet" media="all"/>
+
+		<title>Executive Education - Welcome</title>
+
+		<script src="/res/js/lib/jquery-1.10.2.min.js"></script>
+
+		<script src="/res/js/index.js?_cb=4"></script>
+	</head>
+
+	<body>
+		<div class="message" style="display: none;">
+			<div class="title"></div>
+			<div class="body"></div>
+		</div>
+
+		<div class="host">
+			<div class="box">
+				<div class="form canvas-div photo" style="background-image: url('/res/images/visuel-zonecours-ed-600x600-ang.jpg');">
+				</div>
+
+				<div class="form">
+					<div class="brand">
+						<img id="logo-ed" src="res/images/Logo-ed-hec-coul-rgb-EN.png" alt="logo Executive Education" />
+						<img id="logo-zc" src="res/images/logo-zc.png" alt="logo ZoneCours" />
+					</div>
+
+					<form id="login-form" method="post" action="/portal/xlogin" enctype="application/x-www-form-urlencoded">
+						<div class="login" style="display: none;">
+							<div>
+								<input name="eid" type="text" placeholder="Email" aria-label="Email" />
+							</div>
+							<div>
+								<input name="pw" type="password" placeholder="Password" aria-label="Password" autocomplete="new-password" />
+							</div>
+							<div>
+								<div class="do-login">
+									<button type="submit">Login</button>
+								</div>
+							</div>
+					</div>
+
+					<div class="loading">
+						<img src="/res/images/loading.gif" alt="Loading" />
+					</div>
+
+					<div class="footer">
+						<div class="problem">
+							<a href="/connexionInfo-en.html">Cannot access your account?</a>
+						</div>
+						<div class="governance">
+							By using HEC Montréal's information resources, I agree to respect the <a href="https://www.hec.ca/direction_services/secretariat_general/juridique/reglements_politiques/documents/regulation-on-the-use-of-information-resources.pdf">Regulations on the use of information resources</a>
+						</div>
+						<div class="help-link">
+							<a class="help-link" href="https://hecmontreal.atlassian.net/l/c/vE3qWRxU">HELP</a>
+						</div>
+					</div>
+				</div>
+
+				<div class="clear-fix"></div>
+
+				<div class="links">
+					<div>
+						<a href="https://utm.io/upcoming-courses-exec-ed-hec-montreal">Upcoming Courses</a>
+						<a href="https://utm.io/custom-training-exec-ed-hec-montreal">Corporate services</a>
+						<a href="https://utm.io/contact-us-exec-ed-hec-montreal">Contact us</a>
+						<a href="/ecole-des-dirigeant.e.s.html">Français</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>
