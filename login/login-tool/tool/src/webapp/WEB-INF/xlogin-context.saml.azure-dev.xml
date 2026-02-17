@@ -117,23 +117,21 @@
             <list>
                 <!-- Metadata for ADFS IdP -->
                 <bean class="org.springframework.security.saml.metadata.ExtendedMetadataDelegate">
-                    <constructor-arg>
-                        <bean class="org.opensaml.saml2.metadata.provider.ResourceBackedMetadataProvider">
-                            <constructor-arg>
-                                <bean class="java.util.Timer"/>
-                            </constructor-arg>
-                            <constructor-arg>
-                                <bean class="org.opensaml.util.resource.FilesystemResource">
-                                    <constructor-arg value="/opt/sakaidev/data/saml/zcdev/federationmetadata.xml"/>
-                                </bean>
-                            </constructor-arg>
-                            <property name="parserPool" ref="parserPool"/>
-                        </bean>
-                    </constructor-arg>
+                	<constructor-arg>
+		                <bean class="org.opensaml.saml2.metadata.provider.HTTPMetadataProvider">
+			                <constructor-arg>
+				                <value type="java.lang.String">https://login.microsoftonline.com/19df09a9-d1f0-4cff-90c4-01385cc40b57/federationmetadata/2007-06/federationmetadata.xml?appid=917f9b08-ccd5-40f4-be4a-4362be999a8f</value>
+			                </constructor-arg>
+			                <constructor-arg>
+                				<!-- Timeout for metadata loading in ms -->
+				                <value type="int">5000</value>
+			                </constructor-arg>
+			                <property name="parserPool" ref="parserPool"/>
+		                </bean>
+	                </constructor-arg>
                     <constructor-arg>
                         <bean class="org.springframework.security.saml.metadata.ExtendedMetadata"/>
                     </constructor-arg>
-                    <property name="metadataTrustCheck" value="false"/>
                 </bean>
             </list>
         </constructor-arg>

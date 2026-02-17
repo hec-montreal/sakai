@@ -119,7 +119,7 @@
                 	<constructor-arg>
 		                <bean class="org.opensaml.saml2.metadata.provider.HTTPMetadataProvider">
 			                <constructor-arg>
-				                <value type="java.lang.String">https://zcpilote.hec.ca/access/content/public/federationmetadata-pilote.xml</value>
+				                <value type="java.lang.String">https://login.microsoftonline.com/19df09a9-d1f0-4cff-90c4-01385cc40b57/federationmetadata/2007-06/federationmetadata.xml?appid=8a412d0c-46ba-4072-9276-fd219efdc07c</value>
 			                </constructor-arg>
 			                <constructor-arg>
                 				<!-- Timeout for metadata loading in ms -->
@@ -131,7 +131,6 @@
                     <constructor-arg>
                         <bean class="org.springframework.security.saml.metadata.ExtendedMetadata"/>
                     </constructor-arg>
-                    <property name="metadataTrustCheck" value="false"/>
                 </bean>
             </list>
         </constructor-arg>
